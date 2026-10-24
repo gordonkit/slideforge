@@ -1,0 +1,58 @@
+{
+  "name": "slideforge",
+  "version": "0.1.0",
+  "description": "An AI-ready framework for creating consistent, editable PowerPoint presentations from HTML and CSS.",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": "./dist/index.js"
+  },
+  "bin": {
+    "slideforge": "./dist/cli/index.js"
+  },
+  "files": [
+    "dist",
+    "examples",
+    "THIRD_PARTY_NOTICES.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "scripts": {
+    "build": "tsc && node --input-type=module -e \"import {copyFileSync} from 'node:fs'; copyFileSync('src/themes/slides.css', 'dist/themes/slides.css')\" && vite build --config vite.export.config.ts",
+    "check": "tsc --noEmit",
+    "test": "vitest run",
+    "test:unit": "vitest run tests/unit",
+    "test:integration": "vitest run tests/integration",
+    "prepack": "npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gordonkit/slideforge.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "type": "module",
+  "dependencies": {
+    "dom-to-pptx": "2.1.2",
+    "fast-xml-parser": "5.11.2",
+    "fflate": "0.8.3",
+    "playwright": "1.64.1",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "vite": "8.3.5",
+    "zod": "4.6.7"
+  },
+  "devDependencies": {
+    "@types/node": "26.6.5",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "typescript": "7.0.2",
+    "vitest": "5.0.5"
+  },
+  "overrides": {
+    "image-size": "2.0.4"
+  }
+}

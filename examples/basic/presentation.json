@@ -1,0 +1,62 @@
+{
+  "metadata": {
+    "title": "SlideForge — Present ideas clearly",
+    "author": "SlideForge",
+    "subject": "Structured, editable presentations / 結構化簡報",
+    "lang": "zh-Hant"
+  },
+  "theme": "light",
+  "slides": [
+    {
+      "layout": "cover",
+      "title": "Ideas into slides",
+      "subtitle": "把想法化為清晰的簡報",
+      "author": "SlideForge",
+      "footer": "Phase 1",
+      "notes": "Welcome! 歡迎使用 SlideForge。"
+    },
+    {
+      "layout": "content",
+      "title": "A simple content model",
+      "subtitle": "Text, lists and images / 繁體中文內容",
+      "blocks": [
+        { "type": "paragraph", "text": "Create presentations from validated JSON, with editable text and shapes." },
+        { "type": "bullets", "items": ["Consistent layouts", "可編輯的文字與圖形", "Local assets are supported"] },
+        { "type": "image", "src": "assets/diagram.svg", "alt": "JSON to HTML to PowerPoint flow", "caption": "One source, reusable output / 一份來源，多種輸出" }
+      ],
+      "notes": "The image path stays relative to this presentation."
+    },
+    {
+      "layout": "two-columns",
+      "title": "Before and after / 前後比較",
+      "left": [{ "type": "bullets", "items": ["Manual formatting", "重複調整版面", "Inconsistent results"] }],
+      "right": [{ "type": "bullets", "items": ["Structured content", "一致的設計系統", "Repeatable exports"] }]
+    },
+    {
+      "layout": "cards",
+      "title": "Three principles / 三大原則",
+      "cards": [
+        { "title": "Clarity", "blocks": [{ "type": "paragraph", "text": "One idea at a time." }] },
+        { "title": "一致性", "blocks": [{ "type": "paragraph", "text": "共用版面與設計規範。" }] },
+        { "title": "Editability", "blocks": [{ "type": "paragraph", "text": "Keep text, tables and charts editable." }] }
+      ]
+    },
+    {
+      "layout": "table",
+      "title": "Delivery plan / 交付計畫",
+      "columns": ["Milestone", "內容", "Status"],
+      "rows": [["Foundation", "資料模型與主題", "Ready"], ["Rendering", "六種版面", "Ready"], ["Export", "PowerPoint", "Ready"]],
+      "footer": "Illustrative example"
+    },
+    {
+      "layout": "chart",
+      "title": "Illustrative progress / 示意進度",
+      "data": [{ "label": "Planning", "value": 100 }, { "label": "製作", "value": 80 }, { "label": "Review", "value": 60 }],
+      "unit": "%",
+      "blocks": [
+        { "type": "paragraph", "text": "Planning is complete. 製作進度領先審閱，接下來將聚焦於品質檢查。" }
+      ],
+      "notes": "These are illustrative values, not measured project metrics."
+    }
+  ]
+}
