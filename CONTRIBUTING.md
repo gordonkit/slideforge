@@ -22,6 +22,11 @@ download from the converter's dependency tree; SlideForge launches Playwright's
 Chromium. `npm test` runs the existing full Vitest suite. Use the smallest
 relevant existing test selection while developing.
 
+In VS Code, the Run and Debug view offers launch configurations for all, unit,
+and current-file Vitest runs, CLI preview and export of the example deck, and
+the documentation site dev server. Configurations that need `dist/` build it
+first through the `slideforge: build` task.
+
 ## Documentation site
 
 The site at <https://slideforge.gordonkit.com/> lives in `site/` with its own lockfile.
