@@ -39,7 +39,7 @@ The HTML body has `data-theme="light"` or `"dark"`. The preview page surround is
 
 ## Typography and geometry
 
-`defaultFontFamily` is `"Arial", "Noto Sans CJK TC", "Noto Sans TC", sans-serif`. A JSON
+`defaultFontFamily` is `"Arial", "Microsoft JhengHei", "Noto Sans CJK TC", "Noto Sans TC", sans-serif`. A JSON
 `fontFamily` overrides it. Install fonts locally; a fallback list is not a font
 installer, and system fonts are not guaranteed embedded into PPTX.
 

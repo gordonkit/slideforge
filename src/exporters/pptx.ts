@@ -6,6 +6,7 @@ import { chromium, type Page } from 'playwright';
 import { renderPresentation } from '../renderers/html.js';
 import { applyMetadata, type PresentationMetadata } from './metadata.js';
 import { widenTextBoxes, type TextSlack } from './text-fit.js';
+import { applyEastAsianFont } from './fonts.js';
 import { validateLayout, type ValidationIssue } from '../validators/layout.js';
 import { validatePptx } from '../validators/pptx.js';
 import { SLIDE_SIZE } from '../themes/tokens.js';
@@ -19,6 +20,8 @@ export interface ExportOptions {
   timeout?: number;
   /** Extra text box width tolerating PowerPoint font metrics; `false` keeps converter sizes. */
   textSlack?: TextSlack | false;
+  /** PowerPoint East Asian font for CJK text; defaults to Microsoft JhengHei. */
+  eastAsianFont?: string;
 }
 
 export async function waitForAssets(page: Page): Promise<void> {
@@ -119,7 +122,7 @@ export async function exportPresentation(input: string, options: ExportOptions):
     }, { selector, size: SLIDE_SIZE });
     const converted = Buffer.from(base64, 'base64');
     const fitted = options.textSlack === false ? converted : widenTextBoxes(converted, options.textSlack);
-    const data = applyMetadata(fitted, metadata);
+    const data = applyMetadata(applyEastAsianFont(fitted, options.eastAsianFont), metadata);
     const report = validatePptx(data);
     if (!report.valid) throw new Error(`Invalid generated PPTX: ${report.issues.map(issue => issue.message).join('; ')}`);
     await writeFile(resolve(options.output), data);

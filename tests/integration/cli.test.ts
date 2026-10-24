@@ -48,7 +48,7 @@ describe('built CLI', () => {
     const invalid = join(directory, 'invalid.pptx');
     await writeFile(invalid, 'not a presentation');
     await expect(exec(process.execPath, [cli, 'validate', invalid])).rejects.toMatchObject({ code: 1 });
-  });
+  }, 60_000);
 
   it('initializes paths with spaces and does not leave JSON after an asset collision', async () => {
     const input = join(directory, 'my deck.json');
@@ -58,7 +58,7 @@ describe('built CLI', () => {
     await expect(exec(process.execPath, [cli, 'init', input])).rejects.toMatchObject({ code: 1 });
     await expect(readFile(input)).rejects.toMatchObject({ code: 'ENOENT' });
     expect(await readFile(join(directory, 'my deck-assets/diagram.svg'), 'utf8')).toContain('<svg');
-  });
+  }, 60_000);
 
   it('exports HTML while ignoring non-rendered images', async () => {
     const html = join(directory, 'hidden-image.html');

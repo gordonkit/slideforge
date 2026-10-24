@@ -86,7 +86,7 @@ describe("HTML renderer", () => {
     expect(html).toContain('class="sf-chart-bar" style="width:80%"');
     expect(html).toContain("--slide-width:1280px");
     expect(html).toContain("--slide-height:720px");
-    expect(defaultFontFamily).toBe('"Arial", "Noto Sans CJK TC", "Noto Sans TC", sans-serif');
+    expect(defaultFontFamily).toBe('"Arial", "Microsoft JhengHei", "Noto Sans CJK TC", "Noto Sans TC", sans-serif');
   });
 
   it("shares dimensions and theme tokens, and supports safe local font names", () => {
