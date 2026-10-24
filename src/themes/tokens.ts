@@ -1,5 +1,6 @@
-export const SLIDE_WIDTH = 1280;
-export const SLIDE_HEIGHT = 720;
+// A 1080p canvas; the PowerPoint slide stays 13.333 × 7.5 in, so 1 CSS px exports as 0.5 pt.
+export const SLIDE_WIDTH = 1920;
+export const SLIDE_HEIGHT = 1080;
 export const SLIDE_WIDTH_INCHES = 13.333333;
 export const SLIDE_HEIGHT_INCHES = 7.5;
 
@@ -18,30 +19,32 @@ export const themeTokens = Object.freeze({
 // Microsoft JhengHei matches the PowerPoint East Asian font; Noto covers systems without it.
 export const defaultFontFamily = '"Arial", "Microsoft JhengHei", "Noto Sans CJK TC", "Noto Sans TC", sans-serif';
 
+// Vertical regions add up to the slide height: padding-top + header + content + padding-bottom.
 export const layoutTokens = Object.freeze({
-  "padding-x": 64, "padding-top": 48, "padding-bottom": 56,
-  header: 124, content: 492, "footer-bottom": 22, footer: 24,
-  "cover-header": 350, "cover-top": 132, "cover-content": 250,
-  "image-max-height": 420,
+  "padding-x": 96, "padding-top": 72, "padding-bottom": 84,
+  header: 186, content: 738, "footer-bottom": 33, footer: 36,
+  "cover-header": 525, "cover-top": 198, "cover-content": 375,
+  "image-max-height": 630,
 });
 
 export const spacingTokens = Object.freeze({
-  page: 24, block: 18, column: 40, card: 20, "card-padding": 24,
-  subtitle: 12, "cover-subtitle": 24, "card-title": 16, list: 32, item: 10, caption: 8,
-  "table-x": 16, "table-y": 10, chart: 20, "chart-explanation": 16,
+  page: 36, block: 27, column: 60, card: 30, "card-padding": 36,
+  subtitle: 18, "cover-subtitle": 36, "card-title": 24, list: 48, item: 15, caption: 12,
+  "table-x": 24, "table-y": 15, chart: 30, "chart-explanation": 24,
 });
 
 export const typographyTokens = Object.freeze({
-  title: 40, subtitle: 22, body: 24, caption: 17, "card-title": 26,
-  "card-body": 20, table: 21, chart: 21, footer: 16, "cover-title": 60,
-  "cover-subtitle": 30, author: 26,
+  title: 60, subtitle: 33, body: 36, caption: 25.5, "card-title": 39,
+  "card-body": 30, table: 31.5, chart: 31.5, footer: 24, "cover-title": 90,
+  "cover-subtitle": 45, author: 39,
   "title-leading": "1.2", "subtitle-leading": "1.35", "body-leading": "1.45",
   bold: "700",
 });
 
-export const borderTokens = Object.freeze({ width: 1, radius: 12 });
+// Borders round to whole device pixels, so 2 px keeps them crisp (1 pt in PowerPoint).
+export const borderTokens = Object.freeze({ width: 2, radius: 18 });
 export const chartTokens = Object.freeze({
-  height: 26, label: 190, value: 140, "explanation-label": 140, "explanation-value": 100,
+  height: 39, label: 285, value: 210, "explanation-label": 210, "explanation-value": 150,
 });
 
 export const designTokens = Object.freeze({

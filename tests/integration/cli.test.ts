@@ -4,6 +4,7 @@ import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { promisify } from 'node:util';
 import { strFromU8, unzipSync } from 'fflate';
+import { chromium } from 'playwright';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { validatePptx } from '../../src/validators/pptx.js';
 import { exportPresentation, previewPresentation } from '../../dist/index.js';
@@ -64,7 +65,7 @@ describe('built CLI', () => {
     const html = join(directory, 'hidden-image.html');
     const output = join(directory, 'hidden-image.pptx');
     await writeFile(html, `<html><body style="margin:0;font-family:Arial">
-      <section data-pptx="slide" style="width:1280px;height:720px">
+      <section data-pptx="slide" style="width:1920px;height:1080px">
       <h1>Visible content</h1><div hidden><img src="missing-hidden-image.png"></div>
       </section></body></html>`);
     expect(await exportPresentation(html, { output })).toEqual([]);
@@ -93,4 +94,37 @@ describe('built CLI', () => {
       await server.close();
     }
   }, 120_000);
+
+  it('reloads the preview when the JSON changes, including after invalid edits', async () => {
+    const input = join(directory, 'live.json');
+    const deck = (title: string) => JSON.stringify({
+      metadata: { title: 'Live reload' },
+      slides: [{ layout: 'content', title, blocks: [{ type: 'paragraph', text: 'Body' }] }],
+    });
+    const titleIs = (title: string) => `document.querySelector('.sf-slide h1')?.textContent === ${JSON.stringify(title)}`;
+    await writeFile(input, deck('First title'));
+    const server = await previewPresentation(input, 0);
+    const browser = await chromium.launch();
+    try {
+      const address = server.httpServer!.address();
+      if (!address || typeof address === 'string') throw new Error('Preview did not bind a TCP port');
+      const page = await browser.newPage();
+      const connected = () => page.waitForEvent('console', message => message.text().includes('[vite] connected'));
+      let ready = connected();
+      await page.goto(`http://127.0.0.1:${address.port}/`);
+      await ready;
+      await page.waitForFunction(titleIs('First title'));
+
+      ready = connected();
+      await writeFile(input, '{ "metadata": ');
+      await page.waitForFunction(() => document.title === 'Invalid presentation');
+      await ready;
+
+      await writeFile(input, deck('Second title'));
+      await page.waitForFunction(titleIs('Second title'));
+    } finally {
+      await browser.close();
+      await server.close();
+    }
+  }, 60_000);
 });

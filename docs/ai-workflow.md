@@ -40,7 +40,7 @@ node dist/cli/index.js build draft.json --output draft.html
 node dist/cli/index.js preview draft.json --port 5173
 ```
 
-Review at the fixed 1280 × 720 canvas; reload after edits. Check clipping,
+Review at the fixed 1920 × 1080 canvas; the preview reloads after each save. Check clipping,
 alignment, contrasts, missing images, footer space, labels, and table density.
 Built HTML retains a local asset base, so it is not a standalone delivery file.
 

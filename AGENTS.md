@@ -9,7 +9,7 @@ changing the framework.
 - Keep presentation content in the strict schema. Use the six existing layouts
   and shared tokens/components; do not invent schema fields or inline CSS.
 - Start decks with `init`, retain relative asset directories, and keep content
-  short enough for the fixed 1280 × 720 canvas.
+  short enough for the fixed 1920 × 1080 canvas.
 - Build before invoking `node dist/cli/index.js`. Use existing check/unit/
   integration scripts appropriate to the change; report actual results.
 - Fix layout errors before export. Review warnings, editable-text counts, and

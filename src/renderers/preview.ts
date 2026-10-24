@@ -3,7 +3,37 @@ import { dirname, resolve } from 'node:path';
 import { createServer } from 'vite';
 import { renderPresentation } from './html.js';
 
-/** Loopback-only preview; reload the browser after editing JSON. */
+/**
+ * Preview-only: scale slides down to fit the window. Automated browsers (navigator.webdriver)
+ * are skipped so exporting or validating the preview URL still measures the full canvas.
+ */
+const fitToWindow = `<style>@media screen { .sf-presentation { zoom: var(--sf-preview-zoom, 1); } }</style>
+<script>(() => {
+  if (navigator.webdriver) return;
+  const fit = () => {
+    const style = getComputedStyle(document.body);
+    const width = parseFloat(style.getPropertyValue('--slide-width')) + 2 * parseFloat(style.getPropertyValue('--sf-spacing-page'));
+    document.body.style.setProperty('--sf-preview-zoom', String(Math.min(1, document.documentElement.clientWidth / width)));
+  };
+  addEventListener('resize', fit);
+  fit();
+})();</script>`;
+
+function escapeHtml(value: string): string {
+  return value.replace(/[<>&"']/g, char => ({
+    '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;', "'": '&#39;',
+  })[char]!);
+}
+
+function errorPage(message: string): string {
+  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Invalid presentation</title></head>
+<body style="margin:0;padding:32px;font:16px/1.5 system-ui,sans-serif;background:#fef2f2;color:#7f1d1d">
+<h1 style="margin:0 0 16px;font-size:20px">Invalid presentation</h1>
+<pre style="margin:0;white-space:pre-wrap;font:14px/1.5 ui-monospace,monospace">${escapeHtml(message)}</pre>
+<p>Fix the JSON and save; this page reloads automatically.</p></body></html>`;
+}
+
+/** Loopback-only preview that reloads the browser when the JSON or a file beside it changes. */
 export async function previewPresentation(input: string, port = 5173) {
   const file = resolve(input);
   const server = await createServer({
@@ -13,18 +43,29 @@ export async function previewPresentation(input: string, port = 5173) {
     plugins: [{
       name: 'slideforge-content',
       configureServer(server) {
+        // Editors often emit several events per save; send one reload per burst.
+        let pending: NodeJS.Timeout | undefined;
+        const reload = () => {
+          clearTimeout(pending);
+          pending = setTimeout(() => server.ws.send({ type: 'full-reload' }), 100);
+        };
+        server.watcher.add(file);
+        for (const event of ['add', 'change', 'unlink'] as const) server.watcher.on(event, reload);
+
         server.middlewares.use(async (request, response, next) => {
           if (request.url?.split('?')[0] !== '/') return next();
+          let html: string;
           try {
-            const html = renderPresentation(JSON.parse(await readFile(file, 'utf8')));
-            response.setHeader('Content-Type', 'text/html; charset=utf-8');
-            response.setHeader('Cache-Control', 'no-store');
-            response.end(html);
+            html = renderPresentation(JSON.parse(await readFile(file, 'utf8'))).replace('</body>', `${fitToWindow}</body>`);
           } catch (error) {
             response.statusCode = 400;
-            response.setHeader('Content-Type', 'text/plain; charset=utf-8');
-            response.end(error instanceof Error ? error.message : 'Invalid presentation');
+            html = errorPage(error instanceof Error ? error.message : 'Invalid presentation');
           }
+          // Injects Vite's client, which listens for the reload message.
+          html = await server.transformIndexHtml('/', html);
+          response.setHeader('Content-Type', 'text/html; charset=utf-8');
+          response.setHeader('Cache-Control', 'no-store');
+          response.end(html);
         });
       },
     }],

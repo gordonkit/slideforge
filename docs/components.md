@@ -56,7 +56,7 @@ See [schema](schema.md) for exact field names and bounds and
 
 ## Custom trusted HTML
 
-For custom export input, give each slide a fixed 1280 × 720 box and mark it with
+For custom export input, give each slide a fixed 1920 × 1080 box and mark it with
 `data-pptx="slide"` or `.slide`; alternatively pass `--selector`. Keep text and
 simple fills/borders as DOM/CSS when editability matters. Upstream may rasterize
 some effects or media. SlideForge does not provide automatic screenshot fallback

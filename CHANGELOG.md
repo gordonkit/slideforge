@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file. The format 
 
 ## [Unreleased]
 
+### Changed
+
+- The slide canvas is 1920 × 1080 CSS pixels instead of 1280 × 720, and every layout,
+  spacing, type, and chart token is scaled by 1.5 to match. Exported PowerPoint slides keep
+  the same size, positions, and font sizes; card and table borders are 2px (1 pt). Custom
+  HTML slides and `validateLayout` callers that relied on the 1280 × 720 default must update.
+- `preview` reloads the browser when the JSON or a file beside it is saved, shows invalid
+  JSON as an error page that recovers once fixed, and scales slides to fit the window.
+
 ### Added
 
 - Phase 1 framework: strict JSON schema, six 16:9 layouts with light and dark themes, React

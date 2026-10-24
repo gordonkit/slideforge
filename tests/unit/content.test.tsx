@@ -84,13 +84,15 @@ describe("HTML renderer", () => {
     expect(html).toContain('data-pptx-notes="" hidden=""');
     expect(html).toContain("Welcome! 歡迎使用 SlideForge。");
     expect(html).toContain('class="sf-chart-bar" style="width:80%"');
-    expect(html).toContain("--slide-width:1280px");
-    expect(html).toContain("--slide-height:720px");
+    expect(html).toContain("--slide-width:1920px");
+    expect(html).toContain("--slide-height:1080px");
     expect(defaultFontFamily).toBe('"Arial", "Microsoft JhengHei", "Noto Sans CJK TC", "Noto Sans TC", sans-serif');
   });
 
   it("shares dimensions and theme tokens, and supports safe local font names", () => {
-    expect(SLIDE_SIZE).toEqual({ widthPx: 1280, heightPx: 720, widthInches: 13.333333, heightInches: 7.5 });
+    expect(SLIDE_SIZE).toEqual({ widthPx: 1920, heightPx: 1080, widthInches: 13.333333, heightInches: 7.5 });
+    const { layout } = designTokens;
+    expect(layout["padding-top"] + layout.header + layout.content + layout["padding-bottom"]).toBe(SLIDE_SIZE.heightPx);
     const html = renderPresentation({ ...minimal, theme: "dark", fontFamily: '"Noto Sans TC", Arial' });
     expect(html).toContain('data-theme="dark"');
     expect(html).toContain(`--sf-background:${themeTokens.dark.background}`);
