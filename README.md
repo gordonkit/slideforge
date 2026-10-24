@@ -34,8 +34,9 @@ node dist/cli/index.js build presentation.json --output presentation.html
 node dist/cli/index.js preview presentation.json --port 5173
 ```
 
-Open <http://127.0.0.1:5173/>. Reload after editing JSON; stop preview with
-Ctrl+C. In another terminal:
+Open <http://127.0.0.1:5173/>. The page reloads automatically when you save the
+JSON, and slides scale to fit the window; stop preview with Ctrl+C. In another
+terminal:
 
 ```sh
 node dist/cli/index.js export presentation.json --output presentation.pptx

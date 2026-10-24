@@ -1,4 +1,5 @@
 import type { Page } from 'playwright';
+import { SLIDE_SIZE } from '../themes/tokens.js';
 import type { LayoutValidationOptions, ValidationIssue } from './types.js';
 export type { LayoutValidationOptions, ValidationIssue } from './types.js';
 
@@ -6,8 +7,8 @@ export async function validateLayout(
   page: Page,
   options: LayoutValidationOptions = {},
 ): Promise<ValidationIssue[]> {
-  const width = options.width ?? 1280;
-  const height = options.height ?? 720;
+  const width = options.width ?? SLIDE_SIZE.widthPx;
+  const height = options.height ?? SLIDE_SIZE.heightPx;
   const tolerance = options.tolerance ?? 1;
   if (![width, height].every(value => Number.isFinite(value) && value > 0)
       || !Number.isFinite(tolerance) || tolerance < 0) {
