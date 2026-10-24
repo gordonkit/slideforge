@@ -34,7 +34,7 @@ export const contentBlockSchema = z.discriminatedUnion("type", [
     alt: xmlText.max(1000),
     caption: optionalText,
   }).strict(),
-]);
+], { error: 'Unknown block type. Use "paragraph", "bullets", or "image"' });
 
 const blocks = z.array(contentBlockSchema).min(1).max(12);
 const common = {
@@ -68,7 +68,7 @@ export const slideSchema = z.discriminatedUnion("layout", [
     unit: xmlText.max(40).optional(),
     blocks: z.array(contentBlockSchema).max(4).default([]),
   }).strict(),
-]).superRefine((slide, context) => {
+], { error: 'Unknown layout. Use "cover", "content", "two-columns", "cards", "table", or "chart"' }).superRefine((slide, context) => {
   if (slide.layout === "table") {
     slide.rows.forEach((row, index) => {
       if (row.length !== slide.columns.length) {
@@ -87,7 +87,7 @@ export const presentationSchema = z.object({
     title: text.max(300),
     author: optionalText,
     subject: optionalText,
-    lang: xmlText.regex(/^[a-z]{2,8}(?:-[a-z0-9]{1,8})*$/i).default("en"),
+    lang: xmlText.regex(/^[a-z]{2,8}(?:-[a-z0-9]{1,8})*$/i, 'Use a language tag such as "en", "zh-Hant", or "ja"').default("en"),
   }).strict(),
   theme: z.enum(["light", "dark"]).default("light"),
   fontFamily: xmlText.trim().min(1).max(200)

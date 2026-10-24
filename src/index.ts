@@ -1,5 +1,6 @@
 export { presentationSchema, slideSchema, contentBlockSchema, imageSourceSchema, parsePresentation } from './schemas/presentation.js';
 export type { Presentation, ContentBlock, Slide as PresentationSlide } from './schemas/presentation.js';
+export { describePresentationError, readPresentationFile } from './schemas/input.js';
 export * from './themes/tokens.js';
 export * from './components/index.js';
 export * from './renderers/html.js';

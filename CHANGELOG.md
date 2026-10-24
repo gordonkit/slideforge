@@ -13,6 +13,11 @@ All notable changes to this project will be documented in this file. The format 
   HTML slides and `validateLayout` callers that relied on the 1280 × 720 default must update.
 - `preview` reloads the browser when the JSON or a file beside it is saved, shows invalid
   JSON as an error page that recovers once fixed, and scales slides to fit the window.
+- Error messages are written for people. Schema problems list each path with its one-based
+  slide number instead of printing raw Zod JSON, unknown layouts and block types name the
+  valid values, malformed JSON names the file, and a missing local image names the resolved
+  path instead of an `ENOENT` error. `describePresentationError` and `readPresentationFile`
+  are exported for programmatic use.
 
 ### Added
 

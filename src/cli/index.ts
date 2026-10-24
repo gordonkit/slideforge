@@ -5,6 +5,7 @@ import { basename, dirname, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { parseArgs } from 'node:util';
 import { renderPresentation } from '../renderers/html.js';
+import { describePresentationError, readPresentationFile } from '../schemas/input.js';
 import { previewPresentation } from '../renderers/preview.js';
 import { exportPresentation } from '../exporters/pptx.js';
 import { validatePptx } from '../validators/pptx.js';
@@ -73,7 +74,7 @@ async function main(): Promise<void> {
   switch (command) {
     case 'build': {
       const file = resolve(input);
-      const html = renderPresentation(JSON.parse(await readFile(file, 'utf8')), {
+      const html = renderPresentation(await readPresentationFile(file), {
         baseUrl: pathToFileURL(dirname(file) + '/').href,
       });
       const output = resolve(String(values.output ?? `${basename(input, '.json')}.html`));
@@ -85,7 +86,7 @@ async function main(): Promise<void> {
       const port = Number(values.port ?? 5173);
       if (!Number.isInteger(port) || port < 1 || port > 65535) throw new UsageError('Port must be 1–65535');
       // Validate before starting a persistent server.
-      renderPresentation(JSON.parse(await readFile(resolve(input), 'utf8')));
+      renderPresentation(await readPresentationFile(resolve(input)));
       const server = await previewPresentation(input, port);
       server.printUrls();
       break;
@@ -110,6 +111,6 @@ async function main(): Promise<void> {
 }
 
 main().catch((error: unknown) => {
-  console.error(`slideforge: ${error instanceof Error ? error.message : String(error)}`);
+  console.error(`slideforge: ${describePresentationError(error)}`);
   process.exitCode = error instanceof UsageError ? 2 : 1;
 });

@@ -61,6 +61,22 @@ describe('built CLI', () => {
     expect(await readFile(join(directory, 'my deck-assets/diagram.svg'), 'utf8')).toContain('<svg');
   }, 60_000);
 
+  it('explains schema errors and missing images in plain words', async () => {
+    const invalid = join(directory, 'mismatch.json');
+    await writeFile(invalid, JSON.stringify({
+      metadata: { title: 'Mismatch' },
+      slides: [{ layout: 'table', title: 'Table', columns: ['A', 'B'], rows: [['1']] }],
+    }));
+    await expect(exec(process.execPath, [cli, 'build', invalid, '--output', join(directory, 'mismatch.html')]))
+      .rejects.toMatchObject({ code: 1, stderr: expect.stringContaining('slides[0].rows[0] (slide 1): Every row must have one cell per column') });
+
+    const html = join(directory, 'missing-image.html');
+    await writeFile(html, `<html><body style="margin:0"><section data-pptx="slide" style="width:1920px;height:1080px">
+      <img src="no-such-image.png" alt="Missing" style="width:200px;height:100px"></section></body></html>`);
+    await expect(exportPresentation(html, { output: join(directory, 'missing-image.pptx') }))
+      .rejects.toThrow(`Image not found: ${join(directory, 'no-such-image.png')}. Relative image paths are resolved from the presentation's folder.`);
+  }, 120_000);
+
   it('exports HTML while ignoring non-rendered images', async () => {
     const html = join(directory, 'hidden-image.html');
     const output = join(directory, 'hidden-image.pptx');
