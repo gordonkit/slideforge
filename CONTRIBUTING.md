@@ -22,6 +22,22 @@ download from the converter's dependency tree; SlideForge launches Playwright's
 Chromium. `npm test` runs the existing full Vitest suite. Use the smallest
 relevant existing test selection while developing.
 
+## Documentation site
+
+The site at <https://slideforge.gordonkit.com/> lives in `site/` with its own lockfile.
+Page content for all four languages is in `site/src/content.ts`; update every locale when
+you change a page, and keep it consistent with the Markdown references in `docs/`.
+
+```sh
+npm --prefix site ci
+npm --prefix site run dev
+npm --prefix site run check
+npm --prefix site run build
+```
+
+The build writes `site/dist/`, including a static page per locale, `sitemap.xml`, and
+`robots.txt`. Do not commit it. CI deploys it to Cloudflare Pages on pushes to `main`.
+
 ## Changes and pull requests
 
 1. Read [architecture](docs/architecture.md), [schema](docs/schema.md), and
@@ -50,3 +66,6 @@ installed production inventory and full texts in
 when dependency versions change. Resolve missing upstream notice information
 before redistributing affected material. Project contributions are provided
 under the [MIT license](LICENSE); third-party material retains its own terms.
+
+By participating, you agree to follow [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md). Report
+security issues as described in [SECURITY.md](SECURITY.md).

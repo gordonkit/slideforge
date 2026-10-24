@@ -23,7 +23,9 @@ changing the framework.
 - Prefer precise changes, no unnecessary dependencies, and no generated decks
   or screenshots committed by default. Preserve bundled third-party licenses.
 - Update directly relevant documentation when behavior changes. Distinguish
-  implemented Phase 1 behavior from future ideas.
+  implemented Phase 1 behavior from future ideas. The documentation site's
+  content is `site/src/content.ts`; change all four locales together and keep
+  them consistent with `docs/`.
 
 See `docs/ai-workflow.md` for the authoring/review loop and `CONTRIBUTING.md` for
 development commands.

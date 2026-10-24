@@ -1,0 +1,27 @@
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+  - package-ecosystem: npm
+    directories:
+      - /
+      - /site
+    schedule:
+      interval: monthly
+    groups:
+      react:
+        patterns:
+          - react
+          - react-dom
+          - "@types/react"
+          - "@types/react-dom"
+      vite:
+        patterns:
+          - vite
+          - "@vitejs/*"
+      tailwind:
+        patterns:
+          - tailwindcss
+          - "@tailwindcss/*"
