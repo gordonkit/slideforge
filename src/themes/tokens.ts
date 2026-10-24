@@ -15,7 +15,8 @@ export const themeTokens = Object.freeze({
   dark: { background: "#101827", foreground: "#f8fafc", muted: "#b5c2d6", accent: "#60a5fa", onAccent: "#101827", surface: "#1e293b", border: "#475569", canvas: "#d8dee8" },
 });
 
-export const defaultFontFamily = '"Arial", "Noto Sans CJK TC", "Noto Sans TC", sans-serif';
+// Microsoft JhengHei matches the PowerPoint East Asian font; Noto covers systems without it.
+export const defaultFontFamily = '"Arial", "Microsoft JhengHei", "Noto Sans CJK TC", "Noto Sans TC", sans-serif';
 
 export const layoutTokens = Object.freeze({
   "padding-x": 64, "padding-top": 48, "padding-bottom": 56,

@@ -40,7 +40,7 @@ unsupported, or CORS-blocked images fail export clearly rather than being
 silently omitted. This is not a general CSS-background/media asset packager,
 does not change saved HTML, and does not relax the trusted-content requirement.
 
-The default local font stack is `"Arial", "Noto Sans CJK TC", "Noto Sans TC", sans-serif`.
+The default local font stack is `"Arial", "Microsoft JhengHei", "Noto Sans CJK TC", "Noto Sans TC", sans-serif`.
 SlideForge preserves multilingual Unicode text, but encoding does not supply
 glyphs. Install suitable CJK fonts before preview/export and match fonts on the
 target machine. Font fallback can change wrapping and geometry. Upstream
@@ -57,6 +57,14 @@ paragraph alignment and staying inside the slide. Filled or outlined shapes are
 unchanged. The extra width can let multi-line paragraphs wrap slightly later than
 in HTML. Pass `textSlack: false` to `exportPresentation` to keep converter sizes,
 or `{ ratio, min, max }` (EMU) to tune it.
+
+The converter writes the first CSS family (Arial) as the PowerPoint East Asian
+font too, so PowerPoint would pick its own CJK substitute. Export sets that slot
+to Microsoft JhengHei, the CJK font Chromium uses for the default stack on
+Windows; runs whose East Asian font differs from their Latin font are kept.
+Pass `eastAsianFont` to `exportPresentation` when a JSON `fontFamily` uses a
+different CJK font. Without Microsoft JhengHei (Linux, macOS without Office),
+HTML falls back to Noto while PowerPoint shows its own substitute.
 
 ## Browser execution is privileged
 
