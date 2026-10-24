@@ -170,6 +170,15 @@ describe('browser layout validation', () => {
     expect((await validateLayout(page, { rules: { boundaries: false, overflow: false } })).some(issue => issue.severity === 'error')).toBe(false);
   });
 
+  it('ignores font ascent and descent beyond a tight line height, but not clipped lines', async () => {
+    // A 0.8 line height makes every font's ascent and descent exceed the line box, as Segoe UI does at 1.2.
+    const title = (height: number) => `<div id="header" style="height:${height}px;overflow:hidden"><h1 id="title" style="margin:0;font-size:60px;line-height:0.8">Tall font title</h1></div>`;
+    await content(title(200));
+    expect((await validateLayout(page)).filter(issue => issue.rule === 'layout.overflow')).toEqual([]);
+    await content(title(30));
+    expect((await validateLayout(page)).some(issue => issue.rule === 'layout.overflow' && issue.message.includes('#title'))).toBe(true);
+  });
+
   it('reports unbroken text overflowing a visible container', async () => {
     await content('<div id="text" style="width:20px;white-space:nowrap">A very long unbroken line</div>');
     expect((await validateLayout(page)).some(issue => issue.rule === 'layout.overflow' && issue.message.includes('#text'))).toBe(true);

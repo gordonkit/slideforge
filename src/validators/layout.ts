@@ -94,22 +94,28 @@ export async function validateLayout(
           let clipped = !!html && ((clipsX && html.scrollWidth > html.clientWidth + tolerance)
             || (clipsY && html.scrollHeight > html.clientHeight + tolerance));
           if (hasText) {
+            // Text rects span the font's ascent and descent. Fonts such as Segoe UI exceed a tight
+            // line-height, and the excess is shared leading, not clipped text, so compare line boxes.
+            const lineHeight = parseFloat(style.lineHeight);
             for (const node of Array.from(element.childNodes)) {
               if (node.nodeType !== Node.TEXT_NODE || !node.textContent?.trim()) continue;
               const range = document.createRange();
               range.selectNodeContents(node);
               for (const textRect of Array.from(range.getClientRects())) {
+                const leading = Number.isFinite(lineHeight) ? Math.max(0, (textRect.height - lineHeight) / 2) : 0;
+                const top = textRect.top + leading;
+                const bottom = textRect.bottom - leading;
                 if (textRect.left < rect.left - tolerance || textRect.right > rect.right + tolerance
-                    || textRect.top < rect.top - tolerance || textRect.bottom > rect.bottom + tolerance) clipped = true;
+                    || top < rect.top - tolerance || bottom > rect.bottom + tolerance) clipped = true;
                 if (textRect.left < bounds.left - tolerance || textRect.right > bounds.right + tolerance
-                    || textRect.top < bounds.top - tolerance || textRect.bottom > bounds.bottom + tolerance) clipped = true;
+                    || top < bounds.top - tolerance || bottom > bounds.bottom + tolerance) clipped = true;
                 for (let ancestor: Element | null = element; ancestor; ancestor = ancestor.parentElement) {
                   const ancestorStyle = getComputedStyle(ancestor);
                   const ancestorRect = ancestor.getBoundingClientRect();
                   if ((['hidden', 'clip', 'auto', 'scroll'].includes(ancestorStyle.overflowX)
                       && (textRect.left < ancestorRect.left - tolerance || textRect.right > ancestorRect.right + tolerance))
                     || (['hidden', 'clip', 'auto', 'scroll'].includes(ancestorStyle.overflowY)
-                      && (textRect.top < ancestorRect.top - tolerance || textRect.bottom > ancestorRect.bottom + tolerance))) clipped = true;
+                      && (top < ancestorRect.top - tolerance || bottom > ancestorRect.bottom + tolerance))) clipped = true;
                   if (ancestor === root) break;
                 }
               }
