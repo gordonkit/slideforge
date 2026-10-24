@@ -24,3 +24,5 @@ All notable changes to this project will be documented in this file. The format 
 - CJK text in exported PPTX uses Microsoft JhengHei as its East Asian font instead of Arial,
   matching the browser on Windows. Override it with the `eastAsianFont` export option.
 - CLI integration tests no longer time out on Windows.
+- Layout validation no longer reports clipped text for fonts taller than their line height,
+  such as a Segoe UI title at 1.2 leading, which blocked export of decks with nothing clipped.

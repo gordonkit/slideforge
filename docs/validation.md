@@ -50,6 +50,9 @@ calling `validateLayout` alone still reports broken images as layout errors.
 | `fonts` | Warning | Unavailable first named text font, using browser/measurement heuristics |
 | `overlap` | Warning | Intersecting visible leaf/text/media boxes |
 
+Text overflow is measured with each line's line box. Fonts whose ascent and
+descent exceed a tight line height, such as Segoe UI at the 1.2 title leading,
+are therefore not reported; a line that leaves its box or a clipping ancestor is.
 Invalid dimensions/tolerance, invalid selectors, and missing slides also produce
 errors. `rule` strings are prefixed `layout.`. Issues have:
 
