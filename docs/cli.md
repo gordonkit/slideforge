@@ -18,14 +18,19 @@ Paths are relative to the current working directory unless absolute.
 ## `init`
 
 Copies `examples/basic/presentation.json` to the requested location; default:
-`presentation.json`. Existing files are never overwritten. The parent directory
-must already exist. Assets are **not copied**: the sample's
-`assets/diagram.svg` must be present relative to the generated JSON. For a
-working six-layout starter without moving assets:
+`presentation.json`. It also copies the diagram into
+`<JSON-basename>-assets/diagram.svg` beside the new JSON, rewriting its image
+source to that relative URL. Existing JSON and diagram files are not overwritten.
+The JSON's parent directory must already exist; the asset directory is created
+if necessary. For a working six-layout starter:
 
 ```sh
-node dist/cli/index.js init examples/basic/my-deck.json
+node dist/cli/index.js init my-deck.json
 ```
+
+This creates `my-deck.json` and `my-deck-assets/diagram.svg`. Keep them together
+when relocating the source deck. Generated HTML still uses a local file base
+and is not a standalone portable artifact.
 
 ## `build`
 
@@ -64,6 +69,14 @@ node dist/cli/index.js export http://127.0.0.1:5173/ --output preview.pptx
 Chromium waits for page load, fonts, and image decoding, then layout validation
 and conversion run. Layout errors block export; warnings are printed. Generated
 PPTX bytes must pass structural checks before they are written.
+
+Before conversion, local `file://` `<img>` resources are read and inlined into
+data URLs to avoid the converter's anonymous-CORS reload dropping them.
+Supported local extensions are `.svg`, `.png`, `.jpg`, `.jpeg`, `.gif`, `.webp`,
+and `.avif`; other extensions fail explicitly. Other images are preflighted with
+anonymous-CORS decoding. Unavailable, undecodable, or CORS-blocked images fail
+export clearly instead of being silently omitted. This applies to page images,
+not only images inside selected slides, and does not make built HTML portable.
 
 **Trust boundary:** page scripts execute, network requests are allowed, and
 local files may be accessible to the browser. Do not export attacker-controlled

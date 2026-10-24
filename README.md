@@ -17,25 +17,25 @@ PUPPETEER_SKIP_DOWNLOAD=true npm ci
 npx playwright install --with-deps chromium
 npm run build
 
-# Create the complete six-layout example beside its existing image assets.
-node dist/cli/index.js init examples/basic/quickstart.json
-node dist/cli/index.js build examples/basic/quickstart.json --output presentation.html
-node dist/cli/index.js preview examples/basic/quickstart.json --port 5173
+# Create the complete six-layout example and its companion image directory.
+node dist/cli/index.js init presentation.json
+node dist/cli/index.js build presentation.json --output presentation.html
+node dist/cli/index.js preview presentation.json --port 5173
 ```
 
 Open <http://127.0.0.1:5173/>. Reload after editing JSON; stop preview with
 Ctrl+C. In another terminal:
 
 ```sh
-node dist/cli/index.js export examples/basic/quickstart.json --output presentation.pptx
+node dist/cli/index.js export presentation.json --output presentation.pptx
 node dist/cli/index.js validate presentation.pptx
 ```
 
 `init [file]` defaults to `presentation.json`, refuses to overwrite an existing
-file, and copies **only JSON**, not its assets. The example above intentionally
-uses `examples/basic/`, which already contains `assets/diagram.svg`. If you
-initialize elsewhere, copy that assets directory beside the new JSON or update
-the image source. The example includes cover, content, two-column, cards, table,
+file. It copies the example diagram into
+`<JSON-basename>-assets/diagram.svg` beside the JSON and rewrites its image source;
+the default creates `presentation-assets/diagram.svg`. Keep that directory with
+the JSON. The example includes cover, content, two-column, cards, table,
 and chart slides, English/Traditional Chinese text, images, footers, and notes.
 See the complete [example JSON](examples/basic/presentation.json).
 
@@ -43,6 +43,10 @@ Built HTML uses a `file://` `<base>` pointing to the JSON directory for relative
 assets. It is **not a portable, self-contained artifact**: moving it to another
 machine or publishing it over HTTP requires changing asset URLs/base handling.
 Preview instead serves the JSON directory on loopback.
+During PPTX export, supported local image files are inlined into data URLs in
+the browser, and other images must pass anonymous-CORS decoding. Missing,
+unsupported, or CORS-blocked images fail clearly rather than being silently
+omitted. This does not rewrite built HTML or make it portable.
 
 ## Programmatic use
 
@@ -92,7 +96,9 @@ Then run `node example.mjs`. Public APIs also include `previewPresentation` and
 
 Phase 1 provides structured authoring, six fixed 16:9 layouts, light/dark themes,
 HTML rendering/preview, browser-driven PPTX export, layout checks, and offline
-PPTX structure checks. Charts are HTML/CSS bars exported as text/shapes, **not
+PPTX structure checks. Optional visual comparison independently renders PPTX via
+external LibreOffice Impress and Poppler and writes per-slide JSON/diff images.
+Charts are HTML/CSS bars exported as text/shapes, **not
 native Office chart objects**. Metadata unsupported by the converter's public
 API is patched into core-properties XML after export.
 
@@ -102,7 +108,8 @@ target machine. Some upstream effects may rasterize; SlideForge does not
 implement an automatic unsupported-content screenshot fallback.
 
 Future phases may explore richer authoring, native charts, additional layouts,
-font packaging, automated Office rendering, and visual regression workflows.
+font packaging, native Microsoft PowerPoint rendering, and broader visual
+regression automation.
 These are directions, not implemented features or delivery commitments. No
 manual PowerPoint compatibility test or pixel-perfection claim is made.
 

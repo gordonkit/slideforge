@@ -26,6 +26,47 @@ export async function waitForAssets(page: Page): Promise<void> {
   });
 }
 
+async function prepareImages(page: Page, selector: string): Promise<void> {
+  const images = page.locator(selector).locator('img');
+  const sources = await images.evaluateAll(elements =>
+    (elements as HTMLImageElement[]).map(image => {
+      const bounds = image.getBoundingClientRect();
+      return image.checkVisibility({ checkOpacity: true, checkVisibilityCSS: true })
+        && bounds.width > 0 && bounds.height > 0 ? image.currentSrc || image.src : null;
+    }));
+  const replacements = await Promise.all(sources.map(async source => {
+    if (source === null) return null;
+    if (!source.startsWith('file:')) return source;
+    const mime = new Map([
+      ['.svg', 'image/svg+xml'], ['.png', 'image/png'], ['.jpg', 'image/jpeg'],
+      ['.jpeg', 'image/jpeg'], ['.gif', 'image/gif'], ['.webp', 'image/webp'], ['.avif', 'image/avif'],
+    ]).get(extname(fileURLToPath(source)).toLowerCase());
+    if (!mime) throw new Error(`Unsupported local image format: ${source}`);
+    const bytes = await readFile(new URL(source));
+    return `data:${mime};base64,${bytes.toString('base64')}`;
+  }));
+  await images.evaluateAll(async (elements, replacements) => {
+    const images = elements as HTMLImageElement[];
+    await Promise.all(images.map(async (image, index) => {
+      if (replacements[index] === null) return;
+      // The converter reloads images with anonymous CORS; preflight the same contract.
+      image.removeAttribute('srcset');
+      const picture = image.closest('picture');
+      picture?.querySelectorAll('source').forEach(source => source.remove());
+      image.src = replacements[index]!;
+      const probe = new Image();
+      probe.crossOrigin = 'anonymous';
+      probe.src = image.src;
+      try {
+        await probe.decode();
+        await image.decode();
+      } catch {
+        throw new Error(`Image cannot be exported. Check its format, availability, and CORS headers: ${image.alt || images.indexOf(image) + 1}`);
+      }
+    }));
+  }, replacements);
+}
+
 /** Export a JSON file, HTML file, or trusted HTTP(S) presentation URL. */
 export async function exportPresentation(input: string, options: ExportOptions): Promise<ValidationIssue[]> {
   const directory = await mkdtemp(join(tmpdir(), 'slideforge-'));
@@ -53,9 +94,10 @@ export async function exportPresentation(input: string, options: ExportOptions):
       deviceScaleFactor: 1,
     });
     page.setDefaultTimeout(options.timeout ?? 60_000);
-    await page.goto(url, { waitUntil: 'load' });
-    await waitForAssets(page);
     const selector = options.selector ?? '[data-pptx="slide"], .slide';
+    await page.goto(url, { waitUntil: 'load' });
+    await prepareImages(page, selector);
+    await waitForAssets(page);
     const issues = await validateLayout(page, { selector });
     if (options.validate !== false && issues.some(issue => issue.severity === 'error')) {
       throw new Error(`Layout validation failed:\n${issues.map(issue => issue.message).join('\n')}`);

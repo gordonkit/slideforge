@@ -6,8 +6,7 @@ import { promisify } from 'node:util';
 import { strFromU8, unzipSync } from 'fflate';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { validatePptx } from '../../src/validators/pptx.js';
-import { exportPresentation } from '../../src/exporters/pptx.js';
-import { previewPresentation } from '../../src/renderers/preview.js';
+import { exportPresentation, previewPresentation } from '../../dist/index.js';
 
 const exec = promisify(execFile);
 const cli = resolve('dist/cli/index.js');
@@ -36,6 +35,7 @@ describe('built CLI', () => {
     const slideXml = Object.entries(files).filter(([path]) => /^ppt\/slides\/slide\d+\.xml$/.test(path))
       .map(([, content]) => strFromU8(content)).join('');
     expect(slideXml.includes('可編輯的文字與圖形')).toBe(true);
+    expect((slideXml.match(/<p:pic>/g) ?? []).length).toBeGreaterThanOrEqual(1);
     expect(strFromU8(files['docProps/core.xml']!)).toContain('SlideForge — Present ideas clearly');
     expect(Object.keys(files).some(path => /^ppt\/notesSlides\/notesSlide\d+\.xml$/.test(path))).toBe(true);
     const validation = await exec(process.execPath, [cli, 'validate', pptx]);
@@ -49,6 +49,27 @@ describe('built CLI', () => {
     await writeFile(invalid, 'not a presentation');
     await expect(exec(process.execPath, [cli, 'validate', invalid])).rejects.toMatchObject({ code: 1 });
   });
+
+  it('initializes paths with spaces and does not leave JSON after an asset collision', async () => {
+    const input = join(directory, 'my deck.json');
+    await exec(process.execPath, [cli, 'init', input]);
+    expect(await readFile(input, 'utf8')).toContain('my%20deck-assets/diagram.svg');
+    await rm(input);
+    await expect(exec(process.execPath, [cli, 'init', input])).rejects.toMatchObject({ code: 1 });
+    await expect(readFile(input)).rejects.toMatchObject({ code: 'ENOENT' });
+    expect(await readFile(join(directory, 'my deck-assets/diagram.svg'), 'utf8')).toContain('<svg');
+  });
+
+  it('exports HTML while ignoring non-rendered images', async () => {
+    const html = join(directory, 'hidden-image.html');
+    const output = join(directory, 'hidden-image.pptx');
+    await writeFile(html, `<html><body style="margin:0;font-family:Arial">
+      <section data-pptx="slide" style="width:1280px;height:720px">
+      <h1>Visible content</h1><div hidden><img src="missing-hidden-image.png"></div>
+      </section></body></html>`);
+    expect(await exportPresentation(html, { output })).toEqual([]);
+    expect(validatePptx(await readFile(output)).editableTextCount).toBe(1);
+  }, 120_000);
 
   it('previews and exports a rendered presentation URL through the public API', async () => {
     const input = join(directory, 'url-presentation.json');

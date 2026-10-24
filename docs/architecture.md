@@ -48,7 +48,9 @@ Import from `./dist/index.js` when developing in this repository.
 
 Validates strict objects, applies theme/language/list defaults, and returns typed
 data. Throws on invalid content. The runtime Zod schemas and `Presentation`,
-`Slide`, and `ContentBlock` types are also exported.
+`PresentationSlide`, and `ContentBlock` types are also exported from the root.
+The schema module names its slide type `Slide`; the root aliases it to
+`PresentationSlide` to distinguish it from the React `Slide` component.
 
 ### `renderPresentation(input: unknown, options?: RenderOptions): string`
 
@@ -87,9 +89,21 @@ Input is a JSON path, HTML path, or trusted HTTP(S) URL.
 | `validate` | `true` | Layout errors block export; `false` still collects issues |
 | `timeout` | `60000` | Playwright default timeout, milliseconds |
 
-The browser uses a 1280 × 720 viewport at device scale 1 and waits for page load,
-`document.fonts.ready`, and image decode attempts. A broken image still becomes
-a layout error. This is not a general wait-for-all-animations/network-idle API.
+The browser uses a 1280 × 720 viewport at device scale 1. After page load,
+`prepareImages` reads local `file://` image bytes and substitutes data URLs inside
+the export page, avoiding upstream anonymous-CORS reloads silently dropping
+local images. Local `.svg`, `.png`, `.jpg`, `.jpeg`, `.gif`, `.webp`, and `.avif`
+extensions are accepted; unsupported extensions fail explicitly. Other image
+sources must pass an anonymous-CORS decode preflight. Missing, undecodable, or
+CORS-blocked images throw a clear export error before conversion; disabling
+layout blocking does not bypass this preparation.
+
+Image preparation applies only to visible, nonzero-size `<img>` elements within
+the selected slide roots. It freezes the selected resource by removing
+`srcset`/picture source alternatives and changes only the
+in-memory export page—not built HTML. The pipeline then waits for
+`document.fonts.ready` and image decode attempts. This is not a general
+wait-for-all-animations/network-idle API.
 The exporter closes its browser and removes its temporary conversion files.
 
 `validate: false` does **not** disable the final PPTX structural check. Returned

@@ -5,6 +5,9 @@ implemented with Zod. `parsePresentation(input: unknown)` validates and returns
 the normalized `Presentation`, or throws a Zod validation error. All objects,
 including nested content/card/chart/metadata objects, are **strict**: unknown
 keys are errors. There is no separate generated JSON Schema file.
+All content strings must contain valid XML characters: tab/newline/carriage
+return and valid Unicode XML ranges are accepted; forbidden control characters
+and unpaired surrogates are rejected before PPTX generation.
 
 ## Presentation
 
@@ -55,13 +58,16 @@ that content will fit a slide**; check rendered layout separately.
 | `"two-columns"` | Required `left` and `right`: each 1–12 content blocks |
 | `"cards"` | Required `cards`: 1–6 objects, each with trimmed nonempty `title` (max 200) and `blocks` (1–12) |
 | `"table"` | Required `columns` (1–8 trimmed nonempty strings, max 200 each) and `rows` (1–14 arrays of 1–8 string cells, max 2,000 each) |
-| `"chart"` | Required `data` (1–10 `{ "label", "value" }` objects); optional `unit` string, max 40 |
+| `"chart"` | Required `data` (1–10 `{ "label", "value" }` objects); optional `unit` string, max 40; optional `blocks` (0–4 content blocks, default `[]`) |
 
 Every table row must contain exactly one cell per column. Empty table cell
 strings are allowed. Chart labels are trimmed, nonempty, max 100 characters;
 values must be finite, nonnegative numbers. Zero is valid. Chart units are
 appended directly to values; include a leading space for a separated suffix.
 Charts are single-series HTML/CSS bars, not native Office charts.
+When chart `blocks` are present, they form a right-hand explanation column
+beside the bars (2:1 chart/explanation proportions); an empty array keeps a
+full-width chart.
 
 ## Content blocks
 

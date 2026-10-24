@@ -29,7 +29,10 @@ try {
 ```
 
 `validateLayout(page, options?)` returns `Promise<ValidationIssue[]>`. It waits for
-fonts; the export pipeline additionally waits for image decode attempts.
+fonts; the export pipeline additionally prepares local file images as data URLs,
+preflights image decoding under anonymous CORS, and waits for image decode
+attempts. Export image-preparation failures throw before layout validation;
+calling `validateLayout` alone still reports broken images as layout errors.
 
 | Option | Default | Meaning |
 | --- | --- | --- |
@@ -100,6 +103,8 @@ roots/references, and positive widescreen dimensions. External relationships are
 not fetched. Archive limits are 64 MiB compressed input, 32 MiB per uncompressed
 part, 128 MiB total uncompressed, and 2,000 entries. Unsafe/duplicate archive
 paths are rejected.
+Encrypted archives, unsupported ZIP structures, and CRC mismatches are also
+rejected. Validation failures return an invalid report rather than throwing.
 
 The exporter requires this report to be valid before writing output, even when
 layout blocking is disabled. The CLI prints the report as JSON and exits 1 when
@@ -146,7 +151,7 @@ import { mkdir } from 'node:fs/promises';
 import {
   captureSourceSlides,
   compareSlideImages,
-} from './dist/validators/visual.js';
+} from './dist/index.js';
 
 const source = await captureSourceSlides('presentation.html', 'review/source');
 await mkdir('review/reports', { recursive: true });
@@ -159,9 +164,8 @@ const report = await compareSlideImages(
 console.log(report.differenceRatio);
 ```
 
-The emitted direct path above works in a repository checkout. Use package-root
-exports when available; package subpath resolution is restricted by its `exports`
-map.
+The helpers are exported from the package root; package subpath resolution is
+restricted by its `exports` map.
 
 ### External rendering
 
@@ -169,6 +173,9 @@ LibreOffice Impress and Poppler's `pdftoppm` can supply a review image, if insta
 separately. They are optional system tools, not npm dependencies:
 
 ```sh
+# Debian/Ubuntu, if the optional renderers are not already installed:
+sudo apt install --no-install-recommends libreoffice-impress poppler-utils
+
 mkdir -p review/pdf review/pptx
 libreoffice --headless --convert-to pdf --outdir review/pdf presentation.pptx
 pdftoppm -png -scale-to-x 1280 -scale-to-y 720 \
@@ -184,8 +191,35 @@ wraps PPTX → PDF → PNG and returns numerically ordered PNG paths.
 `comparePresentation(sourceHtml, pptx, outputDirectory)` captures source slides,
 uses that external renderer, checks slide counts, and writes per-slide reports.
 Both live in the visual validator module; missing/incompatible tools cause an
-error, not a silent skipped comparison. They do not add a native PPTX renderer.
+error, not a silent skipped comparison. They do not automate native Microsoft
+PowerPoint rendering.
+
+To run the complete optional comparison after building HTML and exporting PPTX:
+
+```js
+import { comparePresentation } from './dist/index.js';
+const reports = await comparePresentation(
+  'presentation.html',
+  'presentation.pptx',
+  'review/comparison',
+);
+console.log(reports.map(report => report.differenceRatio));
+```
+
+The existing CI workflow tests pixel comparison utilities and structural export
+behavior; it does not install or require LibreOffice for its acceptance checks.
 
 Treat image differences as **rendering differences**, not automatically as
 structural bugs. Font substitution, antialiasing, shadows, and renderer behavior
 can affect the score. Human review remains necessary for important deliveries.
+
+### Initial sample review
+
+During implementation, the six-slide example was exported and structurally
+validated with zero reported issues; the exported package contained editable
+English and Chinese text, and all six slides were independently rendered with
+LibreOffice/Poppler. Image comparison metrics must be regenerated after changes
+to assets, fonts, or conversion behavior; no golden thresholds are shipped.
+These observations are **not cross-platform promises or evidence of
+pixel-perfect equivalence**. They do not replace manual Microsoft PowerPoint
+review, which was unavailable.

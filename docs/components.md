@@ -9,14 +9,20 @@ CSS/theme context. Components themselves do not perform schema validation.
 
 | Component | Props | Output |
 | --- | --- | --- |
+| `Slide` | `{ slide: PresentationSlide; number: number; total: number; children: ReactNode }` | Full slide frame, title/content/footer/notes |
 | `SlideTitle` | `{ title: string; subtitle?: string }` | `.sf-header`, `h1`, optional `.sf-subtitle` |
+| `SlideSubtitle` | `{ children: ReactNode }` | `.sf-subtitle` paragraph |
+| `SlideContent` | `{ children: ReactNode }` | `.sf-content` content region |
+| `SlideCard` | `{ title: string; children: ReactNode }` | `.sf-card` article with `h2` |
+| `SlideColumns` | `{ children: ReactNode }` | Equal two-column `.sf-columns` grid |
 | `SlideFooter` | `{ text?: string; number: number; total: number }` | `.sf-footer`, optional text and `number / total` |
-| `SlideFrame` | `{ slide: Slide; number: number; total: number; children: ReactNode }` | Section with header, `.sf-content`, footer, optional notes |
+| `SlideFrame` | Same as `Slide` | Alias of `Slide` |
 | `ContentBlocks` | `{ blocks: ContentBlock[] }` | `.sf-blocks`, paragraphs, ordered/unordered lists, image figures/captions |
-| `DataTable` | `{ columns: string[]; rows: string[][] }` | Semantic HTML table with column headers |
-| `BarChart` | `{ data: { label: string; value: number }[]; unit?: string }` | HTML/CSS horizontal bars, text labels/values, accessible chart summary |
+| `SlideImage` | `{ src: string; alt: string; caption?: string }` | Image figure and optional caption |
+| `SlideTable` / `DataTable` | `{ columns: string[]; rows: string[][] }` | Semantic HTML table with column headers; `DataTable` is an alias |
+| `SlideChart` / `BarChart` | `{ data: { label: string; value: number }[]; unit?: string }` | HTML/CSS horizontal bars, text labels/values, accessible chart summary; `BarChart` is an alias |
 
-`number` is one-based. `SlideFrame` emits `.sf-slide.sf-<layout>`,
+`number` is one-based. `Slide` / `SlideFrame` emits `.sf-slide.sf-layout-<layout>`,
 `data-pptx="slide"`, `data-layout`, and an accessible slide label. Notes are
 emitted in a hidden `<aside data-pptx-notes="">`; the converter extracts them as
 speaker notes. A slide's `author` and presentation metadata `author` are separate.
@@ -34,7 +40,7 @@ editable chart workbook/series API.
 ## Layout dispatcher
 
 `SlideLayout` in `src/layouts/index.tsx` is internal, not exported from the
-package root. It composes all layouts with `SlideFrame`:
+package root. It composes all layouts with `Slide`:
 
 | Layout | Composition |
 | --- | --- |
@@ -42,8 +48,8 @@ package root. It composes all layouts with `SlideFrame`:
 | `content` | One `ContentBlocks` stack |
 | `two-columns` | Two equal-width `ContentBlocks` stacks |
 | `cards` | Three-column grid containing 1–6 titled cards |
-| `table` | `DataTable` |
-| `chart` | `BarChart` |
+| `table` | `SlideTable` |
+| `chart` | `SlideChart`, optionally beside explanatory `ContentBlocks` |
 
 See [schema](schema.md) for exact field names and bounds and
 [design tokens](design-tokens.md) for sizes.

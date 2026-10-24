@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { constants } from 'node:fs';
-import { copyFile, mkdir, readFile, writeFile } from 'node:fs/promises';
+import { copyFile, mkdir, readFile, unlink, writeFile } from 'node:fs/promises';
 import { basename, dirname, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { parseArgs } from 'node:util';
@@ -55,12 +55,17 @@ async function main(): Promise<void> {
     const assetDirectory = `${basename(destination, '.json')}-assets`;
     const content = example.replaceAll('assets/diagram.svg', `${encodeURIComponent(assetDirectory)}/diagram.svg`);
     await writeFile(destination, content, { flag: 'wx' });
-    await mkdir(resolve(dirname(destination), assetDirectory), { recursive: true });
-    await copyFile(
-      new URL('../../examples/basic/assets/diagram.svg', import.meta.url),
-      resolve(dirname(destination), assetDirectory, 'diagram.svg'),
-      constants.COPYFILE_EXCL,
-    );
+    try {
+      await mkdir(resolve(dirname(destination), assetDirectory), { recursive: true });
+      await copyFile(
+        new URL('../../examples/basic/assets/diagram.svg', import.meta.url),
+        resolve(dirname(destination), assetDirectory, 'diagram.svg'),
+        constants.COPYFILE_EXCL,
+      );
+    } catch (error) {
+      await unlink(destination);
+      throw error;
+    }
     console.log(`Created ${destination}`);
     return;
   }

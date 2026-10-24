@@ -12,11 +12,12 @@ illustrative data clearly.
 ## 2. Start from real content
 
 ```sh
-node dist/cli/index.js init examples/basic/draft.json
+node dist/cli/index.js init draft.json
 ```
 
-Build the project first if `dist` is absent. This location reuses the sample's
-`assets/` directory; elsewhere, copy or replace asset paths yourself.
+Build the project first if `dist` is absent. Initialization also creates
+`draft-assets/diagram.svg` and rewrites the image source. Keep that companion
+directory with the JSON; replace/add assets as your content requires.
 
 Keep only schema-supported fields. Select cover for an opening, content for
 explanation, two-columns for comparisons, cards for small parallel ideas, table
@@ -35,8 +36,8 @@ glyphs. Do not assume CJK glyph coverage or automatic system-font embedding.
 ## 4. Preview and inspect
 
 ```sh
-node dist/cli/index.js build examples/basic/draft.json --output draft.html
-node dist/cli/index.js preview examples/basic/draft.json --port 5173
+node dist/cli/index.js build draft.json --output draft.html
+node dist/cli/index.js preview draft.json --port 5173
 ```
 
 Review at the fixed 1280 × 720 canvas; reload after edits. Check clipping,
@@ -46,7 +47,7 @@ Built HTML retains a local asset base, so it is not a standalone delivery file.
 ## 5. Export and validate
 
 ```sh
-node dist/cli/index.js export examples/basic/draft.json --output draft.pptx
+node dist/cli/index.js export draft.json --output draft.pptx
 node dist/cli/index.js validate draft.pptx
 ```
 
@@ -55,8 +56,10 @@ Review editable text counts and slide counts in the structural report. These
 checks do not prove that PowerPoint rendered the deck correctly.
 
 For visual comparison, capture source slides and obtain PPTX slide PNGs through
-an external renderer before comparing. Read [validation](validation.md); there
-is no built-in native PowerPoint renderer.
+an external renderer before comparing. The optional `comparePresentation`
+workflow automates LibreOffice/Poppler rendering and per-slide JSON/diff images.
+Read [validation](validation.md); native Microsoft PowerPoint rendering is not
+automated.
 
 ## 6. Report evidence honestly
 
