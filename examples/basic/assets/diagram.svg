@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="120" viewBox="0 0 800 120">
+  <rect width="800" height="120" rx="12" fill="#f1f5f9"/>
+  <g font-family="Arial,sans-serif" font-size="28" text-anchor="middle" fill="#172033">
+    <text x="140" y="72">JSON</text>
+    <text x="270" y="72">→</text>
+    <text x="400" y="72">HTML</text>
+    <text x="530" y="72">→</text>
+    <text x="660" y="72">PowerPoint</text>
+  </g>
+</svg>

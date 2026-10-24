@@ -1,0 +1,11 @@
+export { presentationSchema, slideSchema, contentBlockSchema, imageSourceSchema, parsePresentation } from './schemas/presentation.js';
+export type { Presentation, ContentBlock, Slide as PresentationSlide } from './schemas/presentation.js';
+export * from './themes/tokens.js';
+export * from './components/index.js';
+export * from './renderers/html.js';
+export * from './renderers/preview.js';
+export * from './exporters/pptx.js';
+export { DEFAULT_TEXT_SLACK, type TextSlack } from './exporters/text-fit.js';
+export * from './validators/layout.js';
+export * from './validators/pptx.js';
+export * from './validators/visual.js';

@@ -1,0 +1,101 @@
+# CLI reference
+
+Build the repository first with `npm run build`. Commands below use the emitted
+entry point; the package also declares the `slideforge` executable when installed.
+
+```text
+node dist/cli/index.js init [presentation.json]
+node dist/cli/index.js build presentation.json [--output presentation.html]
+node dist/cli/index.js preview presentation.json [--port 5173]
+node dist/cli/index.js export <presentation.json|slides.html|https://url> --output presentation.pptx [--selector css]
+node dist/cli/index.js validate presentation.pptx
+node dist/cli/index.js --help
+```
+
+`-o` aliases `--output`; `-h` aliases `--help`. No arguments displays help.
+Paths are relative to the current working directory unless absolute.
+
+## `init`
+
+Copies `examples/basic/presentation.json` to the requested location; default:
+`presentation.json`. It also copies the diagram into
+`<JSON-basename>-assets/diagram.svg` beside the new JSON, rewriting its image
+source to that relative URL. Existing JSON and diagram files are not overwritten.
+The JSON's parent directory must already exist; the asset directory is created
+if necessary. For a working six-layout starter:
+
+```sh
+node dist/cli/index.js init my-deck.json
+```
+
+This creates `my-deck.json` and `my-deck-assets/diagram.svg`. Keep them together
+when relocating the source deck. Generated HTML still uses a local file base
+and is not a standalone portable artifact.
+
+## `build`
+
+Parses and validates JSON and writes an HTML document with inline presentation
+CSS. The default output is `<input-basename>.html` in the current directory.
+Existing output is overwritten. A `file://` `<base>` points to the JSON's
+directory, not the output HTML directory, so relative images keep working
+locally. This does not copy images, package fonts, or make HTML portable.
+
+## `preview`
+
+Starts a Vite server on `127.0.0.1`, port `5173` by default. Ports must be integers
+from 1 to 65535. Port binding is strict: an occupied port is an error rather than
+an automatic port change. The JSON directory is the server root, including
+assets accessible from it; do not use a directory containing sensitive files.
+
+The CLI validates JSON before starting. Each request to `/` rereads it; reload
+the browser after edits. This is not a live slide editor or automatic JSON
+hot-reload workflow. Stop with Ctrl+C.
+
+## `export`
+
+Accepts a JSON path, local HTML path, or HTTP(S) URL. Requires `--output`; the
+output parent directory must already exist and existing files are overwritten.
+JSON is rendered with an asset base pointing to its directory. Local HTML uses
+normal browser-relative URL resolution; remote pages use their own URL/base.
+
+The default slide selector is `[data-pptx="slide"], .slide`. Customize it for
+trusted HTML:
+
+```sh
+node dist/cli/index.js export slides.html --output slides.pptx --selector '.deck-page'
+node dist/cli/index.js export http://127.0.0.1:5173/ --output preview.pptx
+```
+
+Chromium waits for page load, fonts, and image decoding, then layout validation
+and conversion run. Layout errors block export; warnings are printed. Generated
+PPTX bytes must pass structural checks before they are written.
+
+Before conversion, local `file://` `<img>` resources are read and inlined into
+data URLs to avoid the converter's anonymous-CORS reload dropping them.
+Supported local extensions are `.svg`, `.png`, `.jpg`, `.jpeg`, `.gif`, `.webp`,
+and `.avif`; other extensions fail explicitly. Other images are preflighted with
+anonymous-CORS decoding. Unavailable, undecodable, or CORS-blocked images fail
+export clearly instead of being silently omitted. This applies to page images,
+not only images inside selected slides, and does not make built HTML portable.
+
+**Trust boundary:** page scripts execute, network requests are allowed, and
+local files may be accessible to the browser. Do not export attacker-controlled
+HTML or URLs in a shared service. See [limitations](limitations.md).
+
+## `validate`
+
+Reads a PPTX ZIP package and prints a JSON report containing `valid`,
+`slideCount`, `editableTextCount`, `shapeCount`, and `issues`. This is offline
+structural validation, not a native Office rendering test. See
+[validation](validation.md) for checks and limits.
+
+## Exit codes
+
+| Code | Meaning |
+| --- | --- |
+| `0` | Success, including help |
+| `1` | Operation failed or PPTX validation failed |
+| `2` | Invalid CLI usage, such as missing export output or invalid port |
+
+Invalid JSON/schema content is an operation failure. Warnings alone do not make
+export fail.
