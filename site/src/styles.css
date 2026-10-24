@@ -1,0 +1,31 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --color-ink: #17202e;
+  --color-signal: #2563eb;
+  --color-mist: #f6f7f8;
+  --color-leaf: #1d4ed8;
+  --font-sans: "Segoe UI", "Noto Sans TC", "Noto Sans SC", "Noto Sans JP", "Microsoft JhengHei", sans-serif;
+  --font-mono: "IBM Plex Mono", "Cascadia Code", "Consolas", monospace;
+}
+
+@layer base {
+  /* Tailwind 4 defaults borders to currentColor; keep the v3 gray-200. */
+  *, ::after, ::before, ::backdrop, ::file-selector-button { border-color: var(--color-gray-200, currentColor); }
+  html { scroll-behavior: smooth; }
+  button:not(:disabled), [role="button"]:not(:disabled) { cursor: pointer; }
+  body { @apply m-0 font-sans; letter-spacing: 0; }
+  button, a { @apply focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal; }
+}
+
+@layer components {
+  .icon-button { @apply inline-flex h-9 items-center justify-center gap-1.5 px-2 text-slate-500 transition hover:bg-slate-100 hover:text-ink dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white; }
+  .scrollbar-hidden { scrollbar-width: none; }
+  .scrollbar-hidden::-webkit-scrollbar { display: none; }
+}
+
+::selection { background: #bfdbfe; color: #17202e; }
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-thumb { background: #9ca3af; border: 3px solid transparent; background-clip: padding-box; }

@@ -31,8 +31,19 @@
     "type": "git",
     "url": "https://github.com/gordonkit/slideforge.git"
   },
-  "keywords": [],
-  "author": "",
+  "homepage": "https://slideforge.gordonkit.com/",
+  "bugs": {
+    "url": "https://github.com/gordonkit/slideforge/issues"
+  },
+  "keywords": [
+    "powerpoint",
+    "pptx",
+    "presentation",
+    "slides",
+    "html-to-pptx",
+    "react"
+  ],
+  "author": "GordonKit",
   "license": "MIT",
   "type": "module",
   "dependencies": {

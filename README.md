@@ -1,5 +1,16 @@
 # SlideForge
 
+[![CI](https://github.com/gordonkit/slideforge/actions/workflows/ci.yml/badge.svg)](https://github.com/gordonkit/slideforge/actions/workflows/ci.yml)
+[![Node.js 24+](https://img.shields.io/badge/node-24%2B-5FA04E?logo=nodedotjs&logoColor=white)](https://nodejs.org/)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/gordonkit/slideforge/blob/main/LICENSE)
+[![Development Status: Pre-Alpha](https://img.shields.io/badge/status-pre--alpha-orange.svg)](https://github.com/gordonkit/slideforge/blob/main/CHANGELOG.md)
+
+[繁體中文](https://github.com/gordonkit/slideforge/blob/main/README.zh-TW.md) ·
+[简体中文](https://github.com/gordonkit/slideforge/blob/main/README.zh-CN.md) ·
+[日本語](https://github.com/gordonkit/slideforge/blob/main/README.ja.md)
+
+[Documentation](https://slideforge.gordonkit.com/)
+
 An AI-ready, local-first framework for creating consistent presentations from
 validated JSON, React components, and HTML/CSS, then exporting editable PowerPoint
 text and shapes.
@@ -81,6 +92,10 @@ Then run `node example.mjs`. Public APIs also include `previewPresentation` and
 
 ## Documentation
 
+The [documentation site](https://slideforge.gordonkit.com/) covers the same material in
+English, Traditional Chinese, Simplified Chinese, and Japanese. The detailed references
+in this repository are:
+
 - [CLI usage](docs/cli.md)
 - [JSON schema reference](docs/schema.md)
 - [Design tokens](docs/design-tokens.md)
@@ -89,8 +104,9 @@ Then run `node example.mjs`. Public APIs also include `previewPresentation` and
 - [Validation and optional visual comparison](docs/validation.md)
 - [Limitations and trust model](docs/limitations.md)
 - [AI authoring workflow](docs/ai-workflow.md)
-- [Contributing](CONTRIBUTING.md), [MIT license](LICENSE), and
-  [third-party notices](THIRD_PARTY_NOTICES.md)
+- [Contributing](CONTRIBUTING.md), [code of conduct](CODE_OF_CONDUCT.md),
+  [security policy](SECURITY.md), [support](SUPPORT.md), and [changelog](CHANGELOG.md)
+- [MIT license](LICENSE) and [third-party notices](THIRD_PARTY_NOTICES.md)
 
 ## Scope and expectations
 
