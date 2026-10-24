@@ -1,0 +1,84 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Tests: all (Vitest)",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/node_modules/vitest/vitest.mjs",
+      "args": ["run"],
+      "cwd": "${workspaceFolder}",
+      "preLaunchTask": "slideforge: build",
+      "autoAttachChildProcesses": true,
+      "smartStep": true,
+      "skipFiles": ["<node_internals>/**", "**/node_modules/**"],
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "Tests: unit (Vitest)",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/node_modules/vitest/vitest.mjs",
+      "args": ["run", "tests/unit"],
+      "cwd": "${workspaceFolder}",
+      "autoAttachChildProcesses": true,
+      "smartStep": true,
+      "skipFiles": ["<node_internals>/**", "**/node_modules/**"],
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "Tests: current file (Vitest)",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/node_modules/vitest/vitest.mjs",
+      "args": ["run", "${relativeFile}"],
+      "cwd": "${workspaceFolder}",
+      "preLaunchTask": "slideforge: build",
+      "autoAttachChildProcesses": true,
+      "smartStep": true,
+      "skipFiles": ["<node_internals>/**", "**/node_modules/**"],
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "CLI: preview example deck",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/dist/cli/index.js",
+      "args": ["preview", "examples/basic/presentation.json", "--port", "5173"],
+      "cwd": "${workspaceFolder}",
+      "preLaunchTask": "slideforge: build",
+      "skipFiles": ["<node_internals>/**"],
+      "console": "integratedTerminal",
+      "serverReadyAction": {
+        "pattern": "Local:\\s+(https?://\\S+)",
+        "uriFormat": "%s",
+        "action": "openExternally"
+      }
+    },
+    {
+      "name": "CLI: export example deck",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/dist/cli/index.js",
+      "args": ["export", "examples/basic/presentation.json", "--output", "example.pptx"],
+      "cwd": "${workspaceFolder}",
+      "preLaunchTask": "slideforge: build",
+      "skipFiles": ["<node_internals>/**"],
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "Docs site (Vite HMR)",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--", "--host", "127.0.0.1", "--port", "5174"],
+      "cwd": "${workspaceFolder}/site",
+      "console": "integratedTerminal",
+      "serverReadyAction": {
+        "pattern": "Local:\\s+(https?://\\S+)",
+        "uriFormat": "%s",
+        "action": "debugWithChrome"
+      }
+    }
+  ]
+}
