@@ -103,3 +103,15 @@ structural validation, not a native Office rendering test. See
 
 Invalid JSON/schema content is an operation failure. Warnings alone do not make
 export fail.
+
+Errors are printed for people rather than as raw data. Malformed JSON names the
+file and position. Schema problems are listed one per line with their path and
+the one-based slide number, for example:
+
+```text
+slideforge: The presentation does not match the schema (1 problem):
+  - slides[0].rows[1] (slide 1): Every row must have one cell per column
+```
+
+A missing local image names the resolved file path. Relative paths are resolved
+from the presentation's folder.

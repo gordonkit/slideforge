@@ -4,6 +4,7 @@ import { dirname, extname, join, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { chromium, type Page } from 'playwright';
 import { renderPresentation } from '../renderers/html.js';
+import { readPresentationFile } from '../schemas/input.js';
 import { applyMetadata, type PresentationMetadata } from './metadata.js';
 import { widenTextBoxes, type TextSlack } from './text-fit.js';
 import { applyEastAsianFont } from './fonts.js';
@@ -43,12 +44,22 @@ async function prepareImages(page: Page, selector: string): Promise<void> {
   const replacements = await Promise.all(sources.map(async source => {
     if (source === null) return null;
     if (!source.startsWith('file:')) return source;
+    const path = fileURLToPath(source);
     const mime = new Map([
       ['.svg', 'image/svg+xml'], ['.png', 'image/png'], ['.jpg', 'image/jpeg'],
       ['.jpeg', 'image/jpeg'], ['.gif', 'image/gif'], ['.webp', 'image/webp'], ['.avif', 'image/avif'],
-    ]).get(extname(fileURLToPath(source)).toLowerCase());
-    if (!mime) throw new Error(`Unsupported local image format: ${source}`);
-    const bytes = await readFile(new URL(source));
+    ]).get(extname(path).toLowerCase());
+    if (!mime) throw new Error(`Unsupported image format: ${path}. Use SVG, PNG, JPEG, GIF, WebP, or AVIF.`);
+    let bytes: Buffer;
+    try {
+      bytes = await readFile(path);
+    } catch (error) {
+      const code = (error as NodeJS.ErrnoException).code;
+      if (code === 'ENOENT') {
+        throw new Error(`Image not found: ${path}. Relative image paths are resolved from the presentation's folder.`);
+      }
+      throw new Error(`Cannot read image ${path}: ${error instanceof Error ? error.message : String(error)}`);
+    }
     return `data:${mime};base64,${bytes.toString('base64')}`;
   }));
   await images.evaluateAll(async (elements, replacements) => {
@@ -84,7 +95,7 @@ export async function exportPresentation(input: string, options: ExportOptions):
       url = new URL(input).href;
     } else if (extname(input).toLowerCase() === '.json') {
       const file = resolve(input);
-      const content: unknown = JSON.parse(await readFile(file, 'utf8'));
+      const content = await readPresentationFile(file);
       const html = renderPresentation(content, {
         baseUrl: pathToFileURL(dirname(file) + '/').href,
       });

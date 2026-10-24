@@ -1,6 +1,6 @@
-import { readFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { createServer } from 'vite';
+import { describePresentationError, readPresentationFile } from '../schemas/input.js';
 import { renderPresentation } from './html.js';
 
 /**
@@ -56,10 +56,10 @@ export async function previewPresentation(input: string, port = 5173) {
           if (request.url?.split('?')[0] !== '/') return next();
           let html: string;
           try {
-            html = renderPresentation(JSON.parse(await readFile(file, 'utf8'))).replace('</body>', `${fitToWindow}</body>`);
+            html = renderPresentation(await readPresentationFile(file)).replace('</body>', `${fitToWindow}</body>`);
           } catch (error) {
             response.statusCode = 400;
-            html = errorPage(error instanceof Error ? error.message : 'Invalid presentation');
+            html = errorPage(describePresentationError(error));
           }
           // Injects Vite's client, which listens for the reload message.
           html = await server.transformIndexHtml('/', html);

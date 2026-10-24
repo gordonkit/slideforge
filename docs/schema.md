@@ -2,7 +2,10 @@
 
 The executable schema is [`src/schemas/presentation.ts`](../src/schemas/presentation.ts),
 implemented with Zod. `parsePresentation(input: unknown)` validates and returns
-the normalized `Presentation`, or throws a Zod validation error. All objects,
+the normalized `Presentation`, or throws a Zod validation error.
+`describePresentationError(error)` turns that error into one line per problem with
+its path and one-based slide number, and `readPresentationFile(path)` reads JSON
+with a file-named syntax error; the CLI and preview use both. All objects,
 including nested content/card/chart/metadata objects, are **strict**: unknown
 keys are errors. There is no separate generated JSON Schema file.
 All content strings must contain valid XML characters: tab/newline/carriage
