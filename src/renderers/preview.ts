@@ -34,7 +34,10 @@ function errorPage(message: string): string {
 }
 
 /** Loopback-only preview that reloads the browser when the JSON or a file beside it changes. */
-export async function previewPresentation(input: string, port = 5173) {
+/** Chosen to stay clear of Vite's own 5173 default, which other local projects often hold. */
+export const DEFAULT_PREVIEW_PORT = 5180;
+
+export async function previewPresentation(input: string, port = DEFAULT_PREVIEW_PORT) {
   const file = resolve(input);
   const server = await createServer({
     configFile: false,

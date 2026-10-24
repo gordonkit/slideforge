@@ -259,7 +259,7 @@ npm run build`,
         },
         code: `node dist/cli/index.js init presentation.json
 node dist/cli/index.js build presentation.json --output presentation.html
-node dist/cli/index.js preview presentation.json --port 5173`,
+node dist/cli/index.js preview presentation.json --port 5180`,
       },
       {
         id: "export",
@@ -311,7 +311,7 @@ node dist/cli/index.js validate presentation.pptx`,
           rows: [
             ["init [file]", { en: "Copy the six-layout example and its assets; never overwrites", "zh-TW": "複製六種版型的範例與素材，不會覆寫既有檔案", "zh-CN": "复制六种版式的示例与素材，不会覆盖已有文件", ja: "6 種類のレイアウトのサンプルと素材をコピー。既存ファイルは上書きしない" }],
             ["build <json> [-o html]", { en: "Validate JSON and write an HTML document with inline CSS", "zh-TW": "驗證 JSON 並輸出內嵌 CSS 的 HTML", "zh-CN": "验证 JSON 并输出内嵌 CSS 的 HTML", ja: "JSON を検証し、CSS をインラインにした HTML を出力" }],
-            ["preview <json> [--port n]", { en: "Serve a loopback Vite preview that reloads on save, port 5173 by default", "zh-TW": "啟動僅限本機、存檔即自動更新的 Vite 預覽，預設連接埠 5173", "zh-CN": "启动仅限本机、保存即自动刷新的 Vite 预览，默认端口 5173", ja: "保存時に自動で再読み込みするループバックの Vite プレビューを起動。既定のポートは 5173" }],
+            ["preview <json> [--port n]", { en: "Serve a loopback Vite preview that reloads on save, port 5180 by default", "zh-TW": "啟動僅限本機、存檔即自動更新的 Vite 預覽，預設連接埠 5180", "zh-CN": "启动仅限本机、保存即自动刷新的 Vite 预览，默认端口 5180", ja: "保存時に自動で再読み込みするループバックの Vite プレビューを起動。既定のポートは 5180" }],
             ["export <input> -o pptx", { en: "Export JSON, local HTML, or a trusted URL to PPTX", "zh-TW": "將 JSON、本機 HTML 或受信任的 URL 匯出為 PPTX", "zh-CN": "将 JSON、本机 HTML 或受信任的 URL 导出为 PPTX", ja: "JSON、ローカル HTML、信頼できる URL を PPTX に書き出し" }],
             ["validate <pptx>", { en: "Print an offline structural report as JSON", "zh-TW": "以 JSON 輸出離線結構檢查報告", "zh-CN": "以 JSON 输出离线结构检查报告", ja: "オフラインの構造レポートを JSON で出力" }],
           ],
@@ -327,7 +327,7 @@ node dist/cli/index.js validate presentation.pptx`,
           ja: "既定では [data-pptx=\"slide\"], .slide でスライドを探します。独自の信頼できる HTML には --selector を使います。出力先ディレクトリは事前に存在している必要があります。",
         },
         code: `node dist/cli/index.js export slides.html --output slides.pptx --selector '.deck-page'
-node dist/cli/index.js export http://127.0.0.1:5173/ --output preview.pptx`,
+node dist/cli/index.js export http://127.0.0.1:5180/ --output preview.pptx`,
         note: {
           en: "Export runs page scripts in Chromium with network access. Export only trusted HTML and URLs.",
           "zh-TW": "匯出時頁面腳本會在可連網的 Chromium 中執行，請只匯出受信任的 HTML 與 URL。",

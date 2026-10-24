@@ -21,7 +21,7 @@ try {
     viewport: { width: 1920, height: 1080 },
     deviceScaleFactor: 1,
   });
-  await page.goto('http://127.0.0.1:5173/');
+  await page.goto('http://127.0.0.1:5180/');
   console.log(await validateLayout(page));
 } finally {
   await browser.close();

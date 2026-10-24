@@ -44,7 +44,7 @@
       "type": "node",
       "request": "launch",
       "program": "${workspaceFolder}/dist/cli/index.js",
-      "args": ["preview", "examples/basic/presentation.json", "--port", "5173"],
+      "args": ["preview", "examples/basic/presentation.json", "--port", "5180"],
       "cwd": "${workspaceFolder}",
       "preLaunchTask": "slideforge: build",
       "skipFiles": ["<node_internals>/**"],

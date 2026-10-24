@@ -43,6 +43,10 @@ describe('built CLI', () => {
     expect(JSON.parse(validation.stdout).valid).toBe(true);
   }, 180_000);
 
+  it('documents the default preview port in help', async () => {
+    expect((await exec(process.execPath, [cli, '--help'])).stdout).toContain('slideforge preview presentation.json [--port 5180]');
+  });
+
   it('returns meaningful usage and validation exit codes', async () => {
     await expect(exec(process.execPath, [cli, 'unknown'])).rejects.toMatchObject({ code: 2 });
     await expect(exec(process.execPath, [cli, 'export', 'input.json'])).rejects.toMatchObject({ code: 2 });
