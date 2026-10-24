@@ -34,8 +34,8 @@ node dist/cli/index.js build presentation.json --output presentation.html
 node dist/cli/index.js preview presentation.json --port 5173
 ```
 
-<http://127.0.0.1:5173/> を開きます。JSON を編集したら再読み込みし、Ctrl+C でプレビューを
-停止します。別のターミナルで次を実行します。
+<http://127.0.0.1:5173/> を開きます。JSON を保存するとページが自動で再読み込みされ、スライドは
+ウィンドウに合わせて縮小表示されます。Ctrl+C でプレビューを停止します。別のターミナルで次を実行します。
 
 ```sh
 node dist/cli/index.js export presentation.json --output presentation.pptx

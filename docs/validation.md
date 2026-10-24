@@ -18,7 +18,7 @@ import { validateLayout } from './dist/index.js';
 const browser = await chromium.launch();
 try {
   const page = await browser.newPage({
-    viewport: { width: 1280, height: 720 },
+    viewport: { width: 1920, height: 1080 },
     deviceScaleFactor: 1,
   });
   await page.goto('http://127.0.0.1:5173/');
@@ -37,7 +37,7 @@ calling `validateLayout` alone still reports broken images as layout errors.
 | Option | Default | Meaning |
 | --- | --- | --- |
 | `selector` | Discover `[data-pptx="slide"]`, falling back to `.slide` | CSS slide selector |
-| `width`, `height` | `1280`, `720` | Expected dimensions in CSS pixels |
+| `width`, `height` | `1920`, `1080` | Expected dimensions in CSS pixels |
 | `tolerance` | `1` | Nonnegative finite geometry/clipping tolerance, pixels |
 | `rules` | All enabled | Partial map of rule names to booleans |
 
@@ -120,7 +120,7 @@ No automated native Microsoft PowerPoint renderer is included.
 `captureSourceSlides(input, outputDirectory): Promise<string[]>` accepts a local
 HTML path or trusted HTTP(S) URL, not a presentation JSON path. Build JSON to HTML
 first. It captures `[data-pptx="slide"], .slide` elements at their actual CSS size,
-using a 1280 × 720 viewport and device scale 1, and writes `slide-1.png`, etc.
+using a 1920 × 1080 viewport and device scale 1, and writes `slide-1.png`, etc.
 The output directory is created recursively. Animation disabling during capture
 is not a guarantee that every scripted/remote page is deterministic.
 
@@ -178,7 +178,7 @@ sudo apt install --no-install-recommends libreoffice-impress poppler-utils
 
 mkdir -p review/pdf review/pptx
 libreoffice --headless --convert-to pdf --outdir review/pdf presentation.pptx
-pdftoppm -png -scale-to-x 1280 -scale-to-y 720 \
+pdftoppm -png -scale-to-x 1920 -scale-to-y 1080 \
   review/pdf/presentation.pdf review/pptx/slide
 ```
 

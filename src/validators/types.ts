@@ -9,6 +9,7 @@ export interface ValidationIssue {
 export interface LayoutValidationOptions {
   /** Overrides automatic [data-pptx="slide"], then .slide discovery. */
   selector?: string;
+  /** Expected slide size in CSS pixels. Defaults to the 1920 × 1080 canvas. */
   width?: number;
   height?: number;
   /** Pixel tolerance for geometry and clipping checks. Defaults to 1. */

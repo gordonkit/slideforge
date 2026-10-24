@@ -135,13 +135,13 @@ describe('browser layout validation', () => {
   let page: Page;
   beforeAll(async () => {
     browser = await chromium.launch({ args: ['--no-sandbox'] });
-    page = await browser.newPage({ viewport: { width: 1400, height: 900 } });
+    page = await browser.newPage({ viewport: { width: 2000, height: 1200 } });
   });
   afterAll(async () => { await browser?.close(); });
   async function content(body: string, root = 'data-pptx="slide"', extraStyle = '') {
     await page.setContent(`<style>
       * { box-sizing: border-box; } body { margin: 0; }
-      section { position: relative; width:1280px; height:720px; font-family: sans-serif; }
+      section { position: relative; width:1920px; height:1080px; font-family: sans-serif; }
       ${extraStyle}
     </style><section ${root}>${body}</section>`);
   }
@@ -163,7 +163,7 @@ describe('browser layout validation', () => {
   });
 
   it('reports outside bounds and clipped text, with slide numbers', async () => {
-    await content('<div id="outside" style="position:absolute;left:1270px;width:100px;height:20px">Outside</div><div id="clipped" style="width:25px;height:12px;overflow:hidden;white-space:nowrap">Clipped content</div>');
+    await content('<div id="outside" style="position:absolute;left:1910px;width:100px;height:20px">Outside</div><div id="clipped" style="width:25px;height:12px;overflow:hidden;white-space:nowrap">Clipped content</div>');
     const issues = await validateLayout(page);
     expect(issues.some(issue => issue.rule === 'layout.boundaries' && issue.message.includes('#outside') && issue.slide === 1)).toBe(true);
     expect(issues.some(issue => issue.rule === 'layout.overflow' && issue.message.includes('#clipped'))).toBe(true);

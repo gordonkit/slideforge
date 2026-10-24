@@ -47,9 +47,13 @@ from 1 to 65535. Port binding is strict: an occupied port is an error rather tha
 an automatic port change. The JSON directory is the server root, including
 assets accessible from it; do not use a directory containing sensitive files.
 
-The CLI validates JSON before starting. Each request to `/` rereads it; reload
-the browser after edits. This is not a live slide editor or automatic JSON
-hot-reload workflow. Stop with Ctrl+C.
+The CLI validates JSON before starting. Saving the JSON, or any file in its
+directory such as an image, reloads the open browser page automatically; each
+request to `/` rereads and renders the JSON. If a save leaves the JSON invalid,
+the page shows the error and reloads again once it is fixed. Slides scale down
+to fit the window, so the 1920 × 1080 canvas is visible on smaller screens;
+automated browsers such as `export` of the preview URL see the full canvas.
+This is a preview, not a slide editor. Stop with Ctrl+C.
 
 ## `export`
 

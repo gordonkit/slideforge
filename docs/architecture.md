@@ -74,8 +74,14 @@ server.printUrls();
 await server.close();
 ```
 
-The function serves the JSON directory. Requests to `/` reread/render content;
-reload after editing. The CLI also validates content before starting the server.
+The function serves the JSON directory. Requests to `/` reread/render content.
+Pages load Vite's client, and the server watches the JSON and its directory:
+a save sends a full reload, debounced to one per burst of file events. Invalid
+JSON renders an error page that keeps listening, so fixing the file restores the
+preview. A preview-only script scales slides to the window width for people;
+it is skipped when `navigator.webdriver` is set, so automated export and
+validation of the preview URL measure the full canvas. The CLI also validates
+content before starting the server.
 
 ### `exportPresentation(input: string, options: ExportOptions): Promise<ValidationIssue[]>`
 
@@ -88,8 +94,10 @@ Input is a JSON path, HTML path, or trusted HTTP(S) URL.
 | `metadata` | Document title, author/subject meta tags, HTML language | Optional `{ title?, author?, subject?, lang? }` overrides |
 | `validate` | `true` | Layout errors block export; `false` still collects issues |
 | `timeout` | `60000` | Playwright default timeout, milliseconds |
+| `textSlack` | `{ ratio: 0.06, min: 91440, max: 457200 }` | Extra text box width in EMU; `false` keeps converter sizes |
+| `eastAsianFont` | `Microsoft JhengHei` | PowerPoint East Asian font for CJK text |
 
-The browser uses a 1280 × 720 viewport at device scale 1. After page load,
+The browser uses a 1920 × 1080 viewport at device scale 1. After page load,
 `prepareImages` reads local `file://` image bytes and substitutes data URLs inside
 the export page, avoiding upstream anonymous-CORS reloads silently dropping
 local images. Local `.svg`, `.png`, `.jpg`, `.jpeg`, `.gif`, `.webp`, and `.avif`
