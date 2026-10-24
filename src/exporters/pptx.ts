@@ -5,6 +5,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 import { chromium, type Page } from 'playwright';
 import { renderPresentation } from '../renderers/html.js';
 import { applyMetadata, type PresentationMetadata } from './metadata.js';
+import { widenTextBoxes, type TextSlack } from './text-fit.js';
 import { validateLayout, type ValidationIssue } from '../validators/layout.js';
 import { validatePptx } from '../validators/pptx.js';
 import { SLIDE_SIZE } from '../themes/tokens.js';
@@ -16,6 +17,8 @@ export interface ExportOptions {
   /** Layout errors block export by default; warnings are always returned. */
   validate?: boolean;
   timeout?: number;
+  /** Extra text box width tolerating PowerPoint font metrics; `false` keeps converter sizes. */
+  textSlack?: TextSlack | false;
 }
 
 export async function waitForAssets(page: Page): Promise<void> {
@@ -114,7 +117,9 @@ export async function exportPresentation(input: string, options: ExportOptions):
       }).SlideForgeEngine;
       return engine.convert(selector, size.widthInches, size.heightInches);
     }, { selector, size: SLIDE_SIZE });
-    const data = applyMetadata(Buffer.from(base64, 'base64'), metadata);
+    const converted = Buffer.from(base64, 'base64');
+    const fitted = options.textSlack === false ? converted : widenTextBoxes(converted, options.textSlack);
+    const data = applyMetadata(fitted, metadata);
     const report = validatePptx(data);
     if (!report.valid) throw new Error(`Invalid generated PPTX: ${report.issues.map(issue => issue.message).join('; ')}`);
     await writeFile(resolve(options.output), data);

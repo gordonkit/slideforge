@@ -49,6 +49,15 @@ font resource discovery, licensing, and target application support still matter.
 The font validator is heuristic and does not verify every glyph or successful
 embedding.
 
+The converter sizes text boxes to the text measured in Chromium, but PowerPoint
+measures and substitutes fonts slightly differently, so tight boxes can wrap a
+last word or punctuation mark. Export therefore widens unfilled text boxes by 6%
+of their width, at least 0.1 in and at most 0.5 in, growing away from the
+paragraph alignment and staying inside the slide. Filled or outlined shapes are
+unchanged. The extra width can let multi-line paragraphs wrap slightly later than
+in HTML. Pass `textSlack: false` to `exportPresentation` to keep converter sizes,
+or `{ ratio, min, max }` (EMU) to tune it.
+
 ## Browser execution is privileged
 
 **Use trusted HTML and URLs only.** Export launches Chromium and executes page
