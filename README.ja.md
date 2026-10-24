@@ -31,10 +31,10 @@ npm run build
 # 6 種類のレイアウトを含むサンプルと、その画像ディレクトリを作成します。
 node dist/cli/index.js init presentation.json
 node dist/cli/index.js build presentation.json --output presentation.html
-node dist/cli/index.js preview presentation.json --port 5173
+node dist/cli/index.js preview presentation.json --port 5180
 ```
 
-<http://127.0.0.1:5173/> を開きます。JSON を保存するとページが自動で再読み込みされ、スライドは
+<http://127.0.0.1:5180/> を開きます。JSON を保存するとページが自動で再読み込みされ、スライドは
 ウィンドウに合わせて縮小表示されます。Ctrl+C でプレビューを停止します。別のターミナルで次を実行します。
 
 ```sh

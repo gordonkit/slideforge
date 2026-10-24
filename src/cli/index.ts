@@ -6,7 +6,7 @@ import { pathToFileURL } from 'node:url';
 import { parseArgs } from 'node:util';
 import { renderPresentation } from '../renderers/html.js';
 import { describePresentationError, readPresentationFile } from '../schemas/input.js';
-import { previewPresentation } from '../renderers/preview.js';
+import { DEFAULT_PREVIEW_PORT, previewPresentation } from '../renderers/preview.js';
 import { exportPresentation } from '../exporters/pptx.js';
 import { validatePptx } from '../validators/pptx.js';
 
@@ -15,7 +15,7 @@ const help = `SlideForge — editable presentations from structured content
 Usage:
   slideforge init [presentation.json]
   slideforge build presentation.json [--output presentation.html]
-  slideforge preview presentation.json [--port 5173]
+  slideforge preview presentation.json [--port ${DEFAULT_PREVIEW_PORT}]
   slideforge export <presentation.json|slides.html|https://url> --output presentation.pptx
   slideforge validate presentation.pptx
 
@@ -83,7 +83,7 @@ async function main(): Promise<void> {
       break;
     }
     case 'preview': {
-      const port = Number(values.port ?? 5173);
+      const port = Number(values.port ?? DEFAULT_PREVIEW_PORT);
       if (!Number.isInteger(port) || port < 1 || port > 65535) throw new UsageError('Port must be 1–65535');
       // Validate before starting a persistent server.
       renderPresentation(await readPresentationFile(resolve(input)));

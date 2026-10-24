@@ -37,7 +37,7 @@ glyphs. Do not assume CJK glyph coverage or automatic system-font embedding.
 
 ```sh
 node dist/cli/index.js build draft.json --output draft.html
-node dist/cli/index.js preview draft.json --port 5173
+node dist/cli/index.js preview draft.json --port 5180
 ```
 
 Review at the fixed 1920 × 1080 canvas; the preview reloads after each save. Check clipping,

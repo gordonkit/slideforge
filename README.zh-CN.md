@@ -30,10 +30,10 @@ npm run build
 # 创建含六种版式的完整示例，以及它的图片目录。
 node dist/cli/index.js init presentation.json
 node dist/cli/index.js build presentation.json --output presentation.html
-node dist/cli/index.js preview presentation.json --port 5173
+node dist/cli/index.js preview presentation.json --port 5180
 ```
 
-打开 <http://127.0.0.1:5173/>。保存 JSON 后页面会自动刷新，幻灯片也会缩放到适合窗口大小；按 Ctrl+C 停止预览。在另一个终端运行：
+打开 <http://127.0.0.1:5180/>。保存 JSON 后页面会自动刷新，幻灯片也会缩放到适合窗口大小；按 Ctrl+C 停止预览。在另一个终端运行：
 
 ```sh
 node dist/cli/index.js export presentation.json --output presentation.pptx

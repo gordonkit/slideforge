@@ -11,6 +11,9 @@ All notable changes to this project will be documented in this file. The format 
   spacing, type, and chart token is scaled by 1.5 to match. Exported PowerPoint slides keep
   the same size, positions, and font sizes; card and table borders are 2px (1 pt). Custom
   HTML slides and `validateLayout` callers that relied on the 1280 × 720 default must update.
+- `preview` listens on port 5180 by default instead of 5173, Vite's own default, which
+  other local Vite projects often hold. The default is exported as `DEFAULT_PREVIEW_PORT`;
+  `--port` still overrides it.
 - `preview` reloads the browser when the JSON or a file beside it is saved, shows invalid
   JSON as an error page that recovers once fixed, and scales slides to fit the window.
 - Error messages are written for people. Schema problems list each path with its one-based

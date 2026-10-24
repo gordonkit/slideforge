@@ -6,7 +6,7 @@ entry point; the package also declares the `slideforge` executable when installe
 ```text
 node dist/cli/index.js init [presentation.json]
 node dist/cli/index.js build presentation.json [--output presentation.html]
-node dist/cli/index.js preview presentation.json [--port 5173]
+node dist/cli/index.js preview presentation.json [--port 5180]
 node dist/cli/index.js export <presentation.json|slides.html|https://url> --output presentation.pptx [--selector css]
 node dist/cli/index.js validate presentation.pptx
 node dist/cli/index.js --help
@@ -42,7 +42,7 @@ locally. This does not copy images, package fonts, or make HTML portable.
 
 ## `preview`
 
-Starts a Vite server on `127.0.0.1`, port `5173` by default. Ports must be integers
+Starts a Vite server on `127.0.0.1`, port `5180` by default. Ports must be integers
 from 1 to 65535. Port binding is strict: an occupied port is an error rather than
 an automatic port change. The JSON directory is the server root, including
 assets accessible from it; do not use a directory containing sensitive files.
@@ -67,7 +67,7 @@ trusted HTML:
 
 ```sh
 node dist/cli/index.js export slides.html --output slides.pptx --selector '.deck-page'
-node dist/cli/index.js export http://127.0.0.1:5173/ --output preview.pptx
+node dist/cli/index.js export http://127.0.0.1:5180/ --output preview.pptx
 ```
 
 Chromium waits for page load, fonts, and image decoding, then layout validation

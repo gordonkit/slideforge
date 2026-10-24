@@ -31,10 +31,10 @@ npm run build
 # Create the complete six-layout example and its companion image directory.
 node dist/cli/index.js init presentation.json
 node dist/cli/index.js build presentation.json --output presentation.html
-node dist/cli/index.js preview presentation.json --port 5173
+node dist/cli/index.js preview presentation.json --port 5180
 ```
 
-Open <http://127.0.0.1:5173/>. The page reloads automatically when you save the
+Open <http://127.0.0.1:5180/>. The page reloads automatically when you save the
 JSON, and slides scale to fit the window; stop preview with Ctrl+C. In another
 terminal:
 

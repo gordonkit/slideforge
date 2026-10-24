@@ -60,7 +60,7 @@ HTTP(S)/file URL inserted as `<base>`. Without it, browser URL resolution applie
 It does not copy assets or launch a browser. For a JSON file, supply its directory
 as a trailing-slash file URL to match the CLI's local asset behavior.
 
-### `previewPresentation(input: string, port = 5173)`
+### `previewPresentation(input: string, port = 5180)`
 
 Accepts a JSON file path, starts the Vite loopback server, and returns its Vite
 server object. Use `server.printUrls()` to report its address and
@@ -68,7 +68,7 @@ server object. Use `server.printUrls()` to report its address and
 
 ```js
 import { previewPresentation } from './dist/index.js';
-const server = await previewPresentation('examples/basic/presentation.json', 5173);
+const server = await previewPresentation('examples/basic/presentation.json', 5180);
 server.printUrls();
 // When the caller's own workflow is finished:
 await server.close();
