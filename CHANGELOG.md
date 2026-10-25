@@ -11,6 +11,13 @@ All notable changes to this project will be documented in this file. The format 
   Chromium, and Noto CJK/Liberation fonts bundled, as a non-root user with a read-only root
   filesystem and one `/work` mount. `preview` is not supported in the container, and the
   image is a packaged CLI, not an export service.
+- Slide backgrounds. `backgrounds` sets a default and one per layout, and a slide's own
+  `background` overrides them or turns them off with `"none"`. A source is an image or a
+  Math Background Studio share link (`https://bg.gordonkit.com/studio#d=…`), drawn by the
+  studio's `/render` page. Export captures each background as a 1920 × 1080 PNG and writes it
+  into the slide's PowerPoint background (`<p:bg>`), storing identical images once. Custom
+  HTML can use the same `[data-pptx-background]` layer. Background layers are excluded from
+  overlap warnings.
 
 ### Changed
 

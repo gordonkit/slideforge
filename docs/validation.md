@@ -66,7 +66,10 @@ interface ValidationIssue {
 ```
 
 Overlap detection excludes layout wrappers, ancestor/descendant pairs, and
-elements inside `[data-pptx-allow-overlap="true"]`. It is heuristic: intentional
+elements inside `[data-pptx-allow-overlap="true"]` or a `[data-pptx-background]`
+layer. A missing or undecodable background image is still an `images` error. A
+studio background frame is not checked here; export fails separately if the
+studio cannot draw it. It is heuristic: intentional
 designs can generate warnings. Font checks do not prove glyph coverage or font
 embedding. Layout errors block export unless programmatic `validate: false` is
 explicitly set; warnings are returned/printed and do not block.

@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { isTrustedStudioLink, looksLikeStudioLink, STUDIO_ORIGIN } from "./background.js";
 
 const xmlText = z.string().regex(
   /^[\u0009\u000a\u000d\u0020-\ud7ff\ue000-\ufffd\u{10000}-\u{10ffff}]*$/u,
@@ -21,6 +22,12 @@ export const imageSourceSchema = xmlText.trim().min(1).max(2_000_000).refine((so
   return !/^[a-z][a-z0-9+.-]*:/i.test(source) && !source.startsWith("//");
 }, "Images must use HTTP(S), a base64 raster image, or a relative URL");
 
+/** An image source, or a Math Background Studio share link that is rendered at export. */
+export const backgroundSourceSchema = imageSourceSchema.refine(
+  (source) => !looksLikeStudioLink(source) || isTrustedStudioLink(source),
+  `Studio share links must come from ${STUDIO_ORIGIN} or a localhost development server`,
+);
+
 export const contentBlockSchema = z.discriminatedUnion("type", [
   z.object({ type: z.literal("paragraph"), text }).strict(),
   z.object({
@@ -42,6 +49,7 @@ const common = {
   subtitle: optionalText,
   footer: optionalText,
   notes: optionalText,
+  background: z.union([z.literal("none"), backgroundSourceSchema]).optional(),
 };
 const tableFields = {
   columns: z.array(text.max(200)).min(1).max(8),
@@ -92,6 +100,15 @@ export const presentationSchema = z.object({
   theme: z.enum(["light", "dark"]).default("light"),
   fontFamily: xmlText.trim().min(1).max(200)
     .regex(/^[\p{L}\p{N} ,'"\-]+$/u, "Use local font family names, not CSS declarations").optional(),
+  backgrounds: z.object({
+    default: backgroundSourceSchema.optional(),
+    cover: backgroundSourceSchema.optional(),
+    content: backgroundSourceSchema.optional(),
+    "two-columns": backgroundSourceSchema.optional(),
+    cards: backgroundSourceSchema.optional(),
+    table: backgroundSourceSchema.optional(),
+    chart: backgroundSourceSchema.optional(),
+  }).strict().optional(),
   slides: z.array(slideSchema).min(1).max(200),
 }).strict();
 
@@ -101,4 +118,10 @@ export type Presentation = z.infer<typeof presentationSchema>;
 
 export function parsePresentation(input: unknown): Presentation {
   return presentationSchema.parse(input);
+}
+
+/** A slide's own background, else its layout's, else the presentation default; `"none"` opts out. */
+export function slideBackground(presentation: Presentation, slide: Slide): string | undefined {
+  const source = slide.background ?? presentation.backgrounds?.[slide.layout] ?? presentation.backgrounds?.default;
+  return source === "none" ? undefined : source;
 }

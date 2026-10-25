@@ -19,6 +19,7 @@ and unpaired surrogates are rejected before PPTX generation.
 | `metadata` | Yes | Object described below |
 | `theme` | No | `"light"` or `"dark"`; default `"light"` |
 | `fontFamily` | No | Trimmed nonempty string, max 200 characters; local font names with Unicode letters/numbers, spaces, commas, quotes, hyphens only |
+| `backgrounds` | No | Object described under [Backgrounds](#backgrounds) |
 | `slides` | Yes | Array of 1–200 slides |
 
 `fontFamily` is a family/fallback list, not a CSS declaration or font URL.
@@ -47,6 +48,7 @@ Every slide requires `layout` and `title`.
 | `subtitle` | Optional string, max 10,000 |
 | `footer` | Optional string, max 10,000 |
 | `notes` | Optional string, max 10,000; emitted as hidden presenter-note markup |
+| `background` | Optional background source, or `"none"`; see [Backgrounds](#backgrounds) |
 
 Optional strings may be empty and are not trimmed. Required text fields are
 trimmed and must remain nonempty. Schema maxima are data limits, **not promises
@@ -114,6 +116,52 @@ from the origin/filesystem root, so prefer portable relative paths.
 
 These restrictions are not a network sandbox or path confinement policy.
 Use trusted sources and check browser access/CORS and image decoding errors.
+
+## Backgrounds
+
+A background fills the whole slide behind its content. Each slide uses the first
+that is set:
+
+1. the slide's own `background`;
+2. `backgrounds.<layout>` for its layout;
+3. `backgrounds.default`.
+
+A slide with `"background": "none"` has no background even when the
+presentation sets one, and shows the theme's slide color. `backgrounds` is a
+strict object whose optional keys are `default` and the six layout names
+(`cover`, `content`, `two-columns`, `cards`, `table`, `chart`). Each value, and a
+slide's `background`, is a background source:
+
+- An image source with the same rules as the `image` block's `src`. It is drawn
+  with `object-fit: cover`, so an image that is not 16:9 is cropped, not stretched.
+- A [Math Background Studio](https://bg.gordonkit.com/studio) share link, copied
+  from the studio's Share button: `https://bg.gordonkit.com/studio#d=…`. The
+  design is drawn by the studio's `/render` page for the slide's 1920 × 1080
+  size. Links from `http://localhost`, `127.0.0.1`, or `[::1]` on any port are
+  also accepted for a local studio development server. A `/studio` or `/render`
+  link with `#d=` from any other host, or from plain `http://bg.gordonkit.com`,
+  is rejected.
+
+```json
+{
+  "metadata": { "title": "Backgrounds" },
+  "backgrounds": {
+    "default": "assets/plain.svg",
+    "cover": "https://bg.gordonkit.com/studio#d=1PYo…",
+    "chart": "assets/grid.png"
+  },
+  "slides": [
+    { "layout": "cover", "title": "Cover uses backgrounds.cover" },
+    { "layout": "content", "title": "Its own", "background": "assets/photo.jpg", "blocks": [{ "type": "paragraph", "text": "…" }] },
+    { "layout": "table", "title": "None", "background": "none", "columns": ["A"], "rows": [["1"]] }
+  ]
+}
+```
+
+`slideBackground(presentation, slide)` returns the resolved source, or
+`undefined`. Backgrounds are exported as raster PowerPoint slide backgrounds;
+see [architecture](architecture.md#slide-backgrounds) and
+[limitations](limitations.md#backgrounds).
 
 ## Minimal complete input
 

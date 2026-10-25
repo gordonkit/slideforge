@@ -1,4 +1,5 @@
-export { presentationSchema, slideSchema, contentBlockSchema, imageSourceSchema, parsePresentation } from './schemas/presentation.js';
+export { presentationSchema, slideSchema, contentBlockSchema, imageSourceSchema, backgroundSourceSchema, parsePresentation, slideBackground } from './schemas/presentation.js';
+export { STUDIO_ORIGIN, studioRenderUrl } from './schemas/background.js';
 export type { Presentation, ContentBlock, Slide as PresentationSlide } from './schemas/presentation.js';
 export { describePresentationError, readPresentationFile } from './schemas/input.js';
 export * from './themes/tokens.js';

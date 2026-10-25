@@ -2,7 +2,9 @@ import type { Slide } from "../schemas/presentation.js";
 import { ContentBlocks, SlideChart, SlideTable } from "../components/content.js";
 import { Slide as SlideComponent, SlideCard, SlideColumns } from "../components/slide.js";
 
-export function SlideLayout({ slide, number, total }: { slide: Slide; number: number; total: number }) {
+export function SlideLayout({ slide, number, total, background }: {
+  slide: Slide; number: number; total: number; background?: string | undefined;
+}) {
   let content;
   switch (slide.layout) {
     case "cover":
@@ -26,5 +28,5 @@ export function SlideLayout({ slide, number, total }: { slide: Slide; number: nu
         : <SlideChart data={slide.data} unit={slide.unit} />;
       break;
   }
-  return <SlideComponent slide={slide} number={number} total={total}>{content}</SlideComponent>;
+  return <SlideComponent slide={slide} number={number} total={total} background={background}>{content}</SlideComponent>;
 }

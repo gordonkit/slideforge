@@ -19,6 +19,26 @@
   pixel-perfect conversion is made. Structural validity and editable text counts
   do not prove visual fidelity. Native PowerPoint rendering is not automated.
 
+## Backgrounds
+
+Slide backgrounds are exported as 1920 × 1080 PNG pictures in each slide's
+PowerPoint background, not as editable shapes or vector art, even when the
+source is SVG or a studio design. In PowerPoint they can be replaced through the
+slide's background format, but the design itself cannot be edited there. Each
+distinct background adds an image to the file, typically tens of kilobytes to
+about 1 MB. This is an explicit capture of the background layer only; it is not
+a general raster fallback for other content. Text contrast against a background
+is not checked, so review readability.
+
+A studio share link makes preview and export load the Math Background Studio
+`/render` page from `https://bg.gordonkit.com` (or the given loopback server)
+and run its scripts, so it needs network access to that host and depends on the
+studio being reachable and supporting `/render`. The design stays in the URL
+hash, which browsers do not send to the server. The rendered pixels depend on
+the studio version and Chromium build, so the same link can look slightly
+different over time. Export a PNG or SVG from the studio and use it as an image
+source when a deck must be reproducible offline.
+
 ## Assets and fonts
 
 CLI JSON build/export resolves relative images against the JSON's directory.

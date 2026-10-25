@@ -127,8 +127,8 @@ export async function validateLayout(
           const first = style.fontFamily.match(/(?:[^,"']+|"[^"]*"|'[^']*')+/)?.[0]?.trim().replace(/^(['"])(.*)\1$/, '$2');
           if (first && !genericFonts.has(first.toLowerCase())) fonts.add(first);
         }
-        // Layout wrappers and painted parent containers are not collision candidates.
-        if (element !== root && !element.closest('[data-pptx-allow-overlap="true"]')
+        // Layout wrappers, painted parent containers, and the background layer are not collision candidates.
+        if (element !== root && !element.closest('[data-pptx-allow-overlap="true"], [data-pptx-background]')
             && (hasText || /^(IMG|SVG|CANVAS|VIDEO)$/.test(element.tagName)
               || (element.children.length === 0 && (style.backgroundColor !== 'rgba(0, 0, 0, 0)' || style.backgroundImage !== 'none')))) {
           overlapCandidates.push(element);

@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import type { CSSProperties } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
-import { parsePresentation } from "../schemas/presentation.js";
+import { parsePresentation, slideBackground } from "../schemas/presentation.js";
 import { SlideLayout } from "../layouts/index.js";
 import { defaultFontFamily, designCssVariables, SLIDE_SIZE, themeTokens } from "../themes/tokens.js";
 
@@ -47,7 +47,7 @@ export function renderPresentation(input: unknown, options: RenderOptions = {}):
       </head>
       <body style={style} data-theme={presentation.theme}>
         <main className="sf-presentation">
-          {presentation.slides.map((slide, index) => <SlideLayout key={index} slide={slide} number={index + 1} total={presentation.slides.length} />)}
+          {presentation.slides.map((slide, index) => <SlideLayout key={index} slide={slide} number={index + 1} total={presentation.slides.length} background={slideBackground(presentation, slide)} />)}
         </main>
       </body>
     </html>,
