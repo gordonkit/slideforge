@@ -1,6 +1,7 @@
 export { presentationSchema, slideSchema, contentBlockSchema, imageSourceSchema, backgroundSourceSchema, parsePresentation, slideBackground } from './schemas/presentation.js';
 export { STUDIO_ORIGIN, studioRenderUrl } from './schemas/background.js';
-export type { Presentation, ContentBlock, Slide as PresentationSlide } from './schemas/presentation.js';
+export type { Presentation, ContentBlock, LayoutName, Slide as PresentationSlide } from './schemas/presentation.js';
+export { layoutFamilies, layoutNames, layoutFamily, layoutVariant, slideVariant, type LayoutFamily } from './layouts/registry.js';
 export { describePresentationError, readPresentationFile } from './schemas/input.js';
 export * from './themes/tokens.js';
 export * from './components/index.js';

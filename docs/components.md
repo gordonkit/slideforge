@@ -9,7 +9,7 @@ CSS/theme context. Components themselves do not perform schema validation.
 
 | Component | Props | Output |
 | --- | --- | --- |
-| `Slide` | `{ slide: PresentationSlide; number: number; total: number; background?: string; children: ReactNode }` | Full slide frame, background layer, title/content/footer/notes |
+| `Slide` | `{ slide: PresentationSlide; variant?: string; number: number; total: number; background?: string; children: ReactNode }` | Full slide frame, background layer, title/content/footer/notes |
 | `SlideBackground` | `{ source: string }` | `.sf-background[data-pptx-background]` layer: an `<img>`, or a studio `/render` `<iframe>` for a share link |
 | `SlideTitle` | `{ title: string; subtitle?: string }` | `.sf-header`, `h1`, optional `.sf-subtitle` |
 | `SlideSubtitle` | `{ children: ReactNode }` | `.sf-subtitle` paragraph |
@@ -23,8 +23,11 @@ CSS/theme context. Components themselves do not perform schema validation.
 | `SlideTable` / `DataTable` | `{ columns: string[]; rows: string[][] }` | Semantic HTML table with column headers; `DataTable` is an alias |
 | `SlideChart` / `BarChart` | `{ data: { label: string; value: number }[]; unit?: string }` | HTML/CSS horizontal bars, text labels/values, accessible chart summary; `BarChart` is an alias |
 
-`number` is one-based. `Slide` / `SlideFrame` emits `.sf-slide.sf-layout-<layout>`,
-`data-pptx="slide"`, `data-layout`, and an accessible slide label. Notes are
+`number` is one-based. `Slide` / `SlideFrame` emits
+`.sf-slide.sf-layout-<family>.sf-variant-<variant>`, `data-pptx="slide"`,
+`data-layout="<family>"`, `data-variant="<variant>"`, and an accessible slide label.
+`variant` defaults to the one the slide's `layout` names, or `default` for a bare
+family name. Notes are
 emitted in a hidden `<aside data-pptx-notes="">`; the converter extracts them as
 speaker notes. A slide's `author` and presentation metadata `author` are separate.
 `background` is the resolved source (see `slideBackground` in [schema](schema.md#backgrounds));

@@ -4,7 +4,7 @@
 | --- | --- | --- |
 | Stage 0 計畫 | ✅ 完成 | `[Stage 0]` |
 | Stage 1 Registry 重構 | ✅ 完成 | `[Stage 1]` |
-| Stage 2 `family/variant` 命名 | ⏳ 未開始 | |
+| Stage 2 `family/variant` 命名 | ✅ 完成 | `[Stage 2]` |
 | Stage 3 Cover variants | ⏳ 未開始 | |
 | Stage 4 Template schema 與合併 | ⏳ 未開始 | |
 | Stage 5 Template 載入與 CLI | ⏳ 未開始 | |
@@ -52,3 +52,23 @@
   - `quotedList` 兩項時輸出 `"a" or "b"`（不加逗號）；三項以上與原訊息相同。
 - 備註：用 Write 工具寫入含 `\uXXXX` 的 regex 時，escape 被解碼成實際字元；已從原始檔還原兩行並以 grep 確認。之後涉及這類 regex 時，要從 git 原文複製或寫完後檢查。
 - 待決／下一步：Stage 2（`family/variant` 命名與背景 key）。
+
+## Stage 2 — `family/variant` 命名與背景 key（2026-10-25）
+
+- 完成：
+  - `slideObject(family, variants, shape)`：`layout` 改為 `z.enum([family, "family/variant", …])`；每個 family 的 `variants` 只宣告一次。
+  - registry：`layoutNames`、`layoutFamily`、`layoutVariant`、`slideVariant`、`unknownLayoutMessage`（已知 family 列出其 variant，否則列出 family）。
+  - `LayoutName` 型別；`backgrounds` key 由 `layoutNames` 產生；`slideBackground` 依 slide → `family/variant` → family → default。
+  - `Slide` 元件輸出 `sf-variant-<v>` 與 `data-variant`，`data-layout` 維持 family；新增選填 `variant` prop。renderer 收到 `variant`。
+  - root export 名稱 helper 與型別。
+  - 文件：`docs/schema.md`（Layout names、背景優先順序）、`docs/components.md`、`docs/architecture.md`（Layout names API）、CHANGELOG、`site/src/content.ts` 四語（slides 段落與背景優先順序）。
+- 檢查：
+  - `npm run check` → 通過；`npm --prefix site run check` → 通過。
+  - `npm run test:unit` → 8 files / 99 tests 通過。修改既有測試 1 處：`content.test.tsx` 的 class 斷言改為含 `sf-variant-default` 與 `data-variant`（計畫允許）。
+  - 範例 deck HTML 與 Stage 1 比對：去除 `sf-variant-default`/`data-variant="default"` 後完全相同。
+  - `npm run test:integration` → 11 tests 通過。
+  - 範例 deck export + validate → valid，6 slides，editableTextCount 35，shapeCount 52，無 issues（與 Stage 1 相同）。
+- 偏離計畫：
+  - `Slide` 元件新增選填 `variant` prop（計畫未列），供 Stage 4 由 template 決定 variant 時傳入。
+  - 未建 site 的 site build（只跑 `site check`）。
+- 待決／下一步：Stage 3（cover variants）。先確定 variant 名稱與視覺；需要時新增 token。

@@ -1,8 +1,9 @@
 import { existsSync } from "node:fs";
 import { describe, expect, it } from "vitest";
-import { layoutFamilies, layouts, quotedList } from "../../src/layouts/registry.js";
+import { layoutFamilies, layoutFamily, layoutNames, layouts, layoutVariant, quotedList, slideVariant } from "../../src/layouts/registry.js";
 import { layoutStylesheet } from "../../src/layouts/index.js";
-import { presentationSchema } from "../../src/schemas/presentation.js";
+import { renderPresentation } from "../../src/renderers/html.js";
+import { parsePresentation, presentationSchema, slideBackground } from "../../src/schemas/presentation.js";
 
 describe("layout registry", () => {
   it("lists the six families in documentation order", () => {
@@ -12,7 +13,7 @@ describe("layout registry", () => {
   it("gives every family a default variant, a schema keyed by its name, a renderer, and a stylesheet", () => {
     for (const layout of layouts) {
       expect(layout.variants[0]).toBe("default");
-      expect(layout.slide.shape.layout.value).toBe(layout.family);
+      expect(layout.slide.shape.layout.options).toEqual([layout.family, ...layout.variants.map((variant) => `${layout.family}/${variant}`)]);
       for (const file of ["render.tsx", `${layout.family}.css`]) {
         expect(existsSync(new URL(`../../src/layouts/${layout.family}/${file}`, import.meta.url))).toBe(true);
       }
@@ -21,16 +22,64 @@ describe("layout registry", () => {
     expect(layoutStylesheet).toContain(".sf-chart-row");
   });
 
-  it("accepts a background key for every family and no other", () => {
-    for (const family of layoutFamilies) {
-      const deck = { metadata: { title: "Deck" }, backgrounds: { [family]: "a.png" }, slides: [{ layout: "cover", title: "x" }] };
+  it("accepts a background key for every layout name", () => {
+    expect(layoutNames).toContain("cover/default");
+    for (const name of layoutNames) {
+      const deck = { metadata: { title: "Deck" }, backgrounds: { [name]: "a.png" }, slides: [{ layout: "cover", title: "x" }] };
       expect(presentationSchema.safeParse(deck).success).toBe(true);
     }
+    const unknown = { metadata: { title: "Deck" }, backgrounds: { "cover/fancy": "a.png" }, slides: [{ layout: "cover", title: "x" }] };
+    expect(presentationSchema.safeParse(unknown).success).toBe(false);
   });
 
   it("quotes lists the way error messages name valid values", () => {
     expect(quotedList(["a"])).toBe('"a"');
     expect(quotedList(["a", "b"])).toBe('"a" or "b"');
     expect(quotedList(["a", "b", "c"])).toBe('"a", "b", or "c"');
+  });
+});
+
+describe("family/variant layout names", () => {
+  const deck = (slide: object, backgrounds?: object) => ({
+    metadata: { title: "Deck" }, ...(backgrounds ? { backgrounds } : {}), slides: [{ title: "x", ...slide }],
+  });
+
+  it("splits a name into its family and stated variant", () => {
+    expect(layoutFamily("cover")).toBe("cover");
+    expect(layoutFamily("two-columns/default")).toBe("two-columns");
+    expect(layoutVariant("cover")).toBeUndefined();
+    expect(layoutVariant("cover/default")).toBe("default");
+    expect(slideVariant({ layout: "cover" })).toBe("default");
+  });
+
+  it("keeps the name as written and draws a bare family as its default variant", () => {
+    const parsed = parsePresentation(deck({ layout: "cover/default" }));
+    expect(parsed.slides[0]!.layout).toBe("cover/default");
+    expect(parsePresentation(parsed)).toEqual(parsed);
+    const html = (layout: string) => renderPresentation(deck({ layout }));
+    expect(html("cover/default")).toBe(html("cover"));
+    expect(html("cover")).toContain('class="sf-slide sf-layout-cover sf-variant-default" data-pptx="slide" data-layout="cover" data-variant="default"');
+  });
+
+  it("names a family's variants for an unknown variant, and the families otherwise", () => {
+    const issues = (slide: object) => presentationSchema.safeParse(deck(slide)).error?.issues.map((issue) => issue.message);
+    expect(issues({ layout: "cover/fancy" })).toEqual(['Unknown cover variant. Use "cover" or "cover/default"']);
+    expect(issues({ layout: "cover/" })).toEqual(['Unknown cover variant. Use "cover" or "cover/default"']);
+    expect(issues({ layout: "timeline" })).toEqual(['Unknown layout. Use "cover", "content", "two-columns", "cards", "table", or "chart"']);
+    expect(issues({})).toEqual(['Unknown layout. Use "cover", "content", "two-columns", "cards", "table", or "chart"']);
+  });
+
+  it("resolves backgrounds from the slide, then family/variant, then family, then default", () => {
+    const background = (slide: object, backgrounds: object) => {
+      const presentation = parsePresentation(deck(slide, backgrounds));
+      return slideBackground(presentation, presentation.slides[0]!);
+    };
+    const all = { default: "d.png", cover: "c.png", "cover/default": "cd.png" };
+    expect(background({ layout: "cover", background: "own.png" }, all)).toBe("own.png");
+    expect(background({ layout: "cover" }, all)).toBe("cd.png");
+    expect(background({ layout: "cover/default" }, all)).toBe("cd.png");
+    expect(background({ layout: "cover" }, { default: "d.png", cover: "c.png" })).toBe("c.png");
+    expect(background({ layout: "cover/default" }, { default: "d.png" })).toBe("d.png");
+    expect(background({ layout: "cover", background: "none" }, all)).toBeUndefined();
   });
 });

@@ -1,10 +1,12 @@
 import { z } from "zod";
 import { contentBlockSchema, slideObject, text, xmlText } from "../../schemas/fields.js";
 
+const variants = ["default"] as const;
+
 export const chart = {
   family: "chart",
-  variants: ["default"],
-  slide: slideObject("chart", {
+  variants,
+  slide: slideObject("chart", variants, {
     data: z.array(z.object({
       label: text.max(100),
       value: z.number().finite().nonnegative(),

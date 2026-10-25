@@ -43,7 +43,7 @@ Every slide requires `layout` and `title`.
 
 | Field | Type and constraints |
 | --- | --- |
-| `layout` | One of the six discriminator values below |
+| `layout` | A layout family below, or `family/variant`; see [Layout names](#layout-names) |
 | `title` | Trimmed nonempty string, max 300 |
 | `subtitle` | Optional string, max 10,000 |
 | `footer` | Optional string, max 10,000 |
@@ -54,9 +54,22 @@ Optional strings may be empty and are not trimmed. Required text fields are
 trimmed and must remain nonempty. Schema maxima are data limits, **not promises
 that content will fit a slide**; check rendered layout separately.
 
+## Layout names
+
+A `layout` value names a **family**, which decides the slide's fields, and
+optionally a **variant** of it, which decides only how the slide is drawn:
+`"cover"` or `"cover/default"`. A variant never adds or removes fields, so changing
+it does not change the content. A bare family name is drawn as its `default`
+variant. Every family currently has only `default`, so `"<family>"` and
+`"<family>/default"` render the same.
+
+The value is kept as written after parsing. An unknown variant of a known family
+is reported with that family's valid names, such as
+`Unknown cover variant. Use "cover" or "cover/default"`.
+
 ## Layout-specific fields
 
-| `layout` | Additional fields |
+| Family | Additional fields |
 | --- | --- |
 | `"cover"` | Optional `author` string, max 10,000; independent of metadata author |
 | `"content"` | Required `blocks`: 1–12 content blocks |
@@ -123,14 +136,16 @@ A background fills the whole slide behind its content. Each slide uses the first
 that is set:
 
 1. the slide's own `background`;
-2. `backgrounds.<layout>` for its layout;
-3. `backgrounds.default`.
+2. `backgrounds["<family>/<variant>"]` for the variant it is drawn with;
+3. `backgrounds.<family>` for its family;
+4. `backgrounds.default`.
 
-A slide with `"background": "none"` has no background even when the
-presentation sets one, and shows the theme's slide color. `backgrounds` is a
-strict object whose optional keys are `default` and the six layout names
-(`cover`, `content`, `two-columns`, `cards`, `table`, `chart`). Each value, and a
-slide's `background`, is a background source:
+A bare family name is drawn as `default`, so `backgrounds["cover/default"]` also
+applies to `"layout": "cover"` slides. A slide with `"background": "none"` has no
+background even when the presentation sets one, and shows the theme's slide color.
+`backgrounds` is a strict object whose optional keys are `default`, the six family
+names (`cover`, `content`, `two-columns`, `cards`, `table`, `chart`), and every
+`family/variant` name. Each value, and a slide's `background`, is a background source:
 
 - An image source with the same rules as the `image` block's `src`. It is drawn
   with `object-fit: cover`, so an image that is not 16:9 is cropped, not stretched.

@@ -7,6 +7,14 @@ All notable changes to this project will be documented in this file. The format 
 
 ### Added
 
+- Layout names can state a variant: `"layout": "cover/default"`. The family before the
+  slash decides the slide's fields and the variant only how it is drawn; a bare family name
+  is drawn as `default`, the only variant each family has so far. Slides carry
+  `sf-variant-<variant>` and `data-variant`, `backgrounds` accepts `family/variant` keys,
+  which take precedence over the family's key, and an unknown variant names the family's
+  valid ones. `layoutFamilies`, `layoutNames`, `layoutFamily`, `layoutVariant`, and
+  `slideVariant` are exported. Layout families are defined in `src/layouts/<family>/` and
+  listed in `src/layouts/registry.ts`.
 - `docker/Dockerfile` and a `cli` Compose profile run the CLI with Node.js, the pinned
   Chromium, and Noto CJK/Liberation fonts bundled, as a non-root user with a read-only root
   filesystem and one `/work` mount. `preview` is not supported in the container, and the

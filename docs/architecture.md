@@ -58,6 +58,14 @@ data. Throws on invalid content. The runtime Zod schemas and `Presentation`,
 The schema module names its slide type `Slide`; the root aliases it to
 `PresentationSlide` to distinguish it from the React `Slide` component.
 
+### Layout names
+
+`layoutFamilies` lists the families and `layoutNames` every valid `layout` value
+(each family, then `family/variant`). `layoutFamily(name)` and `layoutVariant(name)`
+split a valid name; `layoutVariant` returns `undefined` for a bare family.
+`slideVariant(slide)` is the variant a slide is drawn with, `default` for a bare
+family. The `LayoutFamily` and `LayoutName` types match them.
+
 ### `renderPresentation(input: unknown, options?: RenderOptions): string`
 
 Validates content and returns a complete HTML string, including CSS and metadata.

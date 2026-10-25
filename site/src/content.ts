@@ -420,10 +420,10 @@ docker compose -f docker/compose.yaml --profile cli run --rm cli validate /work/
         id: "slides",
         title: { en: "Slides and layouts", "zh-TW": "投影片與版型", "zh-CN": "幻灯片与版式", ja: "スライドとレイアウト" },
         body: {
-          en: "Every slide needs layout and title, and may have subtitle, footer, notes, and background. Notes become PowerPoint speaker notes. Each layout adds its own fields:",
-          "zh-TW": "每張投影片都需要 layout 與 title，可另加 subtitle、footer、notes 與 background，notes 會成為 PowerPoint 的演講者備忘稿。各版型另有專屬欄位：",
-          "zh-CN": "每张幻灯片都需要 layout 与 title，可另加 subtitle、footer、notes 与 background，notes 会成为 PowerPoint 的演讲者备注。各版式另有专属字段：",
-          ja: "各スライドには layout と title が必要で、subtitle、footer、notes、background も指定できます。notes は PowerPoint の発表者ノートになります。レイアウトごとに次のフィールドが加わります。",
+          en: "Every slide needs layout and title, and may have subtitle, footer, notes, and background. Notes become PowerPoint speaker notes. layout is a family, or family/variant such as cover/default: the family decides the fields and the variant only how the slide is drawn, so changing it leaves the content unchanged. A bare family is drawn as default, the only variant each family has so far. Each family adds its own fields:",
+          "zh-TW": "每張投影片都需要 layout 與 title，可另加 subtitle、footer、notes 與 background，notes 會成為 PowerPoint 的演講者備忘稿。layout 可以是版型系列，或 cover/default 這類「系列/變化」：系列決定欄位，變化只決定呈現方式，因此換變化不必改內容。只寫系列名稱時使用 default，目前每個系列都只有 default。各系列另有專屬欄位：",
+          "zh-CN": "每张幻灯片都需要 layout 与 title，可另加 subtitle、footer、notes 与 background，notes 会成为 PowerPoint 的演讲者备注。layout 可以是版式系列，或 cover/default 这类“系列/变体”：系列决定字段，变体只决定呈现方式，因此换变体不必改内容。只写系列名称时使用 default，目前每个系列都只有 default。各系列另有专属字段：",
+          ja: "各スライドには layout と title が必要で、subtitle、footer、notes、background も指定できます。notes は PowerPoint の発表者ノートになります。layout はレイアウトのファミリー、または cover/default のような「ファミリー/バリアント」です。ファミリーがフィールドを決め、バリアントは描き方だけを決めるので、バリアントを変えても内容はそのままです。ファミリー名だけなら default で描かれ、現在どのファミリーにも default しかありません。ファミリーごとに次のフィールドが加わります。",
         },
         table: {
           caption: { en: "Layout fields", "zh-TW": "版型欄位", "zh-CN": "版式字段", ja: "レイアウトのフィールド" },
@@ -458,10 +458,10 @@ docker compose -f docker/compose.yaml --profile cli run --rm cli validate /work/
         id: "backgrounds",
         title: { en: "Backgrounds", "zh-TW": "背景", "zh-CN": "背景", ja: "背景" },
         body: {
-          en: "A background fills the slide behind its content. Each slide uses its own background, else backgrounds.<layout>, else backgrounds.default; \"none\" turns it off for one slide. A source is an image (same rules as image blocks, cropped to cover the slide) or a Math Background Studio share link, which the studio's /render page draws at export.",
-          "zh-TW": "背景會鋪滿整張投影片，位於內容下方。每張投影片依序使用自己的 background、backgrounds.<版型>、backgrounds.default；設為 \"none\" 可讓單頁不使用背景。來源可以是圖片（規則與圖片區塊相同，會裁切以鋪滿投影片），或 Math Background Studio 的分享連結，匯出時由 studio 的 /render 頁面繪製。",
-          "zh-CN": "背景会铺满整张幻灯片，位于内容下方。每张幻灯片依次使用自己的 background、backgrounds.<版式>、backgrounds.default；设为 \"none\" 可让单页不使用背景。来源可以是图片（规则与图片块相同，会裁剪以铺满幻灯片），或 Math Background Studio 的分享链接，导出时由 studio 的 /render 页面绘制。",
-          ja: "背景はスライド全体に敷かれ、内容の下に表示されます。各スライドは自分の background、なければ backgrounds.<レイアウト>、なければ backgrounds.default を使います。\"none\" でそのスライドだけ背景をなくせます。指定できるのは画像（画像ブロックと同じ規則で、スライドを覆うようにトリミング）または Math Background Studio の共有リンクで、リンクは書き出し時に studio の /render ページが描画します。",
+          en: "A background fills the slide behind its content. Each slide uses its own background, else backgrounds.<family>/<variant>, else backgrounds.<family>, else backgrounds.default; \"none\" turns it off for one slide. A source is an image (same rules as image blocks, cropped to cover the slide) or a Math Background Studio share link, which the studio's /render page draws at export.",
+          "zh-TW": "背景會鋪滿整張投影片，位於內容下方。每張投影片依序使用自己的 background、backgrounds.<系列>/<變化>、backgrounds.<系列>、backgrounds.default；設為 \"none\" 可讓單頁不使用背景。來源可以是圖片（規則與圖片區塊相同，會裁切以鋪滿投影片），或 Math Background Studio 的分享連結，匯出時由 studio 的 /render 頁面繪製。",
+          "zh-CN": "背景会铺满整张幻灯片，位于内容下方。每张幻灯片依次使用自己的 background、backgrounds.<系列>/<变体>、backgrounds.<系列>、backgrounds.default；设为 \"none\" 可让单页不使用背景。来源可以是图片（规则与图片块相同，会裁剪以铺满幻灯片），或 Math Background Studio 的分享链接，导出时由 studio 的 /render 页面绘制。",
+          ja: "背景はスライド全体に敷かれ、内容の下に表示されます。各スライドは自分の background、なければ backgrounds.<ファミリー>/<バリアント>、なければ backgrounds.<ファミリー>、なければ backgrounds.default を使います。\"none\" でそのスライドだけ背景をなくせます。指定できるのは画像（画像ブロックと同じ規則で、スライドを覆うようにトリミング）または Math Background Studio の共有リンクで、リンクは書き出し時に studio の /render ページが描画します。",
         },
         code: `{
   "backgrounds": {

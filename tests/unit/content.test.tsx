@@ -73,7 +73,7 @@ describe("HTML renderer", () => {
     const html = renderPresentation(basic);
     expect(html.match(/data-pptx="slide"/g)).toHaveLength(6);
     for (const layout of ["cover", "content", "two-columns", "cards", "table", "chart"]) {
-      expect(html).toContain(`class="sf-slide sf-layout-${layout}"`);
+      expect(html).toContain(`class="sf-slide sf-layout-${layout} sf-variant-default" data-pptx="slide" data-layout="${layout}" data-variant="default"`);
       expect(html).not.toContain(`class="sf-slide sf-${layout}"`);
     }
     expect(html).toContain('<html lang="zh-Hant">');

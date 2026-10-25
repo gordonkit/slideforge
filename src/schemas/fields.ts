@@ -54,7 +54,16 @@ const commonSlideFields = {
   background: z.union([z.literal("none"), backgroundSourceSchema]).optional(),
 };
 
-/** A strict slide schema for one layout family: the common slide fields plus the family's own. */
-export function slideObject<F extends string, S extends z.ZodRawShape>(family: F, shape: S) {
-  return z.object({ ...commonSlideFields, layout: z.literal(family), ...shape }).strict();
+/** `family` alone, or `family/variant` for each of its variants. */
+export type LayoutName<F extends string, V extends string> = F | `${F}/${V}`;
+
+/**
+ * A strict slide schema for one layout family: the common slide fields plus the family's own.
+ * `layout` accepts the bare family name or `family/variant` for each listed variant.
+ */
+export function slideObject<F extends string, const V extends readonly string[], S extends z.ZodRawShape>(
+  family: F, variants: V, shape: S,
+) {
+  const names = [family, ...variants.map((variant) => `${family}/${variant}`)] as [F, ...`${F}/${V[number]}`[]];
+  return z.object({ ...commonSlideFields, layout: z.enum(names), ...shape }).strict();
 }

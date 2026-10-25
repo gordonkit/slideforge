@@ -1,16 +1,19 @@
 import { z } from "zod";
-import { layoutFamilies, layoutSlideSchemas, quotedList, type LayoutFamily } from "../layouts/registry.js";
+import { layoutFamily, layoutNames, layoutSlideSchemas, slideVariant, unknownLayoutMessage } from "../layouts/registry.js";
 import { backgroundSourceSchema, contentBlockSchema, optionalText, text, xmlText } from "./fields.js";
 
 export { backgroundSourceSchema, contentBlockSchema, imageSourceSchema } from "./fields.js";
 
 export const slideSchema = z.discriminatedUnion("layout", layoutSlideSchemas, {
-  error: `Unknown layout. Use ${quotedList(layoutFamilies)}`,
+  error: (issue) => unknownLayoutMessage(issue.input),
 });
 
+/** A valid `layout` value: a family, or `family/variant`. */
+export type LayoutName = z.infer<typeof slideSchema>["layout"];
+
 const backgroundsSchema = z.object(Object.fromEntries(
-  ["default", ...layoutFamilies].map((key) => [key, backgroundSourceSchema.optional()]),
-) as Record<"default" | LayoutFamily, z.ZodOptional<typeof backgroundSourceSchema>>).strict();
+  ["default", ...layoutNames].map((key) => [key, backgroundSourceSchema.optional()]),
+) as Record<"default" | LayoutName, z.ZodOptional<typeof backgroundSourceSchema>>).strict();
 
 export const presentationSchema = z.object({
   metadata: z.object({
@@ -34,8 +37,13 @@ export function parsePresentation(input: unknown): Presentation {
   return presentationSchema.parse(input);
 }
 
-/** A slide's own background, else its layout's, else the presentation default; `"none"` opts out. */
+/**
+ * A slide's own background, else its `family/variant`'s, else its family's, else the presentation
+ * default; `"none"` opts out. A bare family name is drawn as, and matches, `family/default`.
+ */
 export function slideBackground(presentation: Presentation, slide: Slide): string | undefined {
-  const source = slide.background ?? presentation.backgrounds?.[slide.layout] ?? presentation.backgrounds?.default;
+  const family = layoutFamily(slide.layout);
+  const backgrounds: Partial<Record<string, string>> = presentation.backgrounds ?? {};
+  const source = slide.background ?? backgrounds[`${family}/${slideVariant(slide)}`] ?? backgrounds[family] ?? backgrounds.default;
   return source === "none" ? undefined : source;
 }
