@@ -369,10 +369,10 @@ node dist/cli/index.js export http://127.0.0.1:5180/ --output preview.pptx`,
         code: `docker compose -f docker/compose.yaml --profile cli run --rm --build cli export /work/examples/basic/presentation.json --output /work/presentation.pptx
 docker compose -f docker/compose.yaml --profile cli run --rm cli validate /work/presentation.pptx`,
         note: {
-          en: "The container is a CLI, not an export service, and the same trust model applies. preview is not supported in the container. PowerPoint still uses Microsoft JhengHei for CJK text, which the image does not include.",
-          "zh-TW": "容器提供的是 CLI，不是匯出服務，信任模型不變。容器中不支援 preview。PowerPoint 的 CJK 文字仍使用映像檔沒有內含的微軟正黑體。",
-          "zh-CN": "容器提供的是 CLI，不是导出服务，信任模型不变。容器中不支持 preview。PowerPoint 的 CJK 文字仍使用镜像未内含的 Microsoft JhengHei。",
-          ja: "コンテナーが提供するのは CLI であり、書き出しサービスではありません。信頼モデルは同じです。コンテナーでは preview を使えません。PowerPoint の CJK テキストには、イメージに含まれない Microsoft JhengHei が引き続き使われます。",
+          en: "The container is a CLI, not an export service, and the same trust model applies. preview is not supported in the container. PowerPoint still uses Microsoft JhengHei for CJK text, which the image does not include. Studio background links need network access to bg.gordonkit.com from the container, and localhost studio links do not work there.",
+          "zh-TW": "容器提供的是 CLI，不是匯出服務，信任模型不變。容器中不支援 preview。PowerPoint 的 CJK 文字仍使用映像檔沒有內含的微軟正黑體。Studio 背景連結需要容器能連到 bg.gordonkit.com，localhost 的 studio 連結在容器中無法使用。",
+          "zh-CN": "容器提供的是 CLI，不是导出服务，信任模型不变。容器中不支持 preview。PowerPoint 的 CJK 文字仍使用镜像未内含的 Microsoft JhengHei。Studio 背景链接需要容器能连到 bg.gordonkit.com，localhost 的 studio 链接在容器中无法使用。",
+          ja: "コンテナーが提供するのは CLI であり、書き出しサービスではありません。信頼モデルは同じです。コンテナーでは preview を使えません。PowerPoint の CJK テキストには、イメージに含まれない Microsoft JhengHei が引き続き使われます。Studio の背景リンクには、コンテナーから bg.gordonkit.com へのネットワーク接続が必要です。localhost の studio リンクはコンテナー内では使えません。",
         },
         links: [
           { label: { en: "Container guide", "zh-TW": "容器說明", "zh-CN": "容器说明", ja: "コンテナーのガイド" }, href: `${repositoryUrl}/blob/main/docker/README.md` },
