@@ -3,3 +3,16 @@
 .sf-layout-cover .sf-subtitle { font-size: var(--sf-type-cover-subtitle); margin-top: var(--sf-spacing-cover-subtitle); }
 .sf-layout-cover .sf-content { height: var(--sf-layout-cover-content); }
 .sf-author { margin: var(--sf-spacing-cover-subtitle) 0 0; color: var(--sf-muted); font-size: var(--sf-type-author); }
+.sf-variant-centered.sf-layout-cover .sf-header, .sf-variant-centered.sf-layout-cover .sf-content { text-align: center; }
+/* split: text and footer stop short of the panel, so nothing overlaps it. */
+.sf-variant-split.sf-layout-cover { padding-right: calc(var(--sf-layout-cover-panel) + var(--sf-layout-padding-x)); }
+.sf-variant-split.sf-layout-cover .sf-footer { right: calc(var(--sf-layout-cover-panel) + var(--sf-layout-padding-x)); }
+.sf-cover-panel { position: absolute; top: 0; right: 0; bottom: 0; width: var(--sf-layout-cover-panel); background: var(--sf-accent); }
+/* band: the header reaches the slide's top and side edges; the title keeps its default position. */
+.sf-variant-band.sf-layout-cover .sf-header {
+  height: calc(var(--sf-layout-cover-header) + var(--sf-layout-padding-top));
+  margin: calc(-1 * var(--sf-layout-padding-top)) calc(-1 * var(--sf-layout-padding-x)) 0;
+  padding: calc(var(--sf-layout-cover-top) + var(--sf-layout-padding-top)) var(--sf-layout-padding-x) 0;
+  background: var(--sf-accent); color: var(--sf-on-accent);
+}
+.sf-variant-band.sf-layout-cover .sf-subtitle { color: var(--sf-on-accent); }

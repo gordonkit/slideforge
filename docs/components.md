@@ -52,7 +52,7 @@ schema, renderer, and stylesheet, and is listed in `src/layouts/registry.ts`:
 
 | Layout | Composition |
 | --- | --- |
-| `cover` | Enlarged title/subtitle and optional author |
+| `cover` | Enlarged title/subtitle and optional author; `split` adds an `aria-hidden` `.sf-cover-panel` |
 | `content` | One `ContentBlocks` stack |
 | `two-columns` | Two equal-width `ContentBlocks` stacks |
 | `cards` | Three-column grid containing 1–6 titled cards |

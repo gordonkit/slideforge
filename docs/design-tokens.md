@@ -71,7 +71,12 @@ installer, and system fonts are not guaranteed embedded into PPTX.
 
 Cards fill row-wise in a three-column grid; one or two cards do not expand to
 full-width columns. Cover header height is 525px with 198px top padding; its
-content region is 375px high. Long content is clipped by several fixed-height
+content region is 375px high. `cover/split` adds a 640px accent panel
+(`cover-panel`) at the right edge and moves the slide's right padding and the
+footer's right edge to 736px (panel plus horizontal padding), leaving 1088px for
+text. `cover/band` extends the header 72px up and 96px to each side so its accent
+background reaches the slide edges, keeping the title at the default position and
+the content region at the same height. Long content is clipped by several fixed-height
 containers, so reduce or split content instead of relying on schema maxima.
 
 ## Exported token groups and CSS names
@@ -84,7 +89,7 @@ strings unchanged. For example, `spacingTokens.column` becomes
 
 | Export / group | Keys and values |
 | --- | --- |
-| `layoutTokens` / `layout` | `padding-x: 96`, `padding-top: 72`, `padding-bottom: 84`, `header: 186`, `content: 738`, `footer-bottom: 33`, `footer: 36`, `cover-header: 525`, `cover-top: 198`, `cover-content: 375`, `image-max-height: 630` |
+| `layoutTokens` / `layout` | `padding-x: 96`, `padding-top: 72`, `padding-bottom: 84`, `header: 186`, `content: 738`, `footer-bottom: 33`, `footer: 36`, `cover-header: 525`, `cover-top: 198`, `cover-content: 375`, `cover-panel: 640`, `image-max-height: 630` |
 | `spacingTokens` / `spacing` | `page: 36`, `block: 27`, `column: 60`, `card: 30`, `card-padding: 36`, `subtitle: 18`, `cover-subtitle: 36`, `card-title: 24`, `list: 48`, `item: 15`, `caption: 12`, `table-x: 24`, `table-y: 15`, `chart: 30`, `chart-explanation: 24` |
 | `typographyTokens` / `type` | `title: 60`, `subtitle: 33`, `body: 36`, `caption: 25.5`, `card-title: 39`, `card-body: 30`, `table: 31.5`, `chart: 31.5`, `footer: 24`, `cover-title: 90`, `cover-subtitle: 45`, `author: 39`, `title-leading: "1.2"`, `subtitle-leading: "1.35"`, `body-leading: "1.45"`, `bold: "700"` |
 | `borderTokens` / `border` | `width: 2`, `radius: 18` |

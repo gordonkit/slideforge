@@ -60,8 +60,16 @@ A `layout` value names a **family**, which decides the slide's fields, and
 optionally a **variant** of it, which decides only how the slide is drawn:
 `"cover"` or `"cover/default"`. A variant never adds or removes fields, so changing
 it does not change the content. A bare family name is drawn as its `default`
-variant. Every family currently has only `default`, so `"<family>"` and
-`"<family>/default"` render the same.
+variant, so `"<family>"` and `"<family>/default"` render the same.
+
+| Family | Variants |
+| --- | --- |
+| `cover` | `default` (left-aligned), `centered` (centered title, subtitle, and author), `split` (accent panel on the right third; text and footer stay left of it), `band` (full-bleed accent block behind the title and subtitle, which use the on-accent color) |
+| `content`, `two-columns`, `cards`, `table`, `chart` | `default` |
+
+[`examples/variants/presentation.json`](../examples/variants/presentation.json)
+shows each cover variant. The `split` panel and `band` block are decorative
+shapes in the accent color; with a slide background they are drawn over it.
 
 The value is kept as written after parsing. An unknown variant of a known family
 is reported with that family's valid names, such as

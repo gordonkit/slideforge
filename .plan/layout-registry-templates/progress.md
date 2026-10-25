@@ -5,7 +5,7 @@
 | Stage 0 計畫 | ✅ 完成 | `[Stage 0]` |
 | Stage 1 Registry 重構 | ✅ 完成 | `[Stage 1]` |
 | Stage 2 `family/variant` 命名 | ✅ 完成 | `[Stage 2]` |
-| Stage 3 Cover variants | ⏳ 未開始 | |
+| Stage 3 Cover variants | ✅ 完成 | `[Stage 3]` |
 | Stage 4 Template schema 與合併 | ⏳ 未開始 | |
 | Stage 5 Template 載入與 CLI | ⏳ 未開始 | |
 | Stage 6 新 family（選做） | ⏳ 未開始 | |
@@ -72,3 +72,22 @@
   - `Slide` 元件新增選填 `variant` prop（計畫未列），供 Stage 4 由 template 決定 variant 時傳入。
   - 未建 site 的 site build（只跑 `site check`）。
 - 待決／下一步：Stage 3（cover variants）。先確定 variant 名稱與視覺；需要時新增 token。
+
+## Stage 3 — Cover variants（2026-10-25）
+
+- 完成：
+  - `cover` variants：`default`、`centered`（標題、副標、作者置中）、`split`（右側 640px 強調色 panel；slide 右 padding 與 footer 右緣讓出 736px）、`band`（header 往上、往兩側延伸到 slide 邊緣，accent 底色、on-accent 文字；標題位置與 content 高度不變）。
+  - `CoverLayout` 在 `split` 時輸出 `aria-hidden` 的 `.sf-cover-panel`；其他 variant 不新增元素（band 用 header 本身的底色）。
+  - 新 token：`layoutTokens["cover-panel"] = 640`。
+  - 新範例 `examples/variants/presentation.json`（四種 cover variant）。
+  - 測試：unit（variant class、只有 split 有 panel、cover/table 的未知 variant 訊息）；integration（export variants 範例：除字型外無 layout issue、每頁可編輯文字數相同、split/band 各多 1 個 shape）。
+  - 文件：`docs/schema.md`（variant 表）、`docs/design-tokens.md`（cover-panel 與 split/band 幾何）、`docs/components.md`、`docs/limitations.md`、README 四語、CHANGELOG、site 四語（功能列表、slides 段落）。
+- 檢查：
+  - `npm run check` → 通過；`npm --prefix site run check` 與 `run build` → 通過。
+  - `npm run test:unit` → 100 tests 通過。
+  - `npm run test:integration` → 12 tests 通過。
+  - `examples/variants` export + validate → valid，4 slides，editableTextCount 20（每頁 5），shapeCount 26，export 無 layout issue。
+  - 目視：HTML 截圖（淺色、深色）與 LibreOffice 將 PPTX 轉成 PDF 的結果一致；panel 與 band 為原生形狀、文字可編輯。PowerPoint 本身未測。
+- 偏離計畫：
+  - 計畫原本說在 `examples/basic` 加一張；改為另建 `examples/variants`，避免改動 init 範本與「六張投影片」的既有測試與文件。
+- 待決／下一步：Stage 4（template schema 與合併）。

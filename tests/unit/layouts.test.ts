@@ -63,10 +63,21 @@ describe("family/variant layout names", () => {
 
   it("names a family's variants for an unknown variant, and the families otherwise", () => {
     const issues = (slide: object) => presentationSchema.safeParse(deck(slide)).error?.issues.map((issue) => issue.message);
-    expect(issues({ layout: "cover/fancy" })).toEqual(['Unknown cover variant. Use "cover" or "cover/default"']);
-    expect(issues({ layout: "cover/" })).toEqual(['Unknown cover variant. Use "cover" or "cover/default"']);
+    const cover = 'Unknown cover variant. Use "cover", "cover/default", "cover/centered", "cover/split", or "cover/band"';
+    expect(issues({ layout: "cover/fancy" })).toEqual([cover]);
+    expect(issues({ layout: "cover/" })).toEqual([cover]);
+    expect(issues({ layout: "table/fancy", columns: ["A"], rows: [["1"]] })).toEqual(['Unknown table variant. Use "table" or "table/default"']);
     expect(issues({ layout: "timeline" })).toEqual(['Unknown layout. Use "cover", "content", "two-columns", "cards", "table", or "chart"']);
     expect(issues({})).toEqual(['Unknown layout. Use "cover", "content", "two-columns", "cards", "table", or "chart"']);
+  });
+
+  it("draws cover variants with the same content and only split's decorative panel", () => {
+    for (const variant of ["default", "centered", "split", "band"]) {
+      const html = renderPresentation(deck({ layout: `cover/${variant}`, author: "Author" }));
+      expect(html).toContain(`class="sf-slide sf-layout-cover sf-variant-${variant}"`);
+      expect(html).toContain('<p class="sf-author">Author</p>');
+      expect(html.includes('<div class="sf-cover-panel" aria-hidden="true"></div>')).toBe(variant === "split");
+    }
   });
 
   it("resolves backgrounds from the slide, then family/variant, then family, then default", () => {

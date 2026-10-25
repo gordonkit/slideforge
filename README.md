@@ -111,7 +111,8 @@ in this repository are:
 
 ## Scope and expectations
 
-Phase 1 provides structured authoring, six fixed 16:9 layouts, light/dark themes,
+Phase 1 provides structured authoring, six fixed 16:9 layout families (the cover
+has four variants), light/dark themes,
 HTML rendering/preview, browser-driven PPTX export, layout checks, and offline
 PPTX structure checks. Optional visual comparison independently renders PPTX via
 external LibreOffice Impress and Poppler and writes per-slide JSON/diff images.

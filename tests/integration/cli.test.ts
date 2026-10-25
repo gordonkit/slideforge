@@ -44,6 +44,20 @@ describe('built CLI', () => {
     expect(JSON.parse(validation.stdout).valid).toBe(true);
   }, 180_000);
 
+  it('exports every cover variant without layout issues and with the same editable text', async () => {
+    const output = join(directory, 'variants.pptx');
+    const issues = await exportPresentation(resolve('examples/variants/presentation.json'), { output });
+    expect(issues.filter(issue => issue.rule !== 'layout.fonts')).toEqual([]);
+    const files = unzipSync(await readFile(output));
+    const slides = [1, 2, 3, 4].map(index => strFromU8(files[`ppt/slides/slide${index}.xml`]!));
+    const texts = slides.map(xml => (xml.match(/<a:t>[^<]+<\/a:t>/g) ?? []).length);
+    expect(new Set(texts).size).toBe(1);
+    const shapes = slides.map(xml => (xml.match(/<p:sp>/g) ?? []).length);
+    // split's panel and band's header block are one shape each.
+    expect([shapes[2]! - shapes[0]!, shapes[3]! - shapes[0]!]).toEqual([1, 1]);
+    expect(shapes[1]).toBe(shapes[0]);
+  }, 180_000);
+
   it('documents the default preview port in help', async () => {
     expect((await exec(process.execPath, [cli, '--help'])).stdout).toContain('slideforge preview presentation.json [--port 5180]');
   });

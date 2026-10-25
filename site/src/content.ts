@@ -157,25 +157,25 @@ export const pages: Page[] = [
         },
         bullets: {
           en: [
-            "Six fixed 16:9 layouts with light and dark themes",
+            "Six fixed 16:9 layout families, four cover variants, and light and dark themes",
             "HTML rendering and a loopback Vite preview",
             "Browser-driven export to editable PowerPoint text and shapes",
             "Layout checks, offline PPTX structure checks, and optional visual comparison",
           ],
           "zh-TW": [
-            "六種固定 16:9 版型，支援淺色與深色主題",
+            "六種固定 16:9 版型系列、四種封面變化，支援淺色與深色主題",
             "HTML 輸出與僅限本機的 Vite 預覽",
             "由瀏覽器驅動、匯出可編輯 PowerPoint 文字與圖形",
             "版面檢查、離線 PPTX 結構檢查，以及選用的視覺比對",
           ],
           "zh-CN": [
-            "六种固定 16:9 版式，支持浅色与深色主题",
+            "六种固定 16:9 版式系列、四种封面变体，支持浅色与深色主题",
             "HTML 输出与仅限本机的 Vite 预览",
             "由浏览器驱动、导出可编辑 PowerPoint 文字与图形",
             "版面检查、离线 PPTX 结构检查，以及可选的视觉比对",
           ],
           ja: [
-            "ライトとダークのテーマを備えた 6 種類の固定 16:9 レイアウト",
+            "6 種類の固定 16:9 レイアウトファミリー、4 種類の表紙バリアント、ライトとダークのテーマ",
             "HTML の生成とループバックの Vite プレビュー",
             "ブラウザ経由で編集可能な PowerPoint のテキストと図形へ書き出し",
             "レイアウト検査、オフラインの PPTX 構造検査、任意の視覚比較",
@@ -420,10 +420,10 @@ docker compose -f docker/compose.yaml --profile cli run --rm cli validate /work/
         id: "slides",
         title: { en: "Slides and layouts", "zh-TW": "投影片與版型", "zh-CN": "幻灯片与版式", ja: "スライドとレイアウト" },
         body: {
-          en: "Every slide needs layout and title, and may have subtitle, footer, notes, and background. Notes become PowerPoint speaker notes. layout is a family, or family/variant such as cover/default: the family decides the fields and the variant only how the slide is drawn, so changing it leaves the content unchanged. A bare family is drawn as default, the only variant each family has so far. Each family adds its own fields:",
-          "zh-TW": "每張投影片都需要 layout 與 title，可另加 subtitle、footer、notes 與 background，notes 會成為 PowerPoint 的演講者備忘稿。layout 可以是版型系列，或 cover/default 這類「系列/變化」：系列決定欄位，變化只決定呈現方式，因此換變化不必改內容。只寫系列名稱時使用 default，目前每個系列都只有 default。各系列另有專屬欄位：",
-          "zh-CN": "每张幻灯片都需要 layout 与 title，可另加 subtitle、footer、notes 与 background，notes 会成为 PowerPoint 的演讲者备注。layout 可以是版式系列，或 cover/default 这类“系列/变体”：系列决定字段，变体只决定呈现方式，因此换变体不必改内容。只写系列名称时使用 default，目前每个系列都只有 default。各系列另有专属字段：",
-          ja: "各スライドには layout と title が必要で、subtitle、footer、notes、background も指定できます。notes は PowerPoint の発表者ノートになります。layout はレイアウトのファミリー、または cover/default のような「ファミリー/バリアント」です。ファミリーがフィールドを決め、バリアントは描き方だけを決めるので、バリアントを変えても内容はそのままです。ファミリー名だけなら default で描かれ、現在どのファミリーにも default しかありません。ファミリーごとに次のフィールドが加わります。",
+          en: "Every slide needs layout and title, and may have subtitle, footer, notes, and background. Notes become PowerPoint speaker notes. layout is a family, or family/variant such as cover/default: the family decides the fields and the variant only how the slide is drawn, so changing it leaves the content unchanged. A bare family is drawn as default. cover also has centered, split (an accent panel on the right third), and band (an accent block behind the title); the other families have only default. Each family adds its own fields:",
+          "zh-TW": "每張投影片都需要 layout 與 title，可另加 subtitle、footer、notes 與 background，notes 會成為 PowerPoint 的演講者備忘稿。layout 可以是版型系列，或 cover/default 這類「系列/變化」：系列決定欄位，變化只決定呈現方式，因此換變化不必改內容。只寫系列名稱時使用 default。cover 另有 centered、split（右側三分之一的強調色塊）與 band（標題後方的強調色帶），其他系列只有 default。各系列另有專屬欄位：",
+          "zh-CN": "每张幻灯片都需要 layout 与 title，可另加 subtitle、footer、notes 与 background，notes 会成为 PowerPoint 的演讲者备注。layout 可以是版式系列，或 cover/default 这类“系列/变体”：系列决定字段，变体只决定呈现方式，因此换变体不必改内容。只写系列名称时使用 default。cover 另有 centered、split（右侧三分之一的强调色块）与 band（标题后方的强调色带），其他系列只有 default。各系列另有专属字段：",
+          ja: "各スライドには layout と title が必要で、subtitle、footer、notes、background も指定できます。notes は PowerPoint の発表者ノートになります。layout はレイアウトのファミリー、または cover/default のような「ファミリー/バリアント」です。ファミリーがフィールドを決め、バリアントは描き方だけを決めるので、バリアントを変えても内容はそのままです。ファミリー名だけなら default で描かれます。cover にはほかに centered、split（右側 3 分の 1 の強調色パネル）、band（タイトルの背後の強調色の帯）があり、ほかのファミリーは default だけです。ファミリーごとに次のフィールドが加わります。",
         },
         table: {
           caption: { en: "Layout fields", "zh-TW": "版型欄位", "zh-CN": "版式字段", ja: "レイアウトのフィールド" },
