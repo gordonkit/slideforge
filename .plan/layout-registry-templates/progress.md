@@ -6,7 +6,7 @@
 | Stage 1 Registry 重構 | ✅ 完成 | `[Stage 1]` |
 | Stage 2 `family/variant` 命名 | ✅ 完成 | `[Stage 2]` |
 | Stage 3 Cover variants | ✅ 完成 | `[Stage 3]` |
-| Stage 4 Template schema 與合併 | ⏳ 未開始 | |
+| Stage 4 Template schema 與合併 | ✅ 完成 | `[Stage 4]` |
 | Stage 5 Template 載入與 CLI | ⏳ 未開始 | |
 | Stage 6 新 family（選做） | ⏳ 未開始 | |
 
@@ -91,3 +91,25 @@
 - 偏離計畫：
   - 計畫原本說在 `examples/basic` 加一張；改為另建 `examples/variants`，避免改動 init 範本與「六張投影片」的既有測試與文件。
 - 待決／下一步：Stage 4（template schema 與合併）。
+
+## Stage 4 — Template schema 與合併（2026-10-25）
+
+- 完成：
+  - `src/templates/schema.ts`：`templateSchema`（strict；`name`、`description`、`palette.{light,dark}`、`fontFamily`、`tokens`、`backgrounds`、`variants`）、`parseTemplate`、`mergeTokens`。token 只開放數值、依 group 設上下限；合併後檢查 5 條幾何規則（主垂直加總 = 1080、cover 垂直 ≤ 1080、cover-top ≤ cover-header、footer 在 padding-bottom 內、split panel 寬度）。
+  - `tokens.ts`：`cssVariables(tokens)`、`DesignTokens` 型別；`designCssVariables` 改用它（輸出不變）。
+  - `presentation.ts`：export `backgroundsSchema`、`fontFamilySchema`；`slideBackground(presentation, slide, template?)`，以「同 key 由 presentation 覆蓋 template」合併後再依序查找。
+  - `slideVariant(slide, defaults?)`；`SlideLayout` 接收 `variant`。
+  - `renderPresentation(input, { template })`：palette、字型、token、variant、背景依優先順序套用。
+  - 測試：`tests/unit/templates.test.ts` 22 項。
+  - 文件：新增 `docs/templates.md`；`docs/architecture.md`（RenderOptions、source map）、`docs/design-tokens.md`、`docs/schema.md`、README 四語文件列表、CHANGELOG。
+- 檢查：
+  - `npm run check` → 通過。
+  - `npm run test:unit` → 122 tests 通過。
+  - `npm run build` → 通過。沒有 template 時：variants 範例 HTML 與 Stage 3 位元組相同；basic 範例與 Stage 2 的差異只有 Stage 3 新增的 cover variant CSS 與 `--sf-layout-cover-panel`。
+  - API 實測：basic 範例套用示範 template（amber palette、title 64、radius 0、header 200/content 724、cover → band），Chromium `validateLayout` → 0 issues，截圖確認生效。
+  - integration 未重跑：此階段沒有改 CLI/exporter，而且沒有 template 時 HTML 與前一階段相同。
+- 偏離計畫：
+  - **D5 修改**：template 不含 `theme`。原因：presentation 的 `theme` 在 parse 時預設為 `"light"`，無法分辨作者是否寫了 theme；若改成無預設值，會破壞公開 API 與既有測試。改為 `palette.light` / `palette.dark` 各自覆寫，由 presentation 的 `theme` 選擇。
+  - **D6 細化**：背景是「同 key 合併」，而不是「presentation 整串查完才查 template」；所以 template 的 `cover` 背景不會被 presentation 的 `default` 蓋掉（已寫入 docs/templates.md）。
+  - site 延到 Stage 5 與 JSON/CLI 載入一起更新（計畫允許）。
+- 待決／下一步：Stage 5。重點：template 相對路徑資源的解析（export 用 file URL；preview 需由 Vite 提供 template 目錄，如 `/@fs/` 或另設路徑）、內建 template 隨套件發佈、`init --template`、Docker。

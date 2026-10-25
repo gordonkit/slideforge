@@ -25,6 +25,7 @@ browser, not as a Node DOM simulation.
 | `src/schemas/presentation.ts` | Strict content validation and inferred types, built from the layout registry |
 | `src/schemas/fields.ts` | Text, image, background, content block, and common slide field schemas |
 | `src/schemas/background.ts` | Studio share link detection and `/render` URLs |
+| `src/templates/schema.ts` | Template schema, token bounds and geometry checks, token merging |
 | `src/themes/` | Fixed slide dimensions, palettes, shared CSS |
 | `src/components/` | Content, tables, bars, title/footer/frame |
 | `src/layouts/registry.ts` | Layout families, their variants and slide schemas |
@@ -69,8 +70,11 @@ family. The `LayoutFamily` and `LayoutName` types match them.
 ### `renderPresentation(input: unknown, options?: RenderOptions): string`
 
 Validates content and returns a complete HTML string, including CSS and metadata.
-`RenderOptions` is `{ baseUrl?: string }`: a caller-controlled absolute
-HTTP(S)/file URL inserted as `<base>`. Without it, browser URL resolution applies.
+`RenderOptions` is `{ baseUrl?: string; template?: unknown }`. `baseUrl` is a
+caller-controlled absolute HTTP(S)/file URL inserted as `<base>`. Without it,
+browser URL resolution applies. `template` is validated with `parseTemplate` and
+applied as described in [templates](templates.md); without it the output is
+unchanged.
 It does not copy assets or launch a browser. For a JSON file, supply its directory
 as a trailing-slash file URL to match the CLI's local asset behavior.
 

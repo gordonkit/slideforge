@@ -52,8 +52,15 @@ export const designTokens = Object.freeze({
   border: borderTokens, chart: chartTokens,
 });
 
-export const designCssVariables = Object.freeze(Object.fromEntries(
-  Object.entries(designTokens).flatMap(([group, tokens]) => Object.entries(tokens).map(
-    ([name, value]) => [`--sf-${group}-${name}`, typeof value === "number" ? `${value}px` : value],
-  )),
-));
+export type DesignTokens = { readonly [G in keyof typeof designTokens]: { readonly [K in keyof (typeof designTokens)[G]]: (typeof designTokens)[G][K] extends number ? number : string } };
+
+/** Flattens token groups into `--sf-<group>-<name>`, adding `px` to numbers. */
+export function cssVariables(tokens: DesignTokens): Readonly<Record<string, string>> {
+  return Object.freeze(Object.fromEntries(
+    Object.entries(tokens).flatMap(([group, values]) => Object.entries(values).map(
+      ([name, value]) => [`--sf-${group}-${name}`, typeof value === "number" ? `${value}px` : value],
+    )),
+  ));
+}
+
+export const designCssVariables = cssVariables(designTokens);

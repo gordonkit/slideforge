@@ -18,6 +18,12 @@ All notable changes to this project will be documented in this file. The format 
 - Cover variants `cover/centered`, `cover/split` (an accent panel on the right third), and
   `cover/band` (a full-bleed accent block behind the title), shown in `examples/variants`.
   The other families have only `default`. `layoutTokens` gains `cover-panel: 640`.
+- Templates: data that sets a presentation's look apart from its content, passed as
+  `renderPresentation(input, { template })`. A template can override each theme's palette,
+  the font family, numeric design tokens within bounds that keep the canvas geometry,
+  backgrounds, and the variant each family's bare-name slides are drawn with. See
+  `docs/templates.md`. `templateSchema`, `parseTemplate`, `mergeTokens`, and `cssVariables`
+  are exported, and `slideBackground` takes an optional template.
 - `docker/Dockerfile` and a `cli` Compose profile run the CLI with Node.js, the pinned
   Chromium, and Noto CJK/Liberation fonts bundled, as a non-root user with a read-only root
   filesystem and one `/work` mount. `preview` is not supported in the container, and the

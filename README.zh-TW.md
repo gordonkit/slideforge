@@ -89,6 +89,7 @@ repository 內的詳細參考文件（英文）：
 
 - [CLI 用法](docs/cli.md)
 - [JSON schema 參考](docs/schema.md)
+- [Templates](docs/templates.md)
 - [Design tokens](docs/design-tokens.md)
 - [元件與版型](docs/components.md)
 - [架構、API 與上游參考](docs/architecture.md)

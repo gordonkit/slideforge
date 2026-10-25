@@ -11,9 +11,14 @@ export const slideSchema = z.discriminatedUnion("layout", layoutSlideSchemas, {
 /** A valid `layout` value: a family, or `family/variant`. */
 export type LayoutName = z.infer<typeof slideSchema>["layout"];
 
-const backgroundsSchema = z.object(Object.fromEntries(
+/** Background sources keyed by `default`, a family, or `family/variant`. */
+export const backgroundsSchema = z.object(Object.fromEntries(
   ["default", ...layoutNames].map((key) => [key, backgroundSourceSchema.optional()]),
 ) as Record<"default" | LayoutName, z.ZodOptional<typeof backgroundSourceSchema>>).strict();
+
+/** A local font family list, not a CSS declaration or font URL. */
+export const fontFamilySchema = xmlText.trim().min(1).max(200)
+  .regex(/^[\p{L}\p{N} ,'"\-]+$/u, "Use local font family names, not CSS declarations");
 
 export const presentationSchema = z.object({
   metadata: z.object({
@@ -23,8 +28,7 @@ export const presentationSchema = z.object({
     lang: xmlText.regex(/^[a-z]{2,8}(?:-[a-z0-9]{1,8})*$/i, 'Use a language tag such as "en", "zh-Hant", or "ja"').default("en"),
   }).strict(),
   theme: z.enum(["light", "dark"]).default("light"),
-  fontFamily: xmlText.trim().min(1).max(200)
-    .regex(/^[\p{L}\p{N} ,'"\-]+$/u, "Use local font family names, not CSS declarations").optional(),
+  fontFamily: fontFamilySchema.optional(),
   backgrounds: backgroundsSchema.optional(),
   slides: z.array(slideSchema).min(1).max(200),
 }).strict();
@@ -37,13 +41,22 @@ export function parsePresentation(input: unknown): Presentation {
   return presentationSchema.parse(input);
 }
 
+/** The parts of a template that decide a slide's variant and background. */
+export interface SlideDesign {
+  backgrounds?: Partial<Record<string, string>> | undefined;
+  variants?: Partial<Record<string, string>> | undefined;
+}
+
 /**
- * A slide's own background, else its `family/variant`'s, else its family's, else the presentation
- * default; `"none"` opts out. A bare family name is drawn as, and matches, `family/default`.
+ * A slide's own background, else its `family/variant`'s, else its family's, else the default;
+ * `"none"` opts out. The variant is the one the slide is drawn with, so a bare family name matches
+ * `family/default` or the template's variant. A presentation's `backgrounds` entry replaces the
+ * template's entry with the same key before this lookup.
  */
-export function slideBackground(presentation: Presentation, slide: Slide): string | undefined {
+export function slideBackground(presentation: Presentation, slide: Slide, template: SlideDesign = {}): string | undefined {
   const family = layoutFamily(slide.layout);
-  const backgrounds: Partial<Record<string, string>> = presentation.backgrounds ?? {};
-  const source = slide.background ?? backgrounds[`${family}/${slideVariant(slide)}`] ?? backgrounds[family] ?? backgrounds.default;
+  const backgrounds: Partial<Record<string, string>> = { ...template.backgrounds, ...presentation.backgrounds };
+  const variant = slideVariant(slide, template.variants);
+  const source = slide.background ?? backgrounds[`${family}/${variant}`] ?? backgrounds[family] ?? backgrounds.default;
   return source === "none" ? undefined : source;
 }

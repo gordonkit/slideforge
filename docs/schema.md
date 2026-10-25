@@ -181,8 +181,9 @@ names (`cover`, `content`, `two-columns`, `cards`, `table`, `chart`), and every
 }
 ```
 
-`slideBackground(presentation, slide)` returns the resolved source, or
-`undefined`. Backgrounds are exported as raster PowerPoint slide backgrounds;
+`slideBackground(presentation, slide, template?)` returns the resolved source, or
+`undefined`. A [template](templates.md#precedence) adds its own `backgrounds` and
+`variants` to this lookup. Backgrounds are exported as raster PowerPoint slide backgrounds;
 see [architecture](architecture.md#slide-backgrounds) and
 [limitations](limitations.md#backgrounds).
 

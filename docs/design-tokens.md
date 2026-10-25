@@ -3,8 +3,9 @@
 Sources: [`src/themes/tokens.ts`](../src/themes/tokens.ts),
 [`src/themes/slides.css`](../src/themes/slides.css) for shared styles, and each
 layout family's `src/layouts/<family>/<family>.css`. Phase 1 exposes fixed sizing,
-two palettes, and a presentation-level local font family—not a general theme
-configuration schema.
+two palettes, and a presentation-level local font family. A
+[template](templates.md) can adjust palettes, the font family, and numeric
+tokens within bounds; it is not a general CSS theme.
 
 ## Canvas
 
@@ -96,5 +97,8 @@ strings unchanged. For example, `spacingTokens.column` becomes
 | `chartTokens` / `chart` | `height: 39`, `label: 285`, `value: 210`, `explanation-label: 210`, `explanation-value: 150` |
 
 For custom HTML you may reuse these maps and CSS conventions, but arbitrary
-overrides can affect export fidelity and invalidate geometry checks. JSON has
-no token-override field.
+overrides can affect export fidelity and invalidate geometry checks. Presentation
+JSON has no token-override field; a [template](templates.md#tokens) can override
+numeric tokens within bounds that keep the canvas geometry. `mergeTokens(overrides)`
+returns the merged groups and `cssVariables(tokens)` flattens any token groups the
+same way as `designCssVariables`.

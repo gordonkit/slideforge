@@ -3,13 +3,21 @@ import type { CSSProperties } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { parsePresentation, slideBackground } from "../schemas/presentation.js";
 import { layoutStylesheet, SlideLayout } from "../layouts/index.js";
-import { defaultFontFamily, designCssVariables, SLIDE_SIZE, themeTokens } from "../themes/tokens.js";
+import { slideVariant } from "../layouts/registry.js";
+import { mergeTokens, parseTemplate } from "../templates/schema.js";
+import { cssVariables, defaultFontFamily, SLIDE_SIZE, themeTokens } from "../themes/tokens.js";
 
 const stylesheet = readFileSync(new URL("../themes/slides.css", import.meta.url), "utf8") + layoutStylesheet;
 
 export interface RenderOptions {
   /** Optional caller-controlled base URL for resolving relative image assets. */
   baseUrl?: string;
+  /**
+   * Optional template object (see `templateSchema`). Its relative background sources resolve
+   * against the document like the presentation's own; the caller rewrites them if they belong
+   * to another directory.
+   */
+  template?: unknown;
 }
 
 export function renderPresentation(input: unknown, options: RenderOptions = {}): string {
@@ -17,10 +25,11 @@ export function renderPresentation(input: unknown, options: RenderOptions = {}):
     throw new Error("The asset base URL must use HTTP, HTTPS, or file");
   }
   const presentation = parsePresentation(input);
+  const template = options.template === undefined ? undefined : parseTemplate(options.template);
   const { metadata } = presentation;
-  const palette = themeTokens[presentation.theme];
+  const palette = { ...themeTokens[presentation.theme], ...template?.palette?.[presentation.theme] };
   const style = {
-    ...designCssVariables,
+    ...cssVariables(mergeTokens(template?.tokens)),
     "--slide-width": `${SLIDE_SIZE.widthPx}px`,
     "--slide-height": `${SLIDE_SIZE.heightPx}px`,
     "--sf-background": palette.background,
@@ -31,7 +40,7 @@ export function renderPresentation(input: unknown, options: RenderOptions = {}):
     "--sf-canvas": palette.canvas,
     "--sf-surface": palette.surface,
     "--sf-border": palette.border,
-    fontFamily: presentation.fontFamily ?? defaultFontFamily,
+    fontFamily: presentation.fontFamily ?? template?.fontFamily ?? defaultFontFamily,
   } as CSSProperties;
   return "<!doctype html>" + renderToStaticMarkup(
     <html lang={metadata.lang}>
@@ -47,7 +56,9 @@ export function renderPresentation(input: unknown, options: RenderOptions = {}):
       </head>
       <body style={style} data-theme={presentation.theme}>
         <main className="sf-presentation">
-          {presentation.slides.map((slide, index) => <SlideLayout key={index} slide={slide} number={index + 1} total={presentation.slides.length} background={slideBackground(presentation, slide)} />)}
+          {presentation.slides.map((slide, index) => <SlideLayout key={index} slide={slide}
+            variant={slideVariant(slide, template?.variants)} number={index + 1} total={presentation.slides.length}
+            background={slideBackground(presentation, slide, template)} />)}
         </main>
       </body>
     </html>,

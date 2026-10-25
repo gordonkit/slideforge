@@ -94,6 +94,7 @@ if (!report.valid) process.exitCode = 1;
 
 - [CLI の使い方](docs/cli.md)
 - [JSON スキーマのリファレンス](docs/schema.md)
+- [テンプレート](docs/templates.md)
 - [デザイントークン](docs/design-tokens.md)
 - [コンポーネントとレイアウト](docs/components.md)
 - [アーキテクチャ、API、上流の参考資料](docs/architecture.md)

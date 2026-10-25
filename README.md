@@ -99,6 +99,7 @@ in this repository are:
 
 - [CLI usage](docs/cli.md)
 - [JSON schema reference](docs/schema.md)
+- [Templates](docs/templates.md)
 - [Design tokens](docs/design-tokens.md)
 - [Components and layouts](docs/components.md)
 - [Architecture, APIs, and upstream references](docs/architecture.md)

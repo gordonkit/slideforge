@@ -89,6 +89,7 @@ if (!report.valid) process.exitCode = 1;
 
 - [CLI 用法](docs/cli.md)
 - [JSON schema 参考](docs/schema.md)
+- [Templates](docs/templates.md)
 - [Design tokens](docs/design-tokens.md)
 - [组件与版式](docs/components.md)
 - [架构、API 与上游参考](docs/architecture.md)

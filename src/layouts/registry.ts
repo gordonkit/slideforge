@@ -36,9 +36,12 @@ export function layoutVariant(name: string): string | undefined {
   return slash < 0 ? undefined : name.slice(slash + 1);
 }
 
-/** The variant a slide is drawn with. */
-export function slideVariant(slide: { layout: string }): string {
-  return layoutVariant(slide.layout) ?? "default";
+/**
+ * The variant a slide is drawn with: the one its layout names, else the family's entry in
+ * `defaults` (a template's `variants`), else `default`.
+ */
+export function slideVariant(slide: { layout: string }, defaults?: Partial<Record<string, string>>): string {
+  return layoutVariant(slide.layout) ?? defaults?.[layoutFamily(slide.layout)] ?? "default";
 }
 
 /** `"a", "b", or "c"`, for error messages that name the valid values. */

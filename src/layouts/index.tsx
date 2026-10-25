@@ -26,11 +26,10 @@ export const layoutStylesheet = layoutFamilies
   .map((family) => readFileSync(new URL(`./${family}/${family}.css`, import.meta.url), "utf8"))
   .join("");
 
-export function SlideLayout({ slide, number, total, background }: {
-  slide: Slide; number: number; total: number; background?: string | undefined;
+export function SlideLayout({ slide, variant = slideVariant(slide), number, total, background }: {
+  slide: Slide; variant?: string; number: number; total: number; background?: string | undefined;
 }) {
   const Layout = renderers[layoutFamily(slide.layout)] as (props: { slide: Slide; variant: string }) => ReactNode;
-  const variant = slideVariant(slide);
   return <SlideComponent slide={slide} variant={variant} number={number} total={total} background={background}>
     <Layout slide={slide} variant={variant} />
   </SlideComponent>;
