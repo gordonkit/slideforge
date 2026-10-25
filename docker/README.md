@@ -38,6 +38,22 @@ Keep a deck's JSON and its asset folder inside the mounted folder; relative
 images are resolved from the JSON's folder inside the container, and files
 outside the mount do not exist there.
 
+### Backgrounds
+
+[Slide backgrounds](../docs/schema.md#backgrounds) work in the container,
+including Math Background Studio share links, when the image is built from
+source that includes them; pass `--build` if your local image is older.
+
+- Image backgrounds follow the asset rule above: keep the files inside the
+  mounted folder and reference them with paths relative to the JSON.
+- `https://bg.gordonkit.com/studio#d=…` links load the studio's render page
+  during export, so the container needs network access to `bg.gordonkit.com`.
+  Compose's default network allows it. Without it, export fails with a message
+  naming the slide whose background could not be drawn.
+- A loopback studio link such as `http://localhost:5173/studio#d=…` points at
+  the container itself, not at a dev server on the host, so it fails in the
+  container. Use the `bg.gordonkit.com` link, or export on the host.
+
 Without Compose:
 
 ```console
