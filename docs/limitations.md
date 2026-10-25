@@ -2,8 +2,8 @@
 
 ## Phase 1 boundaries
 
-- Six fixed 16:9 layout families (with four `cover` variants and `default` for the
-  rest), light/dark palettes, plain text, lists, images, tables,
+- A fixed set of 16:9 layout families and variants (listed in
+  [schema](schema.md#layout-names)), light/dark palettes, plain text, lists, images, tables,
   and a single-series horizontal bar representation. No slide editor,
   template marketplace, arbitrary schema styling, or native Office chart API.
 - [Templates](templates.md) are data: palettes, a font family, bounded numeric

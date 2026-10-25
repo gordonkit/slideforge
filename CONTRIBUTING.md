@@ -72,15 +72,30 @@ folder under `src/layouts/`:
    `.superRefine`.
 2. `render.tsx` exports a component that takes `LayoutProps<"<family>">` and returns
    the slide's content region. The frame, title, footer, and background come from `Slide`.
-3. `<family>.css` holds the family's rules, using only `--sf-*` tokens. Leave it as a
-   comment if the shared styles in `src/themes/slides.css` are enough.
+3. `<family>.css` holds the family's rules, using only `--sf-*` tokens; add a token to
+   `src/themes/tokens.ts` for a new size rather than a literal. Leave the file as a
+   comment if the shared styles in `src/themes/slides.css` are enough. Scope variant
+   rules as `.sf-variant-<variant>.sf-layout-<family>`.
 4. List the definition in `layouts` in `src/layouts/registry.ts` and its renderer in
    `src/layouts/index.tsx`. TypeScript reports a family with no renderer.
 
-The schema, the unknown-layout error, `backgrounds` keys, and the stylesheet follow from
-the registry. Add the family to `examples/basic` and the tests, export it to check layout
-issues and the PPTX report, and document it in `docs/schema.md`, `docs/components.md`,
-and all four locales of `site/src/content.ts`.
+The schema, the unknown-layout and unknown-variant errors, `backgrounds` keys, template
+`variants` keys, and the stylesheet follow from the registry. Then:
+
+- add one slide of the family to `examples/basic`, which has one slide per family in
+  registry order (tests compare it with `layoutFamilies`);
+- add unit tests for the fields, rendered markup, and each variant, and export the
+  slides to check layout issues, the PPTX report, and a rendering;
+- document it in `docs/schema.md` (fields and variants), `docs/components.md`,
+  `docs/design-tokens.md` for new tokens, `CHANGELOG.md`, and both layout tables in all
+  four locales of `site/src/content.ts`.
+
+Describe the set of families without a count ("each layout family") so that a new
+family does not mean editing every place that states how many there are.
+
+Adding a variant to an existing family is the same without the new folder: list it in
+the family's `variants`, give it CSS (and markup in `render.tsx` if needed), and add it
+to the variants table in `docs/schema.md`.
 
 ## Dependencies and licensing
 

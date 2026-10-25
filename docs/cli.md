@@ -26,7 +26,7 @@ Copies `examples/basic/presentation.json` to the requested location; default:
 `<JSON-basename>-assets/diagram.svg` beside the new JSON, rewriting its image
 source to that relative URL. Existing JSON and diagram files are not overwritten.
 The JSON's parent directory must already exist; the asset directory is created
-if necessary. For a working six-layout starter:
+if necessary. The example has one slide per layout family. For a working starter:
 
 ```sh
 node dist/cli/index.js init my-deck.json

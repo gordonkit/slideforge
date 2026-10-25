@@ -40,7 +40,7 @@ describe("template schema", () => {
     [{ name: "x", tokens: { colors: {} } }, "tokens"],
     [{ name: "x", variants: { cover: "fancy" } }, "variants.cover"],
     [{ name: "x", variants: { timeline: "default" } }, "variants"],
-    [{ name: "x", backgrounds: { quote: "a.png" } }, "backgrounds"],
+    [{ name: "x", backgrounds: { timeline: "a.png" } }, "backgrounds"],
     [{ name: "x", fontFamily: "Arial; color: red" }, "fontFamily"],
   ])("rejects %j at %s", (input, path) => {
     const result = templateSchema.safeParse(input);

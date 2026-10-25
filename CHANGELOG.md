@@ -17,7 +17,11 @@ All notable changes to this project will be documented in this file. The format 
   listed in `src/layouts/registry.ts`.
 - Cover variants `cover/centered`, `cover/split` (an accent panel on the right third), and
   `cover/band` (a full-bleed accent block behind the title), shown in `examples/variants`.
-  The other families have only `default`. `layoutTokens` gains `cover-panel: 640`.
+  `layoutTokens` gains `cover-panel: 640`.
+- A `quote` layout family: a required `quote` (up to 1,000 characters) and an optional
+  `attribution`, with `default` (beside an accent bar) and `centered` variants.
+  `examples/basic` ends with a quote slide, so `init` now creates seven slides.
+  `typographyTokens` gains `quote: 54` and `borderTokens` gains `accent: 6`.
 - Templates: data that sets a presentation's look apart from its content. A template can
   override each theme's palette, the font family, numeric design tokens within bounds that
   keep the canvas geometry, backgrounds, and the variant each family's bare-name slides are

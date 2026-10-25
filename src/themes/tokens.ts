@@ -36,13 +36,13 @@ export const spacingTokens = Object.freeze({
 export const typographyTokens = Object.freeze({
   title: 60, subtitle: 33, body: 36, caption: 25.5, "card-title": 39,
   "card-body": 30, table: 31.5, chart: 31.5, footer: 24, "cover-title": 90,
-  "cover-subtitle": 45, author: 39,
+  "cover-subtitle": 45, author: 39, quote: 54,
   "title-leading": "1.2", "subtitle-leading": "1.35", "body-leading": "1.45",
   bold: "700",
 });
 
 // Borders round to whole device pixels, so 2 px keeps them crisp (1 pt in PowerPoint).
-export const borderTokens = Object.freeze({ width: 2, radius: 18 });
+export const borderTokens = Object.freeze({ width: 2, radius: 18, accent: 6 });
 export const chartTokens = Object.freeze({
   height: 39, label: 285, value: 210, "explanation-label": 210, "explanation-value": 150,
 });

@@ -9,6 +9,7 @@ import { strFromU8, unzipSync } from 'fflate';
 import { chromium } from 'playwright';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { validatePptx } from '../../src/validators/pptx.js';
+import { layoutFamilies } from '../../src/layouts/registry.js';
 import { exportPresentation, previewPresentation } from '../../dist/index.js';
 
 const exec = promisify(execFile);
@@ -18,7 +19,7 @@ beforeAll(async () => { directory = await mkdtemp(join(tmpdir(), 'slideforge-tes
 afterAll(async () => { await rm(directory, { recursive: true, force: true }); });
 
 describe('built CLI', () => {
-  it('initializes without overwriting existing content, builds and exports six editable slides', async () => {
+  it('initializes without overwriting existing content, builds and exports an editable slide per family', async () => {
     const input = join(directory, 'presentation.json');
     const html = join(directory, 'presentation.html');
     const pptx = join(directory, 'presentation.pptx');
@@ -31,7 +32,7 @@ describe('built CLI', () => {
     const data = await readFile(pptx);
     const report = validatePptx(data);
     expect(report.valid, JSON.stringify(report.issues)).toBe(true);
-    expect(report.slideCount).toBe(6);
+    expect(report.slideCount).toBe(layoutFamilies.length);
     expect(report.editableTextCount).toBeGreaterThan(12);
     expect(report.shapeCount).toBeGreaterThan(12);
     const files = unzipSync(data);
@@ -277,7 +278,7 @@ describe('templates', () => {
     await exec(process.execPath, [cli, 'export', input, '--output', pptx], { timeout: 120_000 });
     const data = await readFile(pptx);
     expect(validatePptx(data).valid).toBe(true);
-    expect(backgroundCount(data)).toBe(6);
+    expect(backgroundCount(data)).toBe(layoutFamilies.length);
 
     await expect(exec(process.execPath, [cli, 'init', join(directory, 'unknown.json'), '--template', 'nope']))
       .rejects.toMatchObject({ code: 1, stderr: expect.stringContaining('Unknown template "nope". Use "corporate" or "default"') });

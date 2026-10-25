@@ -6,8 +6,9 @@ changing the framework.
 
 - Use Node.js 24+, ESM imports, and strict TypeScript. Relative TypeScript module
   imports use `.js` extensions for emitted NodeNext code.
-- Keep presentation content in the strict schema. Use the six existing layouts
-  and shared tokens/components; do not invent schema fields or inline CSS.
+- Keep presentation content in the strict schema. Use the existing layout
+  families and variants (`src/layouts/registry.ts`) and shared tokens/components;
+  do not invent schema fields or inline CSS. Prefer a template to restyle a deck.
 - Start decks with `init`, retain relative asset directories, and keep content
   short enough for the fixed 1920 × 1080 canvas.
 - Build before invoking `node dist/cli/index.js`. Use existing check/unit/

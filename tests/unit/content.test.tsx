@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
 import { imageSourceSchema, parsePresentation, presentationSchema } from "../../src/schemas/presentation.js";
 import { renderPresentation } from "../../src/renderers/html.js";
+import { layoutFamilies } from "../../src/layouts/registry.js";
 import { SLIDE_SIZE, defaultFontFamily, designTokens, themeTokens } from "../../src/themes/tokens.js";
 import { Slide, SlideSubtitle, SlideContent, SlideCard, SlideColumns, SlideImage, SlideTable, SlideChart } from "../../src/components/index.js";
 
@@ -10,9 +11,9 @@ const basic: unknown = JSON.parse(readFileSync(new URL("../../examples/basic/pre
 const minimal = { metadata: { title: "Demo" }, slides: [{ layout: "cover", title: "Hello" }] };
 
 describe("presentation content", () => {
-  it("validates all six layouts and supplies defaults", () => {
+  it("validates one slide per layout family and supplies defaults", () => {
     const presentation = parsePresentation(basic);
-    expect(presentation.slides.map((slide) => slide.layout)).toEqual(["cover", "content", "two-columns", "cards", "table", "chart"]);
+    expect(presentation.slides.map((slide) => slide.layout)).toEqual(layoutFamilies);
     expect(parsePresentation(minimal).theme).toBe("light");
     expect(parsePresentation(minimal).metadata.lang).toBe("en");
   });
@@ -69,10 +70,10 @@ describe("presentation content", () => {
 });
 
 describe("HTML renderer", () => {
-  it("renders six fixed-size slides, metadata, local images, notes, and editable chart bars", () => {
+  it("renders a fixed-size slide per family, metadata, local images, notes, and editable chart bars", () => {
     const html = renderPresentation(basic);
-    expect(html.match(/data-pptx="slide"/g)).toHaveLength(6);
-    for (const layout of ["cover", "content", "two-columns", "cards", "table", "chart"]) {
+    expect(html.match(/data-pptx="slide"/g)).toHaveLength(layoutFamilies.length);
+    for (const layout of layoutFamilies) {
       expect(html).toContain(`class="sf-slide sf-layout-${layout} sf-variant-default" data-pptx="slide" data-layout="${layout}" data-variant="default"`);
       expect(html).not.toContain(`class="sf-slide sf-${layout}"`);
     }

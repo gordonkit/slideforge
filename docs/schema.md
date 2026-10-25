@@ -66,6 +66,7 @@ variant, so `"<family>"` and `"<family>/default"` render the same.
 | Family | Variants |
 | --- | --- |
 | `cover` | `default` (left-aligned), `centered` (centered title, subtitle, and author), `split` (accent panel on the right third; text and footer stay left of it), `band` (full-bleed accent block behind the title and subtitle, which use the on-accent color) |
+| `quote` | `default` (left-aligned beside an accent bar), `centered` (centered, without the bar) |
 | `content`, `two-columns`, `cards`, `table`, `chart` | `default` |
 
 [`examples/variants/presentation.json`](../examples/variants/presentation.json)
@@ -74,7 +75,7 @@ shapes in the accent color; with a slide background they are drawn over it.
 
 The value is kept as written after parsing. An unknown variant of a known family
 is reported with that family's valid names, such as
-`Unknown cover variant. Use "cover" or "cover/default"`.
+`Unknown quote variant. Use "quote", "quote/default", or "quote/centered"`.
 
 ## Layout-specific fields
 
@@ -86,6 +87,7 @@ is reported with that family's valid names, such as
 | `"cards"` | Required `cards`: 1–6 objects, each with trimmed nonempty `title` (max 200) and `blocks` (1–12) |
 | `"table"` | Required `columns` (1–8 trimmed nonempty strings, max 200 each) and `rows` (1–14 arrays of 1–8 string cells, max 2,000 each) |
 | `"chart"` | Required `data` (1–10 `{ "label", "value" }` objects); optional `unit` string, max 40; optional `blocks` (0–4 content blocks, default `[]`) |
+| `"quote"` | Required `quote`: trimmed nonempty string, max 1,000; optional `attribution` string, max 10,000 |
 
 Every table row must contain exactly one cell per column. Empty table cell
 strings are allowed. Chart labels are trimmed, nonempty, max 100 characters;
@@ -94,7 +96,8 @@ appended directly to values; include a leading space for a separated suffix.
 Charts are single-series HTML/CSS bars, not native Office charts.
 When chart `blocks` are present, they form a right-hand explanation column
 beside the bars (2:1 chart/explanation proportions); an empty array keeps a
-full-width chart.
+full-width chart. A quote is plain text drawn larger than body text, vertically
+centered in the content region; keep it to a few lines, since longer quotes clip.
 
 ## Content blocks
 
@@ -152,9 +155,8 @@ that is set:
 A bare family name is drawn as `default`, so `backgrounds["cover/default"]` also
 applies to `"layout": "cover"` slides. A slide with `"background": "none"` has no
 background even when the presentation sets one, and shows the theme's slide color.
-`backgrounds` is a strict object whose optional keys are `default`, the six family
-names (`cover`, `content`, `two-columns`, `cards`, `table`, `chart`), and every
-`family/variant` name. Each value, and a slide's `background`, is a background source:
+`backgrounds` is a strict object whose optional keys are `default`, every family
+name, and every `family/variant` name. Each value, and a slide's `background`, is a background source:
 
 - An image source with the same rules as the `image` block's `src`. It is drawn
   with `object-fit: cover`, so an image that is not 16:9 is cropped, not stretched.
@@ -208,6 +210,6 @@ see [architecture](architecture.md#slide-backgrounds) and
 }
 ```
 
-For all six layouts and multilingual content, use
+For one slide of every layout family and multilingual content, use
 [`examples/basic/presentation.json`](../examples/basic/presentation.json) or the
 CLI `init` command.

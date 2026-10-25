@@ -6,8 +6,8 @@ import { renderPresentation } from "../../src/renderers/html.js";
 import { parsePresentation, presentationSchema, slideBackground } from "../../src/schemas/presentation.js";
 
 describe("layout registry", () => {
-  it("lists the six families in documentation order", () => {
-    expect(layoutFamilies).toEqual(["cover", "content", "two-columns", "cards", "table", "chart"]);
+  it("lists the families in documentation order", () => {
+    expect(layoutFamilies).toEqual(["cover", "content", "two-columns", "cards", "table", "chart", "quote"]);
   });
 
   it("gives every family a default variant, a schema keyed by its name, a renderer, and a stylesheet", () => {
@@ -67,8 +67,8 @@ describe("family/variant layout names", () => {
     expect(issues({ layout: "cover/fancy" })).toEqual([cover]);
     expect(issues({ layout: "cover/" })).toEqual([cover]);
     expect(issues({ layout: "table/fancy", columns: ["A"], rows: [["1"]] })).toEqual(['Unknown table variant. Use "table" or "table/default"']);
-    expect(issues({ layout: "timeline" })).toEqual(['Unknown layout. Use "cover", "content", "two-columns", "cards", "table", or "chart"']);
-    expect(issues({})).toEqual(['Unknown layout. Use "cover", "content", "two-columns", "cards", "table", or "chart"']);
+    expect(issues({ layout: "timeline" })).toEqual(['Unknown layout. Use "cover", "content", "two-columns", "cards", "table", "chart", or "quote"']);
+    expect(issues({})).toEqual(['Unknown layout. Use "cover", "content", "two-columns", "cards", "table", "chart", or "quote"']);
   });
 
   it("draws cover variants with the same content and only split's decorative panel", () => {
@@ -78,6 +78,21 @@ describe("family/variant layout names", () => {
       expect(html).toContain('<p class="sf-author">Author</p>');
       expect(html.includes('<div class="sf-cover-panel" aria-hidden="true"></div>')).toBe(variant === "split");
     }
+  });
+
+  it("validates and draws quote slides", () => {
+    const slide = { layout: "quote", quote: "Simple things should be simple.", attribution: "Alan Kay" };
+    const html = renderPresentation(deck(slide));
+    expect(html).toContain('class="sf-slide sf-layout-quote sf-variant-default"');
+    expect(html).toContain('<figure class="sf-quote"><blockquote><p>Simple things should be simple.</p></blockquote><figcaption>Alan Kay</figcaption></figure>');
+    expect(renderPresentation(deck({ ...slide, layout: "quote/centered" }))).toContain("sf-variant-centered");
+    expect(renderPresentation(deck({ layout: "quote", quote: "No attribution" }))).not.toContain("<figcaption>");
+    const issues = (input: object) => presentationSchema.safeParse(deck(input)).error?.issues.map((issue) => `${issue.path.join(".")}: ${issue.message}`);
+    expect(issues({ layout: "quote" })).toEqual(["slides.0.quote: Invalid input: expected string, received undefined"]);
+    expect(issues({ layout: "quote", quote: "  " })?.[0]).toMatch(/^slides\.0\.quote: /);
+    expect(issues({ layout: "quote", quote: "x".repeat(1001) })?.[0]).toMatch(/^slides\.0\.quote: /);
+    expect(issues({ layout: "quote", quote: "x", blocks: [] })).toEqual(['slides.0: Unrecognized key: "blocks"']);
+    expect(issues({ layout: "quote/split", quote: "x" })).toEqual(['slides.0.layout: Unknown quote variant. Use "quote", "quote/default", or "quote/centered"']);
   });
 
   it("resolves backgrounds from the slide, then family/variant, then family, then default", () => {

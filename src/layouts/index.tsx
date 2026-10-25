@@ -6,6 +6,7 @@ import { CardsLayout } from "./cards/render.js";
 import { ChartLayout } from "./chart/render.js";
 import { ContentLayout } from "./content/render.js";
 import { CoverLayout } from "./cover/render.js";
+import { QuoteLayout } from "./quote/render.js";
 import { layoutFamilies, layoutFamily, slideVariant, type LayoutFamily } from "./registry.js";
 import { TableLayout } from "./table/render.js";
 import { TwoColumnsLayout } from "./two-columns/render.js";
@@ -19,6 +20,7 @@ const renderers: { [F in LayoutFamily]: (props: LayoutProps<F>) => ReactNode } =
   cards: CardsLayout,
   table: TableLayout,
   chart: ChartLayout,
+  quote: QuoteLayout,
 };
 
 /** Each family's `<family>.css`, in registry order, appended after the shared stylesheet. */

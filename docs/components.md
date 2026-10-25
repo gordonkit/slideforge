@@ -58,6 +58,7 @@ schema, renderer, and stylesheet, and is listed in `src/layouts/registry.ts`:
 | `cards` | Three-column grid containing 1–6 titled cards |
 | `table` | `SlideTable` |
 | `chart` | `SlideChart`, optionally beside explanatory `ContentBlocks` |
+| `quote` | `figure.sf-quote` with the quote in a `blockquote` and the attribution in a `figcaption` |
 
 See [schema](schema.md) for exact field names and bounds and
 [design tokens](design-tokens.md) for sizes.

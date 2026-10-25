@@ -27,7 +27,7 @@ PUPPETEER_SKIP_DOWNLOAD=true npm ci
 npx playwright install --with-deps chromium
 npm run build
 
-# 创建含六种版式的完整示例，以及它的图片目录。
+# 创建每个版式系列各一张幻灯片的示例，以及它的图片目录。
 node dist/cli/index.js init presentation.json
 node dist/cli/index.js build presentation.json --output presentation.html
 node dist/cli/index.js preview presentation.json --port 5180
@@ -102,7 +102,7 @@ if (!report.valid) process.exitCode = 1;
 
 ## 范围与预期
 
-第一阶段提供结构化编写、六种固定 16:9 版式系列（封面有四种变体）、浅色／深色主题、不必修改内容即可换外观的纯数据模板（`init --template corporate`）、HTML 渲染与预览、由浏览器驱动的 PPTX
+第一阶段提供结构化编写、一组固定的 16:9 版式系列与变体、浅色／深色主题、不必修改内容即可换外观的纯数据模板（`init --template corporate`）、HTML 渲染与预览、由浏览器驱动的 PPTX
 导出、版面检查，以及离线 PPTX 结构检查。可选的视觉比对会通过外部的 LibreOffice Impress 与 Poppler
 另外渲染 PPTX，并输出每页的 JSON 与差异图。图表是导出成文字与图形的 HTML/CSS 长条，
 **不是 Office 原生图表对象**。转换器公开 API 不支持的 metadata，会在导出后写入 core-properties XML。
