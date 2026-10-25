@@ -1,7 +1,8 @@
-export { presentationSchema, slideSchema, contentBlockSchema, imageSourceSchema, backgroundSourceSchema, parsePresentation, slideBackground } from './schemas/presentation.js';
+export { presentationSchema, slideSchema, contentBlockSchema, imageSourceSchema, backgroundSourceSchema, backgroundsSchema, fontFamilySchema, templateReferenceSchema, parsePresentation, slideBackground } from './schemas/presentation.js';
 export { STUDIO_ORIGIN, studioRenderUrl } from './schemas/background.js';
 export type { Presentation, ContentBlock, LayoutName, SlideDesign, Slide as PresentationSlide } from './schemas/presentation.js';
 export { templateSchema, parseTemplate, mergeTokens, type Template } from './templates/schema.js';
+export { BUILT_IN_TEMPLATE_DIRECTORY, builtInTemplates, loadTemplate, loadPresentation, fileRenderOptions, type LoadedTemplate, type LoadedPresentation } from './templates/load.js';
 export { layoutFamilies, layoutNames, layoutFamily, layoutVariant, slideVariant, type LayoutFamily } from './layouts/registry.js';
 export { describePresentationError, readPresentationFile } from './schemas/input.js';
 export * from './themes/tokens.js';

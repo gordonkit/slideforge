@@ -92,16 +92,54 @@ For example, a template with `backgrounds.cover` and a presentation with only
 
 ## Using a template
 
-Pass the template object to `renderPresentation`:
+Name it in the presentation's `template` field:
 
-```js
-import { readFile } from 'node:fs/promises';
-import { renderPresentation } from './dist/index.js';
-const content = JSON.parse(await readFile('presentation.json', 'utf8'));
-const template = JSON.parse(await readFile('corporate.json', 'utf8'));
-const html = renderPresentation(content, { template });
+```json
+{ "metadata": { "title": "Quarterly review" }, "template": "corporate", "slides": [ … ] }
 ```
 
-Template background sources resolve against the rendered document like the
-presentation's own, so relative paths are relative to the document's base URL.
-The JSON file, CLI, preview, and `exportPresentation` do not load templates yet.
+The value is one of:
+
+- a **built-in** template name: `default` (no overrides) or `corporate` (navy and
+  amber, square corners, `cover/band`, and an amber rule above each title). They
+  ship in the package's `templates/` folder and in the container image;
+- a **path** starting with `./` or `../`, relative to the presentation JSON's
+  folder, to a template `.json` file or to a folder that holds `template.json`.
+  Use forward slashes.
+
+`build`, `preview`, and `export` read the template with the presentation;
+`init --template <name|./path>` writes the field into a new starter deck after
+checking that the template loads. A missing, unknown, malformed, or invalid
+template fails with a message naming it; schema problems are listed one per line,
+like the presentation's.
+
+### Template assets
+
+A template's relative background sources resolve against **the template's own
+folder**, so a template can carry its images: `"default": "assets/rule.svg"` in
+`brand/template.json` means `brand/assets/rule.svg`. For `build` and `export` the
+rendered HTML refers to them by absolute `file:` URL, so built HTML is tied to
+the machine that built it. `preview` serves the template folder's images
+(`.svg`, `.png`, `.jpg`, `.jpeg`, `.gif`, `.webp`, `.avif` only) under
+`/@slideforge/template/` and reloads when the template changes. In the container,
+a local template must be inside the `/work` mount like the deck.
+
+### From code
+
+`loadPresentation(file)` reads a presentation JSON file and the template it names,
+returning `{ content, template? }`, where `template` is `{ template, file,
+directory }`. `fileRenderOptions(file, loaded)` turns that into
+`renderPresentation` options with the file's and template's folders as base URLs:
+
+```js
+import { fileRenderOptions, loadPresentation, renderPresentation } from './dist/index.js';
+const loaded = await loadPresentation('deck/presentation.json');
+const html = renderPresentation(loaded.content, fileRenderOptions('deck/presentation.json', loaded));
+```
+
+`renderPresentation(input, { template, templateBaseUrl })` takes a template object
+directly. `templateBaseUrl` is the absolute HTTP(S)/file URL its relative
+background sources resolve against; without it they resolve against the document.
+Rendering a presentation that names a template without passing one throws, since
+`renderPresentation` does not read files. `loadTemplate(reference, fromFolder)`
+and `builtInTemplates()` are also exported.

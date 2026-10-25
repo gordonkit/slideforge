@@ -1,10 +1,10 @@
 import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
-import { dirname, extname, join, resolve } from 'node:path';
+import { extname, join, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { chromium, type ElementHandle, type Page } from 'playwright';
 import { renderPresentation } from '../renderers/html.js';
-import { readPresentationFile } from '../schemas/input.js';
+import { fileRenderOptions, loadPresentation } from '../templates/load.js';
 import { applyMetadata, type PresentationMetadata } from './metadata.js';
 import { widenTextBoxes, type TextSlack } from './text-fit.js';
 import { applyEastAsianFont } from './fonts.js';
@@ -169,10 +169,8 @@ export async function exportPresentation(input: string, options: ExportOptions):
       url = new URL(input).href;
     } else if (extname(input).toLowerCase() === '.json') {
       const file = resolve(input);
-      const content = await readPresentationFile(file);
-      const html = renderPresentation(content, {
-        baseUrl: pathToFileURL(dirname(file) + '/').href,
-      });
+      const loaded = await loadPresentation(file);
+      const html = renderPresentation(loaded.content, fileRenderOptions(file, loaded));
       const temporary = join(directory, 'presentation.html');
       await writeFile(temporary, html);
       url = pathToFileURL(temporary).href;

@@ -23,12 +23,17 @@ function formatPath(path: readonly PropertyKey[]): string {
  */
 export function describePresentationError(error: unknown): string {
   if (!(error instanceof z.ZodError)) return error instanceof Error ? error.message : String(error);
+  return describeSchemaError(error, 'The presentation', 'presentation');
+}
+
+/** One line per schema problem, introduced by `subject`; `root` names a problem with no path. */
+export function describeSchemaError(error: z.ZodError, subject: string, root: string): string {
   const lines = error.issues.map(issue => {
     const [first, index] = issue.path;
     const slide = first === 'slides' && typeof index === 'number' ? ` (slide ${index + 1})` : '';
-    const path = formatPath(issue.path) || 'presentation';
+    const path = formatPath(issue.path) || root;
     return `  - ${path}${slide}: ${issue.message}`;
   });
   const count = lines.length === 1 ? '1 problem' : `${lines.length} problems`;
-  return `The presentation does not match the schema (${count}):\n${lines.join('\n')}`;
+  return `${subject} does not match the schema (${count}):\n${lines.join('\n')}`;
 }

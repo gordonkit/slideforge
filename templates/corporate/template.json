@@ -1,0 +1,32 @@
+{
+  "name": "corporate",
+  "description": "Navy and amber, square corners, a banded cover, and an amber rule above each title.",
+  "palette": {
+    "light": {
+      "foreground": "#0b1f3a",
+      "muted": "#4a5b75",
+      "accent": "#b45309",
+      "onAccent": "#ffffff",
+      "surface": "#fdf6e9",
+      "border": "#e7c99a"
+    },
+    "dark": {
+      "background": "#0b1f3a",
+      "foreground": "#f8fafc",
+      "muted": "#b8c4d6",
+      "accent": "#f5a524",
+      "onAccent": "#0b1f3a",
+      "surface": "#13294b",
+      "border": "#2c4770"
+    }
+  },
+  "tokens": {
+    "border": { "radius": 0 }
+  },
+  "backgrounds": {
+    "default": "assets/rule.svg"
+  },
+  "variants": {
+    "cover": "band"
+  }
+}

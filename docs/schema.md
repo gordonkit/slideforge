@@ -17,6 +17,7 @@ and unpaired surrogates are rejected before PPTX generation.
 | Field | Required | Type and constraints |
 | --- | --- | --- |
 | `metadata` | Yes | Object described below |
+| `template` | No | Built-in template name, or a `./`/`../` path to a template; see [templates](templates.md#using-a-template) |
 | `theme` | No | `"light"` or `"dark"`; default `"light"` |
 | `fontFamily` | No | Trimmed nonempty string, max 200 characters; local font names with Unicode letters/numbers, spaces, commas, quotes, hyphens only |
 | `backgrounds` | No | Object described under [Backgrounds](#backgrounds) |

@@ -13,6 +13,7 @@
   "files": [
     "dist",
     "examples",
+    "templates",
     "THIRD_PARTY_NOTICES.md",
     "LICENSE"
   ],

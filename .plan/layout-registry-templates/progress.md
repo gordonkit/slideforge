@@ -7,7 +7,7 @@
 | Stage 2 `family/variant` 命名 | ✅ 完成 | `[Stage 2]` |
 | Stage 3 Cover variants | ✅ 完成 | `[Stage 3]` |
 | Stage 4 Template schema 與合併 | ✅ 完成 | `[Stage 4]` |
-| Stage 5 Template 載入與 CLI | ⏳ 未開始 | |
+| Stage 5 Template 載入與 CLI | ✅ 完成 | `[Stage 5]` |
 | Stage 6 新 family（選做） | ⏳ 未開始 | |
 
 每筆紀錄格式：
@@ -113,3 +113,25 @@
   - **D6 細化**：背景是「同 key 合併」，而不是「presentation 整串查完才查 template」；所以 template 的 `cover` 背景不會被 presentation 的 `default` 蓋掉（已寫入 docs/templates.md）。
   - site 延到 Stage 5 與 JSON/CLI 載入一起更新（計畫允許）。
 - 待決／下一步：Stage 5。重點：template 相對路徑資源的解析（export 用 file URL；preview 需由 Vite 提供 template 目錄，如 `/@fs/` 或另設路徑）、內建 template 隨套件發佈、`init --template`、Docker。
+
+## Stage 5 — Template 載入、內建 template 與 CLI（2026-10-26）
+
+- 完成：
+  - `presentation.json` 新增選填 `template`（`templateReferenceSchema`：內建名稱，或 `./`、`../` 路徑；不接受反斜線與絕對路徑）。
+  - `src/templates/load.ts`：`loadTemplate(reference, from)`（路徑可指向 `.json` 或含 `template.json` 的資料夾；內建在套件 `templates/<name>/`）、`builtInTemplates()`、`loadPresentation(file)`、`fileRenderOptions(file, loaded)`。錯誤訊息：找不到檔案、未知內建名稱（列出可用名稱）、JSON 格式錯誤、schema 問題（沿用 presentation 的逐行格式，抽出 `describeSchemaError`）。
+  - `renderPresentation` 新增 `templateBaseUrl`；template 的相對背景以它為基準。presentation 寫了 `template` 卻沒傳入 template 時丟出說明性錯誤（renderer 不讀檔）。
+  - CLI：`build`、`export`、`preview` 都經 loader；`init --template <name|./path>` 先載入驗證、再寫入；`--template` 用在其他指令時回傳 exit 2。
+  - preview：每次 `/` 都重新載入 template，並監看 template 檔與資料夾；template 圖片以 `/@slideforge/template/` 提供（只允許圖片副檔名，有路徑穿越防護）。
+  - 內建 template：`default`（不覆寫任何值）、`corporate`（navy/amber 雙主題 palette、radius 0、`cover: band`、`assets/rule.svg` 當預設背景）。`package.json` 的 `files` 加入 `templates`；Dockerfile 與 `Dockerfile.dockerignore` 也加入 `templates`。
+  - 測試：unit 新增 8 項（reference 格式、templateBaseUrl、loader 各種成功與錯誤）；integration 新增 2 項（內建 template 的 init/build/export 與錯誤 exit code；本地 template 的 export 背景與 preview 資源服務、穿越與非圖片 404）。
+  - 文件：`docs/templates.md`（使用方式、資源、API）、`docs/schema.md`、`docs/cli.md`、`docs/architecture.md`、`docs/limitations.md`（信任模型）、`docs/ai-workflow.md`、`docker/README.md`、README 四語、CHANGELOG、site 四語（CLI init、presentation 欄位、新增 Templates 段落、themes、cover 列）。
+- 檢查：
+  - `npm run check` → 通過；`npm --prefix site run check`／`build` → 通過。
+  - `npm test`（unit + integration + visual）→ 11 files / 143 tests 通過。
+  - CLI 實測：`init --template corporate` → build → export → validate：valid，6 slides，editableTextCount 35，shapeCount 47（有背景層的 slide 少了 converter 的整頁色塊，band 多 1 個）。LibreOffice 轉 PDF 目視：band 封面、template 資產的 amber 線、方角卡片、palette 皆正確。
+  - Docker：`docker compose … run --rm --build cli export /work/corp.json` → 成功，validate 結果同上；容器內 `init --template corporate` 成功。
+- 偏離計畫：
+  - 第一次 Docker build 失敗，因為 `docker/Dockerfile.dockerignore` 採白名單、沒有 `templates/`；已補上。
+  - Git Bash 會把 `/work/...` 參數改寫成 Windows 路徑，Docker 指令要加 `MSYS_NO_PATHCONV=1`（只影響本機測試指令，文件中的範例不變）。
+  - build／export 產生的 HTML 以絕對 `file:` URL 引用 template 圖片（已在 docs 說明：built HTML 綁定本機）。
+- 待決／下一步：Stage 6（選做：新增一個 family 驗證擴充流程）。合併前決定 `.plan/` 是否保留。

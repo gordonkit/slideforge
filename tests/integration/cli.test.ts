@@ -1,8 +1,9 @@
 import { execFile } from 'node:child_process';
 import { createServer, type Server } from 'node:http';
-import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
+import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
+import { pathToFileURL } from 'node:url';
 import { promisify } from 'node:util';
 import { strFromU8, unzipSync } from 'fflate';
 import { chromium } from 'playwright';
@@ -256,4 +257,68 @@ describe('slide backgrounds', () => {
       serveRender = true;
     }
   }, 120_000);
+});
+
+describe('templates', () => {
+  const backgroundCount = (data: Uint8Array) => Object.entries(unzipSync(data))
+    .filter(([path, content]) => /^ppt\/slides\/slide\d+\.xml$/.test(path) && /<p:bg><p:bgPr><a:blipFill/.test(strFromU8(content)))
+    .length;
+
+  it('initializes, builds, and exports a deck with a built-in template', async () => {
+    const input = join(directory, 'corporate.json');
+    const pptx = join(directory, 'corporate.pptx');
+    await exec(process.execPath, [cli, 'init', input, '--template', 'corporate']);
+    expect(JSON.parse(await readFile(input, 'utf8')).template).toBe('corporate');
+    await exec(process.execPath, [cli, 'build', input, '--output', join(directory, 'corporate.html')]);
+    const html = await readFile(join(directory, 'corporate.html'), 'utf8');
+    expect(html).toContain('--sf-accent:#b45309');
+    expect(html).toContain('sf-layout-cover sf-variant-band');
+    expect(html).toContain(`${pathToFileURL(resolve('templates/corporate/assets/rule.svg')).href}`);
+    await exec(process.execPath, [cli, 'export', input, '--output', pptx], { timeout: 120_000 });
+    const data = await readFile(pptx);
+    expect(validatePptx(data).valid).toBe(true);
+    expect(backgroundCount(data)).toBe(6);
+
+    await expect(exec(process.execPath, [cli, 'init', join(directory, 'unknown.json'), '--template', 'nope']))
+      .rejects.toMatchObject({ code: 1, stderr: expect.stringContaining('Unknown template "nope". Use "corporate" or "default"') });
+    await expect(readFile(join(directory, 'unknown.json'))).rejects.toMatchObject({ code: 'ENOENT' });
+    await expect(exec(process.execPath, [cli, 'build', input, '--template', 'corporate'])).rejects.toMatchObject({ code: 2 });
+  }, 180_000);
+
+  it('exports and previews a local template whose assets live beside it', async () => {
+    const brand = join(directory, 'brand');
+    await mkdir(join(brand, 'assets'), { recursive: true });
+    await writeFile(join(brand, 'template.json'), JSON.stringify({
+      name: 'brand', palette: { light: { accent: '#0f766e' } }, backgrounds: { default: 'assets/corner.svg' }, variants: { cover: 'split' },
+    }));
+    await writeFile(join(brand, 'assets', 'corner.svg'),
+      '<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080"><rect width="60" height="60" fill="#0f766e"/></svg>');
+    await writeFile(join(directory, 'secret.svg'), '<svg xmlns="http://www.w3.org/2000/svg"/>');
+    await mkdir(join(directory, 'decks'), { recursive: true });
+    const input = join(directory, 'decks', 'brand.json');
+    await writeFile(input, JSON.stringify({
+      metadata: { title: 'Brand' }, template: '../brand',
+      slides: [{ layout: 'cover', title: 'Brand cover' }, { layout: 'content', title: 'Body', blocks: [{ type: 'paragraph', text: 'Text' }] }],
+    }));
+    const output = join(directory, 'brand.pptx');
+    expect((await exportPresentation(input, { output })).filter(issue => issue.rule !== 'layout.fonts')).toEqual([]);
+    expect(backgroundCount(await readFile(output))).toBe(2);
+
+    const server = await previewPresentation(input, 0);
+    try {
+      const address = server.httpServer!.address();
+      if (!address || typeof address === 'string') throw new Error('Preview did not bind a TCP port');
+      const origin = `http://127.0.0.1:${address.port}`;
+      const page = await (await fetch(`${origin}/`)).text();
+      expect(page).toContain(`src="${origin}/@slideforge/template/assets/corner.svg"`);
+      expect(page).toContain('sf-variant-split');
+      const asset = await fetch(`${origin}/@slideforge/template/assets/corner.svg`);
+      expect(asset.status).toBe(200);
+      expect(asset.headers.get('content-type')).toBe('image/svg+xml');
+      expect((await fetch(`${origin}/@slideforge/template/..%2Fsecret.svg`)).status).toBe(404);
+      expect((await fetch(`${origin}/@slideforge/template/template.json`)).status).toBe(404);
+    } finally {
+      await server.close();
+    }
+  }, 180_000);
 });

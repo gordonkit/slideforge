@@ -6,6 +6,13 @@
   rest), light/dark palettes, plain text, lists, images, tables,
   and a single-series horizontal bar representation. No slide editor,
   template marketplace, arbitrary schema styling, or native Office chart API.
+- [Templates](templates.md) are data: palettes, a font family, bounded numeric
+  tokens, backgrounds, and variant choices. They cannot add CSS, HTML, layout
+  families, or variants, and they come from the package or a local path, not a
+  URL. A template path may point anywhere on disk (`../` is allowed), and its
+  images are read by the browser, so treat templates as trusted input like the
+  presentation itself. Token checks keep regions on the canvas; they do not
+  prove that content fits or that a palette has readable contrast.
 - Schema bounds do not ensure content fits. Fixed-height areas may clip long
   text, large tables, captions, or many cards. Split slides and review layout.
 - Editability is a design goal for text and simple CSS shapes, not a guarantee

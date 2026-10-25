@@ -3,8 +3,8 @@
 ## Pipeline
 
 ```text
-JSON → strict Zod schema → typed presentation
-     → React static markup + shared CSS/tokens → HTML
+JSON (+ template it names) → strict Zod schemas → typed presentation and template
+     → React static markup + shared CSS/tokens (template overrides) → HTML
      → Playwright Chromium → layout validation
      → capture background layers as PNG, remove them
      → bundled dom-to-pptx → PPTX bytes
@@ -26,6 +26,8 @@ browser, not as a Node DOM simulation.
 | `src/schemas/fields.ts` | Text, image, background, content block, and common slide field schemas |
 | `src/schemas/background.ts` | Studio share link detection and `/render` URLs |
 | `src/templates/schema.ts` | Template schema, token bounds and geometry checks, token merging |
+| `src/templates/load.ts` | Template lookup (built-in or path), `loadPresentation`, file render options |
+| `templates/` | Built-in templates, one folder each with `template.json` and its assets |
 | `src/themes/` | Fixed slide dimensions, palettes, shared CSS |
 | `src/components/` | Content, tables, bars, title/footer/frame |
 | `src/layouts/registry.ts` | Layout families, their variants and slide schemas |
@@ -77,6 +79,14 @@ applied as described in [templates](templates.md); without it the output is
 unchanged.
 It does not copy assets or launch a browser. For a JSON file, supply its directory
 as a trailing-slash file URL to match the CLI's local asset behavior.
+
+### Templates
+
+`loadPresentation(file)`, `fileRenderOptions(file, loaded)`, `loadTemplate(reference,
+fromFolder)`, `builtInTemplates()`, `parseTemplate(input)`, and `templateSchema` are
+described in [templates](templates.md). The CLI, `previewPresentation`, and
+`exportPresentation` read JSON through `loadPresentation`, so a JSON input's
+template applies everywhere.
 
 ### `previewPresentation(input: string, port = 5180)`
 

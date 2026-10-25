@@ -4,7 +4,7 @@ Build the repository first with `npm run build`. Commands below use the emitted
 entry point; the package also declares the `slideforge` executable when installed.
 
 ```text
-node dist/cli/index.js init [presentation.json]
+node dist/cli/index.js init [presentation.json] [--template <name|./path>]
 node dist/cli/index.js build presentation.json [--output presentation.html]
 node dist/cli/index.js preview presentation.json [--port 5180]
 node dist/cli/index.js export <presentation.json|slides.html|https://url> --output presentation.pptx [--selector css]
@@ -36,13 +36,25 @@ This creates `my-deck.json` and `my-deck-assets/diagram.svg`. Keep them together
 when relocating the source deck. Generated HTML still uses a local file base
 and is not a standalone portable artifact.
 
+`--template` adds a `"template"` field naming a built-in template or a `./`/`../`
+path relative to the new JSON's folder; see [templates](templates.md). The
+template is loaded and validated first, so an unknown or invalid one fails before
+any file is written. `--template` is accepted only by `init`; other commands read
+the field from the JSON.
+
+```sh
+node dist/cli/index.js init my-deck.json --template corporate
+```
+
 ## `build`
 
 Parses and validates JSON and writes an HTML document with inline presentation
 CSS. The default output is `<input-basename>.html` in the current directory.
 Existing output is overwritten. A `file://` `<base>` points to the JSON's
 directory, not the output HTML directory, so relative images keep working
-locally. This does not copy images, package fonts, or make HTML portable.
+locally. This does not copy images, package fonts, or make HTML portable. When
+the JSON names a template, its background images are referenced by absolute
+`file:` URL in the template's folder.
 
 ## `preview`
 
@@ -51,9 +63,11 @@ from 1 to 65535. Port binding is strict: an occupied port is an error rather tha
 an automatic port change. The JSON directory is the server root, including
 assets accessible from it; do not use a directory containing sensitive files.
 
-The CLI validates JSON before starting. Saving the JSON, or any file in its
-directory such as an image, reloads the open browser page automatically; each
-request to `/` rereads and renders the JSON. If a save leaves the JSON invalid,
+The CLI validates JSON and its template before starting. Saving the JSON, or
+any file in its directory such as an image, reloads the open browser page
+automatically; each request to `/` rereads and renders the JSON. A template's
+file and folder are watched too, and its images are served under
+`/@slideforge/template/` even when the folder is outside the JSON's directory. If a save leaves the JSON invalid,
 the page shows the error and reloads again once it is fixed. Slides scale down
 to fit the window, so the 1920 × 1080 canvas is visible on smaller screens;
 automated browsers such as `export` of the preview URL see the full canvas.
@@ -63,7 +77,8 @@ This is a preview, not a slide editor. Stop with Ctrl+C.
 
 Accepts a JSON path, local HTML path, or HTTP(S) URL. Requires `--output`; the
 output parent directory must already exist and existing files are overwritten.
-JSON is rendered with an asset base pointing to its directory. Local HTML uses
+JSON is rendered with an asset base pointing to its directory and with the
+template it names, whose images resolve from the template's folder. Local HTML uses
 normal browser-relative URL resolution; remote pages use their own URL/base.
 
 The default slide selector is `[data-pptx="slide"], .slide`. Customize it for

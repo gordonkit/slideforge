@@ -30,6 +30,11 @@ Choose one light/dark palette and a locally available font family. Reuse shared
 layouts and [tokens](design-tokens.md); do not solve dense content by shrinking
 everything or adding arbitrary style keys. Split crowded slides instead.
 
+Keep the look out of the content: set `template` to a built-in or shared
+[template](templates.md) and use bare family names (`"cover"`), so the template
+picks the variant. Name a variant (`"cover/split"`) only when one slide needs a
+different one. Change the template, not the slides, to restyle a deck.
+
 For multilingual content, preserve Unicode and install fonts with the required
 glyphs. Do not assume CJK glyph coverage or automatic system-font embedding.
 

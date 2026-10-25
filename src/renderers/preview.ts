@@ -1,7 +1,16 @@
-import { dirname, resolve } from 'node:path';
+import { readFile } from 'node:fs/promises';
+import { dirname, extname, resolve, sep } from 'node:path';
 import { createServer } from 'vite';
-import { describePresentationError, readPresentationFile } from '../schemas/input.js';
-import { renderPresentation } from './html.js';
+import { describePresentationError } from '../schemas/input.js';
+import { loadPresentation } from '../templates/load.js';
+import { renderPresentation, type RenderOptions } from './html.js';
+
+/** Where preview serves the current template's directory. */
+const TEMPLATE_PREFIX = '/@slideforge/template/';
+const imageTypes: Partial<Record<string, string>> = {
+  '.svg': 'image/svg+xml', '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg',
+  '.gif': 'image/gif', '.webp': 'image/webp', '.avif': 'image/avif',
+};
 
 /**
  * Preview-only: scale slides down to fit the window. Automated browsers (navigator.webdriver)
@@ -55,11 +64,47 @@ export async function previewPresentation(input: string, port = DEFAULT_PREVIEW_
         server.watcher.add(file);
         for (const event of ['add', 'change', 'unlink'] as const) server.watcher.on(event, reload);
 
+        // The template's directory can be outside the root, so its assets are served under a prefix.
+        let templateDirectory: string | undefined;
+        server.middlewares.use(async (request, response, next) => {
+          const path = request.url?.split('?')[0] ?? '';
+          if (!path.startsWith(TEMPLATE_PREFIX)) return next();
+          const type = imageTypes[extname(path).toLowerCase()];
+          let asset: string | undefined;
+          try {
+            asset = templateDirectory && resolve(templateDirectory, decodeURIComponent(path.slice(TEMPLATE_PREFIX.length)));
+          } catch {
+            asset = undefined;
+          }
+          if (!type || !asset || !asset.startsWith(templateDirectory + sep)) {
+            response.statusCode = 404;
+            return response.end();
+          }
+          try {
+            const data = await readFile(asset);
+            response.setHeader('Content-Type', type);
+            response.setHeader('Cache-Control', 'no-store');
+            response.end(data);
+          } catch {
+            response.statusCode = 404;
+            response.end();
+          }
+        });
+
         server.middlewares.use(async (request, response, next) => {
           if (request.url?.split('?')[0] !== '/') return next();
           let html: string;
+          templateDirectory = undefined;
           try {
-            html = renderPresentation(await readPresentationFile(file)).replace('</body>', `${fitToWindow}</body>`);
+            const loaded = await loadPresentation(file);
+            templateDirectory = loaded.template?.directory;
+            const options: RenderOptions = {};
+            if (loaded.template) {
+              server.watcher.add([loaded.template.file, loaded.template.directory]);
+              options.template = loaded.template.template;
+              options.templateBaseUrl = `http://${request.headers.host ?? `127.0.0.1:${port}`}${TEMPLATE_PREFIX}`;
+            }
+            html = renderPresentation(loaded.content, options).replace('</body>', `${fitToWindow}</body>`);
           } catch (error) {
             response.statusCode = 400;
             html = errorPage(describePresentationError(error));

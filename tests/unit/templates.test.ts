@@ -1,4 +1,9 @@
-import { describe, expect, it } from "vitest";
+import { mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { pathToFileURL } from "node:url";
+import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { BUILT_IN_TEMPLATE_DIRECTORY, builtInTemplates, fileRenderOptions, loadPresentation, loadTemplate } from "../../src/templates/load.js";
 import { renderPresentation } from "../../src/renderers/html.js";
 import { describePresentationError } from "../../src/schemas/input.js";
 import { parsePresentation, slideBackground } from "../../src/schemas/presentation.js";
@@ -120,5 +125,79 @@ describe("rendering with a template", () => {
 
   it("rejects an invalid template with the schema's error", () => {
     expect(() => render(deck(), { name: "x", variants: { cover: "fancy" } })).toThrow();
+  });
+
+  it("requires a named template to be passed, and resolves its relative backgrounds against templateBaseUrl", () => {
+    expect(() => renderPresentation(deck({ template: "corporate" })))
+      .toThrow('The presentation names template "corporate"; read it with loadPresentation(file)');
+    const template = { name: "x", backgrounds: { default: "assets/a.svg", cover: "https://example.com/c.png" } };
+    const html = renderPresentation(deck({ template: "./x" }, [
+      { layout: "table", title: "A", columns: ["a"], rows: [["1"]] }, { layout: "cover", title: "B" },
+    ]), { template, templateBaseUrl: "file:///C:/decks/templates/x/" });
+    expect(html).toContain('<img src="file:///C:/decks/templates/x/assets/a.svg" alt=""/>');
+    expect(html).toContain('<img src="https://example.com/c.png" alt=""/>');
+    expect(() => renderPresentation(deck(), { template, templateBaseUrl: "ftp://x/" })).toThrow("The template base URL must use HTTP, HTTPS, or file");
+  });
+
+  it("accepts template references that are built-in names or ./ and ../ paths", () => {
+    for (const template of ["corporate", "./brand", "../shared/brand.json"]) {
+      expect(parsePresentation(deck({ template })).template).toBe(template);
+    }
+    for (const template of ["Corporate", "/abs/brand", "brand/x", ".\\brand", ""]) {
+      expect(() => parsePresentation(deck({ template }))).toThrow();
+    }
+  });
+});
+
+describe("loading templates", () => {
+  let directory: string;
+  beforeAll(async () => { directory = await mkdtemp(join(tmpdir(), "slideforge-templates-")); });
+  afterAll(async () => { await rm(directory, { recursive: true, force: true }); });
+
+  it("lists and validates the built-in templates", async () => {
+    const names = await builtInTemplates();
+    expect(names).toEqual(["corporate", "default"]);
+    for (const name of names) {
+      const loaded = await loadTemplate(name, directory);
+      expect(loaded.template.name).toBe(name);
+      expect(loaded.directory).toBe(join(BUILT_IN_TEMPLATE_DIRECTORY, name));
+    }
+  });
+
+  it("loads a local template from a directory or a .json file, relative to the presentation", async () => {
+    await mkdir(join(directory, "brand"), { recursive: true });
+    await writeFile(join(directory, "brand", "template.json"), JSON.stringify({ name: "brand", variants: { cover: "split" } }));
+    await writeFile(join(directory, "solo.json"), JSON.stringify({ name: "solo" }));
+    await mkdir(join(directory, "decks"), { recursive: true });
+    expect((await loadTemplate("./brand", directory)).template.name).toBe("brand");
+    expect((await loadTemplate("../solo.json", join(directory, "decks"))).template.name).toBe("solo");
+
+    const file = join(directory, "decks", "deck.json");
+    await writeFile(file, JSON.stringify(deck({ template: "../brand" })));
+    const loaded = await loadPresentation(file);
+    expect(loaded.template?.directory).toBe(join(directory, "brand"));
+    const options = fileRenderOptions(file, loaded);
+    expect(options.templateBaseUrl).toBe(pathToFileURL(join(directory, "brand") + "/").href);
+    expect(renderPresentation(loaded.content, options)).toContain("sf-variant-split");
+  });
+
+  it("explains missing, unknown, malformed, and invalid templates", async () => {
+    await expect(loadTemplate("./missing", directory)).rejects.toThrow(`Template "./missing" not found: ${join(directory, "missing", "template.json")} does not exist`);
+    await expect(loadTemplate("nope", directory)).rejects.toThrow('Unknown template "nope". Use "corporate" or "default", or a path starting with "./" or "../"');
+    await writeFile(join(directory, "broken.json"), "{");
+    await expect(loadTemplate("./broken.json", directory)).rejects.toThrow(`Invalid JSON in ${join(directory, "broken.json")}`);
+    await writeFile(join(directory, "invalid.json"), JSON.stringify({ name: "x", tokens: { layout: { header: 200 } } }));
+    await expect(loadTemplate("./invalid.json", directory)).rejects.toThrow([
+      `The template ${join(directory, "invalid.json")} does not match the schema (1 problem):`,
+      "  - tokens.layout: padding-top + header + content + padding-bottom must equal 1080 (got 1094)",
+    ].join("\n"));
+  });
+
+  it("reads a presentation without a template as before", async () => {
+    const file = join(directory, "plain.json");
+    await writeFile(file, JSON.stringify(deck()));
+    const loaded = await loadPresentation(file);
+    expect(loaded).toEqual({ content: deck() });
+    expect(fileRenderOptions(file, loaded)).toEqual({ baseUrl: pathToFileURL(directory + "/").href });
   });
 });

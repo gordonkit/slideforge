@@ -309,7 +309,7 @@ node dist/cli/index.js validate presentation.pptx`,
             { en: "Purpose", "zh-TW": "用途", "zh-CN": "用途", ja: "用途" },
           ],
           rows: [
-            ["init [file]", { en: "Copy the six-layout example and its assets; never overwrites", "zh-TW": "複製六種版型的範例與素材，不會覆寫既有檔案", "zh-CN": "复制六种版式的示例与素材，不会覆盖已有文件", ja: "6 種類のレイアウトのサンプルと素材をコピー。既存ファイルは上書きしない" }],
+            ["init [file] [--template t]", { en: "Copy the six-layout example and its assets; never overwrites. --template names a template in the new JSON after checking it loads", "zh-TW": "複製六種版型的範例與素材，不會覆寫既有檔案。--template 會先確認範本可載入，再寫入新 JSON", "zh-CN": "复制六种版式的示例与素材，不会覆盖已有文件。--template 会先确认模板可加载，再写入新 JSON", ja: "6 種類のレイアウトのサンプルと素材をコピー。既存ファイルは上書きしない。--template は読み込めることを確認してから新しい JSON にテンプレートを指定" }],
             ["build <json> [-o html]", { en: "Validate JSON and write an HTML document with inline CSS", "zh-TW": "驗證 JSON 並輸出內嵌 CSS 的 HTML", "zh-CN": "验证 JSON 并输出内嵌 CSS 的 HTML", ja: "JSON を検証し、CSS をインラインにした HTML を出力" }],
             ["preview <json> [--port n]", { en: "Serve a loopback Vite preview that reloads on save, port 5180 by default", "zh-TW": "啟動僅限本機、存檔即自動更新的 Vite 預覽，預設連接埠 5180", "zh-CN": "启动仅限本机、保存即自动刷新的 Vite 预览，默认端口 5180", ja: "保存時に自動で再読み込みするループバックの Vite プレビューを起動。既定のポートは 5180" }],
             ["export <input> -o pptx", { en: "Export JSON, local HTML, or a trusted URL to PPTX", "zh-TW": "將 JSON、本機 HTML 或受信任的 URL 匯出為 PPTX", "zh-CN": "将 JSON、本机 HTML 或受信任的 URL 导出为 PPTX", ja: "JSON、ローカル HTML、信頼できる URL を PPTX に書き出し" }],
@@ -409,6 +409,7 @@ docker compose -f docker/compose.yaml --profile cli run --rm cli validate /work/
           ],
           rows: [
             ["metadata", yes, { en: "title (required), author, subject, lang (default en)", "zh-TW": "title（必填）、author、subject、lang（預設 en）", "zh-CN": "title（必填）、author、subject、lang（默认 en）", ja: "title（必須）、author、subject、lang（既定は en）" }],
+            ["template", no, { en: "Built-in template name, or a ./ or ../ path to a template; see Templates", "zh-TW": "內建範本名稱，或以 ./、../ 開頭的範本路徑，見「範本」", "zh-CN": "内置模板名称，或以 ./、../ 开头的模板路径，见“模板”", ja: "組み込みテンプレート名、または ./ か ../ で始まるテンプレートのパス。「テンプレート」を参照" }],
             ["theme", no, { en: "light (default) or dark", "zh-TW": "light（預設）或 dark", "zh-CN": "light（默认）或 dark", ja: "light（既定）または dark" }],
             ["fontFamily", no, { en: "Local font family list, up to 200 characters", "zh-TW": "本機字型清單，最多 200 字元", "zh-CN": "本机字体列表，最多 200 字符", ja: "ローカルフォントのファミリー一覧（最大 200 文字）" }],
             ["backgrounds", no, { en: "Background sources for default and each layout; see Backgrounds", "zh-TW": "default 與各版型的背景來源，見「背景」", "zh-CN": "default 与各版式的背景来源，见“背景”", ja: "default と各レイアウトの背景。「背景」を参照" }],
@@ -484,6 +485,33 @@ docker compose -f docker/compose.yaml --profile cli run --rm cli validate /work/
         ],
       },
       {
+        id: "templates",
+        title: { en: "Templates", "zh-TW": "範本", "zh-CN": "模板", ja: "テンプレート" },
+        body: {
+          en: "A template holds the look apart from the content: palette overrides for light and dark, a font family, numeric design tokens within bounds that keep the canvas geometry, backgrounds, and the variant each family's bare-name slides use. Name one with template: a built-in (default or corporate) or a ./ or ../ path to a template file or a folder with template.json. Its relative images resolve from the template's folder. The presentation's own theme, fontFamily, backgrounds entries, and a variant written in layout take precedence; changing the template restyles the deck without touching its slides.",
+          "zh-TW": "範本把外觀與內容分開：淺色與深色的配色覆寫、字型、在不破壞畫布幾何的範圍內調整數值 design token、背景，以及各系列只寫系列名稱時使用的變化。以 template 指定：內建範本（default 或 corporate），或以 ./、../ 開頭、指向範本檔或含 template.json 資料夾的路徑。範本的相對圖片路徑以範本資料夾為基準。簡報自己的 theme、fontFamily、backgrounds 項目，以及 layout 中寫明的變化優先；換範本即可改變整份簡報的外觀，不必修改投影片。",
+          "zh-CN": "模板把外观与内容分开：浅色与深色的配色覆盖、字体、在不破坏画布几何的范围内调整数值 design token、背景，以及各系列只写系列名称时使用的变体。以 template 指定：内置模板（default 或 corporate），或以 ./、../ 开头、指向模板文件或含 template.json 文件夹的路径。模板的相对图片路径以模板文件夹为基准。演示文稿自己的 theme、fontFamily、backgrounds 条目，以及 layout 中写明的变体优先；换模板即可改变整份演示文稿的外观，不必修改幻灯片。",
+          ja: "テンプレートは見た目を内容から切り離します。ライトとダークの配色の上書き、フォントファミリー、キャンバスの幾何を崩さない範囲の数値デザイントークン、背景、そしてファミリー名だけのスライドに使うバリアントを指定できます。template で指定し、値は組み込み（default または corporate）か、テンプレートのファイルまたは template.json を含むフォルダーを指す ./ か ../ で始まるパスです。テンプレートの相対画像パスはテンプレートのフォルダーから解決されます。プレゼンテーション自身の theme、fontFamily、backgrounds の項目、layout に書いたバリアントが優先されます。テンプレートを替えれば、スライドに手を入れずにデッキ全体の見た目が変わります。",
+        },
+        code: `// brand/template.json
+{
+  "name": "brand",
+  "palette": { "light": { "accent": "#0f766e" } },
+  "tokens": { "type": { "title": 64 }, "border": { "radius": 0 } },
+  "backgrounds": { "default": "assets/corner.svg" },
+  "variants": { "cover": "split" }
+}
+
+// decks/presentation.json
+{ "metadata": { "title": "Brand deck" }, "template": "../brand", "slides": [ … ] }`,
+        note: {
+          en: "Templates are data only: they cannot add CSS, HTML, layout families, or variants. Token checks keep regions on the slide but do not prove that content fits or that colors have enough contrast.",
+          "zh-TW": "範本只有資料：無法加入 CSS、HTML、版型系列或變化。token 檢查能讓各區域留在投影片內，但無法保證內容放得下，也無法保證色彩對比足夠。",
+          "zh-CN": "模板只有数据：无法加入 CSS、HTML、版式系列或变体。token 检查能让各区域留在幻灯片内，但无法保证内容放得下，也无法保证色彩对比足够。",
+          ja: "テンプレートはデータだけで、CSS、HTML、レイアウトファミリー、バリアントは追加できません。トークンの検査は各領域をスライド内に収めますが、内容が収まることや色のコントラストが十分なことは保証しません。",
+        },
+      },
+      {
         id: "minimal",
         title: { en: "Minimal deck", "zh-TW": "最小範例", "zh-CN": "最小示例", ja: "最小構成のデッキ" },
         body: {
@@ -537,7 +565,7 @@ docker compose -f docker/compose.yaml --profile cli run --rm cli validate /work/
             { en: "Use for", "zh-TW": "適用情境", "zh-CN": "适用场景", ja: "用途" },
           ],
           rows: [
-            ["cover", { en: "Opening slide with a large title and optional author", "zh-TW": "開場，大標題與選填的作者", "zh-CN": "开场，大标题与可选的作者", ja: "大きなタイトルと任意の作者を置く表紙" }],
+            ["cover", { en: "Opening slide with a large title and optional author; variants centered, split, and band", "zh-TW": "開場，大標題與選填的作者；另有 centered、split、band 變化", "zh-CN": "开场，大标题与可选的作者；另有 centered、split、band 变体", ja: "大きなタイトルと任意の作者を置く表紙。centered、split、band のバリアントあり" }],
             ["content", { en: "An explanation with paragraphs, lists, and images", "zh-TW": "以段落、清單與圖片說明", "zh-CN": "以段落、列表与图片说明", ja: "段落、リスト、画像による説明" }],
             ["two-columns", { en: "Comparisons such as before and after", "zh-TW": "比較，例如前後對照", "zh-CN": "比较，例如前后对照", ja: "前後比較などの対比" }],
             ["cards", { en: "Up to six short parallel ideas", "zh-TW": "最多六個簡短的並列重點", "zh-CN": "最多六个简短的并列重点", ja: "最大 6 つの短い並列項目" }],
@@ -613,10 +641,10 @@ docker compose -f docker/compose.yaml --profile cli run --rm cli validate /work/
         id: "themes",
         title: { en: "Themes", "zh-TW": "主題", "zh-CN": "主题", ja: "テーマ" },
         body: {
-          en: "Choose light or dark per presentation with the theme field.",
-          "zh-TW": "以 theme 欄位為每份簡報選擇 light 或 dark。",
-          "zh-CN": "以 theme 字段为每份演示文稿选择 light 或 dark。",
-          ja: "theme フィールドでプレゼンテーションごとに light か dark を選びます。",
+          en: "Choose light or dark per presentation with the theme field. A template can override any of these colors for either theme; the built-in values are:",
+          "zh-TW": "以 theme 欄位為每份簡報選擇 light 或 dark。範本可以覆寫任一主題的這些色彩；內建值如下：",
+          "zh-CN": "以 theme 字段为每份演示文稿选择 light 或 dark。模板可以覆盖任一主题的这些色彩；内置值如下：",
+          ja: "theme フィールドでプレゼンテーションごとに light か dark を選びます。テンプレートはどちらのテーマのこれらの色も上書きできます。組み込みの値は次のとおりです。",
         },
         table: {
           caption: { en: "Theme colors", "zh-TW": "主題色彩", "zh-CN": "主题色彩", ja: "テーマの色" },

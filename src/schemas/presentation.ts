@@ -20,6 +20,12 @@ export const backgroundsSchema = z.object(Object.fromEntries(
 export const fontFamilySchema = xmlText.trim().min(1).max(200)
   .regex(/^[\p{L}\p{N} ,'"\-]+$/u, "Use local font family names, not CSS declarations");
 
+/** A built-in template name, or a `./`/`../` path to a template directory or `.json` file. */
+export const templateReferenceSchema = xmlText.max(1000).regex(
+  /^(?:[a-z][a-z0-9-]{0,63}|\.\.?\/[^\\]+)$/,
+  'Use a built-in template name such as "corporate", or a path starting with "./" or "../"',
+);
+
 export const presentationSchema = z.object({
   metadata: z.object({
     title: text.max(300),
@@ -27,6 +33,7 @@ export const presentationSchema = z.object({
     subject: optionalText,
     lang: xmlText.regex(/^[a-z]{2,8}(?:-[a-z0-9]{1,8})*$/i, 'Use a language tag such as "en", "zh-Hant", or "ja"').default("en"),
   }).strict(),
+  template: templateReferenceSchema.optional(),
   theme: z.enum(["light", "dark"]).default("light"),
   fontFamily: fontFamilySchema.optional(),
   backgrounds: backgroundsSchema.optional(),

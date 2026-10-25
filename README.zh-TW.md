@@ -102,7 +102,7 @@ repository 內的詳細參考文件（英文）：
 
 ## 範圍與預期
 
-第一階段提供結構化撰寫、六種固定 16:9 版型系列（封面有四種變化）、淺色／深色主題、HTML 排版與預覽、由瀏覽器驅動的 PPTX
+第一階段提供結構化撰寫、六種固定 16:9 版型系列（封面有四種變化）、淺色／深色主題、不必修改內容即可換外觀的純資料範本（`init --template corporate`）、HTML 排版與預覽、由瀏覽器驅動的 PPTX
 匯出、版面檢查，以及離線 PPTX 結構檢查。選用的視覺比對會透過外部的 LibreOffice Impress 與 Poppler
 另外轉出 PPTX 畫面，並輸出每頁的 JSON 與差異圖。圖表是匯出成文字與圖形的 HTML/CSS 長條，
 **不是 Office 原生圖表物件**。轉換器公開 API 不支援的 metadata，會在匯出後寫入 core-properties XML。

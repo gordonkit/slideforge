@@ -18,6 +18,7 @@ COPY --from=builder /build/package.json /build/package-lock.json ./
 COPY --from=builder /build/node_modules ./node_modules
 COPY --from=builder /build/dist ./dist
 COPY examples ./examples
+COPY templates ./templates
 COPY LICENSE THIRD_PARTY_NOTICES.md /usr/share/licenses/slideforge/
 # Playwright installs the Chromium build pinned by package-lock.json and its system libraries.
 RUN apt-get update \
