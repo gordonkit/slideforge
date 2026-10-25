@@ -1,7 +1,8 @@
 # Design token reference
 
-Sources: [`src/themes/tokens.ts`](../src/themes/tokens.ts) and
-[`src/themes/slides.css`](../src/themes/slides.css). Phase 1 exposes fixed sizing,
+Sources: [`src/themes/tokens.ts`](../src/themes/tokens.ts),
+[`src/themes/slides.css`](../src/themes/slides.css) for shared styles, and each
+layout family's `src/layouts/<family>/<family>.css`. Phase 1 exposes fixed sizing,
 two palettes, and a presentation-level local font family—not a general theme
 configuration schema.
 

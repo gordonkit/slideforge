@@ -43,7 +43,9 @@ editable chart workbook/series API.
 ## Layout dispatcher
 
 `SlideLayout` in `src/layouts/index.tsx` is internal, not exported from the
-package root. It composes all layouts with `Slide`:
+package root. It looks up the slide's family in a renderer table and composes
+the result with `Slide`. Each family lives in `src/layouts/<family>/` with its
+schema, renderer, and stylesheet, and is listed in `src/layouts/registry.ts`:
 
 | Layout | Composition |
 | --- | --- |

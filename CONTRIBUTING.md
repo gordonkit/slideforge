@@ -61,6 +61,27 @@ unnecessary build output. Only export trusted HTML/URLs during development;
 page scripts run with the capabilities of the export environment. Reproduction
 cases should use local, nonsensitive content.
 
+## Adding a layout family
+
+A family is the shape of a slide's content: its fields. Each one lives in its own
+folder under `src/layouts/`:
+
+1. `src/layouts/<family>/schema.ts` exports `{ family, variants, slide }` with
+   `variants` starting at `"default"` and `slide` built by `slideObject(family, { … })`
+   from `src/schemas/fields.ts`. Put family-specific checks on `slide` with
+   `.superRefine`.
+2. `render.tsx` exports a component that takes `LayoutProps<"<family>">` and returns
+   the slide's content region. The frame, title, footer, and background come from `Slide`.
+3. `<family>.css` holds the family's rules, using only `--sf-*` tokens. Leave it as a
+   comment if the shared styles in `src/themes/slides.css` are enough.
+4. List the definition in `layouts` in `src/layouts/registry.ts` and its renderer in
+   `src/layouts/index.tsx`. TypeScript reports a family with no renderer.
+
+The schema, the unknown-layout error, `backgrounds` keys, and the stylesheet follow from
+the registry. Add the family to `examples/basic` and the tests, export it to check layout
+issues and the PPTX report, and document it in `docs/schema.md`, `docs/components.md`,
+and all four locales of `site/src/content.ts`.
+
 ## Dependencies and licensing
 
 Do not add dependencies for features the existing stack already supports.

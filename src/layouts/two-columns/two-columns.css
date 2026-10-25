@@ -1,0 +1,1 @@
+.sf-columns { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sf-spacing-column); height: 100%; }

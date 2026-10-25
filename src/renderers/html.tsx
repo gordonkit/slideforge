@@ -2,10 +2,10 @@ import { readFileSync } from "node:fs";
 import type { CSSProperties } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { parsePresentation, slideBackground } from "../schemas/presentation.js";
-import { SlideLayout } from "../layouts/index.js";
+import { layoutStylesheet, SlideLayout } from "../layouts/index.js";
 import { defaultFontFamily, designCssVariables, SLIDE_SIZE, themeTokens } from "../themes/tokens.js";
 
-const stylesheet = readFileSync(new URL("../themes/slides.css", import.meta.url), "utf8");
+const stylesheet = readFileSync(new URL("../themes/slides.css", import.meta.url), "utf8") + layoutStylesheet;
 
 export interface RenderOptions {
   /** Optional caller-controlled base URL for resolving relative image assets. */

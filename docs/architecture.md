@@ -22,11 +22,14 @@ browser, not as a Node DOM simulation.
 
 | Path | Responsibility |
 | --- | --- |
-| `src/schemas/presentation.ts` | Strict content validation and inferred types |
+| `src/schemas/presentation.ts` | Strict content validation and inferred types, built from the layout registry |
+| `src/schemas/fields.ts` | Text, image, background, content block, and common slide field schemas |
 | `src/schemas/background.ts` | Studio share link detection and `/render` URLs |
 | `src/themes/` | Fixed slide dimensions, palettes, shared CSS |
 | `src/components/` | Content, tables, bars, title/footer/frame |
-| `src/layouts/` | Six-layout dispatcher |
+| `src/layouts/registry.ts` | Layout families, their variants and slide schemas |
+| `src/layouts/<family>/` | One family's `schema.ts`, `render.tsx`, and `<family>.css` |
+| `src/layouts/index.tsx` | Renderer table, layout stylesheet, and the `SlideLayout` dispatcher |
 | `src/renderers/html.tsx` | Complete static HTML document |
 | `src/renderers/preview.ts` | Loopback Vite server rooted at JSON directory |
 | `src/exporters/browser.ts` | Published `exportToPptx` browser API adapter |
@@ -37,8 +40,8 @@ browser, not as a Node DOM simulation.
 | `src/cli/index.ts` | CLI argument parsing and commands |
 | `examples/basic/` | Complete six-layout multilingual sample and assets |
 
-`npm run build` emits Node modules/types with TypeScript, copies the stylesheet,
-and uses Vite's library build to generate
+`npm run build` emits Node modules/types with TypeScript, copies the stylesheets
+(`src/**/*.css`) beside them, and uses Vite's library build to generate
 `dist/exporters/engine.js` as the `SlideForgeEngine` IIFE. It bundles the
 converter and browser dependencies for injection into the export page; export
 does not rely on loading a CDN script. This is separate from Vite preview.

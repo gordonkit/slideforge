@@ -20,7 +20,7 @@
     "node": ">=24.0.0"
   },
   "scripts": {
-    "build": "tsc && node --input-type=module -e \"import {copyFileSync} from 'node:fs'; copyFileSync('src/themes/slides.css', 'dist/themes/slides.css')\" && vite build --config vite.export.config.ts",
+    "build": "tsc && node --input-type=module -e \"import {cpSync} from 'node:fs'; cpSync('src', 'dist', {recursive: true, filter: (source) => !/\\.tsx?$/.test(source)})\" && vite build --config vite.export.config.ts",
     "check": "tsc --noEmit",
     "test": "vitest run",
     "test:unit": "vitest run tests/unit",
