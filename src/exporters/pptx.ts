@@ -2,12 +2,13 @@ import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { dirname, extname, join, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { chromium, type Page } from 'playwright';
+import { chromium, type ElementHandle, type Page } from 'playwright';
 import { renderPresentation } from '../renderers/html.js';
 import { readPresentationFile } from '../schemas/input.js';
 import { applyMetadata, type PresentationMetadata } from './metadata.js';
 import { widenTextBoxes, type TextSlack } from './text-fit.js';
 import { applyEastAsianFont } from './fonts.js';
+import { applyBackgrounds } from './backgrounds.js';
 import { validateLayout, type ValidationIssue } from '../validators/layout.js';
 import { validatePptx } from '../validators/pptx.js';
 import { SLIDE_SIZE } from '../themes/tokens.js';
@@ -84,6 +85,79 @@ async function prepareImages(page: Page, selector: string): Promise<void> {
   }, replacements);
 }
 
+/** Wait for a studio `/render` frame to finish drawing; its failure reason becomes the export error. */
+async function waitForStudioFrame(frameElement: ElementHandle, slide: number, timeout: number): Promise<void> {
+  const frame = await frameElement.contentFrame();
+  const source = await frameElement.getAttribute('src');
+  if (!frame) throw new Error(`Slide ${slide}: the background frame did not load: ${source}`);
+  const published = await frame.waitForFunction(() => 'bgRender' in window, undefined, { timeout })
+    .then(() => true, () => false);
+  if (!published) {
+    throw new Error(`Slide ${slide}: ${new URL(source ?? '').origin} did not provide the studio render page. `
+      + 'Check the share link and that this studio version serves /render.');
+  }
+  const failure = await frame.evaluate(async () => {
+    const render = (window as unknown as { bgRender: { version: number; ready: Promise<void> } }).bgRender;
+    if (render.version !== 1) return `unsupported render page version ${render.version}`;
+    try {
+      await render.ready;
+      return undefined;
+    } catch (error) {
+      const { code, message } = error as { code?: string; message?: string };
+      return `${code ?? 'error'}: ${message ?? String(error)}`;
+    }
+  });
+  if (failure) throw new Error(`Slide ${slide}: the studio could not draw the background (${failure}).`);
+}
+
+/**
+ * Capture every slide's `[data-pptx-background]` layer as a PNG of the slide (its own color included),
+ * then remove the layer and the slide color so the converter emits neither. Slides without a layer get `undefined`.
+ */
+async function captureBackgrounds(page: Page, selector: string, timeout: number): Promise<Array<Buffer | undefined>> {
+  const slides = await page.locator(selector).all();
+  const layers = await Promise.all(slides.map(slide => slide.locator(':scope > [data-pptx-background]').count()));
+  if (!layers.some(count => count > 0)) return slides.map(() => undefined);
+  const hide = await page.addStyleTag({
+    content: `:is(${selector}) > :not([data-pptx-background]) { visibility: hidden !important; }`,
+  });
+  const captured: Array<Buffer | undefined> = [];
+  // Slides sit at different page offsets, so identical backgrounds can differ by anti-aliasing;
+  // reuse the first capture of the same layer on the same slide color so PowerPoint stores it once.
+  const byLayer = new Map<string, Buffer>();
+  for (const [index, slide] of slides.entries()) {
+    if (layers[index] === 0) {
+      captured.push(undefined);
+      continue;
+    }
+    const key = await slide.evaluate(element =>
+      `${getComputedStyle(element).backgroundColor}\n${element.querySelector(':scope > [data-pptx-background]')!.outerHTML}`);
+    const previous = byLayer.get(key);
+    if (previous) {
+      captured.push(previous);
+      continue;
+    }
+    // Chromium pauses animation frames in cross-origin frames that are out of view.
+    await slide.scrollIntoViewIfNeeded();
+    for (const frame of await slide.locator(':scope > [data-pptx-background] iframe').elementHandles()) {
+      await waitForStudioFrame(frame, index + 1, timeout);
+    }
+    const image = await slide.screenshot({ type: 'png', animations: 'disabled' });
+    byLayer.set(key, image);
+    captured.push(image);
+  }
+  await hide.evaluate(element => (element as Element).remove());
+  await page.locator(selector).evaluateAll(elements => {
+    for (const slide of elements as HTMLElement[]) {
+      const layer = slide.querySelector(':scope > [data-pptx-background]');
+      if (!layer) continue;
+      layer.remove();
+      slide.style.setProperty('background', 'transparent', 'important');
+    }
+  });
+  return captured;
+}
+
 /** Export a JSON file, HTML file, or trusted HTTP(S) presentation URL. */
 export async function exportPresentation(input: string, options: ExportOptions): Promise<ValidationIssue[]> {
   const directory = await mkdtemp(join(tmpdir(), 'slideforge-'));
@@ -124,6 +198,7 @@ export async function exportPresentation(input: string, options: ExportOptions):
       return { title: document.title, author: meta('author'), subject: meta('subject'), lang: document.documentElement.lang };
     });
     metadata = { ...documentMetadata, ...metadata };
+    const backgrounds = await captureBackgrounds(page, selector, options.timeout ?? 60_000);
     await page.addScriptTag({ path: fileURLToPath(new URL('./engine.js', import.meta.url)) });
     const base64 = await page.evaluate(async ({ selector, size }) => {
       const engine = (window as unknown as {
@@ -133,7 +208,7 @@ export async function exportPresentation(input: string, options: ExportOptions):
     }, { selector, size: SLIDE_SIZE });
     const converted = Buffer.from(base64, 'base64');
     const fitted = options.textSlack === false ? converted : widenTextBoxes(converted, options.textSlack);
-    const data = applyMetadata(applyEastAsianFont(fitted, options.eastAsianFont), metadata);
+    const data = applyMetadata(applyBackgrounds(applyEastAsianFont(fitted, options.eastAsianFont), backgrounds), metadata);
     const report = validatePptx(data);
     if (!report.valid) throw new Error(`Invalid generated PPTX: ${report.issues.map(issue => issue.message).join('; ')}`);
     await writeFile(resolve(options.output), data);

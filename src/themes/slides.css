@@ -1,7 +1,9 @@
 * { box-sizing: border-box; }
 body { margin: 0; background: var(--sf-canvas); color: var(--sf-foreground); }
 .sf-presentation { display: flex; flex-direction: column; align-items: center; gap: var(--sf-spacing-page); padding: var(--sf-spacing-page); }
-.sf-slide { position: relative; width: var(--slide-width); height: var(--slide-height); flex: none; background: var(--sf-background); color: var(--sf-foreground); overflow: hidden; padding: var(--sf-layout-padding-top) var(--sf-layout-padding-x) var(--sf-layout-padding-bottom); }
+.sf-slide { position: relative; isolation: isolate; width: var(--slide-width); height: var(--slide-height); flex: none; background: var(--sf-background); color: var(--sf-foreground); overflow: hidden; padding: var(--sf-layout-padding-top) var(--sf-layout-padding-x) var(--sf-layout-padding-bottom); }
+.sf-background { position: absolute; inset: 0; z-index: -1; pointer-events: none; }
+.sf-background img, .sf-background iframe { display: block; width: 100%; height: 100%; border: 0; object-fit: cover; }
 .sf-header { height: var(--sf-layout-header); overflow: hidden; }
 .sf-header h1 { margin: 0; font-size: var(--sf-type-title); line-height: var(--sf-type-title-leading); font-weight: var(--sf-type-bold); }
 .sf-subtitle { margin: var(--sf-spacing-subtitle) 0 0; color: var(--sf-muted); font-size: var(--sf-type-subtitle); line-height: var(--sf-type-subtitle-leading); }

@@ -411,6 +411,7 @@ docker compose -f docker/compose.yaml --profile cli run --rm cli validate /work/
             ["metadata", yes, { en: "title (required), author, subject, lang (default en)", "zh-TW": "title（必填）、author、subject、lang（預設 en）", "zh-CN": "title（必填）、author、subject、lang（默认 en）", ja: "title（必須）、author、subject、lang（既定は en）" }],
             ["theme", no, { en: "light (default) or dark", "zh-TW": "light（預設）或 dark", "zh-CN": "light（默认）或 dark", ja: "light（既定）または dark" }],
             ["fontFamily", no, { en: "Local font family list, up to 200 characters", "zh-TW": "本機字型清單，最多 200 字元", "zh-CN": "本机字体列表，最多 200 字符", ja: "ローカルフォントのファミリー一覧（最大 200 文字）" }],
+            ["backgrounds", no, { en: "Background sources for default and each layout; see Backgrounds", "zh-TW": "default 與各版型的背景來源，見「背景」", "zh-CN": "default 与各版式的背景来源，见“背景”", ja: "default と各レイアウトの背景。「背景」を参照" }],
             ["slides", yes, { en: "1 to 200 slides", "zh-TW": "1 到 200 張投影片", "zh-CN": "1 到 200 张幻灯片", ja: "1〜200 枚のスライド" }],
           ],
         },
@@ -419,10 +420,10 @@ docker compose -f docker/compose.yaml --profile cli run --rm cli validate /work/
         id: "slides",
         title: { en: "Slides and layouts", "zh-TW": "投影片與版型", "zh-CN": "幻灯片与版式", ja: "スライドとレイアウト" },
         body: {
-          en: "Every slide needs layout and title, and may have subtitle, footer, and notes. Notes become PowerPoint speaker notes. Each layout adds its own fields:",
-          "zh-TW": "每張投影片都需要 layout 與 title，可另加 subtitle、footer 與 notes，notes 會成為 PowerPoint 的演講者備忘稿。各版型另有專屬欄位：",
-          "zh-CN": "每张幻灯片都需要 layout 与 title，可另加 subtitle、footer 与 notes，notes 会成为 PowerPoint 的演讲者备注。各版式另有专属字段：",
-          ja: "各スライドには layout と title が必要で、subtitle、footer、notes も指定できます。notes は PowerPoint の発表者ノートになります。レイアウトごとに次のフィールドが加わります。",
+          en: "Every slide needs layout and title, and may have subtitle, footer, notes, and background. Notes become PowerPoint speaker notes. Each layout adds its own fields:",
+          "zh-TW": "每張投影片都需要 layout 與 title，可另加 subtitle、footer、notes 與 background，notes 會成為 PowerPoint 的演講者備忘稿。各版型另有專屬欄位：",
+          "zh-CN": "每张幻灯片都需要 layout 与 title，可另加 subtitle、footer、notes 与 background，notes 会成为 PowerPoint 的演讲者备注。各版式另有专属字段：",
+          ja: "各スライドには layout と title が必要で、subtitle、footer、notes、background も指定できます。notes は PowerPoint の発表者ノートになります。レイアウトごとに次のフィールドが加わります。",
         },
         table: {
           caption: { en: "Layout fields", "zh-TW": "版型欄位", "zh-CN": "版式字段", ja: "レイアウトのフィールド" },
@@ -452,6 +453,35 @@ docker compose -f docker/compose.yaml --profile cli run --rm cli validate /work/
         code: `{ "type": "paragraph", "text": "One clear idea." }
 { "type": "bullets", "items": ["First", "Second"], "ordered": false }
 { "type": "image", "src": "assets/diagram.svg", "alt": "Workflow diagram", "caption": "Optional" }`,
+      },
+      {
+        id: "backgrounds",
+        title: { en: "Backgrounds", "zh-TW": "背景", "zh-CN": "背景", ja: "背景" },
+        body: {
+          en: "A background fills the slide behind its content. Each slide uses its own background, else backgrounds.<layout>, else backgrounds.default; \"none\" turns it off for one slide. A source is an image (same rules as image blocks, cropped to cover the slide) or a Math Background Studio share link, which the studio's /render page draws at export.",
+          "zh-TW": "背景會鋪滿整張投影片，位於內容下方。每張投影片依序使用自己的 background、backgrounds.<版型>、backgrounds.default；設為 \"none\" 可讓單頁不使用背景。來源可以是圖片（規則與圖片區塊相同，會裁切以鋪滿投影片），或 Math Background Studio 的分享連結，匯出時由 studio 的 /render 頁面繪製。",
+          "zh-CN": "背景会铺满整张幻灯片，位于内容下方。每张幻灯片依次使用自己的 background、backgrounds.<版式>、backgrounds.default；设为 \"none\" 可让单页不使用背景。来源可以是图片（规则与图片块相同，会裁剪以铺满幻灯片），或 Math Background Studio 的分享链接，导出时由 studio 的 /render 页面绘制。",
+          ja: "背景はスライド全体に敷かれ、内容の下に表示されます。各スライドは自分の background、なければ backgrounds.<レイアウト>、なければ backgrounds.default を使います。\"none\" でそのスライドだけ背景をなくせます。指定できるのは画像（画像ブロックと同じ規則で、スライドを覆うようにトリミング）または Math Background Studio の共有リンクで、リンクは書き出し時に studio の /render ページが描画します。",
+        },
+        code: `{
+  "backgrounds": {
+    "default": "assets/plain.svg",
+    "cover": "https://bg.gordonkit.com/studio#d=1PYo…"
+  },
+  "slides": [
+    { "layout": "cover", "title": "Uses backgrounds.cover" },
+    { "layout": "table", "title": "No background", "background": "none", "columns": ["A"], "rows": [["1"]] }
+  ]
+}`,
+        note: {
+          en: "Share links are accepted only from https://bg.gordonkit.com or a localhost development server. Backgrounds become 1920 × 1080 pictures in the PowerPoint slide background, not editable shapes.",
+          "zh-TW": "分享連結只接受 https://bg.gordonkit.com 或 localhost 開發伺服器。背景會成為 PowerPoint 投影片背景中的 1920 × 1080 圖片，不是可編輯的圖形。",
+          "zh-CN": "分享链接只接受 https://bg.gordonkit.com 或 localhost 开发服务器。背景会成为 PowerPoint 幻灯片背景中的 1920 × 1080 图片，不是可编辑的图形。",
+          ja: "共有リンクは https://bg.gordonkit.com または localhost の開発サーバーのものだけを受け付けます。背景は PowerPoint のスライド背景に 1920 × 1080 の画像として入り、編集できる図形にはなりません。",
+        },
+        links: [
+          { label: { en: "Math Background Studio", "zh-TW": "Math Background Studio", "zh-CN": "Math Background Studio", ja: "Math Background Studio" }, href: "https://bg.gordonkit.com/studio" },
+        ],
       },
       {
         id: "minimal",
@@ -896,24 +926,28 @@ console.log(reports.map(report => report.differenceRatio));`,
             "Charts are HTML/CSS bars, not native Office charts",
             "No automatic raster fallback for unsupported content",
             "Built HTML uses a local file base and is not portable",
+            "Backgrounds are pictures, and studio links need network access to the studio",
           ],
           "zh-TW": [
             "六種固定 16:9 版型，沒有投影片編輯器，也不支援任意樣式",
             "圖表是 HTML/CSS 長條，不是 Office 原生圖表",
             "不支援的內容不會自動轉成點陣圖",
             "建置出的 HTML 使用本機檔案路徑，無法直接搬到別處使用",
+            "背景是圖片；使用 studio 連結時需要能連線到 studio",
           ],
           "zh-CN": [
             "六种固定 16:9 版式，没有幻灯片编辑器，也不支持任意样式",
             "图表是 HTML/CSS 长条，不是 Office 原生图表",
             "不支持的内容不会自动转成位图",
             "构建出的 HTML 使用本机文件路径，无法直接搬到别处使用",
+            "背景是图片；使用 studio 链接时需要能连接到 studio",
           ],
           ja: [
             "固定の 16:9 レイアウトは 6 種類のみ。スライドエディターや任意のスタイル指定はない",
             "グラフは HTML/CSS のバーで、Office ネイティブのグラフではない",
             "未対応の内容を自動でラスター画像に置き換える機能はない",
             "ビルドした HTML はローカルのファイルパスを基準にしており、持ち運べない",
+            "背景は画像になり、studio のリンクには studio へのネットワーク接続が必要",
           ],
         },
       },

@@ -1,4 +1,5 @@
 import { execFile } from 'node:child_process';
+import { createServer, type Server } from 'node:http';
 import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
@@ -147,4 +148,98 @@ describe('built CLI', () => {
       await server.close();
     }
   }, 60_000);
+});
+
+/**
+ * A stand-in for the studio's /render page: it publishes `window.bgRender`, fills the window with the
+ * colour named in `#d=`, and rejects `ready` for `#d=fail`, as the real page does for a broken link.
+ */
+const renderPage = `<!doctype html><html><body style="margin:0"><canvas></canvas><script>
+const d = new URLSearchParams(location.hash.slice(1)).get('d');
+window.bgRender = { version: 1, ready: (async () => {
+  if (d === 'fail') throw Object.assign(new Error('the share link is broken'), { code: 'broken' });
+  while (!innerWidth) await new Promise(resolve => setTimeout(resolve, 20));
+  const canvas = document.querySelector('canvas');
+  canvas.width = innerWidth; canvas.height = innerHeight;
+  const context = canvas.getContext('2d');
+  context.fillStyle = '#' + d; context.fillRect(0, 0, innerWidth, innerHeight);
+  await new Promise(requestAnimationFrame);
+})() };
+</script></body></html>`;
+
+describe('slide backgrounds', () => {
+  let studio: Server;
+  let origin: string;
+  let serveRender = true;
+  beforeAll(async () => {
+    studio = createServer((request, response) => {
+      if (serveRender && request.url === '/render') response.writeHead(200, { 'Content-Type': 'text/html' }).end(renderPage);
+      else response.writeHead(404).end('Not found');
+    });
+    await new Promise<void>(resolve => studio.listen(0, '127.0.0.1', resolve));
+    const address = studio.address();
+    if (!address || typeof address === 'string') throw new Error('No test server port');
+    origin = `http://127.0.0.1:${address.port}`;
+  });
+  afterAll(async () => { await new Promise(resolve => studio.close(resolve)); });
+
+  async function deck(name: string, content: object): Promise<string> {
+    const path = join(directory, `${name}.json`);
+    await writeFile(path, JSON.stringify({ metadata: { title: name }, ...content }));
+    return path;
+  }
+
+  it('exports images and studio links as PowerPoint slide backgrounds', async () => {
+    await writeFile(join(directory, 'stripes.svg'),
+      '<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080"><rect width="1920" height="1080" fill="#cde"/></svg>');
+    const input = await deck('backgrounds', {
+      backgrounds: { default: 'stripes.svg', cards: `${origin}/studio#d=88aaee` },
+      slides: [
+        { layout: 'cover', title: 'Image default' },
+        { layout: 'cards', title: 'Studio by layout', cards: [{ title: 'A', blocks: [{ type: 'paragraph', text: 'B' }] }] },
+        { layout: 'cover', title: 'Own studio link', background: `${origin}/studio#d=ffcc88` },
+        { layout: 'cover', title: 'Plain', background: 'none' },
+        { layout: 'content', title: 'Image again', blocks: [{ type: 'paragraph', text: 'Body' }] },
+      ],
+    });
+    const output = join(directory, 'backgrounds.pptx');
+    // Background layers are not overlap candidates, so the deck exports without warnings.
+    expect(await exportPresentation(input, { output })).toEqual([]);
+    const data = await readFile(output);
+    const report = validatePptx(data);
+    expect(report.valid, JSON.stringify(report.issues)).toBe(true);
+    expect(report.slideCount).toBe(5);
+    const files = unzipSync(data);
+    const slides = [1, 2, 3, 4, 5].map(n => strFromU8(files[`ppt/slides/slide${n}.xml`]!));
+    expect(slides.map(xml => xml.includes('r:embed="rIdSlideForgeBackground"'))).toEqual([true, true, true, false, true]);
+    // Pictures are not added as shapes, and the image default used twice is stored once.
+    expect(slides.some(xml => xml.includes('<p:pic>'))).toBe(false);
+    const media = Object.keys(files).filter(path => /^ppt\/media\/slideforge-background-[0-9a-f]+\.png$/.test(path));
+    expect(media).toHaveLength(3);
+    for (const path of media) {
+      const view = new DataView(files[path]!.buffer, files[path]!.byteOffset);
+      expect([view.getUint32(16), view.getUint32(20)]).toEqual([1920, 1080]);
+    }
+    const target = (n: number) => /Id="rIdSlideForgeBackground"[^>]*Target="([^"]+)"/.exec(strFromU8(files[`ppt/slides/_rels/slide${n}.xml.rels`]!))?.[1];
+    expect(target(1)).toBeDefined();
+    expect(target(5)).toBe(target(1));
+    expect(target(2)).not.toBe(target(1));
+  }, 180_000);
+
+  it('fails with the studio reason when a link cannot be drawn', async () => {
+    const input = await deck('broken', { slides: [{ layout: 'cover', title: 'Broken', background: `${origin}/studio#d=fail` }] });
+    await expect(exportPresentation(input, { output: join(directory, 'broken.pptx') }))
+      .rejects.toThrow('Slide 1: the studio could not draw the background (broken: the share link is broken).');
+  }, 120_000);
+
+  it('fails clearly when the studio host has no render page', async () => {
+    const input = await deck('missing', { slides: [{ layout: 'cover', title: 'Missing', background: `${origin}/studio#d=missing` }] });
+    serveRender = false;
+    try {
+      await expect(exportPresentation(input, { output: join(directory, 'missing.pptx'), timeout: 3000 }))
+        .rejects.toThrow('did not provide the studio render page');
+    } finally {
+      serveRender = true;
+    }
+  }, 120_000);
 });

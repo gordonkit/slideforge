@@ -6,8 +6,9 @@
 JSON → strict Zod schema → typed presentation
      → React static markup + shared CSS/tokens → HTML
      → Playwright Chromium → layout validation
+     → capture background layers as PNG, remove them
      → bundled dom-to-pptx → PPTX bytes
-     → patch core metadata → structural validation → output file
+     → set slide backgrounds, patch core metadata → structural validation → output file
 
 JSON directory → Vite loopback preview → same rendered HTML
 Trusted HTML/HTTP(S) URL ──────────────→ Chromium/export pipeline
@@ -22,6 +23,7 @@ browser, not as a Node DOM simulation.
 | Path | Responsibility |
 | --- | --- |
 | `src/schemas/presentation.ts` | Strict content validation and inferred types |
+| `src/schemas/background.ts` | Studio share link detection and `/render` URLs |
 | `src/themes/` | Fixed slide dimensions, palettes, shared CSS |
 | `src/components/` | Content, tables, bars, title/footer/frame |
 | `src/layouts/` | Six-layout dispatcher |
@@ -30,6 +32,7 @@ browser, not as a Node DOM simulation.
 | `src/exporters/browser.ts` | Published `exportToPptx` browser API adapter |
 | `src/exporters/pptx.ts` | Chromium orchestration, assets, validation, output |
 | `src/exporters/metadata.ts` | Core-properties XML patch |
+| `src/exporters/backgrounds.ts` | Slide background (`<p:bg>`) image patch |
 | `src/validators/` | Layout, PPTX package, optional visual checks |
 | `src/cli/index.ts` | CLI argument parsing and commands |
 | `examples/basic/` | Complete six-layout multilingual sample and assets |
@@ -138,6 +141,31 @@ The pinned converter's public API does not supply SlideForge's metadata setter.
 SlideForge patches `docProps/core.xml` after conversion with title, creator,
 subject, and language, retaining the converter's remaining package parts. It
 does not reach into upstream private APIs or promise a general OOXML editor.
+
+### Slide backgrounds
+
+A slide whose root has a direct `[data-pptx-background]` child gets that layer as
+its PowerPoint background. JSON backgrounds render this layer; custom HTML can
+provide it (see [components](components.md#custom-trusted-html)). After layout
+validation, export:
+
+1. scrolls each such slide into view and, for every studio `<iframe>` in the
+   layer, waits for the frame's `window.bgRender.ready` (contract version 1).
+   A frame that never publishes `bgRender` within `timeout`, or whose `ready`
+   rejects, fails the export with the slide number and the studio's reason;
+2. hides the slide's other children and takes a 1920 × 1080 PNG screenshot of
+   the slide, which includes the slide's own background color under any
+   transparent parts of the layer. Layers with the same markup on the same
+   slide color reuse the first screenshot;
+3. removes the layers and makes those slides' own color transparent, so the
+   converter emits neither a picture nor a full-slide color rectangle;
+4. after conversion, writes each PNG into the slide's `<p:bg>` as a stretched
+   picture fill through an image relationship, replacing any converter
+   background. Identical PNGs are stored once in `ppt/media/`.
+
+Slides without a layer keep the converter's output, including their color
+rectangle. The studio's render page contract is documented in Math Background
+Studio's `docs/render.md`.
 
 ### Validators
 

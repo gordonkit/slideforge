@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import type { Slide as PresentationSlide } from "../schemas/presentation.js";
+import { studioRenderUrl } from "../schemas/background.js";
 
 export function SlideSubtitle({ children }: { children: ReactNode }) {
   return <p className="sf-subtitle">{children}</p>;
@@ -25,10 +26,22 @@ export function SlideFooter({ text, number, total }: { text?: string; number: nu
   return <footer className="sf-footer"><span>{text}</span><span>{number} / {total}</span></footer>;
 }
 
-export function Slide({ slide, number, total, children }: {
-  slide: PresentationSlide; number: number; total: number; children: ReactNode;
+/**
+ * Full-slide background layer. Export turns it into the PowerPoint slide background, so it is never
+ * converted as a shape; a studio share link is drawn by the studio's `/render` page.
+ */
+export function SlideBackground({ source }: { source: string }) {
+  const render = studioRenderUrl(source);
+  return <div className="sf-background" data-pptx-background="" aria-hidden="true">
+    {render ? <iframe src={render} title="Background" tabIndex={-1} /> : <img src={source} alt="" />}
+  </div>;
+}
+
+export function Slide({ slide, number, total, background, children }: {
+  slide: PresentationSlide; number: number; total: number; background?: string | undefined; children: ReactNode;
 }) {
   return <section className={`sf-slide sf-layout-${slide.layout}`} data-pptx="slide" data-layout={slide.layout} aria-label={`${number}. ${slide.title}`}>
+    {background !== undefined && <SlideBackground source={background} />}
     <SlideTitle title={slide.title} {...(slide.subtitle === undefined ? {} : { subtitle: slide.subtitle })} />
     <SlideContent>{children}</SlideContent>
     <SlideFooter text={slide.footer} number={number} total={total} />
