@@ -1,0 +1,9 @@
+**
+!package.json
+!package-lock.json
+!tsconfig.json
+!vite.export.config.ts
+!src/**
+!examples/**
+!LICENSE
+!THIRD_PARTY_NOTICES.md

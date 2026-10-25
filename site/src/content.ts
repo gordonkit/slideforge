@@ -357,6 +357,27 @@ node dist/cli/index.js export http://127.0.0.1:5180/ --output preview.pptx`,
           ],
         },
       },
+      {
+        id: "docker",
+        title: { en: "Run in Docker", "zh-TW": "在 Docker 中執行", "zh-CN": "在 Docker 中运行", ja: "Docker で実行する" },
+        body: {
+          en: "The image bundles Node.js, the pinned Chromium, and Noto CJK and Liberation fonts, so you do not install them yourself. Compose mounts the repository root at /work, or the folder in SLIDEFORGE_WORK, and the CLI arguments follow cli. Paths are container paths under /work.",
+          "zh-TW": "映像檔內含 Node.js、鎖定版本的 Chromium，以及 Noto CJK 與 Liberation 字型，不必自行安裝。Compose 會把 repository 根目錄（或 SLIDEFORGE_WORK 指定的資料夾）掛載到 /work，CLI 參數接在 cli 後面。路徑要寫容器內 /work 底下的路徑。",
+          "zh-CN": "镜像内含 Node.js、锁定版本的 Chromium，以及 Noto CJK 与 Liberation 字体，无需自行安装。Compose 会把仓库根目录（或 SLIDEFORGE_WORK 指定的文件夹）挂载到 /work，CLI 参数接在 cli 后面。路径要写容器内 /work 下的路径。",
+          ja: "イメージには Node.js、固定バージョンの Chromium、Noto CJK と Liberation フォントが含まれるため、自分でインストールする必要はありません。Compose はリポジトリのルート（または SLIDEFORGE_WORK のフォルダー）を /work にマウントし、CLI の引数は cli の後に続けます。パスはコンテナー内の /work 以下で指定します。",
+        },
+        code: `docker compose -f docker/compose.yaml --profile cli run --rm --build cli export /work/examples/basic/presentation.json --output /work/presentation.pptx
+docker compose -f docker/compose.yaml --profile cli run --rm cli validate /work/presentation.pptx`,
+        note: {
+          en: "The container is a CLI, not an export service, and the same trust model applies. preview is not supported in the container. PowerPoint still uses Microsoft JhengHei for CJK text, which the image does not include.",
+          "zh-TW": "容器提供的是 CLI，不是匯出服務，信任模型不變。容器中不支援 preview。PowerPoint 的 CJK 文字仍使用映像檔沒有內含的微軟正黑體。",
+          "zh-CN": "容器提供的是 CLI，不是导出服务，信任模型不变。容器中不支持 preview。PowerPoint 的 CJK 文字仍使用镜像未内含的 Microsoft JhengHei。",
+          ja: "コンテナーが提供するのは CLI であり、書き出しサービスではありません。信頼モデルは同じです。コンテナーでは preview を使えません。PowerPoint の CJK テキストには、イメージに含まれない Microsoft JhengHei が引き続き使われます。",
+        },
+        links: [
+          { label: { en: "Container guide", "zh-TW": "容器說明", "zh-CN": "容器说明", ja: "コンテナーのガイド" }, href: `${repositoryUrl}/blob/main/docker/README.md` },
+        ],
+      },
     ],
   },
   {
