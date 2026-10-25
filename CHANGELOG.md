@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file. The format 
 
 ## [Unreleased]
 
+### Added
+
+- `docker/Dockerfile` and a `cli` Compose profile run the CLI with Node.js, the pinned
+  Chromium, and Noto CJK/Liberation fonts bundled, as a non-root user with a read-only root
+  filesystem and one `/work` mount. `preview` is not supported in the container, and the
+  image is a packaged CLI, not an export service.
+
 ### Changed
 
 - The slide canvas is 1920 × 1080 CSS pixels instead of 1280 × 720, and every layout,

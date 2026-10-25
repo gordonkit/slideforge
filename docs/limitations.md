@@ -80,6 +80,11 @@ resource limits, filesystem/network access controls, and independent review.
 Do not assume browser sandboxing alone is a sufficient boundary. Keep secrets
 and sensitive files out of the export environment.
 
+The [container image](../docker/README.md) packages the same CLI. Its non-root
+user, read-only root filesystem, and single `/work` mount reduce what export can
+reach on the host, but the container still allows network access and is not an
+untrusted-document isolation boundary or an export service.
+
 Preview binds to `127.0.0.1`, not all interfaces, but its root is the JSON
 directory and it serves other files there. Loopback binding is not
 authentication, filesystem isolation, or a safe place to serve sensitive data.
