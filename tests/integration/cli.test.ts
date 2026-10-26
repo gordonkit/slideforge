@@ -283,6 +283,13 @@ describe('templates', () => {
     await expect(exec(process.execPath, [cli, 'init', join(directory, 'unknown.json'), '--template', 'nope']))
       .rejects.toMatchObject({ code: 1, stderr: expect.stringContaining('Unknown template "nope". Use "corporate" or "default"') });
     await expect(readFile(join(directory, 'unknown.json'))).rejects.toMatchObject({ code: 'ENOENT' });
+
+    const nested = join(directory, 'new', 'folder', 'deck.json');
+    await exec(process.execPath, [cli, 'init', nested, '--template', 'corporate']);
+    expect(JSON.parse(await readFile(nested, 'utf8')).template).toBe('corporate');
+    expect(await readFile(join(directory, 'new', 'folder', 'deck-assets', 'diagram.svg'), 'utf8')).toContain('<svg');
+    await expect(exec(process.execPath, [cli, 'init', nested]))
+      .rejects.toMatchObject({ code: 1, stderr: expect.stringContaining(`${nested} already exists; init never overwrites a file`) });
     await expect(exec(process.execPath, [cli, 'build', input, '--template', 'corporate'])).rejects.toMatchObject({ code: 2 });
   }, 180_000);
 

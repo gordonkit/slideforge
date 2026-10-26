@@ -65,7 +65,16 @@ async function main(): Promise<void> {
       await loadTemplate(reference, dirname(destination));
       content = content.replace('\n  "theme":', `\n  "template": ${JSON.stringify(reference)},\n  "theme":`);
     }
-    await writeFile(destination, content, { flag: 'wx' });
+    // Creates missing parent folders, like the asset folder below.
+    await mkdir(dirname(destination), { recursive: true });
+    try {
+      await writeFile(destination, content, { flag: 'wx' });
+    } catch (error) {
+      if ((error as NodeJS.ErrnoException).code === 'EEXIST') {
+        throw new Error(`${destination} already exists; init never overwrites a file`);
+      }
+      throw error;
+    }
     try {
       await mkdir(resolve(dirname(destination), assetDirectory), { recursive: true });
       await copyFile(
