@@ -43,6 +43,7 @@ browser, not as a Node DOM simulation.
 | `src/cli/index.ts` | CLI argument parsing and commands |
 | `examples/basic/` | Multilingual sample with one slide per layout family, and assets |
 | `examples/variants/` | One slide per cover variant |
+| `examples/templates/` | A deck with its own local template (`brand/`) and its assets |
 
 `npm run build` emits Node modules/types with TypeScript, copies the stylesheets
 (`src/**/*.css`) beside them, and uses Vite's library build to generate

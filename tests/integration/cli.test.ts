@@ -293,6 +293,21 @@ describe('templates', () => {
     await expect(exec(process.execPath, [cli, 'build', input, '--template', 'corporate'])).rejects.toMatchObject({ code: 2 });
   }, 180_000);
 
+  it('exports examples/templates with its own template and with each built-in one', async () => {
+    const example = resolve('examples/templates/presentation.json');
+    const content = JSON.parse(await readFile(example, 'utf8'));
+    expect(content.template).toBe('./brand');
+    for (const template of ['./brand', 'corporate', 'default']) {
+      const input = template === './brand' ? example : join(directory, `templates-${template}.json`);
+      if (input !== example) await writeFile(input, JSON.stringify({ ...content, template }));
+      const output = join(directory, `templates-${template.replace(/\W/g, '')}.pptx`);
+      expect((await exportPresentation(input, { output })).filter(issue => issue.rule !== 'layout.fonts'), template).toEqual([]);
+      const data = await readFile(output);
+      expect(validatePptx(data).slideCount).toBe(content.slides.length);
+      expect(backgroundCount(data)).toBe(template === 'default' ? 0 : content.slides.length);
+    }
+  }, 300_000);
+
   it('exports and previews a local template whose assets live beside it', async () => {
     const brand = join(directory, 'brand');
     await mkdir(join(brand, 'assets'), { recursive: true });

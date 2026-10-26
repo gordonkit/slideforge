@@ -107,6 +107,16 @@ The value is one of:
   folder, to a template `.json` file or to a folder that holds `template.json`.
   Use forward slashes.
 
+[`examples/templates/`](../examples/templates/) is a deck with its own template in
+`brand/` (with an image in `brand/assets/`): bare `cover` and `quote` slides take
+the template's variants, and the last slide names `cover/band` to override it.
+Change its `"template"` to `"corporate"` or `"default"` to restyle the same
+content:
+
+```sh
+node dist/cli/index.js preview examples/templates/presentation.json
+```
+
 `build`, `preview`, and `export` read the template with the presentation;
 `init --template <name|./path>` writes the field into a new starter deck after
 checking that the template loads. A missing, unknown, malformed, or invalid
