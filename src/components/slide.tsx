@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import type { Slide as PresentationSlide } from "../schemas/presentation.js";
 import { studioRenderUrl } from "../schemas/background.js";
+import { layoutFamily, slideVariant } from "../layouts/registry.js";
 
 export function SlideSubtitle({ children }: { children: ReactNode }) {
   return <p className="sf-subtitle">{children}</p>;
@@ -37,10 +38,11 @@ export function SlideBackground({ source }: { source: string }) {
   </div>;
 }
 
-export function Slide({ slide, number, total, background, children }: {
-  slide: PresentationSlide; number: number; total: number; background?: string | undefined; children: ReactNode;
+export function Slide({ slide, variant = slideVariant(slide), number, total, background, children }: {
+  slide: PresentationSlide; variant?: string; number: number; total: number; background?: string | undefined; children: ReactNode;
 }) {
-  return <section className={`sf-slide sf-layout-${slide.layout}`} data-pptx="slide" data-layout={slide.layout} aria-label={`${number}. ${slide.title}`}>
+  const family = layoutFamily(slide.layout);
+  return <section className={`sf-slide sf-layout-${family} sf-variant-${variant}`} data-pptx="slide" data-layout={family} data-variant={variant} aria-label={`${number}. ${slide.title}`}>
     {background !== undefined && <SlideBackground source={background} />}
     <SlideTitle title={slide.title} {...(slide.subtitle === undefined ? {} : { subtitle: slide.subtitle })} />
     <SlideContent>{children}</SlideContent>

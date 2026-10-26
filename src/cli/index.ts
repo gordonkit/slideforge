@@ -2,18 +2,18 @@
 import { constants } from 'node:fs';
 import { copyFile, mkdir, readFile, unlink, writeFile } from 'node:fs/promises';
 import { basename, dirname, resolve } from 'node:path';
-import { pathToFileURL } from 'node:url';
 import { parseArgs } from 'node:util';
 import { renderPresentation } from '../renderers/html.js';
-import { describePresentationError, readPresentationFile } from '../schemas/input.js';
+import { describePresentationError } from '../schemas/input.js';
 import { DEFAULT_PREVIEW_PORT, previewPresentation } from '../renderers/preview.js';
 import { exportPresentation } from '../exporters/pptx.js';
+import { fileRenderOptions, loadPresentation, loadTemplate } from '../templates/load.js';
 import { validatePptx } from '../validators/pptx.js';
 
 const help = `SlideForge — editable presentations from structured content
 
 Usage:
-  slideforge init [presentation.json]
+  slideforge init [presentation.json] [--template <name|./path>]
   slideforge build presentation.json [--output presentation.html]
   slideforge preview presentation.json [--port ${DEFAULT_PREVIEW_PORT}]
   slideforge export <presentation.json|slides.html|https://url> --output presentation.pptx
@@ -34,6 +34,7 @@ async function main(): Promise<void> {
         output: { type: 'string', short: 'o' },
         selector: { type: 'string' },
         port: { type: 'string' },
+        template: { type: 'string' },
         help: { type: 'boolean', short: 'h' },
       },
     });
@@ -50,11 +51,20 @@ async function main(): Promise<void> {
   if (!['init', 'build', 'preview', 'export', 'validate'].includes(command!)) {
     throw new UsageError(`Unknown command: ${command}`);
   }
+  if (values.template !== undefined && command !== 'init') {
+    throw new UsageError('--template applies only to init; set "template" in the JSON instead');
+  }
   if (command === 'init') {
     const example = await readFile(new URL('../../examples/basic/presentation.json', import.meta.url), 'utf8');
     const destination = resolve(input ?? 'presentation.json');
     const assetDirectory = `${basename(destination, '.json')}-assets`;
-    const content = example.replaceAll('assets/diagram.svg', `${encodeURIComponent(assetDirectory)}/diagram.svg`);
+    let content = example.replaceAll('assets/diagram.svg', `${encodeURIComponent(assetDirectory)}/diagram.svg`);
+    if (values.template !== undefined) {
+      const reference = String(values.template);
+      // Fails before anything is written if the template is unknown or invalid.
+      await loadTemplate(reference, dirname(destination));
+      content = content.replace('\n  "theme":', `\n  "template": ${JSON.stringify(reference)},\n  "theme":`);
+    }
     await writeFile(destination, content, { flag: 'wx' });
     try {
       await mkdir(resolve(dirname(destination), assetDirectory), { recursive: true });
@@ -74,9 +84,8 @@ async function main(): Promise<void> {
   switch (command) {
     case 'build': {
       const file = resolve(input);
-      const html = renderPresentation(await readPresentationFile(file), {
-        baseUrl: pathToFileURL(dirname(file) + '/').href,
-      });
+      const loaded = await loadPresentation(file);
+      const html = renderPresentation(loaded.content, fileRenderOptions(file, loaded));
       const output = resolve(String(values.output ?? `${basename(input, '.json')}.html`));
       await writeFile(output, html);
       console.log(`Built ${output}`);
@@ -85,8 +94,10 @@ async function main(): Promise<void> {
     case 'preview': {
       const port = Number(values.port ?? DEFAULT_PREVIEW_PORT);
       if (!Number.isInteger(port) || port < 1 || port > 65535) throw new UsageError('Port must be 1–65535');
-      // Validate before starting a persistent server.
-      renderPresentation(await readPresentationFile(resolve(input)));
+      // Validate the presentation and its template before starting a persistent server.
+      const file = resolve(input);
+      const loaded = await loadPresentation(file);
+      renderPresentation(loaded.content, fileRenderOptions(file, loaded));
       const server = await previewPresentation(input, port);
       server.printUrls();
       break;

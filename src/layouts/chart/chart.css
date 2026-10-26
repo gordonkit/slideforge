@@ -1,0 +1,8 @@
+.sf-chart { height: 100%; display: flex; flex-direction: column; justify-content: space-evenly; gap: var(--sf-spacing-subtitle); }
+.sf-chart-layout { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: var(--sf-spacing-column); height: 100%; }
+.sf-chart-layout .sf-chart-row { grid-template-columns: var(--sf-chart-explanation-label) 1fr var(--sf-chart-explanation-value); gap: var(--sf-spacing-chart-explanation); }
+.sf-chart-row { display: grid; grid-template-columns: var(--sf-chart-label) 1fr var(--sf-chart-value); align-items: center; gap: var(--sf-spacing-chart); min-height: 0; font-size: var(--sf-type-chart); }
+.sf-chart-label { overflow-wrap: anywhere; }
+.sf-chart-track { height: var(--sf-chart-height); background: var(--sf-surface); }
+.sf-chart-bar { height: var(--sf-chart-height); background: var(--sf-accent); }
+.sf-chart-value { text-align: right; }

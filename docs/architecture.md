@@ -3,8 +3,8 @@
 ## Pipeline
 
 ```text
-JSON → strict Zod schema → typed presentation
-     → React static markup + shared CSS/tokens → HTML
+JSON (+ template it names) → strict Zod schemas → typed presentation and template
+     → React static markup + shared CSS/tokens (template overrides) → HTML
      → Playwright Chromium → layout validation
      → capture background layers as PNG, remove them
      → bundled dom-to-pptx → PPTX bytes
@@ -22,11 +22,17 @@ browser, not as a Node DOM simulation.
 
 | Path | Responsibility |
 | --- | --- |
-| `src/schemas/presentation.ts` | Strict content validation and inferred types |
+| `src/schemas/presentation.ts` | Strict content validation and inferred types, built from the layout registry |
+| `src/schemas/fields.ts` | Text, image, background, content block, and common slide field schemas |
 | `src/schemas/background.ts` | Studio share link detection and `/render` URLs |
+| `src/templates/schema.ts` | Template schema, token bounds and geometry checks, token merging |
+| `src/templates/load.ts` | Template lookup (built-in or path), `loadPresentation`, file render options |
+| `templates/` | Built-in templates, one folder each with `template.json` and its assets |
 | `src/themes/` | Fixed slide dimensions, palettes, shared CSS |
 | `src/components/` | Content, tables, bars, title/footer/frame |
-| `src/layouts/` | Six-layout dispatcher |
+| `src/layouts/registry.ts` | Layout families, their variants and slide schemas |
+| `src/layouts/<family>/` | One family's `schema.ts`, `render.tsx`, and `<family>.css` |
+| `src/layouts/index.tsx` | Renderer table, layout stylesheet, and the `SlideLayout` dispatcher |
 | `src/renderers/html.tsx` | Complete static HTML document |
 | `src/renderers/preview.ts` | Loopback Vite server rooted at JSON directory |
 | `src/exporters/browser.ts` | Published `exportToPptx` browser API adapter |
@@ -35,10 +41,11 @@ browser, not as a Node DOM simulation.
 | `src/exporters/backgrounds.ts` | Slide background (`<p:bg>`) image patch |
 | `src/validators/` | Layout, PPTX package, optional visual checks |
 | `src/cli/index.ts` | CLI argument parsing and commands |
-| `examples/basic/` | Complete six-layout multilingual sample and assets |
+| `examples/basic/` | Multilingual sample with one slide per layout family, and assets |
+| `examples/variants/` | One slide per cover variant |
 
-`npm run build` emits Node modules/types with TypeScript, copies the stylesheet,
-and uses Vite's library build to generate
+`npm run build` emits Node modules/types with TypeScript, copies the stylesheets
+(`src/**/*.css`) beside them, and uses Vite's library build to generate
 `dist/exporters/engine.js` as the `SlideForgeEngine` IIFE. It bundles the
 converter and browser dependencies for injection into the export page; export
 does not rely on loading a CDN script. This is separate from Vite preview.
@@ -55,13 +62,32 @@ data. Throws on invalid content. The runtime Zod schemas and `Presentation`,
 The schema module names its slide type `Slide`; the root aliases it to
 `PresentationSlide` to distinguish it from the React `Slide` component.
 
+### Layout names
+
+`layoutFamilies` lists the families and `layoutNames` every valid `layout` value
+(each family, then `family/variant`). `layoutFamily(name)` and `layoutVariant(name)`
+split a valid name; `layoutVariant` returns `undefined` for a bare family.
+`slideVariant(slide)` is the variant a slide is drawn with, `default` for a bare
+family. The `LayoutFamily` and `LayoutName` types match them.
+
 ### `renderPresentation(input: unknown, options?: RenderOptions): string`
 
 Validates content and returns a complete HTML string, including CSS and metadata.
-`RenderOptions` is `{ baseUrl?: string }`: a caller-controlled absolute
-HTTP(S)/file URL inserted as `<base>`. Without it, browser URL resolution applies.
+`RenderOptions` is `{ baseUrl?: string; template?: unknown }`. `baseUrl` is a
+caller-controlled absolute HTTP(S)/file URL inserted as `<base>`. Without it,
+browser URL resolution applies. `template` is validated with `parseTemplate` and
+applied as described in [templates](templates.md); without it the output is
+unchanged.
 It does not copy assets or launch a browser. For a JSON file, supply its directory
 as a trailing-slash file URL to match the CLI's local asset behavior.
+
+### Templates
+
+`loadPresentation(file)`, `fileRenderOptions(file, loaded)`, `loadTemplate(reference,
+fromFolder)`, `builtInTemplates()`, `parseTemplate(input)`, and `templateSchema` are
+described in [templates](templates.md). The CLI, `previewPresentation`, and
+`exportPresentation` read JSON through `loadPresentation`, so a JSON input's
+template applies everywhere.
 
 ### `previewPresentation(input: string, port = 5180)`
 

@@ -1,9 +1,11 @@
 # Design token reference
 
-Sources: [`src/themes/tokens.ts`](../src/themes/tokens.ts) and
-[`src/themes/slides.css`](../src/themes/slides.css). Phase 1 exposes fixed sizing,
-two palettes, and a presentation-level local font family—not a general theme
-configuration schema.
+Sources: [`src/themes/tokens.ts`](../src/themes/tokens.ts),
+[`src/themes/slides.css`](../src/themes/slides.css) for shared styles, and each
+layout family's `src/layouts/<family>/<family>.css`. Phase 1 exposes fixed sizing,
+two palettes, and a presentation-level local font family. A
+[template](templates.md) can adjust palettes, the font family, and numeric
+tokens within bounds; it is not a general CSS theme.
 
 ## Canvas
 
@@ -67,10 +69,16 @@ installer, and system fonts are not guaranteed embedded into PPTX.
 | Image caption | 25.5px |
 | Footer | 24px, 36px line height; 33px from bottom, 96px from sides |
 | Cover title / subtitle / author | 90px / 45px / 39px |
+| Quote / attribution | 54px, 1.35 line height / 39px; 6px accent bar, 48px text indent |
 
 Cards fill row-wise in a three-column grid; one or two cards do not expand to
 full-width columns. Cover header height is 525px with 198px top padding; its
-content region is 375px high. Long content is clipped by several fixed-height
+content region is 375px high. `cover/split` adds a 640px accent panel
+(`cover-panel`) at the right edge and moves the slide's right padding and the
+footer's right edge to 736px (panel plus horizontal padding), leaving 1088px for
+text. `cover/band` extends the header 72px up and 96px to each side so its accent
+background reaches the slide edges, keeping the title at the default position and
+the content region at the same height. Long content is clipped by several fixed-height
 containers, so reduce or split content instead of relying on schema maxima.
 
 ## Exported token groups and CSS names
@@ -83,12 +91,15 @@ strings unchanged. For example, `spacingTokens.column` becomes
 
 | Export / group | Keys and values |
 | --- | --- |
-| `layoutTokens` / `layout` | `padding-x: 96`, `padding-top: 72`, `padding-bottom: 84`, `header: 186`, `content: 738`, `footer-bottom: 33`, `footer: 36`, `cover-header: 525`, `cover-top: 198`, `cover-content: 375`, `image-max-height: 630` |
+| `layoutTokens` / `layout` | `padding-x: 96`, `padding-top: 72`, `padding-bottom: 84`, `header: 186`, `content: 738`, `footer-bottom: 33`, `footer: 36`, `cover-header: 525`, `cover-top: 198`, `cover-content: 375`, `cover-panel: 640`, `image-max-height: 630` |
 | `spacingTokens` / `spacing` | `page: 36`, `block: 27`, `column: 60`, `card: 30`, `card-padding: 36`, `subtitle: 18`, `cover-subtitle: 36`, `card-title: 24`, `list: 48`, `item: 15`, `caption: 12`, `table-x: 24`, `table-y: 15`, `chart: 30`, `chart-explanation: 24` |
-| `typographyTokens` / `type` | `title: 60`, `subtitle: 33`, `body: 36`, `caption: 25.5`, `card-title: 39`, `card-body: 30`, `table: 31.5`, `chart: 31.5`, `footer: 24`, `cover-title: 90`, `cover-subtitle: 45`, `author: 39`, `title-leading: "1.2"`, `subtitle-leading: "1.35"`, `body-leading: "1.45"`, `bold: "700"` |
-| `borderTokens` / `border` | `width: 2`, `radius: 18` |
+| `typographyTokens` / `type` | `title: 60`, `subtitle: 33`, `body: 36`, `caption: 25.5`, `card-title: 39`, `card-body: 30`, `table: 31.5`, `chart: 31.5`, `footer: 24`, `cover-title: 90`, `cover-subtitle: 45`, `author: 39`, `quote: 54`, `title-leading: "1.2"`, `subtitle-leading: "1.35"`, `body-leading: "1.45"`, `bold: "700"` |
+| `borderTokens` / `border` | `width: 2`, `radius: 18`, `accent: 6` (the quote's accent bar) |
 | `chartTokens` / `chart` | `height: 39`, `label: 285`, `value: 210`, `explanation-label: 210`, `explanation-value: 150` |
 
 For custom HTML you may reuse these maps and CSS conventions, but arbitrary
-overrides can affect export fidelity and invalidate geometry checks. JSON has
-no token-override field.
+overrides can affect export fidelity and invalidate geometry checks. Presentation
+JSON has no token-override field; a [template](templates.md#tokens) can override
+numeric tokens within bounds that keep the canvas geometry. `mergeTokens(overrides)`
+returns the merged groups and `cssVariables(tokens)` flattens any token groups the
+same way as `designCssVariables`.

@@ -36,7 +36,7 @@ describe('readable presentation errors', () => {
 
   it('names the valid layouts and block types instead of discriminator jargon', () => {
     expect(schemaError({ metadata: { title: 'Deck' }, slides: [{ layout: 'timeline', title: 'x' }] }))
-      .toContain('slides[0].layout (slide 1): Unknown layout. Use "cover", "content", "two-columns", "cards", "table", or "chart"');
+      .toContain('slides[0].layout (slide 1): Unknown layout. Use "cover", "content", "two-columns", "cards", "table", "chart", or "quote"');
     expect(schemaError({ metadata: { title: 'Deck' }, slides: [{ layout: 'content', title: 'x', blocks: [{ type: 'quote', text: 'y' }] }] }))
       .toContain('slides[0].blocks[0].type (slide 1): Unknown block type. Use "paragraph", "bullets", or "image"');
   });

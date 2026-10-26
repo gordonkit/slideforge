@@ -36,7 +36,9 @@ docker compose -f docker/compose.yaml --profile cli run --rm cli init /work/deck
 
 Keep a deck's JSON and its asset folder inside the mounted folder; relative
 images are resolved from the JSON's folder inside the container, and files
-outside the mount do not exist there.
+outside the mount do not exist there. The built-in templates (`corporate`,
+`default`) are in the image; a local template folder must also be inside the
+mount.
 
 ### Backgrounds
 

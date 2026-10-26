@@ -1,0 +1,39 @@
+{
+  "metadata": {
+    "title": "SlideForge cover variants",
+    "author": "SlideForge",
+    "subject": "One cover, four variants / 一種封面，四種變化",
+    "lang": "zh-Hant"
+  },
+  "theme": "light",
+  "slides": [
+    {
+      "layout": "cover",
+      "title": "Ideas into slides",
+      "subtitle": "cover — 預設：靠左的標題",
+      "author": "SlideForge",
+      "footer": "cover/default"
+    },
+    {
+      "layout": "cover/centered",
+      "title": "Ideas into slides",
+      "subtitle": "cover/centered — 置中的標題與作者",
+      "author": "SlideForge",
+      "footer": "cover/centered"
+    },
+    {
+      "layout": "cover/split",
+      "title": "Ideas into slides",
+      "subtitle": "cover/split — 右側三分之一的強調色塊",
+      "author": "SlideForge",
+      "footer": "cover/split"
+    },
+    {
+      "layout": "cover/band",
+      "title": "Ideas into slides",
+      "subtitle": "cover/band — 標題區的滿版強調色帶",
+      "author": "SlideForge",
+      "footer": "cover/band"
+    }
+  ]
+}

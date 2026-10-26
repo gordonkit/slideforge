@@ -28,7 +28,7 @@ PUPPETEER_SKIP_DOWNLOAD=true npm ci
 npx playwright install --with-deps chromium
 npm run build
 
-# 6 種類のレイアウトを含むサンプルと、その画像ディレクトリを作成します。
+# レイアウトファミリーごとに 1 枚ずつのサンプルと、その画像ディレクトリを作成します。
 node dist/cli/index.js init presentation.json
 node dist/cli/index.js build presentation.json --output presentation.html
 node dist/cli/index.js preview presentation.json --port 5180
@@ -94,6 +94,7 @@ if (!report.valid) process.exitCode = 1;
 
 - [CLI の使い方](docs/cli.md)
 - [JSON スキーマのリファレンス](docs/schema.md)
+- [テンプレート](docs/templates.md)
 - [デザイントークン](docs/design-tokens.md)
 - [コンポーネントとレイアウト](docs/components.md)
 - [アーキテクチャ、API、上流の参考資料](docs/architecture.md)
@@ -106,7 +107,7 @@ if (!report.valid) process.exitCode = 1;
 
 ## 範囲と前提
 
-フェーズ 1 は、構造化された作成、固定の 16:9 レイアウト 6 種類、ライト／ダークのテーマ、HTML の描画と
+フェーズ 1 は、構造化された作成、固定の 16:9 レイアウトファミリーとバリアント、ライト／ダークのテーマ、内容を変えずに見た目を切り替えるデータだけのテンプレート（`init --template corporate`）、HTML の描画と
 プレビュー、ブラウザ経由の PPTX 書き出し、レイアウト検査、オフラインの PPTX 構造検査を提供します。
 任意の視覚比較では、外部の LibreOffice Impress と Poppler で PPTX を別途描画し、スライドごとの JSON と
 差分画像を書き出します。グラフはテキストと図形として書き出される HTML/CSS のバーであり、

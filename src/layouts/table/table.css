@@ -1,0 +1,4 @@
+.sf-table { border-collapse: collapse; width: 100%; table-layout: fixed; font-size: var(--sf-type-table); }
+.sf-table th, .sf-table td { padding: var(--sf-spacing-table-y) var(--sf-spacing-table-x); text-align: left; border: var(--sf-border-width) solid var(--sf-border); overflow-wrap: anywhere; }
+.sf-table th { background: var(--sf-accent); color: var(--sf-on-accent); font-weight: var(--sf-type-bold); }
+.sf-table tbody tr:nth-child(even) { background: var(--sf-surface); }

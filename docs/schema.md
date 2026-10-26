@@ -17,6 +17,7 @@ and unpaired surrogates are rejected before PPTX generation.
 | Field | Required | Type and constraints |
 | --- | --- | --- |
 | `metadata` | Yes | Object described below |
+| `template` | No | Built-in template name, or a `./`/`../` path to a template; see [templates](templates.md#using-a-template) |
 | `theme` | No | `"light"` or `"dark"`; default `"light"` |
 | `fontFamily` | No | Trimmed nonempty string, max 200 characters; local font names with Unicode letters/numbers, spaces, commas, quotes, hyphens only |
 | `backgrounds` | No | Object described under [Backgrounds](#backgrounds) |
@@ -43,7 +44,7 @@ Every slide requires `layout` and `title`.
 
 | Field | Type and constraints |
 | --- | --- |
-| `layout` | One of the six discriminator values below |
+| `layout` | A layout family below, or `family/variant`; see [Layout names](#layout-names) |
 | `title` | Trimmed nonempty string, max 300 |
 | `subtitle` | Optional string, max 10,000 |
 | `footer` | Optional string, max 10,000 |
@@ -54,9 +55,31 @@ Optional strings may be empty and are not trimmed. Required text fields are
 trimmed and must remain nonempty. Schema maxima are data limits, **not promises
 that content will fit a slide**; check rendered layout separately.
 
+## Layout names
+
+A `layout` value names a **family**, which decides the slide's fields, and
+optionally a **variant** of it, which decides only how the slide is drawn:
+`"cover"` or `"cover/default"`. A variant never adds or removes fields, so changing
+it does not change the content. A bare family name is drawn as its `default`
+variant, so `"<family>"` and `"<family>/default"` render the same.
+
+| Family | Variants |
+| --- | --- |
+| `cover` | `default` (left-aligned), `centered` (centered title, subtitle, and author), `split` (accent panel on the right third; text and footer stay left of it), `band` (full-bleed accent block behind the title and subtitle, which use the on-accent color) |
+| `quote` | `default` (left-aligned beside an accent bar), `centered` (centered, without the bar) |
+| `content`, `two-columns`, `cards`, `table`, `chart` | `default` |
+
+[`examples/variants/presentation.json`](../examples/variants/presentation.json)
+shows each cover variant. The `split` panel and `band` block are decorative
+shapes in the accent color; with a slide background they are drawn over it.
+
+The value is kept as written after parsing. An unknown variant of a known family
+is reported with that family's valid names, such as
+`Unknown quote variant. Use "quote", "quote/default", or "quote/centered"`.
+
 ## Layout-specific fields
 
-| `layout` | Additional fields |
+| Family | Additional fields |
 | --- | --- |
 | `"cover"` | Optional `author` string, max 10,000; independent of metadata author |
 | `"content"` | Required `blocks`: 1–12 content blocks |
@@ -64,6 +87,7 @@ that content will fit a slide**; check rendered layout separately.
 | `"cards"` | Required `cards`: 1–6 objects, each with trimmed nonempty `title` (max 200) and `blocks` (1–12) |
 | `"table"` | Required `columns` (1–8 trimmed nonempty strings, max 200 each) and `rows` (1–14 arrays of 1–8 string cells, max 2,000 each) |
 | `"chart"` | Required `data` (1–10 `{ "label", "value" }` objects); optional `unit` string, max 40; optional `blocks` (0–4 content blocks, default `[]`) |
+| `"quote"` | Required `quote`: trimmed nonempty string, max 1,000; optional `attribution` string, max 10,000 |
 
 Every table row must contain exactly one cell per column. Empty table cell
 strings are allowed. Chart labels are trimmed, nonempty, max 100 characters;
@@ -72,7 +96,8 @@ appended directly to values; include a leading space for a separated suffix.
 Charts are single-series HTML/CSS bars, not native Office charts.
 When chart `blocks` are present, they form a right-hand explanation column
 beside the bars (2:1 chart/explanation proportions); an empty array keeps a
-full-width chart.
+full-width chart. A quote is plain text drawn larger than body text, vertically
+centered in the content region; keep it to a few lines, since longer quotes clip.
 
 ## Content blocks
 
@@ -123,14 +148,15 @@ A background fills the whole slide behind its content. Each slide uses the first
 that is set:
 
 1. the slide's own `background`;
-2. `backgrounds.<layout>` for its layout;
-3. `backgrounds.default`.
+2. `backgrounds["<family>/<variant>"]` for the variant it is drawn with;
+3. `backgrounds.<family>` for its family;
+4. `backgrounds.default`.
 
-A slide with `"background": "none"` has no background even when the
-presentation sets one, and shows the theme's slide color. `backgrounds` is a
-strict object whose optional keys are `default` and the six layout names
-(`cover`, `content`, `two-columns`, `cards`, `table`, `chart`). Each value, and a
-slide's `background`, is a background source:
+A bare family name is drawn as `default`, so `backgrounds["cover/default"]` also
+applies to `"layout": "cover"` slides. A slide with `"background": "none"` has no
+background even when the presentation sets one, and shows the theme's slide color.
+`backgrounds` is a strict object whose optional keys are `default`, every family
+name, and every `family/variant` name. Each value, and a slide's `background`, is a background source:
 
 - An image source with the same rules as the `image` block's `src`. It is drawn
   with `object-fit: cover`, so an image that is not 16:9 is cropped, not stretched.
@@ -158,8 +184,9 @@ slide's `background`, is a background source:
 }
 ```
 
-`slideBackground(presentation, slide)` returns the resolved source, or
-`undefined`. Backgrounds are exported as raster PowerPoint slide backgrounds;
+`slideBackground(presentation, slide, template?)` returns the resolved source, or
+`undefined`. A [template](templates.md#precedence) adds its own `backgrounds` and
+`variants` to this lookup. Backgrounds are exported as raster PowerPoint slide backgrounds;
 see [architecture](architecture.md#slide-backgrounds) and
 [limitations](limitations.md#backgrounds).
 
@@ -183,6 +210,6 @@ see [architecture](architecture.md#slide-backgrounds) and
 }
 ```
 
-For all six layouts and multilingual content, use
+For one slide of every layout family and multilingual content, use
 [`examples/basic/presentation.json`](../examples/basic/presentation.json) or the
 CLI `init` command.

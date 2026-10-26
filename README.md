@@ -28,7 +28,7 @@ PUPPETEER_SKIP_DOWNLOAD=true npm ci
 npx playwright install --with-deps chromium
 npm run build
 
-# Create the complete six-layout example and its companion image directory.
+# Create the example (one slide per layout family) and its companion image directory.
 node dist/cli/index.js init presentation.json
 node dist/cli/index.js build presentation.json --output presentation.html
 node dist/cli/index.js preview presentation.json --port 5180
@@ -99,6 +99,7 @@ in this repository are:
 
 - [CLI usage](docs/cli.md)
 - [JSON schema reference](docs/schema.md)
+- [Templates](docs/templates.md)
 - [Design tokens](docs/design-tokens.md)
 - [Components and layouts](docs/components.md)
 - [Architecture, APIs, and upstream references](docs/architecture.md)
@@ -111,7 +112,9 @@ in this repository are:
 
 ## Scope and expectations
 
-Phase 1 provides structured authoring, six fixed 16:9 layouts, light/dark themes,
+Phase 1 provides structured authoring, a fixed set of 16:9 layout families and
+variants, light/dark themes, data-only templates that restyle a deck
+without changing its content (`init --template corporate`),
 HTML rendering/preview, browser-driven PPTX export, layout checks, and offline
 PPTX structure checks. Optional visual comparison independently renders PPTX via
 external LibreOffice Impress and Poppler and writes per-slide JSON/diff images.

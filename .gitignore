@@ -6,3 +6,4 @@ playwright-report/
 test-results/
 .slideforge/
 slideforge.code-workspace
+.plan/

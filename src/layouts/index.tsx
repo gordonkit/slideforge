@@ -1,32 +1,38 @@
+import { readFileSync } from "node:fs";
+import type { ReactNode } from "react";
 import type { Slide } from "../schemas/presentation.js";
-import { ContentBlocks, SlideChart, SlideTable } from "../components/content.js";
-import { Slide as SlideComponent, SlideCard, SlideColumns } from "../components/slide.js";
+import { Slide as SlideComponent } from "../components/slide.js";
+import { CardsLayout } from "./cards/render.js";
+import { ChartLayout } from "./chart/render.js";
+import { ContentLayout } from "./content/render.js";
+import { CoverLayout } from "./cover/render.js";
+import { QuoteLayout } from "./quote/render.js";
+import { layoutFamilies, layoutFamily, slideVariant, type LayoutFamily } from "./registry.js";
+import { TableLayout } from "./table/render.js";
+import { TwoColumnsLayout } from "./two-columns/render.js";
+import type { LayoutProps } from "./types.js";
 
-export function SlideLayout({ slide, number, total, background }: {
-  slide: Slide; number: number; total: number; background?: string | undefined;
+// One renderer per registered family; the mapped type makes a missing family a compile error.
+const renderers: { [F in LayoutFamily]: (props: LayoutProps<F>) => ReactNode } = {
+  cover: CoverLayout,
+  content: ContentLayout,
+  "two-columns": TwoColumnsLayout,
+  cards: CardsLayout,
+  table: TableLayout,
+  chart: ChartLayout,
+  quote: QuoteLayout,
+};
+
+/** Each family's `<family>.css`, in registry order, appended after the shared stylesheet. */
+export const layoutStylesheet = layoutFamilies
+  .map((family) => readFileSync(new URL(`./${family}/${family}.css`, import.meta.url), "utf8"))
+  .join("");
+
+export function SlideLayout({ slide, variant = slideVariant(slide), number, total, background }: {
+  slide: Slide; variant?: string; number: number; total: number; background?: string | undefined;
 }) {
-  let content;
-  switch (slide.layout) {
-    case "cover":
-      content = slide.author ? <p className="sf-author">{slide.author}</p> : null;
-      break;
-    case "content":
-      content = <ContentBlocks blocks={slide.blocks} />;
-      break;
-    case "two-columns":
-      content = <SlideColumns><ContentBlocks blocks={slide.left} /><ContentBlocks blocks={slide.right} /></SlideColumns>;
-      break;
-    case "cards":
-      content = <div className="sf-cards">{slide.cards.map((card, index) => <SlideCard title={card.title} key={index}><ContentBlocks blocks={card.blocks} /></SlideCard>)}</div>;
-      break;
-    case "table":
-      content = <SlideTable columns={slide.columns} rows={slide.rows} />;
-      break;
-    case "chart":
-      content = slide.blocks.length > 0
-        ? <div className="sf-chart-layout"><SlideChart data={slide.data} unit={slide.unit} /><ContentBlocks blocks={slide.blocks} /></div>
-        : <SlideChart data={slide.data} unit={slide.unit} />;
-      break;
-  }
-  return <SlideComponent slide={slide} number={number} total={total} background={background}>{content}</SlideComponent>;
+  const Layout = renderers[layoutFamily(slide.layout)] as (props: { slide: Slide; variant: string }) => ReactNode;
+  return <SlideComponent slide={slide} variant={variant} number={number} total={total} background={background}>
+    <Layout slide={slide} variant={variant} />
+  </SlideComponent>;
 }

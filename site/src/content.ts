@@ -157,25 +157,25 @@ export const pages: Page[] = [
         },
         bullets: {
           en: [
-            "Six fixed 16:9 layouts with light and dark themes",
+            "Fixed 16:9 layout families with variants, light and dark themes, and data-only templates",
             "HTML rendering and a loopback Vite preview",
             "Browser-driven export to editable PowerPoint text and shapes",
             "Layout checks, offline PPTX structure checks, and optional visual comparison",
           ],
           "zh-TW": [
-            "六種固定 16:9 版型，支援淺色與深色主題",
+            "固定的 16:9 版型系列與變化、淺色與深色主題，以及純資料的範本",
             "HTML 輸出與僅限本機的 Vite 預覽",
             "由瀏覽器驅動、匯出可編輯 PowerPoint 文字與圖形",
             "版面檢查、離線 PPTX 結構檢查，以及選用的視覺比對",
           ],
           "zh-CN": [
-            "六种固定 16:9 版式，支持浅色与深色主题",
+            "固定的 16:9 版式系列与变体、浅色与深色主题，以及纯数据的模板",
             "HTML 输出与仅限本机的 Vite 预览",
             "由浏览器驱动、导出可编辑 PowerPoint 文字与图形",
             "版面检查、离线 PPTX 结构检查，以及可选的视觉比对",
           ],
           ja: [
-            "ライトとダークのテーマを備えた 6 種類の固定 16:9 レイアウト",
+            "バリアントを持つ固定の 16:9 レイアウトファミリー、ライトとダークのテーマ、データだけのテンプレート",
             "HTML の生成とループバックの Vite プレビュー",
             "ブラウザ経由で編集可能な PowerPoint のテキストと図形へ書き出し",
             "レイアウト検査、オフラインの PPTX 構造検査、任意の視覚比較",
@@ -195,10 +195,10 @@ export const pages: Page[] = [
     category: "getting-started",
     title: { en: "Quickstart", "zh-TW": "快速入門", "zh-CN": "快速入门", ja: "クイックスタート" },
     summary: {
-      en: "Install the toolchain, create the six-layout example deck, preview it, and export an editable PPTX.",
-      "zh-TW": "安裝工具鏈，建立含六種版型的範例簡報，預覽後匯出可編輯的 PPTX。",
-      "zh-CN": "安装工具链，创建含六种版式的示例演示文稿，预览后导出可编辑的 PPTX。",
-      ja: "ツールチェーンをインストールし、6 種類のレイアウトを含むサンプルデッキを作成してプレビューし、編集可能な PPTX を書き出します。",
+      en: "Install the toolchain, create the example deck with one slide per layout family, preview it, and export an editable PPTX.",
+      "zh-TW": "安裝工具鏈，建立每個版型系列各一張的範例簡報，預覽後匯出可編輯的 PPTX。",
+      "zh-CN": "安装工具链，创建每个版式系列各一张的示例演示文稿，预览后导出可编辑的 PPTX。",
+      ja: "ツールチェーンをインストールし、レイアウトファミリーごとに 1 枚ずつのサンプルデッキを作成してプレビューし、編集可能な PPTX を書き出します。",
     },
     sections: [
       {
@@ -309,7 +309,7 @@ node dist/cli/index.js validate presentation.pptx`,
             { en: "Purpose", "zh-TW": "用途", "zh-CN": "用途", ja: "用途" },
           ],
           rows: [
-            ["init [file]", { en: "Copy the six-layout example and its assets; never overwrites", "zh-TW": "複製六種版型的範例與素材，不會覆寫既有檔案", "zh-CN": "复制六种版式的示例与素材，不会覆盖已有文件", ja: "6 種類のレイアウトのサンプルと素材をコピー。既存ファイルは上書きしない" }],
+            ["init [file] [--template t]", { en: "Copy the example (one slide per layout family) and its assets; never overwrites. --template names a template in the new JSON after checking it loads", "zh-TW": "複製範例（每個版型系列各一張）與素材，不會覆寫既有檔案。--template 會先確認範本可載入，再寫入新 JSON", "zh-CN": "复制示例（每个版式系列各一张）与素材，不会覆盖已有文件。--template 会先确认模板可加载，再写入新 JSON", ja: "サンプル（レイアウトファミリーごとに 1 枚）と素材をコピー。既存ファイルは上書きしない。--template は読み込めることを確認してから新しい JSON にテンプレートを指定" }],
             ["build <json> [-o html]", { en: "Validate JSON and write an HTML document with inline CSS", "zh-TW": "驗證 JSON 並輸出內嵌 CSS 的 HTML", "zh-CN": "验证 JSON 并输出内嵌 CSS 的 HTML", ja: "JSON を検証し、CSS をインラインにした HTML を出力" }],
             ["preview <json> [--port n]", { en: "Serve a loopback Vite preview that reloads on save, port 5180 by default", "zh-TW": "啟動僅限本機、存檔即自動更新的 Vite 預覽，預設連接埠 5180", "zh-CN": "启动仅限本机、保存即自动刷新的 Vite 预览，默认端口 5180", ja: "保存時に自動で再読み込みするループバックの Vite プレビューを起動。既定のポートは 5180" }],
             ["export <input> -o pptx", { en: "Export JSON, local HTML, or a trusted URL to PPTX", "zh-TW": "將 JSON、本機 HTML 或受信任的 URL 匯出為 PPTX", "zh-CN": "将 JSON、本机 HTML 或受信任的 URL 导出为 PPTX", ja: "JSON、ローカル HTML、信頼できる URL を PPTX に書き出し" }],
@@ -409,6 +409,7 @@ docker compose -f docker/compose.yaml --profile cli run --rm cli validate /work/
           ],
           rows: [
             ["metadata", yes, { en: "title (required), author, subject, lang (default en)", "zh-TW": "title（必填）、author、subject、lang（預設 en）", "zh-CN": "title（必填）、author、subject、lang（默认 en）", ja: "title（必須）、author、subject、lang（既定は en）" }],
+            ["template", no, { en: "Built-in template name, or a ./ or ../ path to a template; see Templates", "zh-TW": "內建範本名稱，或以 ./、../ 開頭的範本路徑，見「範本」", "zh-CN": "内置模板名称，或以 ./、../ 开头的模板路径，见“模板”", ja: "組み込みテンプレート名、または ./ か ../ で始まるテンプレートのパス。「テンプレート」を参照" }],
             ["theme", no, { en: "light (default) or dark", "zh-TW": "light（預設）或 dark", "zh-CN": "light（默认）或 dark", ja: "light（既定）または dark" }],
             ["fontFamily", no, { en: "Local font family list, up to 200 characters", "zh-TW": "本機字型清單，最多 200 字元", "zh-CN": "本机字体列表，最多 200 字符", ja: "ローカルフォントのファミリー一覧（最大 200 文字）" }],
             ["backgrounds", no, { en: "Background sources for default and each layout; see Backgrounds", "zh-TW": "default 與各版型的背景來源，見「背景」", "zh-CN": "default 与各版式的背景来源，见“背景”", ja: "default と各レイアウトの背景。「背景」を参照" }],
@@ -420,10 +421,10 @@ docker compose -f docker/compose.yaml --profile cli run --rm cli validate /work/
         id: "slides",
         title: { en: "Slides and layouts", "zh-TW": "投影片與版型", "zh-CN": "幻灯片与版式", ja: "スライドとレイアウト" },
         body: {
-          en: "Every slide needs layout and title, and may have subtitle, footer, notes, and background. Notes become PowerPoint speaker notes. Each layout adds its own fields:",
-          "zh-TW": "每張投影片都需要 layout 與 title，可另加 subtitle、footer、notes 與 background，notes 會成為 PowerPoint 的演講者備忘稿。各版型另有專屬欄位：",
-          "zh-CN": "每张幻灯片都需要 layout 与 title，可另加 subtitle、footer、notes 与 background，notes 会成为 PowerPoint 的演讲者备注。各版式另有专属字段：",
-          ja: "各スライドには layout と title が必要で、subtitle、footer、notes、background も指定できます。notes は PowerPoint の発表者ノートになります。レイアウトごとに次のフィールドが加わります。",
+          en: "Every slide needs layout and title, and may have subtitle, footer, notes, and background. Notes become PowerPoint speaker notes. layout is a family, or family/variant such as cover/default: the family decides the fields and the variant only how the slide is drawn, so changing it leaves the content unchanged. A bare family is drawn as default. cover also has centered, split (an accent panel on the right third), and band (an accent block behind the title), and quote has centered; the other families have only default. Each family adds its own fields:",
+          "zh-TW": "每張投影片都需要 layout 與 title，可另加 subtitle、footer、notes 與 background，notes 會成為 PowerPoint 的演講者備忘稿。layout 可以是版型系列，或 cover/default 這類「系列/變化」：系列決定欄位，變化只決定呈現方式，因此換變化不必改內容。只寫系列名稱時使用 default。cover 另有 centered、split（右側三分之一的強調色塊）與 band（標題後方的強調色帶），quote 另有 centered，其他系列只有 default。各系列另有專屬欄位：",
+          "zh-CN": "每张幻灯片都需要 layout 与 title，可另加 subtitle、footer、notes 与 background，notes 会成为 PowerPoint 的演讲者备注。layout 可以是版式系列，或 cover/default 这类“系列/变体”：系列决定字段，变体只决定呈现方式，因此换变体不必改内容。只写系列名称时使用 default。cover 另有 centered、split（右侧三分之一的强调色块）与 band（标题后方的强调色带），quote 另有 centered，其他系列只有 default。各系列另有专属字段：",
+          ja: "各スライドには layout と title が必要で、subtitle、footer、notes、background も指定できます。notes は PowerPoint の発表者ノートになります。layout はレイアウトのファミリー、または cover/default のような「ファミリー/バリアント」です。ファミリーがフィールドを決め、バリアントは描き方だけを決めるので、バリアントを変えても内容はそのままです。ファミリー名だけなら default で描かれます。cover にはほかに centered、split（右側 3 分の 1 の強調色パネル）、band（タイトルの背後の強調色の帯）が、quote には centered があり、ほかのファミリーは default だけです。ファミリーごとに次のフィールドが加わります。",
         },
         table: {
           caption: { en: "Layout fields", "zh-TW": "版型欄位", "zh-CN": "版式字段", ja: "レイアウトのフィールド" },
@@ -438,6 +439,7 @@ docker compose -f docker/compose.yaml --profile cli run --rm cli validate /work/
             ["cards", { en: "cards: 1–6 cards with title and blocks", "zh-TW": "cards：1–6 張含 title 與 blocks 的卡片", "zh-CN": "cards：1–6 张含 title 与 blocks 的卡片", ja: "cards：title と blocks を持つ 1〜6 枚のカード" }],
             ["table", { en: "columns (1–8) and rows (1–14), one cell per column", "zh-TW": "columns（1–8）與 rows（1–14），每列儲存格數須等於欄數", "zh-CN": "columns（1–8）与 rows（1–14），每行单元格数须等于列数", ja: "columns（1〜8）と rows（1〜14）。各行のセル数は列数と同じ" }],
             ["chart", { en: "data: 1–10 label/value pairs; optional unit and blocks", "zh-TW": "data：1–10 組 label/value；選填 unit 與 blocks", "zh-CN": "data：1–10 组 label/value；可选 unit 与 blocks", ja: "data：1〜10 組の label/value。unit と blocks は任意" }],
+            ["quote", { en: "quote: up to 1,000 characters; optional attribution", "zh-TW": "quote：最多 1,000 字元；選填 attribution", "zh-CN": "quote：最多 1,000 字符；可选 attribution", ja: "quote：最大 1,000 文字。attribution は任意" }],
           ],
         },
       },
@@ -458,10 +460,10 @@ docker compose -f docker/compose.yaml --profile cli run --rm cli validate /work/
         id: "backgrounds",
         title: { en: "Backgrounds", "zh-TW": "背景", "zh-CN": "背景", ja: "背景" },
         body: {
-          en: "A background fills the slide behind its content. Each slide uses its own background, else backgrounds.<layout>, else backgrounds.default; \"none\" turns it off for one slide. A source is an image (same rules as image blocks, cropped to cover the slide) or a Math Background Studio share link, which the studio's /render page draws at export.",
-          "zh-TW": "背景會鋪滿整張投影片，位於內容下方。每張投影片依序使用自己的 background、backgrounds.<版型>、backgrounds.default；設為 \"none\" 可讓單頁不使用背景。來源可以是圖片（規則與圖片區塊相同，會裁切以鋪滿投影片），或 Math Background Studio 的分享連結，匯出時由 studio 的 /render 頁面繪製。",
-          "zh-CN": "背景会铺满整张幻灯片，位于内容下方。每张幻灯片依次使用自己的 background、backgrounds.<版式>、backgrounds.default；设为 \"none\" 可让单页不使用背景。来源可以是图片（规则与图片块相同，会裁剪以铺满幻灯片），或 Math Background Studio 的分享链接，导出时由 studio 的 /render 页面绘制。",
-          ja: "背景はスライド全体に敷かれ、内容の下に表示されます。各スライドは自分の background、なければ backgrounds.<レイアウト>、なければ backgrounds.default を使います。\"none\" でそのスライドだけ背景をなくせます。指定できるのは画像（画像ブロックと同じ規則で、スライドを覆うようにトリミング）または Math Background Studio の共有リンクで、リンクは書き出し時に studio の /render ページが描画します。",
+          en: "A background fills the slide behind its content. Each slide uses its own background, else backgrounds.<family>/<variant>, else backgrounds.<family>, else backgrounds.default; \"none\" turns it off for one slide. A source is an image (same rules as image blocks, cropped to cover the slide) or a Math Background Studio share link, which the studio's /render page draws at export.",
+          "zh-TW": "背景會鋪滿整張投影片，位於內容下方。每張投影片依序使用自己的 background、backgrounds.<系列>/<變化>、backgrounds.<系列>、backgrounds.default；設為 \"none\" 可讓單頁不使用背景。來源可以是圖片（規則與圖片區塊相同，會裁切以鋪滿投影片），或 Math Background Studio 的分享連結，匯出時由 studio 的 /render 頁面繪製。",
+          "zh-CN": "背景会铺满整张幻灯片，位于内容下方。每张幻灯片依次使用自己的 background、backgrounds.<系列>/<变体>、backgrounds.<系列>、backgrounds.default；设为 \"none\" 可让单页不使用背景。来源可以是图片（规则与图片块相同，会裁剪以铺满幻灯片），或 Math Background Studio 的分享链接，导出时由 studio 的 /render 页面绘制。",
+          ja: "背景はスライド全体に敷かれ、内容の下に表示されます。各スライドは自分の background、なければ backgrounds.<ファミリー>/<バリアント>、なければ backgrounds.<ファミリー>、なければ backgrounds.default を使います。\"none\" でそのスライドだけ背景をなくせます。指定できるのは画像（画像ブロックと同じ規則で、スライドを覆うようにトリミング）または Math Background Studio の共有リンクで、リンクは書き出し時に studio の /render ページが描画します。",
         },
         code: `{
   "backgrounds": {
@@ -482,6 +484,33 @@ docker compose -f docker/compose.yaml --profile cli run --rm cli validate /work/
         links: [
           { label: { en: "Math Background Studio", "zh-TW": "Math Background Studio", "zh-CN": "Math Background Studio", ja: "Math Background Studio" }, href: "https://bg.gordonkit.com/studio" },
         ],
+      },
+      {
+        id: "templates",
+        title: { en: "Templates", "zh-TW": "範本", "zh-CN": "模板", ja: "テンプレート" },
+        body: {
+          en: "A template holds the look apart from the content: palette overrides for light and dark, a font family, numeric design tokens within bounds that keep the canvas geometry, backgrounds, and the variant each family's bare-name slides use. Name one with template: a built-in (default or corporate) or a ./ or ../ path to a template file or a folder with template.json. Its relative images resolve from the template's folder. The presentation's own theme, fontFamily, backgrounds entries, and a variant written in layout take precedence; changing the template restyles the deck without touching its slides.",
+          "zh-TW": "範本把外觀與內容分開：淺色與深色的配色覆寫、字型、在不破壞畫布幾何的範圍內調整數值 design token、背景，以及各系列只寫系列名稱時使用的變化。以 template 指定：內建範本（default 或 corporate），或以 ./、../ 開頭、指向範本檔或含 template.json 資料夾的路徑。範本的相對圖片路徑以範本資料夾為基準。簡報自己的 theme、fontFamily、backgrounds 項目，以及 layout 中寫明的變化優先；換範本即可改變整份簡報的外觀，不必修改投影片。",
+          "zh-CN": "模板把外观与内容分开：浅色与深色的配色覆盖、字体、在不破坏画布几何的范围内调整数值 design token、背景，以及各系列只写系列名称时使用的变体。以 template 指定：内置模板（default 或 corporate），或以 ./、../ 开头、指向模板文件或含 template.json 文件夹的路径。模板的相对图片路径以模板文件夹为基准。演示文稿自己的 theme、fontFamily、backgrounds 条目，以及 layout 中写明的变体优先；换模板即可改变整份演示文稿的外观，不必修改幻灯片。",
+          ja: "テンプレートは見た目を内容から切り離します。ライトとダークの配色の上書き、フォントファミリー、キャンバスの幾何を崩さない範囲の数値デザイントークン、背景、そしてファミリー名だけのスライドに使うバリアントを指定できます。template で指定し、値は組み込み（default または corporate）か、テンプレートのファイルまたは template.json を含むフォルダーを指す ./ か ../ で始まるパスです。テンプレートの相対画像パスはテンプレートのフォルダーから解決されます。プレゼンテーション自身の theme、fontFamily、backgrounds の項目、layout に書いたバリアントが優先されます。テンプレートを替えれば、スライドに手を入れずにデッキ全体の見た目が変わります。",
+        },
+        code: `// brand/template.json
+{
+  "name": "brand",
+  "palette": { "light": { "accent": "#0f766e" } },
+  "tokens": { "type": { "title": 64 }, "border": { "radius": 0 } },
+  "backgrounds": { "default": "assets/corner.svg" },
+  "variants": { "cover": "split" }
+}
+
+// decks/presentation.json
+{ "metadata": { "title": "Brand deck" }, "template": "../brand", "slides": [ … ] }`,
+        note: {
+          en: "Templates are data only: they cannot add CSS, HTML, layout families, or variants. Token checks keep regions on the slide but do not prove that content fits or that colors have enough contrast.",
+          "zh-TW": "範本只有資料：無法加入 CSS、HTML、版型系列或變化。token 檢查能讓各區域留在投影片內，但無法保證內容放得下，也無法保證色彩對比足夠。",
+          "zh-CN": "模板只有数据：无法加入 CSS、HTML、版式系列或变体。token 检查能让各区域留在幻灯片内，但无法保证内容放得下，也无法保证色彩对比足够。",
+          ja: "テンプレートはデータだけで、CSS、HTML、レイアウトファミリー、バリアントは追加できません。トークンの検査は各領域をスライド内に収めますが、内容が収まることや色のコントラストが十分なことは保証しません。",
+        },
       },
       {
         id: "minimal",
@@ -515,10 +544,10 @@ docker compose -f docker/compose.yaml --profile cli run --rm cli validate /work/
     category: "authoring",
     title: { en: "Layouts and components", "zh-TW": "版型與元件", "zh-CN": "版式与组件", ja: "レイアウトとコンポーネント" },
     summary: {
-      en: "Six layouts compose a small set of React components that emit predictable DOM for reliable conversion.",
-      "zh-TW": "六種版型由少量 React 元件組成，產生可預期的 DOM 結構，讓轉換結果穩定。",
-      "zh-CN": "六种版式由少量 React 组件组成，生成可预期的 DOM 结构，让转换结果稳定。",
-      ja: "6 種類のレイアウトは少数の React コンポーネントで構成され、変換が安定するよう予測可能な DOM を出力します。",
+      en: "Layout families compose a small set of React components that emit predictable DOM for reliable conversion.",
+      "zh-TW": "各版型系列由少量 React 元件組成，產生可預期的 DOM 結構，讓轉換結果穩定。",
+      "zh-CN": "各版式系列由少量 React 组件组成，生成可预期的 DOM 结构，让转换结果稳定。",
+      ja: "各レイアウトファミリーは少数の React コンポーネントで構成され、変換が安定するよう予測可能な DOM を出力します。",
     },
     sections: [
       {
@@ -537,12 +566,13 @@ docker compose -f docker/compose.yaml --profile cli run --rm cli validate /work/
             { en: "Use for", "zh-TW": "適用情境", "zh-CN": "适用场景", ja: "用途" },
           ],
           rows: [
-            ["cover", { en: "Opening slide with a large title and optional author", "zh-TW": "開場，大標題與選填的作者", "zh-CN": "开场，大标题与可选的作者", ja: "大きなタイトルと任意の作者を置く表紙" }],
+            ["cover", { en: "Opening slide with a large title and optional author; variants centered, split, and band", "zh-TW": "開場，大標題與選填的作者；另有 centered、split、band 變化", "zh-CN": "开场，大标题与可选的作者；另有 centered、split、band 变体", ja: "大きなタイトルと任意の作者を置く表紙。centered、split、band のバリアントあり" }],
             ["content", { en: "An explanation with paragraphs, lists, and images", "zh-TW": "以段落、清單與圖片說明", "zh-CN": "以段落、列表与图片说明", ja: "段落、リスト、画像による説明" }],
             ["two-columns", { en: "Comparisons such as before and after", "zh-TW": "比較，例如前後對照", "zh-CN": "比较，例如前后对照", ja: "前後比較などの対比" }],
             ["cards", { en: "Up to six short parallel ideas", "zh-TW": "最多六個簡短的並列重點", "zh-CN": "最多六个简短的并列重点", ja: "最大 6 つの短い並列項目" }],
             ["table", { en: "Compact grids of text", "zh-TW": "精簡的文字表格", "zh-CN": "精简的文字表格", ja: "コンパクトな表" }],
             ["chart", { en: "Simple nonnegative values, optionally with an explanation column", "zh-TW": "簡單的非負數值，可附說明欄", "zh-CN": "简单的非负数值，可附说明栏", ja: "単純な非負の値。説明列も付けられる" }],
+            ["quote", { en: "One short quotation with an optional attribution; variant centered", "zh-TW": "一段簡短引言與選填的出處；另有 centered 變化", "zh-CN": "一段简短引言与可选的出处；另有 centered 变体", ja: "短い引用 1 つと任意の出典。centered のバリアントあり" }],
           ],
         },
       },
@@ -613,10 +643,10 @@ docker compose -f docker/compose.yaml --profile cli run --rm cli validate /work/
         id: "themes",
         title: { en: "Themes", "zh-TW": "主題", "zh-CN": "主题", ja: "テーマ" },
         body: {
-          en: "Choose light or dark per presentation with the theme field.",
-          "zh-TW": "以 theme 欄位為每份簡報選擇 light 或 dark。",
-          "zh-CN": "以 theme 字段为每份演示文稿选择 light 或 dark。",
-          ja: "theme フィールドでプレゼンテーションごとに light か dark を選びます。",
+          en: "Choose light or dark per presentation with the theme field. A template can override any of these colors for either theme; the built-in values are:",
+          "zh-TW": "以 theme 欄位為每份簡報選擇 light 或 dark。範本可以覆寫任一主題的這些色彩；內建值如下：",
+          "zh-CN": "以 theme 字段为每份演示文稿选择 light 或 dark。模板可以覆盖任一主题的这些色彩；内置值如下：",
+          ja: "theme フィールドでプレゼンテーションごとに light か dark を選びます。テンプレートはどちらのテーマのこれらの色も上書きできます。組み込みの値は次のとおりです。",
         },
         table: {
           caption: { en: "Theme colors", "zh-TW": "主題色彩", "zh-CN": "主题色彩", ja: "テーマの色" },
@@ -922,28 +952,28 @@ console.log(reports.map(report => report.differenceRatio));`,
         },
         bullets: {
           en: [
-            "Six fixed 16:9 layouts; no slide editor or arbitrary styling",
+            "A fixed set of 16:9 layout families and variants; templates are data only; no slide editor or arbitrary styling",
             "Charts are HTML/CSS bars, not native Office charts",
             "No automatic raster fallback for unsupported content",
             "Built HTML uses a local file base and is not portable",
             "Backgrounds are pictures, and studio links need network access to the studio",
           ],
           "zh-TW": [
-            "六種固定 16:9 版型，沒有投影片編輯器，也不支援任意樣式",
+            "一組固定的 16:9 版型系列與變化；範本只有資料；沒有投影片編輯器，也不支援任意樣式",
             "圖表是 HTML/CSS 長條，不是 Office 原生圖表",
             "不支援的內容不會自動轉成點陣圖",
             "建置出的 HTML 使用本機檔案路徑，無法直接搬到別處使用",
             "背景是圖片；使用 studio 連結時需要能連線到 studio",
           ],
           "zh-CN": [
-            "六种固定 16:9 版式，没有幻灯片编辑器，也不支持任意样式",
+            "一组固定的 16:9 版式系列与变体；模板只有数据；没有幻灯片编辑器，也不支持任意样式",
             "图表是 HTML/CSS 长条，不是 Office 原生图表",
             "不支持的内容不会自动转成位图",
             "构建出的 HTML 使用本机文件路径，无法直接搬到别处使用",
             "背景是图片；使用 studio 链接时需要能连接到 studio",
           ],
           ja: [
-            "固定の 16:9 レイアウトは 6 種類のみ。スライドエディターや任意のスタイル指定はない",
+            "16:9 のレイアウトファミリーとバリアントは固定。テンプレートはデータのみ。スライドエディターや任意のスタイル指定はない",
             "グラフは HTML/CSS のバーで、Office ネイティブのグラフではない",
             "未対応の内容を自動でラスター画像に置き換える機能はない",
             "ビルドした HTML はローカルのファイルパスを基準にしており、持ち運べない",
