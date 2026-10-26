@@ -83,5 +83,5 @@ docker run --rm --read-only --tmpfs /tmp --volume "<host folder>:/work" gordonki
 - The image is about 1.5 GB, mostly Chromium and the CJK fonts, and currently
   targets `linux/amd64`. No published image or registry release exists yet.
 
-Project license and third-party notice files are installed under
-`/usr/share/licenses/slideforge/`.
+The project's `LICENSE` (Apache-2.0), `NOTICE`, and third-party notice files are
+installed under `/usr/share/licenses/slideforge/`.

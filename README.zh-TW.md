@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/gordonkit/slideforge/actions/workflows/ci.yml/badge.svg)](https://github.com/gordonkit/slideforge/actions/workflows/ci.yml)
 [![Node.js 24+](https://img.shields.io/badge/node-24%2B-5FA04E?logo=nodedotjs&logoColor=white)](https://nodejs.org/)
-[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/gordonkit/slideforge/blob/main/LICENSE)
+[![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](https://github.com/gordonkit/slideforge/blob/main/LICENSE)
 [![Development Status: Pre-Alpha](https://img.shields.io/badge/status-pre--alpha-orange.svg)](https://github.com/gordonkit/slideforge/blob/main/CHANGELOG.md)
 
 [English](https://github.com/gordonkit/slideforge/blob/main/README.md) ·
@@ -18,9 +18,27 @@ SlideForge 是適合 AI 使用、以本機為主的框架，從經過驗證的 J
 Playwright Chromium 與 `dom-to-pptx` **2.1.2**。它不是線上編輯器，也不保證與 Office 的
 排版結果像素級一致。
 
+## 從 npm 安裝
+
+自 0.1.0 版起，SlideForge 以 `slideforge` 名稱發佈在 npm。在你自己的專案中，以 Node.js 24
+以上執行：
+
+```sh
+npm install slideforge
+npx playwright install --with-deps chromium
+
+npx slideforge init presentation.json --template corporate
+npx slideforge preview presentation.json
+npx slideforge export presentation.json --output presentation.pptx
+```
+
+安裝時不會下載 Chromium，所以每台電腦要執行一次 `playwright install`；`--with-deps` 會一併
+安裝 Linux 需要的系統函式庫，在 Windows 與 macOS 可以省略。它使用的是 SlideForge 依賴的
+Playwright 版本。程式庫 API 從 `slideforge` 匯入。
+
 ## 快速入門
 
-在此 repository 中，以 Node.js 24 以上執行：
+要開發 SlideForge 本身時，在此 repository 中，以 Node.js 24 以上執行：
 
 ```sh
 PUPPETEER_SKIP_DOWNLOAD=true npm ci
@@ -98,7 +116,7 @@ repository 內的詳細參考文件（英文）：
 - [AI 撰寫流程](docs/ai-workflow.md)
 - [參與貢獻](CONTRIBUTING.md)、[行為準則](CODE_OF_CONDUCT.md)、[安全性政策](SECURITY.md)、
   [支援](SUPPORT.md) 與 [變更紀錄](CHANGELOG.md)
-- [MIT 授權](LICENSE) 與 [第三方授權聲明](THIRD_PARTY_NOTICES.md)
+- [Apache-2.0 授權](LICENSE)、[NOTICE](NOTICE) 與 [第三方授權聲明](THIRD_PARTY_NOTICES.md)
 
 ## 範圍與預期
 

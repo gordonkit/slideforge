@@ -1,7 +1,8 @@
 # Third-party notices
 
-SlideForge's own code is MIT licensed. Third-party packages retain their own
-copyrights and license terms; this document does not relicense them.
+SlideForge's own code is licensed under the Apache License 2.0 (see `LICENSE`
+and `NOTICE`). Third-party packages retain their own copyrights and license
+terms; this document does not relicense them.
 
 ## Scope and provenance
 
@@ -42,6 +43,14 @@ redistributing covered binaries.
 Refresh this document when the lockfile or bundled package versions change.
 The tables and full texts below are a snapshot, not a general compliance
 certificate for future versions or external assets.
+
+Since this snapshot, `dom-to-pptx` has moved from `dependencies` to
+`devDependencies`: Node never loads it, and the build bundles it into
+`dist/exporters/engine.js`. Installing the npm package therefore no longer
+installs `dom-to-pptx`, Puppeteer, or their other dependencies, although the
+tables below still list them as production entries. Their texts are kept,
+because the published bundle contains code from `dom-to-pptx` and its browser
+dependencies.
 
 ## Installed production dependency inventory
 

@@ -1,0 +1,14 @@
+SlideForge
+Copyright 2026 SlideForge contributors
+
+This product includes software developed by third parties. Dependency copyright and license
+terms remain with their respective owners.
+
+dist/exporters/engine.js bundles dom-to-pptx, PptxGenJS, and their browser dependencies.
+Complete copyright, license, and attribution text for that bundle and for the installed
+runtime dependencies is provided in THIRD_PARTY_NOTICES.md, which is published with the
+package.
+
+Chromium, which Playwright downloads separately, and system fonts are not bundled or
+redistributed by this package. The container image adds Chromium and the Noto CJK and
+Liberation fonts under their own licenses.

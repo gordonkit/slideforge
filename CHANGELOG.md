@@ -5,8 +5,24 @@ All notable changes to this project will be documented in this file. The format 
 
 ## [Unreleased]
 
+## [0.1.0] - 2026-10-26
+
+The first release, published to npm as `slideforge`.
+
 ### Added
 
+- Phase 1 framework: strict JSON schema, 16:9 layouts with light and dark themes, React
+  components, HTML rendering, loopback Vite preview, editable PPTX export through
+  `dom-to-pptx`, layout and PPTX structure validation, optional LibreOffice visual comparison,
+  and the `init`, `build`, `preview`, `export`, and `validate` CLI commands.
+- The npm package `slideforge`: `npm install slideforge` provides the `slideforge` command
+  and the library API, with the built-in templates and examples. A tag-triggered release
+  workflow checks the version, runs the tests, installs the packed tarball in a clean project
+  (`npm run test:package`), and publishes it with npm provenance.
+- Documentation site at <https://slideforge.gordonkit.com/> in English, Traditional Chinese,
+  Simplified Chinese, and Japanese, deployed to Cloudflare Pages from `main`.
+- Open-source project files: code of conduct, security policy, support guide, changelog,
+  Dependabot configuration, and translated READMEs.
 - Layout names can state a variant: `"layout": "cover/default"`. The family before the
   slash decides the slide's fields and the variant only how it is drawn; a bare family name
   is drawn as `default`. Slides carry
@@ -50,6 +66,11 @@ All notable changes to this project will be documented in this file. The format 
 
 ### Changed
 
+- SlideForge is licensed under the Apache License 2.0 instead of MIT, with a `NOTICE` file.
+  Copies obtained under MIT before this change keep their MIT terms.
+- `dom-to-pptx` is a development dependency: the build bundles it into
+  `dist/exporters/engine.js` and Node never loads it, so installing SlideForge no longer
+  installs it, Puppeteer, or the Chrome that Puppeteer downloads.
 - `init` creates missing parent folders of the new JSON instead of failing with `ENOENT`,
   and an existing JSON fails with "… already exists; init never overwrites a file" instead
   of `EEXIST`.
@@ -67,17 +88,6 @@ All notable changes to this project will be documented in this file. The format 
   valid values, malformed JSON names the file, and a missing local image names the resolved
   path instead of an `ENOENT` error. `describePresentationError` and `readPresentationFile`
   are exported for programmatic use.
-
-### Added
-
-- Phase 1 framework: strict JSON schema, six 16:9 layouts with light and dark themes, React
-  components, HTML rendering, loopback Vite preview, editable PPTX export through
-  `dom-to-pptx`, layout and PPTX structure validation, optional LibreOffice visual comparison,
-  and the `init`, `build`, `preview`, `export`, and `validate` CLI commands.
-- Documentation site at <https://slideforge.gordonkit.com/> in English, Traditional Chinese,
-  Simplified Chinese, and Japanese, deployed to Cloudflare Pages from `main`.
-- Open-source project files: code of conduct, security policy, support guide, changelog,
-  Dependabot configuration, and translated READMEs.
 
 ### Fixed
 

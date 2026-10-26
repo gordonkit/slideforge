@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/gordonkit/slideforge/actions/workflows/ci.yml/badge.svg)](https://github.com/gordonkit/slideforge/actions/workflows/ci.yml)
 [![Node.js 24+](https://img.shields.io/badge/node-24%2B-5FA04E?logo=nodedotjs&logoColor=white)](https://nodejs.org/)
-[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/gordonkit/slideforge/blob/main/LICENSE)
+[![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](https://github.com/gordonkit/slideforge/blob/main/LICENSE)
 [![Development Status: Pre-Alpha](https://img.shields.io/badge/status-pre--alpha-orange.svg)](https://github.com/gordonkit/slideforge/blob/main/CHANGELOG.md)
 
 [繁體中文](https://github.com/gordonkit/slideforge/blob/main/README.zh-TW.md) ·
@@ -19,9 +19,29 @@ text and shapes.
 Vite 8, Playwright Chromium, and `dom-to-pptx` **2.1.2**. It is not a hosted editor
 or a guarantee of pixel-identical Office rendering.
 
+## Install from npm
+
+From version 0.1.0, SlideForge is published to npm as `slideforge`. In your own
+project, with Node.js 24 or newer:
+
+```sh
+npm install slideforge
+npx playwright install --with-deps chromium
+
+npx slideforge init presentation.json --template corporate
+npx slideforge preview presentation.json
+npx slideforge export presentation.json --output presentation.pptx
+```
+
+Installing does not download Chromium, so run the `playwright install` command
+once per machine; `--with-deps` also installs the Linux system libraries it needs
+and can be left out on Windows and macOS. It uses the Playwright version
+SlideForge depends on. The library API is imported from `slideforge`.
+
 ## Quickstart
 
-Run these commands from this repository with Node.js 24 or newer:
+To work on SlideForge itself, run these commands from this repository with
+Node.js 24 or newer:
 
 ```sh
 PUPPETEER_SKIP_DOWNLOAD=true npm ci
@@ -108,7 +128,7 @@ in this repository are:
 - [AI authoring workflow](docs/ai-workflow.md)
 - [Contributing](CONTRIBUTING.md), [code of conduct](CODE_OF_CONDUCT.md),
   [security policy](SECURITY.md), [support](SUPPORT.md), and [changelog](CHANGELOG.md)
-- [MIT license](LICENSE) and [third-party notices](THIRD_PARTY_NOTICES.md)
+- [Apache-2.0 license](LICENSE), [NOTICE](NOTICE), and [third-party notices](THIRD_PARTY_NOTICES.md)
 
 ## Scope and expectations
 

@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/gordonkit/slideforge/actions/workflows/ci.yml/badge.svg)](https://github.com/gordonkit/slideforge/actions/workflows/ci.yml)
 [![Node.js 24+](https://img.shields.io/badge/node-24%2B-5FA04E?logo=nodedotjs&logoColor=white)](https://nodejs.org/)
-[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/gordonkit/slideforge/blob/main/LICENSE)
+[![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](https://github.com/gordonkit/slideforge/blob/main/LICENSE)
 [![Development Status: Pre-Alpha](https://img.shields.io/badge/status-pre--alpha-orange.svg)](https://github.com/gordonkit/slideforge/blob/main/CHANGELOG.md)
 
 [English](https://github.com/gordonkit/slideforge/blob/main/README.md) ·
@@ -19,9 +19,28 @@ SlideForge は、AI での利用を想定したローカル中心のフレーム
 React 19、Vite 8、Playwright Chromium、`dom-to-pptx` **2.1.2** を使います。ホスト型のエディターでは
 なく、Office での描画がピクセル単位で一致することも保証しません。
 
+## npm からインストール
+
+バージョン 0.1.0 以降、SlideForge は `slideforge` という名前で npm に公開されています。自分の
+プロジェクトで、Node.js 24 以降を使って実行します。
+
+```sh
+npm install slideforge
+npx playwright install --with-deps chromium
+
+npx slideforge init presentation.json --template corporate
+npx slideforge preview presentation.json
+npx slideforge export presentation.json --output presentation.pptx
+```
+
+インストール時に Chromium はダウンロードされないため、`playwright install` はマシンごとに一度
+実行します。`--with-deps` は Linux に必要なシステムライブラリも入れるもので、Windows と macOS
+では省略できます。使われるのは SlideForge が依存する Playwright のバージョンです。ライブラリ
+API は `slideforge` からインポートします。
+
 ## クイックスタート
 
-このリポジトリで、Node.js 24 以降を使って実行します。
+SlideForge 自体を開発する場合は、このリポジトリで、Node.js 24 以降を使って実行します。
 
 ```sh
 PUPPETEER_SKIP_DOWNLOAD=true npm ci
@@ -103,7 +122,7 @@ if (!report.valid) process.exitCode = 1;
 - [AI による作成ワークフロー](docs/ai-workflow.md)
 - [コントリビュート](CONTRIBUTING.md)、[行動規範](CODE_OF_CONDUCT.md)、
   [セキュリティポリシー](SECURITY.md)、[サポート](SUPPORT.md)、[変更履歴](CHANGELOG.md)
-- [MIT ライセンス](LICENSE) と [サードパーティーライセンス表示](THIRD_PARTY_NOTICES.md)
+- [Apache-2.0 ライセンス](LICENSE)、[NOTICE](NOTICE)、[サードパーティーライセンス表示](THIRD_PARTY_NOTICES.md)
 
 ## 範囲と前提
 

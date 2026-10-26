@@ -1,7 +1,9 @@
 # CLI reference
 
-Build the repository first with `npm run build`. Commands below use the emitted
-entry point; the package also declares the `slideforge` executable when installed.
+After `npm install slideforge`, run the commands below as `npx slideforge …`
+(install Chromium once with `npx playwright install chromium`). In a clone of this
+repository, build first with `npm run build`; the commands below use the emitted
+entry point, `node dist/cli/index.js`, which is the same CLI.
 
 ```text
 node dist/cli/index.js init [presentation.json] [--template <name|./path>]
