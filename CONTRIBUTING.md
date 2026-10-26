@@ -133,21 +133,14 @@ To release:
    `git tag v<version> && git push origin v<version>`.
 
 npm authentication uses trusted publishing: npm accepts the workflow's GitHub
-OIDC token, so no npm secret is stored. A trusted publisher can only be set on a
-package that already exists, so the first release (`v0.1.0`) needs a one-time
-token:
-
-1. On npmjs.com, create a granular access token that can publish, and save it as
-   the `NPM_TOKEN` secret of the `npm` environment in this repository.
-2. Push the `v0.1.0` tag and let the workflow publish.
-3. In the package settings on npmjs.com, add a trusted publisher for GitHub
-   Actions: organization `gordonkit`, repository `slideforge`, workflow
-   `release.yml`, environment `npm`.
-4. Delete the `NPM_TOKEN` secret and revoke the token. Later releases authenticate
-   through OIDC.
-
-Check npm's current trusted publishing documentation before the first release,
-since its setup steps can change.
+OIDC token, so no npm secret is stored. The package's trusted publisher on
+npmjs.com is GitHub Actions with organization `gordonkit`, repository
+`slideforge`, workflow `release.yml`, environment `npm`, and `npm publish`
+allowed; the package's publishing access disallows tokens. The `npm`
+environment accepts only `v*` tags. When a trusted publisher is created or
+recreated, npm shows it as pending validation until a release is published
+through it, before the deadline npm displays. Check npm's current trusted
+publishing documentation when changing this setup, since its steps can change.
 
 By participating, you agree to follow [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md). Report
 security issues as described in [SECURITY.md](SECURITY.md).
