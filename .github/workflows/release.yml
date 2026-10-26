@@ -41,10 +41,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: gh release create "$TAG" "slideforge-${TAG#v}.tgz" --draft --generate-notes --verify-tag
       - name: Publish to npm
-        # Trusted publishing (OIDC) needs no secret. NPM_TOKEN is only for the first release,
-        # before a trusted publisher can be configured; see CONTRIBUTING.md.
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        # Trusted publishing: npm exchanges the workflow's OIDC token, so no secret is stored.
         run: npm publish --ignore-scripts
       - name: Publish GitHub release
         env:

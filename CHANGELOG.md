@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file. The format 
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-10-26
+
+The first release published through npm trusted publishing; the package's contents are
+unchanged from 0.1.0.
+
+### Changed
+
+- The release workflow publishes only through trusted publishing (GitHub OIDC). The
+  one-time `NPM_TOKEN` used for 0.1.0 is removed from the workflow and the repository.
+
 ## [0.1.0] - 2026-10-26
 
 The first release, published to npm as `slideforge`.
