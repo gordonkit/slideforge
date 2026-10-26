@@ -105,8 +105,49 @@ especially for packages bundled into `dist/exporters/engine.js`. Refresh the
 installed production inventory and full texts in
 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)
 when dependency versions change. Resolve missing upstream notice information
-before redistributing affected material. Project contributions are provided
-under the [MIT license](LICENSE); third-party material retains its own terms.
+before redistributing affected material. `dom-to-pptx` is a development
+dependency because it is only used through the bundle; keep packages that Node
+never loads out of `dependencies`, so `npm install slideforge` stays small.
+Project contributions are provided under the [Apache License 2.0](LICENSE)
+(see also [NOTICE](NOTICE)); third-party material retains its own terms.
+
+## Releasing
+
+Releases are published to npm as `slideforge` by
+[`.github/workflows/release.yml`](.github/workflows/release.yml) when a
+`v<major>.<minor>.<patch>` tag is pushed. The workflow checks that the tag matches
+`package.json`, `package-lock.json`, and a dated `CHANGELOG.md` section
+(`npm run check:release -- --tag v0.1.0`); runs the checks and tests; installs the
+packed tarball in a clean project (`npm run test:package`); creates a draft GitHub
+release with the tarball; publishes to npm with provenance; and then publishes the
+GitHub release.
+
+To release:
+
+1. On a branch, set the version with `npm version <version> --no-git-tag-version`,
+   and move the `[Unreleased]` entries in `CHANGELOG.md` under
+   `## [<version>] - <YYYY-MM-DD>`, using the date the tag will be pushed.
+2. Run `npm run check:release -- --tag v<version>` and `npm run test:package`,
+   then merge the pull request.
+3. Tag the merge commit on `main` and push the tag:
+   `git tag v<version> && git push origin v<version>`.
+
+npm authentication uses trusted publishing: npm accepts the workflow's GitHub
+OIDC token, so no npm secret is stored. A trusted publisher can only be set on a
+package that already exists, so the first release (`v0.1.0`) needs a one-time
+token:
+
+1. On npmjs.com, create a granular access token that can publish, and save it as
+   the `NPM_TOKEN` secret of the `npm` environment in this repository.
+2. Push the `v0.1.0` tag and let the workflow publish.
+3. In the package settings on npmjs.com, add a trusted publisher for GitHub
+   Actions: organization `gordonkit`, repository `slideforge`, workflow
+   `release.yml`, environment `npm`.
+4. Delete the `NPM_TOKEN` secret and revoke the token. Later releases authenticate
+   through OIDC.
+
+Check npm's current trusted publishing documentation before the first release,
+since its setup steps can change.
 
 By participating, you agree to follow [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md). Report
 security issues as described in [SECURITY.md](SECURITY.md).

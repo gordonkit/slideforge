@@ -12,10 +12,12 @@
   },
   "files": [
     "dist",
+    "!dist/exporters/browser.*",
     "examples",
     "templates",
     "THIRD_PARTY_NOTICES.md",
-    "LICENSE"
+    "LICENSE",
+    "NOTICE"
   ],
   "engines": {
     "node": ">=24.0.0"
@@ -26,6 +28,8 @@
     "test": "vitest run",
     "test:unit": "vitest run tests/unit",
     "test:integration": "vitest run tests/integration",
+    "test:package": "node scripts/check-package.mjs",
+    "check:release": "node scripts/check-release.mjs",
     "prepack": "npm run build"
   },
   "repository": {
@@ -45,10 +49,13 @@
     "react"
   ],
   "author": "GordonKit",
-  "license": "MIT",
+  "license": "Apache-2.0",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
   "type": "module",
   "dependencies": {
-    "dom-to-pptx": "2.1.2",
     "fast-xml-parser": "5.11.2",
     "fflate": "0.8.3",
     "playwright": "1.64.1",
@@ -61,6 +68,7 @@
     "@types/node": "26.6.5",
     "@types/react": "19.3.0",
     "@types/react-dom": "19.3.0",
+    "dom-to-pptx": "2.1.2",
     "typescript": "7.0.2",
     "vitest": "5.0.5"
   },

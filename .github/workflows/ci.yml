@@ -24,6 +24,8 @@ jobs:
       - run: npm run check
       - run: npm run build
       - run: npm test
+      - name: Install the packed tarball in a clean project
+        run: npm run test:package
       - run: npm audit --audit-level=high
 
   documentation:

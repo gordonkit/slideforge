@@ -234,13 +234,27 @@ export const pages: Page[] = [
         },
       },
       {
-        id: "install",
-        title: { en: "Install and build", "zh-TW": "安裝與建置", "zh-CN": "安装与构建", ja: "インストールとビルド" },
+        id: "install-npm",
+        title: { en: "Install from npm", "zh-TW": "從 npm 安裝", "zh-CN": "从 npm 安装", ja: "npm からインストール" },
         body: {
-          en: "Clone the repository and build it. Skipping the Puppeteer download avoids a second browser; SlideForge launches Playwright's Chromium.",
-          "zh-TW": "複製 repository 並建置。略過 Puppeteer 下載可避免多裝一套瀏覽器，SlideForge 使用的是 Playwright 的 Chromium。",
-          "zh-CN": "克隆仓库并构建。跳过 Puppeteer 下载可避免多装一套浏览器，SlideForge 使用的是 Playwright 的 Chromium。",
-          ja: "リポジトリをクローンしてビルドします。Puppeteer のダウンロードを省くと 2 つ目のブラウザを入れずに済みます。SlideForge は Playwright の Chromium を起動します。",
+          en: "From version 0.1.0, SlideForge is published to npm as slideforge. Install it in your project, then install Playwright's Chromium once per machine; installing the package does not download it. --with-deps also installs the Linux system libraries and can be left out on Windows and macOS. The commands on this site use node dist/cli/index.js from a clone; with the package, run them as npx slideforge.",
+          "zh-TW": "自 0.1.0 版起，SlideForge 以 slideforge 名稱發佈在 npm。在你的專案中安裝後，每台電腦要安裝一次 Playwright 的 Chromium；安裝套件時不會自動下載。--with-deps 會一併安裝 Linux 的系統函式庫，在 Windows 與 macOS 可以省略。本站的指令以 clone 後的 node dist/cli/index.js 示範；使用套件時改成 npx slideforge 即可。",
+          "zh-CN": "自 0.1.0 版起，SlideForge 以 slideforge 名称发布在 npm。在你的项目中安装后，每台电脑要安装一次 Playwright 的 Chromium；安装包时不会自动下载。--with-deps 会一并安装 Linux 的系统库，在 Windows 与 macOS 可以省略。本站的命令以 clone 后的 node dist/cli/index.js 演示；使用包时改成 npx slideforge 即可。",
+          ja: "バージョン 0.1.0 以降、SlideForge は slideforge という名前で npm に公開されています。プロジェクトにインストールしたら、Playwright の Chromium をマシンごとに一度インストールします。パッケージのインストール時にはダウンロードされません。--with-deps は Linux のシステムライブラリも入れるもので、Windows と macOS では省略できます。このサイトのコマンドはクローンした node dist/cli/index.js で示しています。パッケージでは npx slideforge として実行します。",
+        },
+        code: `npm install slideforge
+npx playwright install --with-deps chromium
+npx slideforge init presentation.json --template corporate
+npx slideforge preview presentation.json`,
+      },
+      {
+        id: "install",
+        title: { en: "Build from source", "zh-TW": "從原始碼建置", "zh-CN": "从源码构建", ja: "ソースからビルド" },
+        body: {
+          en: "To work on SlideForge itself, clone the repository and build it. Skipping the Puppeteer download avoids a second browser; SlideForge launches Playwright's Chromium.",
+          "zh-TW": "要開發 SlideForge 本身時，複製 repository 並建置。略過 Puppeteer 下載可避免多裝一套瀏覽器，SlideForge 使用的是 Playwright 的 Chromium。",
+          "zh-CN": "要开发 SlideForge 本身时，克隆仓库并构建。跳过 Puppeteer 下载可避免多装一套浏览器，SlideForge 使用的是 Playwright 的 Chromium。",
+          ja: "SlideForge 自体を開発する場合は、リポジトリをクローンしてビルドします。Puppeteer のダウンロードを省くと 2 つ目のブラウザを入れずに済みます。SlideForge は Playwright の Chromium を起動します。",
         },
         code: `git clone https://github.com/gordonkit/slideforge.git
 cd slideforge
@@ -1096,13 +1110,14 @@ npm --prefix site run build`,
         id: "license",
         title: { en: "License", "zh-TW": "授權", "zh-CN": "许可证", ja: "ライセンス" },
         body: {
-          en: "SlideForge is released under the MIT license. Bundled third-party packages keep their own terms, listed in THIRD_PARTY_NOTICES.md.",
-          "zh-TW": "SlideForge 以 MIT 授權釋出。打包在內的第三方套件保留各自的授權條款，列於 THIRD_PARTY_NOTICES.md。",
-          "zh-CN": "SlideForge 以 MIT 许可证发布。打包在内的第三方包保留各自的许可条款，列于 THIRD_PARTY_NOTICES.md。",
-          ja: "SlideForge は MIT ライセンスで公開されています。同梱されるサードパーティーパッケージはそれぞれの条件に従い、THIRD_PARTY_NOTICES.md に記載されています。",
+          en: "SlideForge is released under the Apache License 2.0, with a NOTICE file. Bundled third-party packages keep their own terms, listed in THIRD_PARTY_NOTICES.md.",
+          "zh-TW": "SlideForge 以 Apache License 2.0 釋出，並附有 NOTICE 檔。打包在內的第三方套件保留各自的授權條款，列於 THIRD_PARTY_NOTICES.md。",
+          "zh-CN": "SlideForge 以 Apache License 2.0 发布，并附有 NOTICE 文件。打包在内的第三方包保留各自的许可条款，列于 THIRD_PARTY_NOTICES.md。",
+          ja: "SlideForge は Apache License 2.0 で公開されており、NOTICE ファイルが付属します。同梱されるサードパーティーパッケージはそれぞれの条件に従い、THIRD_PARTY_NOTICES.md に記載されています。",
         },
         links: [
-          { label: { en: "MIT license", "zh-TW": "MIT 授權", "zh-CN": "MIT 许可证", ja: "MIT ライセンス" }, href: `${repositoryUrl}/blob/main/LICENSE` },
+          { label: { en: "Apache-2.0 license", "zh-TW": "Apache-2.0 授權", "zh-CN": "Apache-2.0 许可证", ja: "Apache-2.0 ライセンス" }, href: `${repositoryUrl}/blob/main/LICENSE` },
+          { label: { en: "NOTICE", "zh-TW": "NOTICE", "zh-CN": "NOTICE", ja: "NOTICE" }, href: `${repositoryUrl}/blob/main/NOTICE` },
           { label: { en: "Third-party notices", "zh-TW": "第三方授權聲明", "zh-CN": "第三方许可声明", ja: "サードパーティーライセンス表示" }, href: `${repositoryUrl}/blob/main/THIRD_PARTY_NOTICES.md` },
         ],
       },

@@ -9,7 +9,7 @@ RUN npm run build && npm prune --omit=dev
 
 FROM node:24-bookworm-slim
 
-LABEL org.opencontainers.image.licenses="MIT" \
+LABEL org.opencontainers.image.licenses="Apache-2.0" \
     org.opencontainers.image.source="https://github.com/gordonkit/slideforge"
 
 ENV PLAYWRIGHT_BROWSERS_PATH=/ms-playwright NODE_ENV=production
@@ -19,7 +19,7 @@ COPY --from=builder /build/node_modules ./node_modules
 COPY --from=builder /build/dist ./dist
 COPY examples ./examples
 COPY templates ./templates
-COPY LICENSE THIRD_PARTY_NOTICES.md /usr/share/licenses/slideforge/
+COPY LICENSE NOTICE THIRD_PARTY_NOTICES.md /usr/share/licenses/slideforge/
 # Playwright installs the Chromium build pinned by package-lock.json and its system libraries.
 RUN apt-get update \
     && apt-get upgrade -y \
