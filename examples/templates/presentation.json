@@ -1,0 +1,74 @@
+{
+  "metadata": {
+    "title": "SlideForge templates",
+    "author": "SlideForge",
+    "subject": "Content and design kept apart / 內容與設計分開",
+    "lang": "zh-Hant"
+  },
+  "template": "./brand",
+  "theme": "light",
+  "slides": [
+    {
+      "layout": "cover",
+      "title": "One deck, any look",
+      "subtitle": "換範本，不必改內容",
+      "author": "SlideForge",
+      "footer": "examples/templates"
+    },
+    {
+      "layout": "content",
+      "title": "What the template sets / 範本決定什麼",
+      "blocks": [
+        { "type": "bullets", "items": ["Palette for light and dark / 淺色與深色配色", "Font family and numeric design tokens / 字型與 design token", "Backgrounds, with images in the template's folder / 背景與範本自己的圖片", "Each family's default variant / 各系列的預設變化"] }
+      ],
+      "notes": "Everything on this slide comes from brand/template.json except the text."
+    },
+    {
+      "layout": "two-columns",
+      "title": "Content vs. template / 內容與範本",
+      "left": [
+        { "type": "paragraph", "text": "presentation.json" },
+        { "type": "bullets", "items": ["Slides and text", "layout: \"cover\"", "template: \"./brand\""] }
+      ],
+      "right": [
+        { "type": "paragraph", "text": "brand/template.json" },
+        { "type": "bullets", "items": ["palette, tokens", "variants: cover → split", "backgrounds → assets/rule.svg"] }
+      ]
+    },
+    {
+      "layout": "cards",
+      "title": "Which setting wins / 優先順序",
+      "cards": [
+        { "title": "Slide", "blocks": [{ "type": "paragraph", "text": "A variant named in layout, or the slide's own background." }] },
+        { "title": "Presentation", "blocks": [{ "type": "paragraph", "text": "theme, fontFamily, and its backgrounds entries." }] },
+        { "title": "Template", "blocks": [{ "type": "paragraph", "text": "Everything else it sets; then the built-in defaults." }] }
+      ]
+    },
+    {
+      "layout": "table",
+      "title": "Try another template / 試試其他範本",
+      "columns": ["template", "Look"],
+      "rows": [["\"./brand\"", "This example: green, split cover"], ["\"corporate\"", "Built-in: navy and amber, banded cover"], ["\"default\"", "Built-in: no overrides"]],
+      "footer": "Change the template field and save; preview reloads"
+    },
+    {
+      "layout": "chart",
+      "title": "Accent color in charts / 圖表使用強調色",
+      "data": [{ "label": "Light", "value": 80 }, { "label": "Dark", "value": 60 }],
+      "unit": "%",
+      "blocks": [{ "type": "paragraph", "text": "Bars and table headers follow the template's accent. Illustrative values." }]
+    },
+    {
+      "layout": "quote",
+      "title": "Bare quote / 只寫系列名稱",
+      "quote": "Keep content and design apart, and both stay easy to change. 內容與設計分開，兩者都容易修改。",
+      "attribution": "Drawn as quote/centered by the template"
+    },
+    {
+      "layout": "cover/band",
+      "title": "Thank you / 謝謝",
+      "subtitle": "This slide names cover/band, so it ignores the template's split cover",
+      "footer": "examples/templates"
+    }
+  ]
+}

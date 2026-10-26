@@ -29,7 +29,8 @@ All notable changes to this project will be documented in this file. The format 
   `corporate`) or a `./`/`../` path to a template file or folder, whose relative images
   resolve from the template's folder. `build`, `preview`, and `export` load it, preview
   serves its images and reloads when it changes, `init --template` starts a deck with one,
-  and the container image includes the built-in templates. See `docs/templates.md`.
+  and the container image includes the built-in templates. See `docs/templates.md`;
+  `examples/templates` is a deck with its own local template and assets.
   `loadPresentation`, `fileRenderOptions`, `loadTemplate`, `builtInTemplates`,
   `templateSchema`, `parseTemplate`, `mergeTokens`, and `cssVariables` are exported;
   `renderPresentation` takes `template` and `templateBaseUrl` options and throws for a
