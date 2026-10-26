@@ -49,6 +49,9 @@ All notable changes to this project will be documented in this file. The format 
 
 ### Changed
 
+- `init` creates missing parent folders of the new JSON instead of failing with `ENOENT`,
+  and an existing JSON fails with "… already exists; init never overwrites a file" instead
+  of `EEXIST`.
 - The slide canvas is 1920 × 1080 CSS pixels instead of 1280 × 720, and every layout,
   spacing, type, and chart token is scaled by 1.5 to match. Exported PowerPoint slides keep
   the same size, positions, and font sizes; card and table borders are 2px (1 pt). Custom

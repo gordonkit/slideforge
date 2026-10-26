@@ -24,9 +24,10 @@ except `preview`.
 Copies `examples/basic/presentation.json` to the requested location; default:
 `presentation.json`. It also copies the diagram into
 `<JSON-basename>-assets/diagram.svg` beside the new JSON, rewriting its image
-source to that relative URL. Existing JSON and diagram files are not overwritten.
-The JSON's parent directory must already exist; the asset directory is created
-if necessary. The example has one slide per layout family. For a working starter:
+source to that relative URL. Existing JSON and diagram files are not overwritten;
+an existing JSON fails with a message saying so. Missing parent directories of the
+JSON are created, as is the asset directory. The example has one slide per layout
+family. For a working starter:
 
 ```sh
 node dist/cli/index.js init my-deck.json
