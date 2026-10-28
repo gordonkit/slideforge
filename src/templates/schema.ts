@@ -14,7 +14,9 @@ const tokenBounds = {
   layout: [0, SLIDE_SIZE.widthPx], spacing: [0, 480], type: [8, 240], border: [0, 120], chart: [0, SLIDE_SIZE.widthPx],
 } as const satisfies Record<keyof typeof designTokens, readonly [number, number]>;
 
-const tokensSchema = z.object(Object.fromEntries(Object.entries(designTokens).map(([group, tokens]) => {
+const MAX_TITLE_OUTLINE = 6;
+
+const tokensSchema =z.object(Object.fromEntries(Object.entries(designTokens).map(([group, tokens]) => {
   const [min, max] = tokenBounds[group as keyof typeof designTokens];
   const numeric = Object.entries(tokens).filter(([, value]) => typeof value === "number");
   return [group, z.object(Object.fromEntries(numeric.map(([name]) => [name, z.number().finite().min(min).max(max).optional()]))).strict().optional()];
@@ -44,7 +46,7 @@ export const templateSchema = z.object({
   backgrounds: backgroundsSchema.optional(),
   variants: variantsSchema.optional(),
 }).strict().superRefine((template, context) => {
-  const { layout } = mergeTokens(template.tokens);
+  const { layout, border } = mergeTokens(template.tokens);
   const check = (ok: boolean, message: string) => {
     if (!ok) context.addIssue({ code: "custom", path: ["tokens", "layout"], message });
   };
@@ -57,6 +59,10 @@ export const templateSchema = z.object({
   check(layout["footer-bottom"] + layout.footer <= layout["padding-bottom"], "footer-bottom + footer must not exceed padding-bottom");
   const split = 2 * layout["padding-x"] + layout["cover-panel"];
   check(split < SLIDE_SIZE.widthPx, `2 × padding-x + cover-panel must be less than ${SLIDE_SIZE.widthPx} (got ${split})`);
+  // A thick stroke fills in the counters of title glyphs, CJK ones first.
+  if (border["title-outline"] > MAX_TITLE_OUTLINE) {
+    context.addIssue({ code: "custom", path: ["tokens", "border"], message: `title-outline must not exceed ${MAX_TITLE_OUTLINE} (got ${border["title-outline"]})` });
+  }
 });
 
 export type Template = z.infer<typeof templateSchema>;

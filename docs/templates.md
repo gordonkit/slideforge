@@ -40,7 +40,7 @@ add CSS, HTML, scripts, layout families, or variants.
 `palette.light` and `palette.dark` override the built-in
 [palette](design-tokens.md#color) of the same name with six-digit hex colors for
 any of `background`, `foreground`, `muted`, `accent`, `onAccent`, `surface`,
-`border`, and `canvas`. The presentation's `theme` still chooses which palette is
+`border`, `canvas`, and `outline`. The presentation's `theme` still chooses which palette is
 used; a template does not choose the theme.
 
 ### Tokens
@@ -70,6 +70,20 @@ After merging, the layout tokens must keep the canvas geometry:
 These checks keep the regions on the slide; they do not prove content fits. A
 smaller content region or larger type clips sooner, so review layout issues
 after export as usual.
+
+### Title outline
+
+`tokens.border["title-outline"]` (0–6, default 0) strokes slide and cover titles
+in the palette's `outline` color, for titles over a busy background:
+
+```json
+{ "name": "poster", "palette": { "light": { "outline": "#ffffff" } }, "tokens": { "border": { "title-outline": 3 } } }
+```
+
+The stroke is centered on the glyph edges and drawn over the fill, in HTML and
+PowerPoint alike, so half of it covers the glyph; 2–4 px suits Latin and CJK
+titles, while wider strokes fill in dense CJK characters. Export writes it as a
+native PowerPoint text outline; see [limitations](limitations.md#text-outlines).
 
 ### Variants
 

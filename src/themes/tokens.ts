@@ -12,8 +12,8 @@ export const SLIDE_SIZE = Object.freeze({
 });
 
 export const themeTokens = Object.freeze({
-  light: { background: "#ffffff", foreground: "#172033", muted: "#526078", accent: "#2563eb", onAccent: "#ffffff", surface: "#f1f5f9", border: "#cbd5e1", canvas: "#d8dee8" },
-  dark: { background: "#101827", foreground: "#f8fafc", muted: "#b5c2d6", accent: "#60a5fa", onAccent: "#101827", surface: "#1e293b", border: "#475569", canvas: "#d8dee8" },
+  light: { background: "#ffffff", foreground: "#172033", muted: "#526078", accent: "#2563eb", onAccent: "#ffffff", surface: "#f1f5f9", border: "#cbd5e1", canvas: "#d8dee8", outline: "#ffffff" },
+  dark: { background: "#101827", foreground: "#f8fafc", muted: "#b5c2d6", accent: "#60a5fa", onAccent: "#101827", surface: "#1e293b", border: "#475569", canvas: "#d8dee8", outline: "#101827" },
 });
 
 // Microsoft JhengHei matches the PowerPoint East Asian font; Noto covers systems without it.
@@ -42,7 +42,8 @@ export const typographyTokens = Object.freeze({
 });
 
 // Borders round to whole device pixels, so 2 px keeps them crisp (1 pt in PowerPoint).
-export const borderTokens = Object.freeze({ width: 2, radius: 18, accent: 6 });
+// `title-outline` strokes titles in the `outline` color; 0 draws none.
+export const borderTokens = Object.freeze({ width: 2, radius: 18, accent: 6, "title-outline": 0 });
 export const chartTokens = Object.freeze({
   height: 39, label: 285, value: 210, "explanation-label": 210, "explanation-value": 150,
 });

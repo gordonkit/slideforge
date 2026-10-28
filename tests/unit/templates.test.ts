@@ -58,6 +58,12 @@ describe("template schema", () => {
     expect(templateSchema.safeParse({ name: "x", tokens: { layout: { header: 200, content: 724 } } }).success).toBe(true);
   });
 
+  it("limits the title outline width", () => {
+    const result = (outline: number) => templateSchema.safeParse({ name: "x", tokens: { border: { "title-outline": outline } } });
+    expect(result(6).success).toBe(true);
+    expect(describePresentationError(result(7).error)).toContain("tokens.border: title-outline must not exceed 6 (got 7)");
+  });
+
   it("merges token overrides over the built-in tokens", () => {
     const tokens = mergeTokens({ type: { title: 64 } });
     expect(tokens.type.title).toBe(64);
@@ -96,6 +102,14 @@ describe("rendering with a template", () => {
     expect(html).toContain("--sf-type-title:64px");
     expect(html).toContain("--sf-layout-header:200px");
     expect(html).toContain(`--sf-type-body:${designTokens.type.body}px`);
+  });
+
+  it("strokes titles with the title-outline token in the outline color", () => {
+    const html = render(deck(), { name: "x", palette: { light: { outline: "#0b1f3a" } }, tokens: { border: { "title-outline": 4 } } });
+    expect(html).toContain("--sf-border-title-outline:4px");
+    expect(html).toContain("--sf-outline:#0b1f3a");
+    expect(html).toContain("-webkit-text-stroke: var(--sf-border-title-outline) var(--sf-outline)");
+    expect(render(deck({ theme: "dark" }))).toContain(`--sf-outline:${themeTokens.dark.outline}`);
   });
 
   it("draws a bare family with the template's variant and a named variant as written", () => {

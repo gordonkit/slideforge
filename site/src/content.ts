@@ -143,7 +143,7 @@ export const pages: Page[] = [
      → React static markup + shared CSS/tokens → HTML
      → Playwright Chromium → layout validation
      → bundled dom-to-pptx → PPTX bytes
-     → text box fitting, East Asian font, core metadata
+     → text outlines, text box fitting, East Asian font, core metadata
      → structural validation → output file`,
       },
       {
@@ -1003,6 +1003,16 @@ console.log(reports.map(report => report.differenceRatio));`,
           "zh-TW": "PowerPoint 量測文字的方式與 Chromium 略有不同。匯出時會把不可見的文字框加寬其寬度的 6%（0.1 到 0.5 吋之間），避免短標籤換行。多行段落的換行位置可能比 HTML 稍晚。",
           "zh-CN": "PowerPoint 测量文字的方式与 Chromium 略有不同。导出时会把不可见的文本框加宽其宽度的 6%（0.1 到 0.5 英寸之间），避免短标签换行。多行段落的换行位置可能比 HTML 稍晚。",
           ja: "PowerPoint のテキスト計測は Chromium とわずかに異なります。書き出し時に不可視のテキストボックスを幅の 6%（0.1〜0.5 インチ）広げ、短いラベルが折り返さないようにします。複数行の段落は HTML より少し遅れて折り返すことがあります。",
+        },
+      },
+      {
+        id: "text-outlines",
+        title: { en: "Text outlines", "zh-TW": "文字邊線", "zh-CN": "文字描边", ja: "文字の輪郭線" },
+        body: {
+          en: "The template token border.title-outline (0–6 px) strokes slide and cover titles in the palette's outline color. Export writes CSS -webkit-text-stroke as a native PowerPoint text outline on the editable run. The stroke covers half of each glyph edge, so keep it to 2–4 px for CJK titles. LibreOffice does not draw these outlines, and text-shadow and other text effects stay HTML-only.",
+          "zh-TW": "範本 token border.title-outline（0–6 px）會用配色中的 outline 顏色替投影片與封面標題加上邊線。匯出時，CSS 的 -webkit-text-stroke 會寫成 PowerPoint 原生的文字外框，文字仍可編輯。邊線有一半會蓋在字形上，中文標題建議 2–4 px。LibreOffice 不會畫出這種外框；text-shadow 等其他文字特效只在 HTML 中顯示。",
+          "zh-CN": "模板 token border.title-outline（0–6 px）会用配色中的 outline 颜色为幻灯片与封面标题加上描边。导出时，CSS 的 -webkit-text-stroke 会写成 PowerPoint 原生的文字轮廓，文字仍可编辑。描边有一半会盖在字形上，中文标题建议 2–4 px。LibreOffice 不会画出这种轮廓；text-shadow 等其他文字特效只在 HTML 中显示。",
+          ja: "テンプレートのトークン border.title-outline（0〜6 px）は、配色の outline の色でスライドと表紙のタイトルに輪郭線を付けます。書き出し時、CSS の -webkit-text-stroke は編集可能なテキストのまま PowerPoint ネイティブの文字の輪郭になります。線の半分は字形に重なるため、CJK のタイトルでは 2〜4 px にしてください。LibreOffice はこの輪郭を描画せず、text-shadow などほかの文字効果は HTML でのみ表示されます。",
         },
       },
       {

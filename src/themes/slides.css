@@ -5,7 +5,7 @@ body { margin: 0; background: var(--sf-canvas); color: var(--sf-foreground); }
 .sf-background { position: absolute; inset: 0; z-index: -1; pointer-events: none; }
 .sf-background img, .sf-background iframe { display: block; width: 100%; height: 100%; border: 0; object-fit: cover; }
 .sf-header { height: var(--sf-layout-header); overflow: hidden; }
-.sf-header h1 { margin: 0; font-size: var(--sf-type-title); line-height: var(--sf-type-title-leading); font-weight: var(--sf-type-bold); }
+.sf-header h1 { margin: 0; font-size: var(--sf-type-title); line-height: var(--sf-type-title-leading); font-weight: var(--sf-type-bold); -webkit-text-stroke: var(--sf-border-title-outline) var(--sf-outline); }
 .sf-subtitle { margin: var(--sf-spacing-subtitle) 0 0; color: var(--sf-muted); font-size: var(--sf-type-subtitle); line-height: var(--sf-type-subtitle-leading); }
 .sf-content { height: var(--sf-layout-content); overflow: hidden; font-size: var(--sf-type-body); line-height: var(--sf-type-body-leading); }
 .sf-blocks { display: flex; flex-direction: column; gap: var(--sf-spacing-block); min-width: 0; height: 100%; overflow: hidden; }

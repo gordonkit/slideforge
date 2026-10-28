@@ -344,4 +344,40 @@ describe('templates', () => {
       await server.close();
     }
   }, 180_000);
+
+  it('exports title-outline as a PowerPoint text outline and keeps unstroked text plain', async () => {
+    await mkdir(join(directory, 'outlined'), { recursive: true });
+    await writeFile(join(directory, 'outlined', 'template.json'), JSON.stringify({
+      name: 'outlined', palette: { light: { outline: '#0b1f3a' } }, tokens: { border: { 'title-outline': 4 } },
+    }));
+    const input = join(directory, 'outlined.json');
+    await writeFile(input, JSON.stringify({
+      metadata: { title: 'Outlined' }, template: './outlined',
+      slides: [{ layout: 'content', title: 'Outlined 標題', blocks: [{ type: 'paragraph', text: 'Plain body' }] }],
+    }));
+    const output = join(directory, 'outlined.pptx');
+    expect((await exportPresentation(input, { output })).filter(issue => issue.rule !== 'layout.fonts')).toEqual([]);
+    const slide = strFromU8(unzipSync(await readFile(output))['ppt/slides/slide1.xml']!);
+    const runs = (slide.match(/<a:r>[\s\S]*?<\/a:r>/g) ?? []);
+    const title = runs.find(run => run.includes('Outlined 標題'))!;
+    // 4 CSS px is 2 pt: 25400 EMU.
+    expect(title).toMatch(/<a:rPr [^>]*><a:ln w="25400"><a:solidFill><a:srgbClr val="0B1F3A"\/><\/a:solidFill><\/a:ln>/);
+    expect(title).toContain('<a:latin typeface="Arial"');
+    expect(title).toContain('<a:ea typeface="Microsoft JhengHei"');
+    expect(runs.find(run => run.includes('Plain body'))).not.toContain('<a:ln');
+    expect(slide).not.toContain('slideforge-outline-');
+
+    const html = join(directory, 'stroked.html');
+    await writeFile(html, `<html><body style="margin:0;font-family:Arial">
+      <section data-pptx="slide" style="width:1920px;height:1080px">
+      <h1 style="-webkit-text-stroke:2px rgba(255,0,0,0.5)">Stroked <span style="-webkit-text-stroke-width:0">plain</span></h1>
+      </section></body></html>`);
+    const stroked = join(directory, 'stroked.pptx');
+    expect(await exportPresentation(html, { output: stroked })).toEqual([]);
+    const xml = strFromU8(unzipSync(await readFile(stroked))['ppt/slides/slide1.xml']!);
+    const parts = xml.match(/<a:r>[\s\S]*?<\/a:r>/g) ?? [];
+    expect(parts.find(run => run.includes('Stroked'))).toContain('<a:ln w="12700"><a:solidFill><a:srgbClr val="FF0000"><a:alpha val="50000"/>');
+    expect(parts.find(run => run.includes('plain'))).not.toContain('<a:ln');
+    expect(xml).not.toContain('slideforge-outline-');
+  }, 180_000);
 });
