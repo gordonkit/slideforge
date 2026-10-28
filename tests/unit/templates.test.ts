@@ -60,8 +60,8 @@ describe("template schema", () => {
 
   it("limits the title outline width", () => {
     const result = (outline: number) => templateSchema.safeParse({ name: "x", tokens: { border: { "title-outline": outline } } });
-    expect(result(6).success).toBe(true);
-    expect(describePresentationError(result(7).error)).toContain("tokens.border: title-outline must not exceed 6 (got 7)");
+    expect(result(4).success).toBe(true);
+    expect(describePresentationError(result(5).error)).toContain("tokens.border: title-outline must not exceed 4 (got 5)");
   });
 
   it("merges token overrides over the built-in tokens", () => {

@@ -7,7 +7,7 @@ All notable changes to this project will be documented in this file. The format 
 
 ### Added
 
-- Title outlines: the template token `border["title-outline"]` (0–6 px) strokes slide and
+- Title outlines: the template token `border["title-outline"]` (0–4 px) strokes slide and
   cover titles in the new `outline` palette color. Export writes any CSS
   `-webkit-text-stroke` as a native PowerPoint text outline (`<a:ln>`) on the editable run,
   which the converter otherwise drops. LibreOffice does not draw these outlines.

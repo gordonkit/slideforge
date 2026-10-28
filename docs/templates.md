@@ -73,16 +73,18 @@ after export as usual.
 
 ### Title outline
 
-`tokens.border["title-outline"]` (0–6, default 0) strokes slide and cover titles
+`tokens.border["title-outline"]` (0–4, default 0) strokes slide and cover titles
 in the palette's `outline` color, for titles over a busy background:
 
 ```json
-{ "name": "poster", "palette": { "light": { "outline": "#ffffff" } }, "tokens": { "border": { "title-outline": 3 } } }
+{ "name": "poster", "palette": { "light": { "outline": "#ffffff" } }, "tokens": { "border": { "title-outline": 2 } } }
 ```
 
 The stroke is centered on the glyph edges and drawn over the fill, in HTML and
-PowerPoint alike, so half of it covers the glyph; 2–4 px suits Latin and CJK
-titles, while wider strokes fill in dense CJK characters. Export writes it as a
+PowerPoint alike, so half of it covers the glyph: at 6 px, a 90 px bold Arial
+stem kept only half of its fill. 2–3 px suits Latin and CJK titles; wider strokes
+fill in dense CJK characters, so the token stops at 4. PowerPoint text outlines
+cannot sit outside the glyph only, so `paint-order` is not used. Export writes it as a
 native PowerPoint text outline; see [limitations](limitations.md#text-outlines).
 
 ### Variants
