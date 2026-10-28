@@ -14,7 +14,7 @@ const tokenBounds = {
   layout: [0, SLIDE_SIZE.widthPx], spacing: [0, 480], type: [8, 240], border: [0, 120], chart: [0, SLIDE_SIZE.widthPx],
 } as const satisfies Record<keyof typeof designTokens, readonly [number, number]>;
 
-const MAX_TITLE_OUTLINE = 6;
+const MAX_TITLE_OUTLINE = 4;
 
 const tokensSchema =z.object(Object.fromEntries(Object.entries(designTokens).map(([group, tokens]) => {
   const [min, max] = tokenBounds[group as keyof typeof designTokens];
