@@ -58,6 +58,7 @@ export function renderPresentation(input: unknown, options: RenderOptions = {}):
     "--sf-canvas": palette.canvas,
     "--sf-surface": palette.surface,
     "--sf-border": palette.border,
+    "--sf-outline": palette.outline,
     fontFamily: presentation.fontFamily ?? template?.fontFamily ?? defaultFontFamily,
   } as CSSProperties;
   return "<!doctype html>" + renderToStaticMarkup(

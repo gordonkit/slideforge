@@ -94,6 +94,19 @@ Pass `eastAsianFont` to `exportPresentation` when a JSON `fontFamily` uses a
 different CJK font. Without Microsoft JhengHei (Linux, macOS without Office),
 HTML falls back to Noto while PowerPoint shows its own substitute.
 
+## Text outlines
+
+Export writes CSS `-webkit-text-stroke` (from the template's
+[`title-outline`](templates.md#title-outline) token or any trusted HTML) as a
+PowerPoint text outline on the same editable run: a solid line of the computed
+width and color, alpha included. The stroke is centered on the glyph edges and
+drawn over the fill, as in Chromium. Tests check the generated XML only; a one-off
+render in PowerPoint for Windows matched the HTML closely, but line joins and
+anti-aliasing differ slightly, and other PowerPoint versions are untested. LibreOffice
+Impress does not draw these outlines, so LibreOffice-based visual comparison shows
+titles without them. Text shadows (`text-shadow`), glows, gradients, and
+`paint-order` are not converted; they render in HTML only.
+
 ## Browser execution is privileged
 
 **Use trusted HTML and URLs only.** Export launches Chromium and executes page

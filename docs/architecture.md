@@ -7,7 +7,9 @@ JSON (+ template it names) → strict Zod schemas → typed presentation and tem
      → React static markup + shared CSS/tokens (template overrides) → HTML
      → Playwright Chromium → layout validation
      → capture background layers as PNG, remove them
+     → mark text-stroked elements with placeholder fonts
      → bundled dom-to-pptx → PPTX bytes
+     → write text outlines, widen text boxes, set East Asian font
      → set slide backgrounds, patch core metadata → structural validation → output file
 
 JSON directory → Vite loopback preview → same rendered HTML
@@ -39,6 +41,7 @@ browser, not as a Node DOM simulation.
 | `src/exporters/pptx.ts` | Chromium orchestration, assets, validation, output |
 | `src/exporters/metadata.ts` | Core-properties XML patch |
 | `src/exporters/backgrounds.ts` | Slide background (`<p:bg>`) image patch |
+| `src/exporters/text-outline.ts` | `-webkit-text-stroke` → run outline (`<a:ln>`) through placeholder fonts |
 | `src/validators/` | Layout, PPTX package, optional visual checks |
 | `src/cli/index.ts` | CLI argument parsing and commands |
 | `examples/basic/` | Multilingual sample with one slide per layout family, and assets |
@@ -168,6 +171,23 @@ The pinned converter's public API does not supply SlideForge's metadata setter.
 SlideForge patches `docProps/core.xml` after conversion with title, creator,
 subject, and language, retaining the converter's remaining package parts. It
 does not reach into upstream private APIs or promise a general OOXML editor.
+
+### Text outlines
+
+The converter drops `-webkit-text-stroke` but copies each run's first CSS font
+family into `<a:latin>`, `<a:ea>`, and `<a:cs>`. After layout validation and
+background capture, export prefixes the font family of every element in a slide
+whose computed stroke is wider than 0 and not fully transparent with a
+placeholder family, `slideforge-outline-<n>`, one per distinct family, width,
+and color. Chromium skips the unknown family, so rendering and measurement do
+not change; an unstroked child of a stroked element keeps its own family so it
+does not inherit the placeholder. After conversion, every run property element
+(`<a:rPr>`, `<a:endParaRPr>`, `<a:defRPr>`) that names a placeholder gets an
+`<a:ln>` as its first child, with the stroke width (1 CSS px = 6350 EMU) and color
+(translucent colors keep their alpha), and its font family restored. Export fails
+if a placeholder is left anywhere in the package. This works for JSON, HTML, and
+URL input alike; templates produce the stroke through the
+[`title-outline` token](design-tokens.md#exported-token-groups-and-css-names).
 
 ### Slide backgrounds
 

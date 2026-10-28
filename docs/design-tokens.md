@@ -38,6 +38,10 @@ padding) add up to the 1080px height.
 | `surface` | `--sf-surface` | `#f1f5f9` | `#1e293b` |
 | `border` | `--sf-border` | `#cbd5e1` | `#475569` |
 | `canvas` | `--sf-canvas` | `#d8dee8` | `#d8dee8` |
+| `outline` | `--sf-outline` | `#ffffff` | `#101827` |
+
+`outline` is the title outline color; it is only visible when the `title-outline`
+border token is above 0.
 
 The HTML body has `data-theme="light"` or `"dark"`. The preview page surround is
 `#d8dee8`, outside the slide. Table header text is white in light mode and
@@ -53,7 +57,7 @@ installer, and system fonts are not guaranteed embedded into PPTX.
 | --- | --- |
 | Slide padding | Top 72px, horizontal 96px, bottom 84px |
 | Header / content heights | 186px / 738px |
-| Title | 60px, 700 weight, 1.2 line height |
+| Title | 60px, 700 weight, 1.2 line height; no outline (`title-outline: 0`) |
 | Subtitle | 33px, 1.35 line height, 18px top margin |
 | Content | 36px, 1.45 line height |
 | Content block gap | 27px |
@@ -94,7 +98,7 @@ strings unchanged. For example, `spacingTokens.column` becomes
 | `layoutTokens` / `layout` | `padding-x: 96`, `padding-top: 72`, `padding-bottom: 84`, `header: 186`, `content: 738`, `footer-bottom: 33`, `footer: 36`, `cover-header: 525`, `cover-top: 198`, `cover-content: 375`, `cover-panel: 640`, `image-max-height: 630` |
 | `spacingTokens` / `spacing` | `page: 36`, `block: 27`, `column: 60`, `card: 30`, `card-padding: 36`, `subtitle: 18`, `cover-subtitle: 36`, `card-title: 24`, `list: 48`, `item: 15`, `caption: 12`, `table-x: 24`, `table-y: 15`, `chart: 30`, `chart-explanation: 24` |
 | `typographyTokens` / `type` | `title: 60`, `subtitle: 33`, `body: 36`, `caption: 25.5`, `card-title: 39`, `card-body: 30`, `table: 31.5`, `chart: 31.5`, `footer: 24`, `cover-title: 90`, `cover-subtitle: 45`, `author: 39`, `quote: 54`, `title-leading: "1.2"`, `subtitle-leading: "1.35"`, `body-leading: "1.45"`, `bold: "700"` |
-| `borderTokens` / `border` | `width: 2`, `radius: 18`, `accent: 6` (the quote's accent bar) |
+| `borderTokens` / `border` | `width: 2`, `radius: 18`, `accent: 6` (the quote's accent bar), `title-outline: 0` (slide and cover title `-webkit-text-stroke` width in the `outline` color) |
 | `chartTokens` / `chart` | `height: 39`, `label: 285`, `value: 210`, `explanation-label: 210`, `explanation-value: 150` |
 
 For custom HTML you may reuse these maps and CSS conventions, but arbitrary
