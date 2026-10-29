@@ -19,7 +19,8 @@ node dist/cli/index.js --help
 Paths are relative to the current working directory unless absolute.
 
 To run the CLI without installing Node.js, Chromium, or fonts, use the
-`gordonkit/slideforge` image on Docker Hub or the `cli` Compose profile in
+`gordonkit/slideforge` image from Docker Hub (also published as
+`ghcr.io/gordonkit/slideforge`) or the `cli` Compose profile in
 [`docker/`](../docker/README.md). Both support every command except `preview`.
 
 ## `init`

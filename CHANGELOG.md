@@ -24,6 +24,10 @@ All notable changes to this project will be documented in this file. The format 
 - `example [name] [--output <directory>]` CLI command: lists the bundled examples, or
   copies one (`basic`, `variants`, `templates`) with its assets and template into an
   empty or new folder.
+- GitHub Container Registry image: release tags also push the container image to
+  `ghcr.io/gordonkit/slideforge`, with the same tags as Docker Hub.
+- Documentation site: a static, `noindex` 404 page, so unknown paths return 404 instead
+  of the overview, and an `og:image` social preview on every page.
 
 ### Changed
 
