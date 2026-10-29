@@ -7,6 +7,13 @@ const siteUrl = "https://slideforge.gordonkit.com";
 const locales: Locale[] = ["en", "zh-TW", "zh-CN", "ja"];
 const hreflang: Record<Locale, string> = { en: "en", "zh-TW": "zh-Hant-TW", "zh-CN": "zh-Hans-CN", ja: "ja" };
 const openGraphLocale: Record<Locale, string> = { en: "en_US", "zh-TW": "zh_TW", "zh-CN": "zh_CN", ja: "ja_JP" };
+const socialImage = { url: `${siteUrl}/screenshots/layout-cover.png`, width: 960, height: 540, alt: "SlideForge cover slide: Ideas into slides" };
+const notFound: Record<Locale, { title: string; body: string; link: string }> = {
+  en: { title: "Page not found", body: "This page does not exist or has moved.", link: "Go to the SlideForge documentation" },
+  "zh-TW": { title: "找不到頁面", body: "這個頁面不存在或已經移動。", link: "前往 SlideForge 文件" },
+  "zh-CN": { title: "找不到页面", body: "此页面不存在或已移动。", link: "前往 SlideForge 文档" },
+  ja: { title: "ページが見つかりません", body: "このページは存在しないか、移動しました。", link: "SlideForge ドキュメントへ" },
+};
 
 function escapeHtml(value: string): string {
   return value
@@ -94,9 +101,15 @@ function renderMetadata(page: Page, locale: Locale): string {
     <meta property="og:title" content="${escapeHtml(title)}" />
     <meta property="og:description" content="${escapeHtml(description)}" />
     <meta property="og:url" content="${url}" />
-    <meta name="twitter:card" content="summary" />
+    <meta property="og:image" content="${socialImage.url}" />
+    <meta property="og:image:width" content="${socialImage.width}" />
+    <meta property="og:image:height" content="${socialImage.height}" />
+    <meta property="og:image:alt" content="${escapeHtml(socialImage.alt)}" />
+    <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="${escapeHtml(title)}" />
     <meta name="twitter:description" content="${escapeHtml(description)}" />
+    <meta name="twitter:image" content="${socialImage.url}" />
+    <meta name="twitter:image:alt" content="${escapeHtml(socialImage.alt)}" />
     <script type="application/ld+json">${structuredData}</script>`;
 }
 
@@ -111,7 +124,28 @@ function renderPage(template: string, page: Page, locale: Locale): string {
     .replace(/[ \t]+(?=\r?$)/gm, "");
 }
 
-/** Write a static, crawlable page per locale and page, plus the sitemap and robots file. */
+/** A static not-found page without the app script, which would otherwise render the overview at any path. */
+function renderNotFound(template: string): string {
+  const messages = locales.map((locale) => `<section lang="${locale}" class="mt-10">
+        <h2 class="text-xl font-semibold text-ink">${escapeHtml(notFound[locale].title)}</h2>
+        <p class="mt-2">${escapeHtml(notFound[locale].body)}</p>
+        <a class="mt-2 inline-block text-signal hover:underline" href="/${locale}/overview/">${escapeHtml(notFound[locale].link)}</a>
+      </section>`).join("\n      ");
+  return template
+    .replaceAll("\r\n", "\n")
+    .replace(/<meta name="description" content="[^"]*" \/>/, `<meta name="description" content="${escapeHtml(notFound.en.body)}" />`)
+    .replace(/<title>[^<]*<\/title>/, `<title>${escapeHtml(notFound.en.title)} | SlideForge Docs</title>`)
+    .replace(/\s*<script type="module"[^>]*><\/script>/, "")
+    .replace("</head>", `    <meta name="robots" content="noindex" />\n  </head>`)
+    .replace('<div id="root"></div>', `<main class="mx-auto max-w-2xl px-6 py-20 text-slate-700">
+      <a class="text-sm text-slate-500 hover:text-ink" href="/en/overview/">SlideForge Docs</a>
+      <h1 class="mt-6 text-4xl font-bold text-ink">404</h1>
+      ${messages}
+    </main>`)
+    .replace(/[ \t]+(?=\r?$)/gm, "");
+}
+
+/** Write a static, crawlable page per locale and page, plus the not-found page, sitemap, and robots file. */
 export function seoPagesPlugin(outputDirectory: string): Plugin {
   return {
     name: "slideforge-seo-pages",
@@ -127,6 +161,7 @@ export function seoPagesPlugin(outputDirectory: string): Plugin {
         }
       }
 
+      await writeFile(join(outputDirectory, "404.html"), renderNotFound(template), "utf8");
       await writeFile(templatePath, renderPage(template, pages[0], "en"), "utf8");
       const sitemap = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n${pages.flatMap((page) => locales.map((locale) => `  <url><loc>${pageUrl(locale, page)}</loc>${locales.map((item) => `<xhtml:link rel="alternate" hreflang="${hreflang[item]}" href="${pageUrl(item, page)}"/>`).join("")}</url>`)).join("\n")}\n</urlset>\n`;
       await writeFile(join(outputDirectory, "sitemap.xml"), sitemap, "utf8");

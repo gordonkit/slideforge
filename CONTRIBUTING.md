@@ -40,7 +40,8 @@ npm --prefix site run check
 npm --prefix site run build
 ```
 
-The build writes `site/dist/`, including a static page per locale, `sitemap.xml`, and
+The build writes `site/dist/`, including a static page per locale, a `noindex`
+`404.html` (served with status 404 by Cloudflare Pages), `sitemap.xml`, and
 `robots.txt`. Do not commit it. CI deploys it to Cloudflare Pages on pushes to `main`.
 
 ## Changes and pull requests
