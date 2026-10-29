@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file. The format 
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-10-29
+
 ### Added
 
 - Title outlines: the template token `border["title-outline"]` (0–4 px) strokes slide and
