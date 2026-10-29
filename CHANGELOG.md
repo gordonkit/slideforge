@@ -11,6 +11,10 @@ All notable changes to this project will be documented in this file. The format 
   cover titles in the new `outline` palette color. Export writes any CSS
   `-webkit-text-stroke` as a native PowerPoint text outline (`<a:ln>`) on the editable run,
   which the converter otherwise drops. LibreOffice does not draw these outlines.
+- Docker Hub image: release tags also publish `gordonkit/slideforge` (`<version>`,
+  `<major>.<minor>`, and `latest`, `linux/amd64`) with an SBOM attestation and build
+  provenance. Before npm publishing, the release workflow checks the Docker Hub settings
+  and exports and validates the bundled example in the container.
 
 ## [0.1.1] - 2026-10-26
 

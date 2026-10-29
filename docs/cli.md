@@ -17,9 +17,9 @@ node dist/cli/index.js --help
 `-o` aliases `--output`; `-h` aliases `--help`. No arguments displays help.
 Paths are relative to the current working directory unless absolute.
 
-To run the CLI without installing Node.js, Chromium, or fonts, use the `cli`
-Compose profile in [`docker/`](../docker/README.md). It supports every command
-except `preview`.
+To run the CLI without installing Node.js, Chromium, or fonts, use the
+`gordonkit/slideforge` image on Docker Hub or the `cli` Compose profile in
+[`docker/`](../docker/README.md). Both support every command except `preview`.
 
 ## `init`
 
