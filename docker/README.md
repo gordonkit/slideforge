@@ -10,6 +10,35 @@ The Compose file provides one explicitly selected profile:
 There is no HTTP API profile. The image is a packaged CLI, not an export
 service; see [the trust model](../docs/limitations.md#browser-execution-is-privileged).
 
+## Published image
+
+Release tags after 0.1.1 publish one Docker Hub repository,
+[`gordonkit/slideforge`](https://hub.docker.com/r/gordonkit/slideforge). A tag
+such as `v0.2.0` publishes the image tags `0.2.0`, `0.2`, and `latest`; the
+image tag matches the npm package version. The image targets `linux/amd64`.
+
+To use it without cloning this repository, mount the folder that holds the deck
+at `/work`:
+
+```bash
+docker run --rm --read-only --tmpfs /tmp --shm-size 256m --security-opt no-new-privileges \
+  --user "$(id -u):$(id -g)" --volume "$PWD:/work" \
+  gordonkit/slideforge:latest export /work/deck.json --output /work/deck.pptx
+```
+
+```powershell
+docker run --rm --read-only --tmpfs /tmp --shm-size 256m --security-opt no-new-privileges `
+  --volume "${PWD}:/work" `
+  gordonkit/slideforge:latest export /work/deck.json --output /work/deck.pptx
+```
+
+In Git Bash on Windows, set `MSYS_NO_PATHCONV=1` first; otherwise Git Bash
+rewrites container paths such as `/work/deck.json` into Windows paths.
+
+Use a version tag instead of `latest` when exports must be reproducible. The
+Compose file below always builds `gordonkit/slideforge:local` from the current
+source tree and does not pull the published image.
+
 ## CLI profile
 
 Run these commands from the repository root in Bash or PowerShell. Compose
@@ -81,7 +110,36 @@ docker run --rm --read-only --tmpfs /tmp --volume "<host folder>:/work" gordonki
   wrap differently. PowerPoint's East Asian font remains Microsoft JhengHei,
   which the image does not include; no Microsoft fonts are bundled or embedded.
 - The image is about 1.5 GB, mostly Chromium and the CJK fonts, and currently
-  targets `linux/amd64`. No published image or registry release exists yet.
+  targets `linux/amd64`.
 
 The project's `LICENSE` (Apache-2.0), `NOTICE`, and third-party notice files are
-installed under `/usr/share/licenses/slideforge/`.
+installed under `/usr/share/licenses/slideforge/`. Published images also carry a
+Buildx SBOM attestation and build provenance.
+
+## Docker Hub release setup
+
+Create the `slideforge` repository in the Docker Hub user or organization that
+will own it, and create a Docker Hub access token with read and write
+permission. Then configure these settings under **Settings > Secrets and
+variables > Actions** in the GitHub repository:
+
+| Kind | Name | Value |
+| --- | --- | --- |
+| Variable | `DOCKERHUB_NAMESPACE` | Docker Hub user or organization that owns the repository |
+| Secret | `DOCKERHUB_USERNAME` | Docker Hub user that can push to the namespace |
+| Secret | `DOCKERHUB_TOKEN` | Docker Hub access token; do not use the account password |
+
+Pushing a release tag runs `.github/workflows/release.yml`:
+
+1. `container-smoke` checks that the three settings exist, builds the image with
+   Compose, exports `examples/basic/presentation.json` in the container, and
+   validates the result.
+2. `publish` runs the npm release checks and tests, then publishes to npm and
+   creates the GitHub release.
+3. `publish-container` builds the image with Buildx and pushes it to
+   `<namespace>/slideforge` with an SBOM attestation and build provenance.
+
+npm and Docker Hub are independent registries, so `publish-container` can fail
+after the npm package is published. Check every release job before announcing
+a release. Re-running the failed job for the same tag pushes the image tags
+again from the same source.
