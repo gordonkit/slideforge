@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file. The format 
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-10-29
+
 ### Added
 
 - `timeline` layout family: 2–6 `events` (`date`, `title`, optional `text`) drawn left to
