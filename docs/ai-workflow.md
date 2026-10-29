@@ -20,8 +20,11 @@ Build the project first if `dist` is absent. Initialization also creates
 directory with the JSON; replace/add assets as your content requires.
 
 Keep only schema-supported fields. Select cover for an opening, content for
-explanation, two-columns for comparisons, cards for small parallel ideas, table
-for compact grids, and chart for simple nonnegative values. Use plain strings,
+explanation, two-columns for comparisons, cards for two to six small parallel ideas,
+timeline for two to six steps or dates in order, gantt for a project
+schedule, table for compact grids, chart for
+simple nonnegative values, quote for one short quotation, and blank for a slide
+that shows only its background. Use plain strings,
 not Markdown/HTML. See [schema](schema.md).
 
 ## 3. Apply consistent design

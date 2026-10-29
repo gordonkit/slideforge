@@ -1,0 +1,13 @@
+/* One equal column per event; the rows are shared through subgrid so dates, markers, and titles line up. */
+.sf-timeline { margin: 0; padding: 0; list-style: none; height: 100%; display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); grid-template-rows: repeat(4, auto); align-content: center; row-gap: var(--sf-spacing-card-title); overflow: hidden; }
+.sf-timeline-event { grid-row: span 4; display: grid; grid-template-rows: subgrid; min-width: 0; text-align: center; }
+.sf-timeline-event > :not(.sf-timeline-track) { margin: 0; padding: 0 calc(var(--sf-spacing-card) / 2); }
+.sf-timeline-date { align-self: end; color: var(--sf-accent); font-size: var(--sf-type-subtitle); line-height: var(--sf-type-subtitle-leading); font-weight: var(--sf-type-bold); }
+.sf-timeline-track { position: relative; height: var(--sf-layout-timeline-marker); }
+/* The rail spans the whole column so neighbors join; it starts and ends at the outer markers. */
+.sf-timeline-rail { position: absolute; left: 0; right: 0; top: calc(50% - var(--sf-border-accent) / 2); height: var(--sf-border-accent); background: var(--sf-accent); }
+.sf-timeline-event:first-child .sf-timeline-rail { left: 50%; }
+.sf-timeline-event:last-child .sf-timeline-rail { right: 50%; }
+.sf-timeline-marker { position: absolute; top: 0; left: calc(50% - var(--sf-layout-timeline-marker) / 2); width: var(--sf-layout-timeline-marker); height: var(--sf-layout-timeline-marker); border-radius: 50%; background: var(--sf-accent); }
+.sf-timeline-event h2 { font-size: var(--sf-type-card-title); line-height: var(--sf-type-title-leading); }
+.sf-timeline-text { color: var(--sf-muted); font-size: var(--sf-type-card-body); }

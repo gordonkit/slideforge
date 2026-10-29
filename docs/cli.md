@@ -9,7 +9,7 @@ entry point, `node dist/cli/index.js`, which is the same CLI.
 node dist/cli/index.js init [presentation.json] [--template <name|./path>]
 node dist/cli/index.js build presentation.json [--output presentation.html]
 node dist/cli/index.js preview presentation.json [--port 5180]
-node dist/cli/index.js export <presentation.json|slides.html|https://url> --output presentation.pptx [--selector css]
+node dist/cli/index.js export <presentation.json|slides.html|https://url>   --output presentation.pptx [--selector css]
 node dist/cli/index.js validate presentation.pptx
 node dist/cli/index.js --help
 ```
@@ -88,8 +88,8 @@ The default slide selector is `[data-pptx="slide"], .slide`. Customize it for
 trusted HTML:
 
 ```sh
-node dist/cli/index.js export slides.html --output slides.pptx --selector '.deck-page'
-node dist/cli/index.js export http://127.0.0.1:5180/ --output preview.pptx
+node dist/cli/index.js export slides.html   --output slides.pptx --selector '.deck-page'
+node dist/cli/index.js export http://127.0.0.1:5180/   --output preview.pptx
 ```
 
 Chromium waits for page load, fonts, and image decoding, then layout validation

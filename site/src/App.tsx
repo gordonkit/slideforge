@@ -80,6 +80,7 @@ function sectionText(section: Section, locale: Locale): string[] {
     ...(section.bullets?.[locale] ?? []),
     ...(section.interfaces?.flatMap((entry) => [entry.title[locale], entry.label[locale], entry.body[locale]]) ?? []),
     ...(section.table?.rows.flatMap((row) => row.map((cell) => cellText(cell, locale))) ?? []),
+    ...(section.images?.flatMap((image) => [image.alt[locale], image.caption === undefined ? "" : cellText(image.caption, locale)]) ?? []),
   ];
 }
 
@@ -201,6 +202,7 @@ function App() {
                 <SectionBody section={section} locale={locale} />
                 {section.interfaces && <InterfaceOptions interfaces={section.interfaces} locale={locale} />}
                 {section.table && <DataTable table={section.table} locale={locale} />}
+                {section.images && <Screenshots images={section.images} locale={locale} />}
                 {section.bullets && (
                   <ul className="mt-5 list-disc space-y-2 pl-6 leading-7 marker:text-leaf">
                     {section.bullets[locale].map((item) => <li key={item}>{item}</li>)}
@@ -343,6 +345,21 @@ function DataTable({ table, locale }: { table: NonNullable<Section["table"]>; lo
           ))}
         </tbody>
       </table>
+    </div>
+  );
+}
+
+function Screenshots({ images, locale }: { images: NonNullable<Section["images"]>; locale: Locale }) {
+  return (
+    <div className={`mt-6 grid gap-5 ${images.length > 1 ? "sm:grid-cols-2" : ""}`}>
+      {images.map((image) => (
+        <figure key={image.src} className={`min-w-0 ${image.narrow ? "max-w-52" : ""}`}>
+          <a href={image.src} target="_blank" rel="noreferrer" className="block border border-slate-200 transition hover:border-slate-400 dark:border-slate-700 dark:hover:border-slate-500">
+            <img src={image.src} alt={image.alt[locale]} loading="lazy" decoding="async" className="block h-auto w-full" />
+          </a>
+          {image.caption !== undefined && <figcaption className="mt-2 text-sm leading-6 text-slate-500 dark:text-slate-400">{cellText(image.caption, locale)}</figcaption>}
+        </figure>
+      ))}
     </div>
   );
 }

@@ -60,7 +60,7 @@ node dist/cli/index.js validate presentation.pptx
 
 `init [file]` 默认创建 `presentation.json`，不会覆盖已有文件。它会把示例图片复制到 JSON 旁边的
 `<JSON 文件名>-assets/diagram.svg` 并改写图片路径；默认会创建 `presentation-assets/diagram.svg`，
-请让这个目录与 JSON 放在一起。示例包含封面、内容、双栏、卡片、表格与图表幻灯片，以及英文／繁体中文
+请让这个目录与 JSON 放在一起。示例中每个版式系列各有一张幻灯片，并含英文／繁体中文
 文字、图片、页脚与备注。完整内容请见 [示例 JSON](examples/basic/presentation.json)。
 
 构建出的 HTML 使用指向 JSON 目录的 `file://` `<base>` 来加载相对路径的素材，因此**不是可移植、
@@ -109,7 +109,8 @@ if (!report.valid) process.exitCode = 1;
 - [JSON schema 参考](docs/schema.md)
 - [Templates](docs/templates.md)
 - [Design tokens](docs/design-tokens.md)
-- [组件与版式](docs/components.md)
+- [组件与版式](docs/components.md)，附各版式的截图
+- [以 Math Background Studio 制作背景](docs/backgrounds.md)
 - [架构、API 与上游参考](docs/architecture.md)
 - [验证与可选的视觉比对](docs/validation.md)
 - [限制与信任模型](docs/limitations.md)

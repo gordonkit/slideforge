@@ -2,3 +2,10 @@
 .sf-card { padding: var(--sf-spacing-card-padding); background: var(--sf-surface); border: var(--sf-border-width) solid var(--sf-border); border-radius: var(--sf-border-radius); overflow: hidden; display: flex; flex-direction: column; }
 .sf-card h2 { margin: 0 0 var(--sf-spacing-card-title); font-size: var(--sf-type-card-title); line-height: var(--sf-type-title-leading); }
 .sf-card .sf-blocks { font-size: var(--sf-type-card-body); }
+/* The grid follows the card count: 1 full width, 2 side by side, 3 and 6 in threes, 4 as 2 × 2,
+   and 5 as three over two on a six-column grid. */
+.sf-cards[data-count="1"] { grid-template-columns: minmax(0, 1fr); }
+.sf-cards[data-count="2"], .sf-cards[data-count="4"] { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.sf-cards[data-count="5"] { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+.sf-cards[data-count="5"] .sf-card { grid-column: span 2; }
+.sf-cards[data-count="5"] .sf-card:nth-child(n + 4) { grid-column: span 3; }

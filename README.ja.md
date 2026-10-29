@@ -64,7 +64,7 @@ node dist/cli/index.js validate presentation.pptx
 `init [file]` の既定は `presentation.json` で、既存のファイルは上書きしません。サンプル画像を
 JSON の隣の `<JSON のファイル名>-assets/diagram.svg` にコピーし、画像のパスを書き換えます。既定では
 `presentation-assets/diagram.svg` が作成されるので、このディレクトリは JSON と一緒に保ってください。
-サンプルには表紙、本文、2 列、カード、表、グラフのスライドと、英語・繁体字中国語のテキスト、画像、
+サンプルにはレイアウトファミリーごとに 1 枚のスライドと、英語・繁体字中国語のテキスト、画像、
 フッター、ノートが含まれます。全体は [サンプル JSON](examples/basic/presentation.json) を参照してください。
 
 ビルドした HTML は、相対パスの素材を読み込むために JSON のディレクトリを指す `file://` の `<base>` を
@@ -115,7 +115,8 @@ if (!report.valid) process.exitCode = 1;
 - [JSON スキーマのリファレンス](docs/schema.md)
 - [テンプレート](docs/templates.md)
 - [デザイントークン](docs/design-tokens.md)
-- [コンポーネントとレイアウト](docs/components.md)
+- [コンポーネントとレイアウト](docs/components.md)（各レイアウトのスクリーンショット付き）
+- [Math Background Studio で背景を作る](docs/backgrounds.md)
 - [アーキテクチャ、API、上流の参考資料](docs/architecture.md)
 - [検証と任意の視覚比較](docs/validation.md)
 - [制限と信頼モデル](docs/limitations.md)

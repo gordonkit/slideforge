@@ -39,8 +39,8 @@ describe("template schema", () => {
     [{ name: "x", tokens: { type: { title: 4 } } }, "tokens.type.title"],
     [{ name: "x", tokens: { colors: {} } }, "tokens"],
     [{ name: "x", variants: { cover: "fancy" } }, "variants.cover"],
-    [{ name: "x", variants: { timeline: "default" } }, "variants"],
-    [{ name: "x", backgrounds: { timeline: "a.png" } }, "backgrounds"],
+    [{ name: "x", variants: { gallery: "default" } }, "variants"],
+    [{ name: "x", backgrounds: { gallery: "a.png" } }, "backgrounds"],
     [{ name: "x", fontFamily: "Arial; color: red" }, "fontFamily"],
   ])("rejects %j at %s", (input, path) => {
     const result = templateSchema.safeParse(input);
