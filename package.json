@@ -8,7 +8,7 @@
     ".": "./dist/index.js"
   },
   "bin": {
-    "slideforge": "./dist/cli/index.js"
+    "slideforge": "dist/cli/index.js"
   },
   "files": [
     "dist",
@@ -34,7 +34,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/gordonkit/slideforge.git"
+    "url": "git+https://github.com/gordonkit/slideforge.git"
   },
   "homepage": "https://slideforge.gordonkit.com/",
   "bugs": {
