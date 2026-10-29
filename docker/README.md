@@ -12,10 +12,13 @@ service; see [the trust model](../docs/limitations.md#browser-execution-is-privi
 
 ## Published image
 
-Release tags after 0.1.1 publish one Docker Hub repository,
-[`gordonkit/slideforge`](https://hub.docker.com/r/gordonkit/slideforge). A tag
-such as `v0.2.0` publishes the image tags `0.2.0`, `0.2`, and `latest`; the
-image tag matches the npm package version. The image targets `linux/amd64`.
+Release tags after 0.1.1 publish the image to Docker Hub as
+[`gordonkit/slideforge`](https://hub.docker.com/r/gordonkit/slideforge), and
+from 0.3.0 also to GitHub Container Registry as
+[`ghcr.io/gordonkit/slideforge`](https://github.com/gordonkit/slideforge/pkgs/container/slideforge).
+Both receive the same image. A tag such as `v0.3.0` publishes the image tags
+`0.3.0`, `0.3`, and `latest`; the image tag matches the npm package version. The
+image targets `linux/amd64`. Either name works in the commands below.
 
 To use it without cloning this repository, mount the folder that holds the deck
 at `/work`:
@@ -116,7 +119,7 @@ The project's `LICENSE` (Apache-2.0), `NOTICE`, and third-party notice files are
 installed under `/usr/share/licenses/slideforge/`. Published images also carry a
 Buildx SBOM attestation and build provenance.
 
-## Docker Hub release setup
+## Registry release setup
 
 Create the `slideforge` repository in the Docker Hub user or organization that
 will own it, and create a Docker Hub access token with read and write
@@ -137,9 +140,15 @@ Pushing a release tag runs `.github/workflows/release.yml`:
 2. `publish` runs the npm release checks and tests, then publishes to npm and
    creates the GitHub release.
 3. `publish-container` builds the image with Buildx and pushes it to
-   `<namespace>/slideforge` with an SBOM attestation and build provenance.
+   `<namespace>/slideforge` and `ghcr.io/<owner>/<repository>` with an SBOM
+   attestation and build provenance.
 
-npm and Docker Hub are independent registries, so `publish-container` can fail
+GitHub Container Registry needs no secret: the job signs in with the workflow's
+`GITHUB_TOKEN` and the `packages: write` permission. The first push creates the
+package as private; make it public once under the package's **Package settings**
+so `docker pull` works without signing in.
+
+npm and the container registries are independent, so `publish-container` can fail
 after the npm package is published. Check every release job before announcing
 a release. Re-running the failed job for the same tag pushes the image tags
 again from the same source.

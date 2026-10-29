@@ -389,10 +389,10 @@ node dist/cli/index.js export http://127.0.0.1:5180/ \\
         id: "docker",
         title: { en: "Run in Docker", "zh-TW": "在 Docker 中執行", "zh-CN": "在 Docker 中运行", ja: "Docker で実行する" },
         body: {
-          en: "The image bundles Node.js, the pinned Chromium, and Noto CJK and Liberation fonts, so you do not install them yourself. Release tags after 0.1.1 publish it to Docker Hub as gordonkit/slideforge, tagged with the npm version and latest. The first command runs the published image on the current folder, mounted at /work. The second builds the image from a repository checkout with Compose, which mounts the repository root at /work, or the folder in SLIDEFORGE_WORK; the CLI arguments follow cli. Paths are container paths under /work.",
-          "zh-TW": "映像檔內含 Node.js、鎖定版本的 Chromium，以及 Noto CJK 與 Liberation 字型，不必自行安裝。0.1.1 之後的版本 tag 會把它發布到 Docker Hub 的 gordonkit/slideforge，image tag 與 npm 版本相同，另有 latest。第一行指令直接執行已發布的映像檔，並把目前資料夾掛載到 /work。第二行從 repository 原始碼用 Compose 建置映像檔，Compose 會把 repository 根目錄（或 SLIDEFORGE_WORK 指定的資料夾）掛載到 /work，CLI 參數接在 cli 後面。路徑要寫容器內 /work 底下的路徑。",
-          "zh-CN": "镜像内含 Node.js、锁定版本的 Chromium，以及 Noto CJK 与 Liberation 字体，无需自行安装。0.1.1 之后的版本 tag 会把它发布到 Docker Hub 的 gordonkit/slideforge，image tag 与 npm 版本相同，另有 latest。第一行命令直接运行已发布的镜像，并把当前文件夹挂载到 /work。第二行从仓库源码用 Compose 构建镜像，Compose 会把仓库根目录（或 SLIDEFORGE_WORK 指定的文件夹）挂载到 /work，CLI 参数接在 cli 后面。路径要写容器内 /work 下的路径。",
-          ja: "イメージには Node.js、固定バージョンの Chromium、Noto CJK と Liberation フォントが含まれるため、自分でインストールする必要はありません。0.1.1 より後のリリースタグでは、Docker Hub の gordonkit/slideforge に npm と同じバージョンのタグと latest で公開されます。1 行目は公開済みのイメージを実行し、カレントフォルダーを /work にマウントします。2 行目はリポジトリのソースから Compose でイメージをビルドします。Compose はリポジトリのルート（または SLIDEFORGE_WORK のフォルダー）を /work にマウントし、CLI の引数は cli の後に続けます。パスはコンテナー内の /work 以下で指定します。",
+          en: "The image bundles Node.js, the pinned Chromium, and Noto CJK and Liberation fonts, so you do not install them yourself. Release tags after 0.1.1 publish it to Docker Hub as gordonkit/slideforge, and from 0.3.0 also to GitHub Container Registry as ghcr.io/gordonkit/slideforge, tagged with the npm version and latest. The first command runs the published image on the current folder, mounted at /work. The second builds the image from a repository checkout with Compose, which mounts the repository root at /work, or the folder in SLIDEFORGE_WORK; the CLI arguments follow cli. Paths are container paths under /work.",
+          "zh-TW": "映像檔內含 Node.js、鎖定版本的 Chromium，以及 Noto CJK 與 Liberation 字型，不必自行安裝。0.1.1 之後的版本 tag 會把它發布到 Docker Hub 的 gordonkit/slideforge，0.3.0 起也會發布到 GitHub Container Registry 的 ghcr.io/gordonkit/slideforge，image tag 與 npm 版本相同，另有 latest。第一行指令直接執行已發布的映像檔，並把目前資料夾掛載到 /work。第二行從 repository 原始碼用 Compose 建置映像檔，Compose 會把 repository 根目錄（或 SLIDEFORGE_WORK 指定的資料夾）掛載到 /work，CLI 參數接在 cli 後面。路徑要寫容器內 /work 底下的路徑。",
+          "zh-CN": "镜像内含 Node.js、锁定版本的 Chromium，以及 Noto CJK 与 Liberation 字体，无需自行安装。0.1.1 之后的版本 tag 会把它发布到 Docker Hub 的 gordonkit/slideforge，0.3.0 起也会发布到 GitHub Container Registry 的 ghcr.io/gordonkit/slideforge，image tag 与 npm 版本相同，另有 latest。第一行命令直接运行已发布的镜像，并把当前文件夹挂载到 /work。第二行从仓库源码用 Compose 构建镜像，Compose 会把仓库根目录（或 SLIDEFORGE_WORK 指定的文件夹）挂载到 /work，CLI 参数接在 cli 后面。路径要写容器内 /work 下的路径。",
+          ja: "イメージには Node.js、固定バージョンの Chromium、Noto CJK と Liberation フォントが含まれるため、自分でインストールする必要はありません。0.1.1 より後のリリースタグでは、Docker Hub の gordonkit/slideforge に、0.3.0 からは GitHub Container Registry の ghcr.io/gordonkit/slideforge にも、npm と同じバージョンのタグと latest で公開されます。1 行目は公開済みのイメージを実行し、カレントフォルダーを /work にマウントします。2 行目はリポジトリのソースから Compose でイメージをビルドします。Compose はリポジトリのルート（または SLIDEFORGE_WORK のフォルダー）を /work にマウントし、CLI の引数は cli の後に続けます。パスはコンテナー内の /work 以下で指定します。",
         },
         code: `docker run --rm --read-only --tmpfs /tmp \\
   --shm-size 256m --volume "$PWD:/work" \\
@@ -412,6 +412,7 @@ docker compose -f docker/compose.yaml --profile cli \\
         links: [
           { label: { en: "Container guide", "zh-TW": "容器說明", "zh-CN": "容器说明", ja: "コンテナーのガイド" }, href: `${repositoryUrl}/blob/main/docker/README.md` },
           { label: { en: "Docker Hub", "zh-TW": "Docker Hub", "zh-CN": "Docker Hub", ja: "Docker Hub" }, href: "https://hub.docker.com/r/gordonkit/slideforge" },
+          { label: { en: "GitHub Container Registry", "zh-TW": "GitHub Container Registry", "zh-CN": "GitHub Container Registry", ja: "GitHub Container Registry" }, href: `${repositoryUrl}/pkgs/container/slideforge` },
         ],
       },
     ],
