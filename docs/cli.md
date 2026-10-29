@@ -7,6 +7,7 @@ entry point, `node dist/cli/index.js`, which is the same CLI.
 
 ```text
 node dist/cli/index.js init [presentation.json] [--template <name|./path>]
+node dist/cli/index.js example [basic|variants|templates] [--output <directory>]
 node dist/cli/index.js build presentation.json [--output presentation.html]
 node dist/cli/index.js preview presentation.json [--port 5180]
 node dist/cli/index.js export <presentation.json|slides.html|https://url>   --output presentation.pptx [--selector css]
@@ -47,6 +48,25 @@ the field from the JSON.
 
 ```sh
 node dist/cli/index.js init my-deck.json --template corporate
+```
+
+## `example`
+
+Without a name, lists the bundled examples. With one, copies that example's whole
+folder from `examples/` into `--output` (default: a folder named after the
+example in the current directory), so its relative image and template paths keep
+working. A missing destination is created; an existing destination must be empty,
+so nothing is overwritten. An unknown name is a usage error.
+
+| Name | Content |
+| --- | --- |
+| `basic` | One slide per layout family, with its assets (the deck `init` starts from) |
+| `variants` | One slide per cover variant |
+| `templates` | A deck with its own local template (`brand/`) and its assets |
+
+```sh
+node dist/cli/index.js example templates --output brand-demo
+node dist/cli/index.js preview brand-demo/presentation.json
 ```
 
 ## `build`

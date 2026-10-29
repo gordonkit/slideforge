@@ -66,6 +66,7 @@ JSON の隣の `<JSON のファイル名>-assets/diagram.svg` にコピーし、
 `presentation-assets/diagram.svg` が作成されるので、このディレクトリは JSON と一緒に保ってください。
 サンプルにはレイアウトファミリーごとに 1 枚のスライドと、英語・繁体字中国語のテキスト、画像、
 フッター、ノートが含まれます。全体は [サンプル JSON](examples/basic/presentation.json) を参照してください。
+`example` は他の同梱サンプルを一覧表示し、`example templates --output brand-demo` はそのひとつをテンプレートと素材ごと新しいまたは空のフォルダーにコピーします。
 
 ビルドした HTML は、相対パスの素材を読み込むために JSON のディレクトリを指す `file://` の `<base>` を
 使います。そのため**持ち運び可能な自己完結型のファイルではありません**。別の端末に移す場合や HTTP で
