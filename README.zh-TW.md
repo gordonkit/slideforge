@@ -62,6 +62,7 @@ node dist/cli/index.js validate presentation.pptx
 `<JSON 檔名>-assets/diagram.svg` 並改寫圖片路徑；預設會建立 `presentation-assets/diagram.svg`，
 請讓這個目錄與 JSON 放在一起。範例中每個版型系列各有一張投影片，並含英文／繁體中文
 文字、圖片、頁尾與備忘稿。完整內容請見 [範例 JSON](examples/basic/presentation.json)。
+`example` 會列出其他內建範例；`example templates --output brand-demo` 會把其中一個範例連同範本與素材複製到新的或空的資料夾。
 
 建置出的 HTML 使用指向 JSON 目錄的 `file://` `<base>` 來載入相對路徑的素材，因此**不是可攜、
 自成一體的檔案**：搬到其他電腦或透過 HTTP 發布時，需要調整素材 URL 或 base。預覽則是在本機

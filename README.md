@@ -70,6 +70,8 @@ the default creates `presentation-assets/diagram.svg`. Keep that directory with
 the JSON. The example has one slide per layout family, English/Traditional
 Chinese text, images, footers, and notes.
 See the complete [example JSON](examples/basic/presentation.json).
+`example` lists the other bundled examples; `example templates --output brand-demo`
+copies one, with its template and assets, into a new or empty folder.
 
 Built HTML uses a `file://` `<base>` pointing to the JSON directory for relative
 assets. It is **not a portable, self-contained artifact**: moving it to another

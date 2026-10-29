@@ -60,6 +60,16 @@ describe('built CLI', () => {
     expect(shapes[1]).toBe(shapes[0]);
   }, 180_000);
 
+  it('lists examples and copies one whole without overwriting', async () => {
+    expect((await exec(process.execPath, [cli, 'example'])).stdout).toMatch(/^basic\s.*\nvariants\s.*\ntemplates\s/);
+    const output = join(directory, 'example-templates');
+    await exec(process.execPath, [cli, 'example', 'templates', '--output', output]);
+    expect(await readFile(join(output, 'brand/assets/rule.svg'), 'utf8')).toContain('<svg');
+    await exec(process.execPath, [cli, 'build', join(output, 'presentation.json'), '--output', join(directory, 'example.html')]);
+    await expect(exec(process.execPath, [cli, 'example', 'templates', '--output', output])).rejects.toMatchObject({ code: 1 });
+    await expect(exec(process.execPath, [cli, 'example', '../src'])).rejects.toMatchObject({ code: 2 });
+  }, 60_000);
+
   it('documents the default preview port in help', async () => {
     expect((await exec(process.execPath, [cli, '--help'])).stdout).toContain('slideforge preview presentation.json [--port 5180]');
   });

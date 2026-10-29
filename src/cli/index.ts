@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 import { constants } from 'node:fs';
-import { copyFile, mkdir, readFile, unlink, writeFile } from 'node:fs/promises';
-import { basename, dirname, resolve } from 'node:path';
+import { copyFile, cp, mkdir, readdir, readFile, unlink, writeFile } from 'node:fs/promises';
+import { basename, dirname, join, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { parseArgs } from 'node:util';
 import { renderPresentation } from '../renderers/html.js';
 import { describePresentationError } from '../schemas/input.js';
@@ -14,6 +15,7 @@ const help = `SlideForge — editable presentations from structured content
 
 Usage:
   slideforge init [presentation.json] [--template <name|./path>]
+  slideforge example [name] [--output <directory>]
   slideforge build presentation.json [--output presentation.html]
   slideforge preview presentation.json [--port ${DEFAULT_PREVIEW_PORT}]
   slideforge export <presentation.json|slides.html|https://url> --output presentation.pptx
@@ -24,6 +26,12 @@ Use only trusted HTML/URLs: export runs their scripts in a local browser.
 Exit codes: 0 success, 1 operation/validation failure, 2 invalid CLI usage.`;
 
 class UsageError extends Error {}
+
+const examples: Record<string, string> = {
+  basic: 'One slide per layout family, with its assets',
+  variants: 'One slide per cover variant',
+  templates: 'A deck with its own local template (brand/) and its assets',
+};
 
 async function main(): Promise<void> {
   let parsed: ReturnType<typeof parseArgs>;
@@ -48,7 +56,7 @@ async function main(): Promise<void> {
   }
   const [command, input] = positionals;
   if (positionals.length > 2) throw new UsageError('Too many positional arguments');
-  if (!['init', 'build', 'preview', 'export', 'validate'].includes(command!)) {
+  if (!['init', 'example', 'build', 'preview', 'export', 'validate'].includes(command!)) {
     throw new UsageError(`Unknown command: ${command}`);
   }
   if (values.template !== undefined && command !== 'init') {
@@ -87,6 +95,29 @@ async function main(): Promise<void> {
       throw error;
     }
     console.log(`Created ${destination}`);
+    return;
+  }
+  if (command === 'example') {
+    if (!input) {
+      for (const [name, description] of Object.entries(examples)) console.log(`${name.padEnd(10)} ${description}`);
+      return;
+    }
+    if (!Object.hasOwn(examples, input)) {
+      throw new UsageError(`Unknown example: ${input}; available: ${Object.keys(examples).join(', ')}`);
+    }
+    const destination = resolve(String(values.output ?? input));
+    try {
+      if ((await readdir(destination)).length > 0) {
+        throw new Error(`${destination} is not empty; example never overwrites files`);
+      }
+    } catch (error) {
+      if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error;
+    }
+    // The example's relative asset and template paths keep working because its folder is copied whole.
+    await cp(fileURLToPath(new URL(`../../examples/${input}`, import.meta.url)), destination, {
+      recursive: true, force: false, errorOnExist: true,
+    });
+    console.log(`Created ${join(destination, 'presentation.json')}`);
     return;
   }
   if (!input) throw new UsageError(`${command} requires an input file or URL`);

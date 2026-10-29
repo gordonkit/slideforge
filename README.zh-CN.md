@@ -62,6 +62,7 @@ node dist/cli/index.js validate presentation.pptx
 `<JSON 文件名>-assets/diagram.svg` 并改写图片路径；默认会创建 `presentation-assets/diagram.svg`，
 请让这个目录与 JSON 放在一起。示例中每个版式系列各有一张幻灯片，并含英文／繁体中文
 文字、图片、页脚与备注。完整内容请见 [示例 JSON](examples/basic/presentation.json)。
+`example` 会列出其他内置示例；`example templates --output brand-demo` 会把其中一个示例连同模板与素材复制到新的或空的文件夹。
 
 构建出的 HTML 使用指向 JSON 目录的 `file://` `<base>` 来加载相对路径的素材，因此**不是可移植、
 自包含的文件**：搬到其他电脑或通过 HTTP 发布时，需要调整素材 URL 或 base。预览则是在本机
