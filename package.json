@@ -1,6 +1,6 @@
 {
   "name": "slideforge",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "An AI-ready framework for creating consistent, editable PowerPoint presentations from HTML and CSS.",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
