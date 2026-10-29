@@ -26,10 +26,17 @@ add CSS, HTML, scripts, layout families, or variants.
   "name": "corporate",
   "palette": {
     "light": { "accent": "#f5a524", "onAccent": "#0b1f3a" },
-    "dark": { "background": "#0b1f3a", "accent": "#f5a524", "onAccent": "#0b1f3a" }
+    "dark": {
+      "background": "#0b1f3a",
+      "accent": "#f5a524",
+      "onAccent": "#0b1f3a"
+    }
   },
   "fontFamily": "Noto Sans TC, Arial, sans-serif",
-  "tokens": { "type": { "title": 64 }, "border": { "radius": 0 } },
+  "tokens": {
+    "type": { "title": 64 },
+    "border": { "radius": 0 }
+  },
   "backgrounds": { "cover/band": "assets/band.png" },
   "variants": { "cover": "band" }
 }
@@ -77,7 +84,11 @@ after export as usual.
 in the palette's `outline` color, for titles over a busy background:
 
 ```json
-{ "name": "poster", "palette": { "light": { "outline": "#ffffff" } }, "tokens": { "border": { "title-outline": 2 } } }
+{
+  "name": "poster",
+  "palette": { "light": { "outline": "#ffffff" } },
+  "tokens": { "border": { "title-outline": 2 } }
+}
 ```
 
 The stroke is centered on the glyph edges and drawn over the fill, in HTML and
@@ -111,7 +122,11 @@ For example, a template with `backgrounds.cover` and a presentation with only
 Name it in the presentation's `template` field:
 
 ```json
-{ "metadata": { "title": "Quarterly review" }, "template": "corporate", "slides": [ … ] }
+{
+  "metadata": { "title": "Quarterly review" },
+  "template": "corporate",
+  "slides": [ … ]
+}
 ```
 
 The value is one of:
@@ -158,9 +173,16 @@ directory }`. `fileRenderOptions(file, loaded)` turns that into
 `renderPresentation` options with the file's and template's folders as base URLs:
 
 ```js
-import { fileRenderOptions, loadPresentation, renderPresentation } from './dist/index.js';
-const loaded = await loadPresentation('deck/presentation.json');
-const html = renderPresentation(loaded.content, fileRenderOptions('deck/presentation.json', loaded));
+import {
+  fileRenderOptions,
+  loadPresentation,
+  renderPresentation,
+} from './dist/index.js';
+
+const file = 'deck/presentation.json';
+const loaded = await loadPresentation(file);
+const options = fileRenderOptions(file, loaded);
+const html = renderPresentation(loaded.content, options);
 ```
 
 `renderPresentation(input, { template, templateBaseUrl })` takes a template object

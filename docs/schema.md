@@ -67,7 +67,7 @@ variant, so `"<family>"` and `"<family>/default"` render the same.
 | --- | --- |
 | `cover` | `default` (left-aligned), `centered` (centered title, subtitle, and author), `split` (accent panel on the right third; text and footer stay left of it), `band` (full-bleed accent block behind the title and subtitle, which use the on-accent color) |
 | `quote` | `default` (left-aligned beside an accent bar), `centered` (centered, without the bar) |
-| `content`, `two-columns`, `cards`, `table`, `chart` | `default` |
+| `content`, `two-columns`, `cards`, `timeline`, `gantt`, `table`, `chart`, `blank` | `default` |
 
 [`examples/variants/presentation.json`](../examples/variants/presentation.json)
 shows each cover variant. The `split` panel and `band` block are decorative
@@ -85,9 +85,12 @@ is reported with that family's valid names, such as
 | `"content"` | Required `blocks`: 1–12 content blocks |
 | `"two-columns"` | Required `left` and `right`: each 1–12 content blocks |
 | `"cards"` | Required `cards`: 1–6 objects, each with trimmed nonempty `title` (max 200) and `blocks` (1–12) |
+| `"timeline"` | Required `events`: 2–6 objects, each with trimmed nonempty `date` (max 100) and `title` (max 200), and optional `text` string, max 10,000 |
+| `"gantt"` | Required `periods` (2–12 trimmed nonempty strings, max 40 each) and `tasks` (1–8 objects, each with trimmed nonempty `label` (max 100), integer `start` and `end`, and optional `progress` from 0 to 100) |
 | `"table"` | Required `columns` (1–8 trimmed nonempty strings, max 200 each) and `rows` (1–14 arrays of 1–8 string cells, max 2,000 each) |
 | `"chart"` | Required `data` (1–10 `{ "label", "value" }` objects); optional `unit` string, max 40; optional `blocks` (0–4 content blocks, default `[]`) |
 | `"quote"` | Required `quote`: trimmed nonempty string, max 1,000; optional `attribution` string, max 10,000 |
+| `"blank"` | None; `subtitle` and `footer` are rejected |
 
 Every table row must contain exactly one cell per column. Empty table cell
 strings are allowed. Chart labels are trimmed, nonempty, max 100 characters;
@@ -98,6 +101,25 @@ When chart `blocks` are present, they form a right-hand explanation column
 beside the bars (2:1 chart/explanation proportions); an empty array keeps a
 full-width chart. A quote is plain text drawn larger than body text, vertically
 centered in the content region; keep it to a few lines, since longer quotes clip.
+
+Cards are arranged by their count: one spans the width, two sit side by side, three
+and six use three columns, four form a 2 × 2 grid, and five are three over two.
+Timeline events are drawn left to right in equal columns on one rail, in array order;
+`date` is any short marker such as `2026`, `Q3`, or `Step 1`. Keep `text` to a line or
+two, especially with five or six events.
+
+A gantt slide is a project schedule: `periods` label equal columns (months, weeks,
+sprints), and each task's bar spans the periods from `start` to `end`, both
+one-based and inclusive, so `end` must not exceed the number of periods and `start`
+must not be after `end`. With `progress`, the bar's first part (that percentage of
+its length) is drawn in the accent color, the rest in the border color, and the
+percentage is shown beside the label; without it the bar is solid accent.
+
+A blank slide draws only its background: no title, content, footer, or slide number.
+Its required `title` names the slide (its accessible label) but is not drawn, and
+`notes` still become speaker notes. Without a background it is an
+empty slide in the theme's color. See [Backgrounds](#backgrounds) and the
+[Math Background Studio guide](backgrounds.md).
 
 ## Content blocks
 
@@ -161,7 +183,7 @@ name, and every `family/variant` name. Each value, and a slide's `background`, i
 - An image source with the same rules as the `image` block's `src`. It is drawn
   with `object-fit: cover`, so an image that is not 16:9 is cropped, not stretched.
 - A [Math Background Studio](https://bg.gordonkit.com/studio) share link, copied
-  from the studio's Share button: `https://bg.gordonkit.com/studio#d=…`. The
+  from the studio's Share button (see the [step-by-step guide](backgrounds.md)): `https://bg.gordonkit.com/studio#d=…`. The
   design is drawn by the studio's `/render` page for the slide's 1920 × 1080
   size. Links from `http://localhost`, `127.0.0.1`, or `[::1]` on any port are
   also accepted for a local studio development server. A `/studio` or `/render`
@@ -178,8 +200,19 @@ name, and every `family/variant` name. Each value, and a slide's `background`, i
   },
   "slides": [
     { "layout": "cover", "title": "Cover uses backgrounds.cover" },
-    { "layout": "content", "title": "Its own", "background": "assets/photo.jpg", "blocks": [{ "type": "paragraph", "text": "…" }] },
-    { "layout": "table", "title": "None", "background": "none", "columns": ["A"], "rows": [["1"]] }
+    {
+      "layout": "content",
+      "title": "Its own",
+      "background": "assets/photo.jpg",
+      "blocks": [{ "type": "paragraph", "text": "…" }]
+    },
+    {
+      "layout": "table",
+      "title": "None",
+      "background": "none",
+      "columns": ["A"],
+      "rows": [["1"]]
+    }
   ]
 }
 ```

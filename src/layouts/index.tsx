@@ -2,13 +2,16 @@ import { readFileSync } from "node:fs";
 import type { ReactNode } from "react";
 import type { Slide } from "../schemas/presentation.js";
 import { Slide as SlideComponent } from "../components/slide.js";
+import { BlankLayout } from "./blank/render.js";
 import { CardsLayout } from "./cards/render.js";
 import { ChartLayout } from "./chart/render.js";
 import { ContentLayout } from "./content/render.js";
 import { CoverLayout } from "./cover/render.js";
+import { GanttLayout } from "./gantt/render.js";
 import { QuoteLayout } from "./quote/render.js";
 import { layoutFamilies, layoutFamily, slideVariant, type LayoutFamily } from "./registry.js";
 import { TableLayout } from "./table/render.js";
+import { TimelineLayout } from "./timeline/render.js";
 import { TwoColumnsLayout } from "./two-columns/render.js";
 import type { LayoutProps } from "./types.js";
 
@@ -18,9 +21,12 @@ const renderers: { [F in LayoutFamily]: (props: LayoutProps<F>) => ReactNode } =
   content: ContentLayout,
   "two-columns": TwoColumnsLayout,
   cards: CardsLayout,
+  timeline: TimelineLayout,
+  gantt: GanttLayout,
   table: TableLayout,
   chart: ChartLayout,
   quote: QuoteLayout,
+  blank: BlankLayout,
 };
 
 /** Each family's `<family>.css`, in registry order, appended after the shared stylesheet. */

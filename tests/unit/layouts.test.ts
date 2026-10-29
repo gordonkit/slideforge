@@ -7,7 +7,7 @@ import { parsePresentation, presentationSchema, slideBackground } from "../../sr
 
 describe("layout registry", () => {
   it("lists the families in documentation order", () => {
-    expect(layoutFamilies).toEqual(["cover", "content", "two-columns", "cards", "table", "chart", "quote"]);
+    expect(layoutFamilies).toEqual(["cover", "content", "two-columns", "cards", "timeline", "gantt", "table", "chart", "quote", "blank"]);
   });
 
   it("gives every family a default variant, a schema keyed by its name, a renderer, and a stylesheet", () => {
@@ -67,8 +67,9 @@ describe("family/variant layout names", () => {
     expect(issues({ layout: "cover/fancy" })).toEqual([cover]);
     expect(issues({ layout: "cover/" })).toEqual([cover]);
     expect(issues({ layout: "table/fancy", columns: ["A"], rows: [["1"]] })).toEqual(['Unknown table variant. Use "table" or "table/default"']);
-    expect(issues({ layout: "timeline" })).toEqual(['Unknown layout. Use "cover", "content", "two-columns", "cards", "table", "chart", or "quote"']);
-    expect(issues({})).toEqual(['Unknown layout. Use "cover", "content", "two-columns", "cards", "table", "chart", or "quote"']);
+    const families = 'Unknown layout. Use "cover", "content", "two-columns", "cards", "timeline", "gantt", "table", "chart", "quote", or "blank"';
+    expect(issues({ layout: "gallery" })).toEqual([families]);
+    expect(issues({})).toEqual([families]);
   });
 
   it("draws cover variants with the same content and only split's decorative panel", () => {
@@ -93,6 +94,55 @@ describe("family/variant layout names", () => {
     expect(issues({ layout: "quote", quote: "x".repeat(1001) })?.[0]).toMatch(/^slides\.0\.quote: /);
     expect(issues({ layout: "quote", quote: "x", blocks: [] })).toEqual(['slides.0: Unrecognized key: "blocks"']);
     expect(issues({ layout: "quote/split", quote: "x" })).toEqual(['slides.0.layout: Unknown quote variant. Use "quote", "quote/default", or "quote/centered"']);
+  });
+
+  it("arranges cards by their count", () => {
+    for (const count of [1, 2, 3, 4, 5, 6]) {
+      const cards = Array.from({ length: count }, (_, index) => ({ title: `Card ${index + 1}`, blocks: [{ type: "paragraph", text: "x" }] }));
+      expect(renderPresentation(deck({ layout: "cards", cards }))).toContain(`<div class="sf-cards" data-count="${count}">`);
+    }
+    expect(layoutStylesheet).toContain('.sf-cards[data-count="5"] .sf-card:nth-child(n + 4) { grid-column: span 3; }');
+  });
+
+  it("validates and draws timeline slides", () => {
+    const events = [{ date: "2025", title: "Start", text: "Kickoff" }, { date: "2026", title: "Launch" }];
+    const html = renderPresentation(deck({ layout: "timeline", events }));
+    expect(html).toContain('class="sf-slide sf-layout-timeline sf-variant-default"');
+    expect(html).toContain('<li class="sf-timeline-event"><p class="sf-timeline-date">2025</p><div class="sf-timeline-track" aria-hidden="true" data-pptx-allow-overlap="true"><span class="sf-timeline-rail"></span><span class="sf-timeline-marker"></span></div><h2>Start</h2><p class="sf-timeline-text">Kickoff</p></li>');
+    expect(html).toContain("<h2>Launch</h2></li>");
+    const issues = (input: object) => presentationSchema.safeParse(deck(input)).error?.issues.map((issue) => issue.path.join("."));
+    expect(issues({ layout: "timeline", events: events.slice(0, 1) })).toEqual(["slides.0.events"]);
+    expect(issues({ layout: "timeline", events: Array.from({ length: 7 }, () => events[1]) })).toEqual(["slides.0.events"]);
+    expect(issues({ layout: "timeline", events: [{ date: " ", title: "x" }, events[1]] })).toEqual(["slides.0.events.0.date"]);
+    expect(issues({ layout: "timeline", events: [{ ...events[0], blocks: [] }, events[1]] })).toEqual(["slides.0.events.0"]);
+  });
+
+  it("validates and draws gantt slides", () => {
+    const periods = ["Jan", "Feb", "Mar"];
+    const tasks = [{ label: "Design", start: 1, end: 2, progress: 60 }, { label: "Launch", start: 3, end: 3 }];
+    const html = renderPresentation(deck({ layout: "gantt", periods, tasks }));
+    expect(html).toContain('<div class="sf-gantt" style="--sf-gantt-periods:3">');
+    expect(html).toContain('<div class="sf-gantt-periods"><span>Jan</span><span>Feb</span><span>Mar</span></div>');
+    expect(html).toContain('<p class="sf-gantt-label">Design<span class="sf-gantt-percent">60%</span></p><div class="sf-gantt-track" role="img" aria-label="Design: Jan–Feb, 60%" data-pptx-allow-overlap="true"><span class="sf-gantt-bar" style="grid-column:1 / 3"><span class="sf-gantt-progress" style="width:60%"></span></span></div>');
+    expect(html).toContain('aria-label="Launch: Mar" data-pptx-allow-overlap="true"><span class="sf-gantt-bar" style="grid-column:3 / 4"></span>');
+    const issues = (input: object) => presentationSchema.safeParse(deck({ layout: "gantt", periods, tasks, ...input })).error?.issues.map((issue) => `${issue.path.join(".")}: ${issue.message}`);
+    expect(issues({ tasks: [{ label: "x", start: 2, end: 4 }] })).toEqual(["slides.0.tasks.0.end: end must not exceed the number of periods (3)"]);
+    expect(issues({ tasks: [{ label: "x", start: 3, end: 2 }] })).toEqual(["slides.0.tasks.0.start: start must not be after end"]);
+    expect(issues({ tasks: [{ label: "x", start: 1.5, end: 2 }] })?.[0]).toMatch(/^slides\.0\.tasks\.0\.start: /);
+    expect(issues({ tasks: [{ label: "x", start: 1, end: 2, progress: 101 }] })?.[0]).toMatch(/^slides\.0\.tasks\.0\.progress: /);
+    expect(issues({ periods: ["Only"] })?.[0]).toMatch(/^slides\.0\.periods: /);
+    expect(issues({ tasks: [] })?.[0]).toMatch(/^slides\.0\.tasks: /);
+  });
+
+  it("draws only the background of a blank slide and rejects the fields it does not draw", () => {
+    const html = renderPresentation(deck({ layout: "blank", background: "bg.png", notes: "Pause here" }));
+    expect(html).toContain('<section class="sf-slide sf-layout-blank sf-variant-default" data-pptx="slide" data-layout="blank" data-variant="default" aria-label="1. x"><div class="sf-background" data-pptx-background="" aria-hidden="true"><img src="bg.png" alt=""/></div><aside data-pptx-notes="" hidden="">Pause here</aside></section>');
+    const issues = (input: object) => presentationSchema.safeParse(deck(input)).error?.issues.map((issue) => `${issue.path.join(".")}: ${issue.message}`);
+    expect(issues({ layout: "blank", subtitle: "s", footer: "f" })).toEqual([
+      "slides.0.subtitle: A blank slide draws only its background; remove subtitle",
+      "slides.0.footer: A blank slide draws only its background; remove footer",
+    ]);
+    expect(issues({ layout: "blank", blocks: [] })).toEqual(['slides.0: Unrecognized key: "blocks"']);
   });
 
   it("resolves backgrounds from the slide, then family/variant, then family, then default", () => {

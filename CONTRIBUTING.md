@@ -57,7 +57,10 @@ The build writes `site/dist/`, including a static page per locale, `sitemap.xml`
    limitations. Do not claim PowerPoint manual review without doing it.
 
 Do not commit generated decks, screenshots, browser profiles, credentials, or
-unnecessary build output. Only export trusted HTML/URLs during development;
+unnecessary build output. The exception is the documentation screenshots in
+`site/public/screenshots/`, which the site and `docs/` show; regenerate them with
+`npm run build && npm run docs:screenshots` (it needs network access to
+`bg.gordonkit.com`) when a layout's look changes, and review them before committing. Only export trusted HTML/URLs during development;
 page scripts run with the capabilities of the export environment. Reproduction
 cases should use local, nonsensitive content.
 
@@ -88,7 +91,9 @@ The schema, the unknown-layout and unknown-variant errors, `backgrounds` keys, t
   slides to check layout issues, the PPTX report, and a rendering;
 - document it in `docs/schema.md` (fields and variants), `docs/components.md`,
   `docs/design-tokens.md` for new tokens, `CHANGELOG.md`, and both layout tables in all
-  four locales of `site/src/content.ts`.
+  four locales of `site/src/content.ts`;
+- add a slide for it to `scripts/docs-screenshots.mjs`, regenerate the screenshots, and
+  show it in the layout gallery of `docs/components.md` and the site.
 
 Describe the set of families without a count ("each layout family") so that a new
 family does not mean editing every place that states how many there are.

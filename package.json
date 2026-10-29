@@ -30,7 +30,8 @@
     "test:integration": "vitest run tests/integration",
     "test:package": "node scripts/check-package.mjs",
     "check:release": "node scripts/check-release.mjs",
-    "prepack": "npm run build"
+    "prepack": "npm run build",
+    "docs:screenshots": "node scripts/docs-screenshots.mjs"
   },
   "repository": {
     "type": "git",

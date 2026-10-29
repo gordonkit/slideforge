@@ -42,6 +42,27 @@
       ]
     },
     {
+      "layout": "timeline",
+      "title": "From idea to deck / 從想法到簡報",
+      "events": [
+        { "date": "Step 1", "title": "Outline", "text": "One idea per slide." },
+        { "date": "Step 2", "title": "撰寫 JSON", "text": "選擇合適的版型。" },
+        { "date": "Step 3", "title": "Preview", "text": "Review the layout checks." },
+        { "date": "Step 4", "title": "Export", "text": "Editable PowerPoint." }
+      ]
+    },
+    {
+      "layout": "gantt",
+      "title": "Project schedule / 專案進度",
+      "periods": ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
+      "tasks": [
+        { "label": "Research", "start": 1, "end": 2, "progress": 100 },
+        { "label": "設計", "start": 2, "end": 3, "progress": 60 },
+        { "label": "Build", "start": 3, "end": 5, "progress": 20 },
+        { "label": "Launch", "start": 6, "end": 6 }
+      ]
+    },
+    {
       "layout": "table",
       "title": "Delivery plan / 交付計畫",
       "columns": ["Milestone", "內容", "Status"],
@@ -64,6 +85,11 @@
       "quote": "Keep content and design apart, and both stay easy to change. 內容與設計分開，兩者都容易修改。",
       "attribution": "SlideForge design principle",
       "footer": "Phase 1"
+    },
+    {
+      "layout": "blank",
+      "title": "Background only / 只有背景",
+      "notes": "A blank slide draws only its background. Set background to an image or a Math Background Studio share link."
     }
   ]
 }

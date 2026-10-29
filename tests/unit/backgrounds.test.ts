@@ -41,7 +41,7 @@ describe('background schema', () => {
   });
 
   it('rejects unknown background keys', () => {
-    expect(presentationSchema.safeParse(deck({ backgrounds: { timeline: 'a.png' } })).success).toBe(false);
+    expect(presentationSchema.safeParse(deck({ backgrounds: { gallery: 'a.png' } })).success).toBe(false);
   });
 
   it('maps a share link to the render page and leaves other sources alone', () => {

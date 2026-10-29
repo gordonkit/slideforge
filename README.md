@@ -67,8 +67,8 @@ node dist/cli/index.js validate presentation.pptx
 file. It copies the example diagram into
 `<JSON-basename>-assets/diagram.svg` beside the JSON and rewrites its image source;
 the default creates `presentation-assets/diagram.svg`. Keep that directory with
-the JSON. The example includes cover, content, two-column, cards, table,
-and chart slides, English/Traditional Chinese text, images, footers, and notes.
+the JSON. The example has one slide per layout family, English/Traditional
+Chinese text, images, footers, and notes.
 See the complete [example JSON](examples/basic/presentation.json).
 
 Built HTML uses a `file://` `<base>` pointing to the JSON directory for relative
@@ -121,7 +121,8 @@ in this repository are:
 - [JSON schema reference](docs/schema.md)
 - [Templates](docs/templates.md)
 - [Design tokens](docs/design-tokens.md)
-- [Components and layouts](docs/components.md)
+- [Components and layouts](docs/components.md), with a screenshot of each layout
+- [Backgrounds with Math Background Studio](docs/backgrounds.md)
 - [Architecture, APIs, and upstream references](docs/architecture.md)
 - [Validation and optional visual comparison](docs/validation.md)
 - [Limitations and trust model](docs/limitations.md)

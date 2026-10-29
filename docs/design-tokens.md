@@ -63,7 +63,9 @@ installer, and system fonts are not guaranteed embedded into PPTX.
 | Content block gap | 27px |
 | Bullet indent / item gap | 48px / 15px |
 | Two-column gap | 60px, equal-width columns |
-| Cards | Three columns; 30px gap; 36px padding; 18px corner radius; 2px border |
+| Cards | Columns by count (below); 30px gap; 36px padding; 18px corner radius; 2px border |
+| Timeline | Date 33px bold in the accent color; 36px marker on a 6px rail; title / text 39px / 30px; 24px row gap; 15px side padding per event |
+| Gantt | 420px label column, 30px gap; 84px task rows; 39px track and bar; 31.5px labels, 25.5px period labels |
 | Card title / body | 39px / 30px |
 | Table | 31.5px; cells 15px vertical, 24px horizontal padding |
 | Chart row | 285px label, flexible track, 210px value; 30px gaps |
@@ -75,8 +77,12 @@ installer, and system fonts are not guaranteed embedded into PPTX.
 | Cover title / subtitle / author | 90px / 45px / 39px |
 | Quote / attribution | 54px, 1.35 line height / 39px; 6px accent bar, 48px text indent |
 
-Cards fill row-wise in a three-column grid; one or two cards do not expand to
-full-width columns. Cover header height is 525px with 198px top padding; its
+Cards are arranged by their count: one card spans the content width, two use two
+columns, three and six use three, four form a 2 × 2 grid, and five sit on a
+six-column grid as three cards over two wider ones. Timeline events share one row of
+equal columns, vertically centered in the content region; the rail runs from the
+first marker to the last. Gantt task rows keep their 84px height, so a short schedule
+leaves space below instead of spreading out; eight rows fill the content region. Cover header height is 525px with 198px top padding; its
 content region is 375px high. `cover/split` adds a 640px accent panel
 (`cover-panel`) at the right edge and moves the slide's right padding and the
 footer's right edge to 736px (panel plus horizontal padding), leaving 1088px for
@@ -95,10 +101,10 @@ strings unchanged. For example, `spacingTokens.column` becomes
 
 | Export / group | Keys and values |
 | --- | --- |
-| `layoutTokens` / `layout` | `padding-x: 96`, `padding-top: 72`, `padding-bottom: 84`, `header: 186`, `content: 738`, `footer-bottom: 33`, `footer: 36`, `cover-header: 525`, `cover-top: 198`, `cover-content: 375`, `cover-panel: 640`, `image-max-height: 630` |
+| `layoutTokens` / `layout` | `padding-x: 96`, `padding-top: 72`, `padding-bottom: 84`, `header: 186`, `content: 738`, `footer-bottom: 33`, `footer: 36`, `cover-header: 525`, `cover-top: 198`, `cover-content: 375`, `cover-panel: 640`, `image-max-height: 630`, `timeline-marker: 36`, `gantt-label: 420`, `gantt-row: 84` |
 | `spacingTokens` / `spacing` | `page: 36`, `block: 27`, `column: 60`, `card: 30`, `card-padding: 36`, `subtitle: 18`, `cover-subtitle: 36`, `card-title: 24`, `list: 48`, `item: 15`, `caption: 12`, `table-x: 24`, `table-y: 15`, `chart: 30`, `chart-explanation: 24` |
 | `typographyTokens` / `type` | `title: 60`, `subtitle: 33`, `body: 36`, `caption: 25.5`, `card-title: 39`, `card-body: 30`, `table: 31.5`, `chart: 31.5`, `footer: 24`, `cover-title: 90`, `cover-subtitle: 45`, `author: 39`, `quote: 54`, `title-leading: "1.2"`, `subtitle-leading: "1.35"`, `body-leading: "1.45"`, `bold: "700"` |
-| `borderTokens` / `border` | `width: 2`, `radius: 18`, `accent: 6` (the quote's accent bar), `title-outline: 0` (slide and cover title `-webkit-text-stroke` width in the `outline` color) |
+| `borderTokens` / `border` | `width: 2`, `radius: 18`, `accent: 6` (the quote's accent bar and the timeline rail), `title-outline: 0` (slide and cover title `-webkit-text-stroke` width in the `outline` color) |
 | `chartTokens` / `chart` | `height: 39`, `label: 285`, `value: 210`, `explanation-label: 210`, `explanation-value: 150` |
 
 For custom HTML you may reuse these maps and CSS conventions, but arbitrary

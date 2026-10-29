@@ -42,11 +42,13 @@ export function Slide({ slide, variant = slideVariant(slide), number, total, bac
   slide: PresentationSlide; variant?: string; number: number; total: number; background?: string | undefined; children: ReactNode;
 }) {
   const family = layoutFamily(slide.layout);
+  // A blank slide shows only its background; its title labels the slide but is not drawn.
+  const drawn = family !== "blank";
   return <section className={`sf-slide sf-layout-${family} sf-variant-${variant}`} data-pptx="slide" data-layout={family} data-variant={variant} aria-label={`${number}. ${slide.title}`}>
     {background !== undefined && <SlideBackground source={background} />}
-    <SlideTitle title={slide.title} {...(slide.subtitle === undefined ? {} : { subtitle: slide.subtitle })} />
-    <SlideContent>{children}</SlideContent>
-    <SlideFooter text={slide.footer} number={number} total={total} />
+    {drawn && <SlideTitle title={slide.title} {...(slide.subtitle === undefined ? {} : { subtitle: slide.subtitle })} />}
+    {drawn && <SlideContent>{children}</SlideContent>}
+    {drawn && <SlideFooter text={slide.footer} number={number} total={total} />}
     {slide.notes !== undefined && <aside data-pptx-notes="" hidden>{slide.notes}</aside>}
   </section>;
 }

@@ -24,7 +24,7 @@ export const layoutTokens = Object.freeze({
   "padding-x": 96, "padding-top": 72, "padding-bottom": 84,
   header: 186, content: 738, "footer-bottom": 33, footer: 36,
   "cover-header": 525, "cover-top": 198, "cover-content": 375, "cover-panel": 640,
-  "image-max-height": 630,
+  "image-max-height": 630, "timeline-marker": 36, "gantt-label": 420, "gantt-row": 84,
 });
 
 export const spacingTokens = Object.freeze({

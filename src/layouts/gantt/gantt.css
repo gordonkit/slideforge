@@ -1,0 +1,15 @@
+/* A label column, then one equal column per period; every row shares the same grid. */
+.sf-gantt { height: 100%; display: flex; flex-direction: column; overflow: hidden; font-size: var(--sf-type-chart); }
+/* Each task row has the same height, so a short schedule keeps its spacing instead of spreading out. */
+.sf-gantt-row:not(.sf-gantt-header) { flex: 0 1 var(--sf-layout-gantt-row); }
+.sf-gantt-row { display: grid; grid-template-columns: var(--sf-layout-gantt-label) minmax(0, 1fr); column-gap: var(--sf-spacing-chart); align-items: center; min-height: 0; }
+.sf-gantt-periods, .sf-gantt-track { display: grid; grid-template-columns: repeat(var(--sf-gantt-periods), minmax(0, 1fr)); }
+.sf-gantt-header { padding-bottom: var(--sf-spacing-caption); border-bottom: var(--sf-border-width) solid var(--sf-border); }
+.sf-gantt-periods span { min-width: 0; overflow: hidden; text-align: center; color: var(--sf-muted); font-size: var(--sf-type-caption); white-space: nowrap; }
+.sf-gantt-label { margin: 0; display: flex; justify-content: space-between; gap: var(--sf-spacing-item); min-width: 0; line-height: var(--sf-type-title-leading); }
+.sf-gantt-percent { flex: none; color: var(--sf-muted); }
+.sf-gantt-track { height: var(--sf-chart-height); background: var(--sf-surface); border-radius: var(--sf-border-radius); overflow: hidden; }
+/* Without progress the bar is solid; with it, the done part is the accent over the border color. */
+.sf-gantt-bar { position: relative; height: 100%; background: var(--sf-accent); border-radius: var(--sf-border-radius); overflow: hidden; }
+.sf-gantt-bar:has(.sf-gantt-progress) { background: var(--sf-border); }
+.sf-gantt-progress { position: absolute; top: 0; bottom: 0; left: 0; background: var(--sf-accent); }
