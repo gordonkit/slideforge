@@ -63,6 +63,12 @@ node dist/cli/index.js export presentation.json --output presentation.pptx
 node dist/cli/index.js validate presentation.pptx
 ```
 
+To present, run `node dist/cli/index.js present presentation.json` and open
+<http://127.0.0.1:5181/>: one slide at a time, arrow keys or PageUp/PageDown to
+move, F for fullscreen, and N for speaker notes. `build --present` writes the
+same presentation mode into an HTML file; see the
+[CLI reference](docs/cli.md#presentation-mode).
+
 `init [file]` defaults to `presentation.json`, refuses to overwrite an existing
 file. It copies the example diagram into
 `<JSON-basename>-assets/diagram.svg` beside the JSON and rewrites its image source;

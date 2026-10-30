@@ -6,7 +6,7 @@ import { fileURLToPath } from 'node:url';
 import { parseArgs } from 'node:util';
 import { renderPresentation } from '../renderers/html.js';
 import { describePresentationError } from '../schemas/input.js';
-import { DEFAULT_PREVIEW_PORT, previewPresentation } from '../renderers/preview.js';
+import { DEFAULT_PRESENT_PORT, DEFAULT_PREVIEW_PORT, presentPresentation, previewPresentation } from '../renderers/preview.js';
 import { exportPresentation } from '../exporters/pptx.js';
 import { fileRenderOptions, loadPresentation, loadTemplate } from '../templates/load.js';
 import { validatePptx } from '../validators/pptx.js';
@@ -16,11 +16,13 @@ const help = `SlideForge — editable presentations from structured content
 Usage:
   slideforge init [presentation.json] [--template <name|./path>]
   slideforge example [name] [--output <directory>]
-  slideforge build presentation.json [--output presentation.html]
+  slideforge build presentation.json [--output presentation.html] [--present]
   slideforge preview presentation.json [--port ${DEFAULT_PREVIEW_PORT}]
+  slideforge present presentation.json [--port ${DEFAULT_PRESENT_PORT}]
   slideforge export <presentation.json|slides.html|https://url> --output presentation.pptx
   slideforge validate presentation.pptx
 
+Build options: --present adds presentation mode (arrow keys/PageUp/PageDown, F fullscreen, N notes)
 Export options: --selector <css> (default: [data-pptx="slide"], .slide)
 Use only trusted HTML/URLs: export runs their scripts in a local browser.
 Exit codes: 0 success, 1 operation/validation failure, 2 invalid CLI usage.`;
@@ -43,6 +45,7 @@ async function main(): Promise<void> {
         selector: { type: 'string' },
         port: { type: 'string' },
         template: { type: 'string' },
+        present: { type: 'boolean' },
         help: { type: 'boolean', short: 'h' },
       },
     });
@@ -56,11 +59,14 @@ async function main(): Promise<void> {
   }
   const [command, input] = positionals;
   if (positionals.length > 2) throw new UsageError('Too many positional arguments');
-  if (!['init', 'example', 'build', 'preview', 'export', 'validate'].includes(command!)) {
+  if (!['init', 'example', 'build', 'preview', 'present', 'export', 'validate'].includes(command!)) {
     throw new UsageError(`Unknown command: ${command}`);
   }
   if (values.template !== undefined && command !== 'init') {
     throw new UsageError('--template applies only to init; set "template" in the JSON instead');
+  }
+  if (values.present && command !== 'build') {
+    throw new UsageError('--present applies only to build; use the present command to serve a deck');
   }
   if (command === 'init') {
     const example = await readFile(new URL('../../examples/basic/presentation.json', import.meta.url), 'utf8');
@@ -125,21 +131,23 @@ async function main(): Promise<void> {
     case 'build': {
       const file = resolve(input);
       const loaded = await loadPresentation(file);
-      const html = renderPresentation(loaded.content, fileRenderOptions(file, loaded));
+      const html = renderPresentation(loaded.content, { ...fileRenderOptions(file, loaded), present: values.present === true });
       const output = resolve(String(values.output ?? `${basename(input, '.json')}.html`));
       await writeFile(output, html);
       console.log(`Built ${output}`);
       break;
     }
-    case 'preview': {
-      const port = Number(values.port ?? DEFAULT_PREVIEW_PORT);
+    case 'preview':
+    case 'present': {
+      const port = Number(values.port ?? (command === 'present' ? DEFAULT_PRESENT_PORT : DEFAULT_PREVIEW_PORT));
       if (!Number.isInteger(port) || port < 1 || port > 65535) throw new UsageError('Port must be 1–65535');
       // Validate the presentation and its template before starting a persistent server.
       const file = resolve(input);
       const loaded = await loadPresentation(file);
       renderPresentation(loaded.content, fileRenderOptions(file, loaded));
-      const server = await previewPresentation(input, port);
+      const server = await (command === 'present' ? presentPresentation : previewPresentation)(input, port);
       server.printUrls();
+      if (command === 'present') console.log('  Keys: arrows/PageUp/PageDown/Space to move, F fullscreen, N notes. Stop with Ctrl+C.');
       break;
     }
     case 'export': {

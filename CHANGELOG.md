@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file. The format 
 
 ## [Unreleased]
 
+### Added
+
+- `present <json> [--port 5181]` CLI command: serves the deck on loopback in presentation
+  mode, with no reload client and no file watching, so a save never changes the screen
+  mid-talk. API: `presentPresentation(input, port)` and `DEFAULT_PRESENT_PORT`.
+- `build --present` and `RenderOptions.present`: write presentation mode into the HTML
+  file, so it can be presented without SlideForge. Default `build` output is unchanged.
+- Presentation mode: one slide at a time, scaled to fit the window; → ↓ PageDown Space
+  and ← ↑ PageUp Shift+Space to move, Home/End, F for fullscreen. The slide number is kept
+  in the URL hash, and slide changes are announced to screen readers.
+- Speaker notes panel (N, closed with Esc) in `preview`, `present`, and `build --present`
+  output: the current slide's `notes` as plain text. It is visible to the audience on a
+  mirrored display.
+- Presentation mode and the notes panel are inactive in automated browsers and when
+  printing, so exporting a `--present` file or the `preview`/`present` URL gives the same
+  PPTX as exporting the JSON.
+
 ## [0.3.0] - 2026-10-29
 
 ### Added

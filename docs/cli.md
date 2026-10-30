@@ -8,8 +8,9 @@ entry point, `node dist/cli/index.js`, which is the same CLI.
 ```text
 node dist/cli/index.js init [presentation.json] [--template <name|./path>]
 node dist/cli/index.js example [basic|variants|templates] [--output <directory>]
-node dist/cli/index.js build presentation.json [--output presentation.html]
+node dist/cli/index.js build presentation.json [--output presentation.html] [--present]
 node dist/cli/index.js preview presentation.json [--port 5180]
+node dist/cli/index.js present presentation.json [--port 5181]
 node dist/cli/index.js export <presentation.json|slides.html|https://url>   --output presentation.pptx [--selector css]
 node dist/cli/index.js validate presentation.pptx
 node dist/cli/index.js --help
@@ -21,7 +22,7 @@ Paths are relative to the current working directory unless absolute.
 To run the CLI without installing Node.js, Chromium, or fonts, use the
 `gordonkit/slideforge` image from Docker Hub (also published as
 `ghcr.io/gordonkit/slideforge`) or the `cli` Compose profile in
-[`docker/`](../docker/README.md). Both support every command except `preview`.
+[`docker/`](../docker/README.md). Both support every command except `preview` and `present`.
 
 ## `init`
 
@@ -80,6 +81,16 @@ locally. This does not copy images, package fonts, or make HTML portable. When
 the JSON names a template, its background images are referenced by absolute
 `file:` URL in the template's folder.
 
+`--present` adds presentation mode and the speaker notes panel (see
+[Presentation mode](#presentation-mode)) as inline scripts, so the file can be
+presented in a browser without SlideForge. Without it, the output has no scripts.
+Images are referenced exactly as without the option, so they must stay where the
+`<base>` points.
+
+```sh
+node dist/cli/index.js build presentation.json --present --output talk.html
+```
+
 ## `preview`
 
 Starts a Vite server on `127.0.0.1`, port `5180` by default. Ports must be integers
@@ -95,7 +106,51 @@ file and folder are watched too, and its images are served under
 the page shows the error and reloads again once it is fixed. Slides scale down
 to fit the window, so the 1920 × 1080 canvas is visible on smaller screens;
 automated browsers such as `export` of the preview URL see the full canvas.
+Press N to show the speaker notes of the slide nearest the middle of the window.
 This is a preview, not a slide editor. Stop with Ctrl+C.
+
+## `present`
+
+```sh
+node dist/cli/index.js present presentation.json [--port 5181]
+```
+
+Serves the deck for presenting from this machine: the same loopback server,
+port rules, asset serving, and up-front validation as `preview`, on port `5181`
+by default so both can run at once. The page opens in
+[presentation mode](#presentation-mode). It has no reload client and nothing is
+watched, so saving a file never changes the screen during a talk; reloading the
+browser page renders the saved JSON. Stop with Ctrl+C.
+
+## Presentation mode
+
+`present` and `build --present` show one slide at a time, centered and scaled to
+fit the window with letterboxing:
+
+| Key | Action |
+| --- | --- |
+| → ↓ PageDown Space | Next slide |
+| ← ↑ PageUp Shift+Space | Previous slide |
+| Home / End | First / last slide |
+| F | Toggle fullscreen |
+| N | Show or hide the speaker notes |
+| Esc | Hide the speaker notes |
+
+Keys with Ctrl, Alt, or Cmd, and keys typed while an input method is composing,
+are left to the browser. The current slide is kept in the URL hash (`#3`), so a
+reload stays on it and a link can open a given slide; out-of-range or invalid
+numbers go to the nearest slide. Browsers enter fullscreen only after a key
+press or click, so press F once the page is open. Slide changes are announced to
+screen readers.
+
+The notes panel shows the slide's `notes` as plain text with its line breaks,
+or "No notes". It is part of the page, so **the audience sees it on a mirrored
+display**; keep it closed when the screen is shared.
+
+Presentation mode and the notes panel do nothing in automated browsers
+(`navigator.webdriver`) and when printing, so `export` of a `--present` file or
+of the `preview` or `present` URL produces the same PPTX as exporting the JSON,
+and printing still prints every slide.
 
 ## `export`
 

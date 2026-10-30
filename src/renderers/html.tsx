@@ -6,6 +6,7 @@ import { layoutStylesheet, SlideLayout } from "../layouts/index.js";
 import { slideVariant } from "../layouts/registry.js";
 import { mergeTokens, parseTemplate, type Template } from "../templates/schema.js";
 import { cssVariables, defaultFontFamily, SLIDE_SIZE, themeTokens } from "../themes/tokens.js";
+import { injectBeforeBodyEnd, notesScript, presentationScript } from "./present.js";
 
 const stylesheet = readFileSync(new URL("../themes/slides.css", import.meta.url), "utf8") + layoutStylesheet;
 
@@ -19,6 +20,11 @@ export interface RenderOptions {
    * against, normally its directory. Without it they resolve against the document.
    */
   templateBaseUrl?: string;
+  /**
+   * Add presentation mode (one slide at a time, keyboard navigation, fullscreen) and the speaker
+   * notes panel. Without it the document has no scripts.
+   */
+  present?: boolean;
 }
 
 function checkBaseUrl(url: string | undefined, name: string): void {
@@ -61,7 +67,7 @@ export function renderPresentation(input: unknown, options: RenderOptions = {}):
     "--sf-outline": palette.outline,
     fontFamily: presentation.fontFamily ?? template?.fontFamily ?? defaultFontFamily,
   } as CSSProperties;
-  return "<!doctype html>" + renderToStaticMarkup(
+  const html = "<!doctype html>" + renderToStaticMarkup(
     <html lang={metadata.lang}>
       <head>
         <meta charSet="utf-8" />
@@ -82,4 +88,5 @@ export function renderPresentation(input: unknown, options: RenderOptions = {}):
       </body>
     </html>,
   );
+  return options.present ? injectBeforeBodyEnd(html, presentationScript, notesScript) : html;
 }
