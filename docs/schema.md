@@ -162,7 +162,43 @@ are rejected. Path-style values beginning `/` can pass the schema but resolve
 from the origin/filesystem root, so prefer portable relative paths.
 
 These restrictions are not a network sandbox or path confinement policy.
-Use trusted sources and check browser access/CORS and image decoding errors.
+Use trusted sources.
+
+### Remote images
+
+SlideForge downloads HTTP(S) images itself, in Node, for `export`, `preview`,
+`present`, and `build --embed-assets`, so the image host's CORS and
+`Cross-Origin-Resource-Policy` headers do not matter. A plain `build` still
+leaves the URL in the HTML for the browser to load. The URL must return the
+image itself:
+
+- SVG, PNG, JPEG, GIF, WebP, or AVIF, decided from the bytes. A
+  `Content-Type` that names a different type is an error; a missing or generic
+  (`application/octet-stream`) type is accepted.
+- At most 25 MiB per image and 200 MiB per deck, 30 seconds per request, and 5
+  redirects. No cookies or credentials are sent, so the file must be public.
+- Errors name the slide and the cause: a web page instead of an image, an HTTP
+  error, an unsupported or mismatched type, too large, a timeout, or too many
+  redirects.
+
+Share links from file hosts usually open a web page, not the file. For a public
+Google Drive file (tested in October 2026):
+
+| URL form | Works |
+| --- | --- |
+| `https://drive.google.com/file/d/<ID>/view?usp=sharing` (the share link) | No: a web page; the error suggests the form below |
+| `https://lh3.googleusercontent.com/d/<ID>` | Yes, also in a plain `build`; not a documented Google endpoint, so it may change |
+| `https://drive.google.com/uc?export=view&id=<ID>` | Yes when SlideForge downloads it; a plain `build` shows a broken image, because the host sends `Cross-Origin-Resource-Policy: same-site` |
+
+OneDrive and SharePoint share links also open a web page, and their download
+links carry expiring tokens or need a sign-in; download the file and use a local
+path. For Dropbox, change `dl=0` to `raw=1`. For decks that must be
+reproducible, prefer local files next to the JSON.
+
+`--block-private-network` (or `SLIDEFORGE_BLOCK_PRIVATE_NETWORK=1`, the default in
+the container image) refuses images on loopback, private, link-local, and other
+non-public addresses, including after redirects; during export it also refuses
+the browser's requests to them. See the [CLI reference](cli.md#remote-images).
 
 ## Backgrounds
 

@@ -10,20 +10,26 @@ import { DEFAULT_PRESENT_PORT, DEFAULT_PREVIEW_PORT, presentPresentation, previe
 import { exportPresentation } from '../exporters/pptx.js';
 import { fileRenderOptions, loadPresentation, loadTemplate } from '../templates/load.js';
 import { validatePptx } from '../validators/pptx.js';
+import { embedImages } from '../images/html.js';
+import { RemoteImageFetcher } from '../images/remote.js';
 
 const help = `SlideForge — editable presentations from structured content
 
 Usage:
   slideforge init [presentation.json] [--template <name|./path>]
   slideforge example [name] [--output <directory>]
-  slideforge build presentation.json [--output presentation.html] [--present]
+  slideforge build presentation.json [--output presentation.html] [--present] [--embed-assets]
   slideforge preview presentation.json [--port ${DEFAULT_PREVIEW_PORT}]
   slideforge present presentation.json [--port ${DEFAULT_PRESENT_PORT}]
   slideforge export <presentation.json|slides.html|https://url> --output presentation.pptx
   slideforge validate presentation.pptx
 
 Build options: --present adds presentation mode (arrow keys/PageUp/PageDown, F fullscreen, N notes)
+               --embed-assets inlines local and remote images, so the HTML works offline
 Export options: --selector <css> (default: [data-pptx="slide"], .slide)
+Remote images are downloaded by SlideForge. --block-private-network (or
+SLIDEFORGE_BLOCK_PRIVATE_NETWORK=1) refuses loopback and private addresses for
+build, preview, present, and export.
 Use only trusted HTML/URLs: export runs their scripts in a local browser.
 Exit codes: 0 success, 1 operation/validation failure, 2 invalid CLI usage.`;
 
@@ -46,6 +52,8 @@ async function main(): Promise<void> {
         port: { type: 'string' },
         template: { type: 'string' },
         present: { type: 'boolean' },
+        'embed-assets': { type: 'boolean' },
+        'block-private-network': { type: 'boolean' },
         help: { type: 'boolean', short: 'h' },
       },
     });
@@ -68,6 +76,14 @@ async function main(): Promise<void> {
   if (values.present && command !== 'build') {
     throw new UsageError('--present applies only to build; use the present command to serve a deck');
   }
+  if (values['embed-assets'] && command !== 'build') throw new UsageError('--embed-assets applies only to build');
+  if (values['block-private-network'] && !['build', 'preview', 'present', 'export'].includes(command!)) {
+    throw new UsageError('--block-private-network applies to build, preview, present, and export');
+  }
+  // The container image sets SLIDEFORGE_BLOCK_PRIVATE_NETWORK=1; the flag turns it on anywhere.
+  const remoteImages = {
+    blockPrivateNetwork: values['block-private-network'] === true || process.env.SLIDEFORGE_BLOCK_PRIVATE_NETWORK === '1',
+  };
   if (command === 'init') {
     const example = await readFile(new URL('../../examples/basic/presentation.json', import.meta.url), 'utf8');
     const destination = resolve(input ?? 'presentation.json');
@@ -131,7 +147,9 @@ async function main(): Promise<void> {
     case 'build': {
       const file = resolve(input);
       const loaded = await loadPresentation(file);
-      const html = renderPresentation(loaded.content, { ...fileRenderOptions(file, loaded), present: values.present === true });
+      const options = { ...fileRenderOptions(file, loaded), present: values.present === true };
+      let html = renderPresentation(loaded.content, options);
+      if (values['embed-assets']) html = await embedImages(html, new RemoteImageFetcher(remoteImages), options.baseUrl);
       const output = resolve(String(values.output ?? `${basename(input, '.json')}.html`));
       await writeFile(output, html);
       console.log(`Built ${output}`);
@@ -145,7 +163,7 @@ async function main(): Promise<void> {
       const file = resolve(input);
       const loaded = await loadPresentation(file);
       renderPresentation(loaded.content, fileRenderOptions(file, loaded));
-      const server = await (command === 'present' ? presentPresentation : previewPresentation)(input, port);
+      const server = await (command === 'present' ? presentPresentation : previewPresentation)(input, port, { remoteImages });
       server.printUrls();
       if (command === 'present') console.log('  Keys: arrows/PageUp/PageDown/Space to move, F fullscreen, N notes. Stop with Ctrl+C.');
       break;
@@ -155,6 +173,7 @@ async function main(): Promise<void> {
       const issues = await exportPresentation(input, {
         output: String(values.output),
         selector: values.selector ? String(values.selector) : undefined,
+        remoteImages,
       });
       for (const issue of issues) console.warn(`${issue.severity}: ${issue.message}`);
       console.log(`Exported ${resolve(String(values.output))}`);

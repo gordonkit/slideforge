@@ -336,7 +336,7 @@ node dist/cli/index.js validate presentation.pptx`,
           rows: [
             ["init [file] [--template t]", { en: "Copy the example (one slide per layout family) and its assets; never overwrites. --template names a template in the new JSON after checking it loads", "zh-TW": "複製範例（每個版型系列各一張）與素材，不會覆寫既有檔案。--template 會先確認範本可載入，再寫入新 JSON", "zh-CN": "复制示例（每个版式系列各一张）与素材，不会覆盖已有文件。--template 会先确认模板可加载，再写入新 JSON", ja: "サンプル（レイアウトファミリーごとに 1 枚）と素材をコピー。既存ファイルは上書きしない。--template は読み込めることを確認してから新しい JSON にテンプレートを指定" }],
             ["example [name] [-o dir]", { en: "List the bundled examples (basic, variants, templates), or copy one with its assets and template into a new or empty folder", "zh-TW": "列出內建範例（basic、variants、templates），或把其中一個連同素材與範本複製到新的或空的資料夾", "zh-CN": "列出内置示例（basic、variants、templates），或把其中一个连同素材与模板复制到新的或空的文件夹", ja: "同梱サンプル（basic、variants、templates）を一覧表示、またはひとつを素材とテンプレートごと新しいまたは空のフォルダーにコピー" }],
-            ["build <json> [-o html] [--present]", { en: "Validate JSON and write an HTML document with inline CSS. --present adds presentation mode, so the file can be presented in a browser", "zh-TW": "驗證 JSON 並輸出內嵌 CSS 的 HTML。--present 會加入簡報模式，讓檔案可以直接在瀏覽器中播放", "zh-CN": "验证 JSON 并输出内嵌 CSS 的 HTML。--present 会加入演示模式，让文件可以直接在浏览器中播放", ja: "JSON を検証し、CSS をインラインにした HTML を出力。--present を付けると発表モードが入り、ブラウザーでそのまま発表できる" }],
+            ["build <json> [-o html] [--present] [--embed-assets]", { en: "Validate JSON and write an HTML document with inline CSS. --present adds presentation mode, so the file can be presented in a browser; --embed-assets inlines local and remote images, so it works offline", "zh-TW": "驗證 JSON 並輸出內嵌 CSS 的 HTML。--present 會加入簡報模式，讓檔案可以直接在瀏覽器中播放；--embed-assets 會內嵌本機與遠端圖片，讓檔案離線也能使用", "zh-CN": "验证 JSON 并输出内嵌 CSS 的 HTML。--present 会加入演示模式，让文件可以直接在浏览器中播放；--embed-assets 会内嵌本机与远程图片，让文件离线也能使用", ja: "JSON を検証し、CSS をインラインにした HTML を出力。--present を付けると発表モードが入り、ブラウザーでそのまま発表できる。--embed-assets はローカルとリモートの画像を埋め込み、オフラインでも使えるようにする" }],
             ["preview <json> [--port n]", { en: "Serve a loopback Vite preview that reloads on save, port 5180 by default. N shows speaker notes", "zh-TW": "啟動僅限本機、存檔即自動更新的 Vite 預覽，預設連接埠 5180。按 N 顯示備忘稿", "zh-CN": "启动仅限本机、保存即自动刷新的 Vite 预览，默认端口 5180。按 N 显示演讲者备注", ja: "保存時に自動で再読み込みするループバックの Vite プレビューを起動。既定のポートは 5180。N で発表者ノートを表示" }],
             ["present <json> [--port n]", { en: "Serve the deck on loopback in presentation mode, port 5181 by default. Saving never reloads the page", "zh-TW": "在本機以簡報模式提供簡報，預設連接埠 5181。存檔不會重新載入頁面", "zh-CN": "在本机以演示模式提供演示文稿，默认端口 5181。保存不会重新加载页面", ja: "ループバックで発表モードのデッキを配信。既定のポートは 5181。保存してもページは再読み込みされない" }],
             ["export <input> -o pptx", { en: "Export JSON, local HTML, or a trusted URL to PPTX", "zh-TW": "將 JSON、本機 HTML 或受信任的 URL 匯出為 PPTX", "zh-CN": "将 JSON、本机 HTML 或受信任的 URL 导出为 PPTX", ja: "JSON、ローカル HTML、信頼できる URL を PPTX に書き出し" }],
@@ -372,6 +372,22 @@ node dist/cli/index.js validate presentation.pptx`,
           "zh-TW": "備忘稿面板在同一個頁面中，鏡像輸出到投影機時觀眾也看得到。簡報模式與備忘稿面板在自動化瀏覽器與列印時不會作用，所以匯出與列印結果不變。",
           "zh-CN": "备注面板在同一个页面中，镜像输出到投影仪时观众也看得到。演示模式与备注面板在自动化浏览器与打印时不会生效，所以导出与打印结果不变。",
           ja: "ノートパネルは同じページの一部なので、ミラー表示では聴衆にも見えます。発表モードとノートパネルは自動化されたブラウザーと印刷では動作しないため、書き出しと印刷の結果は変わりません。",
+        },
+      },
+      {
+        id: "remote-images",
+        title: { en: "Remote images", "zh-TW": "遠端圖片", "zh-CN": "远程图片", ja: "リモート画像" },
+        body: {
+          en: "export, preview, present, and build --embed-assets download HTTP(S) images in SlideForge rather than in the browser, so the image host's CORS headers do not matter. The URL must return the image itself, at most 25 MiB, with no sign-in. A Google Drive share link opens a web page and fails with a hint; https://lh3.googleusercontent.com/d/<ID> works but is not a documented Google endpoint. Download OneDrive and SharePoint files and use a local path. preview keeps downloaded images in memory and lists failures in a banner; present downloads them all before it starts and refuses to start if one fails. Errors name the slide and the cause.",
+          "zh-TW": "export、preview、present 與 build --embed-assets 會由 SlideForge 而不是瀏覽器下載 HTTP(S) 圖片，所以圖片主機的 CORS 標頭不影響結果。網址必須回傳圖片本身，大小不超過 25 MiB，且不需要登入。Google Drive 的分享連結會開啟網頁，因此會失敗並附上提示；https://lh3.googleusercontent.com/d/<ID> 可以使用，但不是 Google 文件記載的網址。OneDrive 與 SharePoint 的檔案請下載後改用本機路徑。preview 會把下載的圖片留在記憶體中，並以橫幅列出失敗的圖片；present 會在啟動前下載全部圖片，有任何一張失敗就不啟動。錯誤訊息會註明投影片與原因。",
+          "zh-CN": "export、preview、present 与 build --embed-assets 会由 SlideForge 而不是浏览器下载 HTTP(S) 图片，所以图片主机的 CORS 标头不影响结果。网址必须返回图片本身，大小不超过 25 MiB，且不需要登录。Google Drive 的分享链接会打开网页，因此会失败并附上提示；https://lh3.googleusercontent.com/d/<ID> 可以使用，但不是 Google 文档记载的网址。OneDrive 与 SharePoint 的文件请下载后改用本机路径。preview 会把下载的图片留在内存中，并以横幅列出失败的图片；present 会在启动前下载全部图片，有任何一张失败就不启动。错误信息会注明幻灯片与原因。",
+          ja: "export、preview、present、build --embed-assets では、HTTP(S) 画像をブラウザーではなく SlideForge がダウンロードするため、画像ホストの CORS ヘッダーは結果に影響しません。URL はサインイン不要で、25 MiB 以下の画像そのものを返す必要があります。Google ドライブの共有リンクはウェブページを開くため、ヒント付きのエラーになります。https://lh3.googleusercontent.com/d/<ID> は使えますが、Google が文書化しているエンドポイントではありません。OneDrive と SharePoint のファイルはダウンロードしてローカルパスを使ってください。preview はダウンロードした画像をメモリに保持し、失敗した画像をバナーに表示します。present は起動前にすべての画像をダウンロードし、1 枚でも失敗すると起動しません。エラーにはスライドと原因が示されます。",
+        },
+        note: {
+          en: "--block-private-network, or SLIDEFORGE_BLOCK_PRIVATE_NETWORK=1, refuses images on loopback, private, and other non-public addresses, and during export every browser request to them. The container image sets it. Use it whenever the content comes from someone else.",
+          "zh-TW": "--block-private-network（或 SLIDEFORGE_BLOCK_PRIVATE_NETWORK=1）會拒絕 loopback、私有與其他非公開位址上的圖片，匯出時也會拒絕瀏覽器對這些位址的所有請求。容器映像檔預設開啟。內容來自他人時請使用。",
+          "zh-CN": "--block-private-network（或 SLIDEFORGE_BLOCK_PRIVATE_NETWORK=1）会拒绝 loopback、私有与其他非公开地址上的图片，导出时也会拒绝浏览器对这些地址的所有请求。容器镜像默认开启。内容来自他人时请使用。",
+          ja: "--block-private-network（または SLIDEFORGE_BLOCK_PRIVATE_NETWORK=1）は、ループバック、プライベート、その他の非公開アドレス上の画像を拒否し、書き出し時にはそれらへのブラウザーのリクエストもすべて拒否します。コンテナーイメージでは既定で有効です。他人が作成した内容を扱うときに使ってください。",
         },
       },
       {
@@ -435,10 +451,10 @@ docker compose -f docker/compose.yaml --profile cli \\
   export /work/examples/basic/presentation.json \\
   --output /work/presentation.pptx`,
         note: {
-          en: "The container is a CLI, not an export service, and the same trust model applies. preview and present are not supported in the container. PowerPoint still uses Microsoft JhengHei for CJK text, which the image does not include. Studio background links need network access to bg.gordonkit.com from the container, and localhost studio links do not work there.",
-          "zh-TW": "容器提供的是 CLI，不是匯出服務，信任模型不變。容器中不支援 preview 與 present。PowerPoint 的 CJK 文字仍使用映像檔沒有內含的微軟正黑體。Studio 背景連結需要容器能連到 bg.gordonkit.com，localhost 的 studio 連結在容器中無法使用。",
-          "zh-CN": "容器提供的是 CLI，不是导出服务，信任模型不变。容器中不支持 preview 与 present。PowerPoint 的 CJK 文字仍使用镜像未内含的 Microsoft JhengHei。Studio 背景链接需要容器能连到 bg.gordonkit.com，localhost 的 studio 链接在容器中无法使用。",
-          ja: "コンテナーが提供するのは CLI であり、書き出しサービスではありません。信頼モデルは同じです。コンテナーでは preview と present を使えません。PowerPoint の CJK テキストには、イメージに含まれない Microsoft JhengHei が引き続き使われます。Studio の背景リンクには、コンテナーから bg.gordonkit.com へのネットワーク接続が必要です。localhost の studio リンクはコンテナー内では使えません。",
+          en: "The container is a CLI, not an export service, and the same trust model applies. preview and present are not supported in the container. The image sets SLIDEFORGE_BLOCK_PRIVATE_NETWORK=1, so remote images on loopback and private addresses are refused; pass -e SLIDEFORGE_BLOCK_PRIVATE_NETWORK=0 to allow them. PowerPoint still uses Microsoft JhengHei for CJK text, which the image does not include. Studio background links need network access to bg.gordonkit.com from the container, and localhost studio links do not work there.",
+          "zh-TW": "容器提供的是 CLI，不是匯出服務，信任模型不變。容器中不支援 preview 與 present。映像檔設定了 SLIDEFORGE_BLOCK_PRIVATE_NETWORK=1，會拒絕 loopback 與私有位址上的遠端圖片；要允許時請加上 -e SLIDEFORGE_BLOCK_PRIVATE_NETWORK=0。PowerPoint 的 CJK 文字仍使用映像檔沒有內含的微軟正黑體。Studio 背景連結需要容器能連到 bg.gordonkit.com，localhost 的 studio 連結在容器中無法使用。",
+          "zh-CN": "容器提供的是 CLI，不是导出服务，信任模型不变。容器中不支持 preview 与 present。镜像设置了 SLIDEFORGE_BLOCK_PRIVATE_NETWORK=1，会拒绝 loopback 与私有地址上的远程图片；要允许时请加上 -e SLIDEFORGE_BLOCK_PRIVATE_NETWORK=0。PowerPoint 的 CJK 文字仍使用镜像未内含的 Microsoft JhengHei。Studio 背景链接需要容器能连到 bg.gordonkit.com，localhost 的 studio 链接在容器中无法使用。",
+          ja: "コンテナーが提供するのは CLI であり、書き出しサービスではありません。信頼モデルは同じです。コンテナーでは preview と present を使えません。イメージは SLIDEFORGE_BLOCK_PRIVATE_NETWORK=1 を設定しているため、ループバックとプライベートアドレス上のリモート画像は拒否されます。許可するには -e SLIDEFORGE_BLOCK_PRIVATE_NETWORK=0 を指定してください。PowerPoint の CJK テキストには、イメージに含まれない Microsoft JhengHei が引き続き使われます。Studio の背景リンクには、コンテナーから bg.gordonkit.com へのネットワーク接続が必要です。localhost の studio リンクはコンテナー内では使えません。",
         },
         links: [
           { label: { en: "Container guide", "zh-TW": "容器說明", "zh-CN": "容器说明", ja: "コンテナーのガイド" }, href: `${repositoryUrl}/blob/main/docker/README.md` },

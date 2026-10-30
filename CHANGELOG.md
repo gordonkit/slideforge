@@ -21,6 +21,31 @@ All notable changes to this project will be documented in this file. The format 
 - Presentation mode and the notes panel are inactive in automated browsers and when
   printing, so exporting a `--present` file or the `preview`/`present` URL gives the same
   PPTX as exporting the JSON.
+- `build --embed-assets`: inline local and remote images as data URLs, so the HTML file
+  shows its images offline. API: `embedImages(html, fetcher, baseUrl)`.
+- `--block-private-network` for `build`, `preview`, `present`, and `export`, and the
+  `SLIDEFORGE_BLOCK_PRIVATE_NETWORK=1` environment variable: refuse remote images on
+  loopback, private, link-local, and other non-public addresses, including after
+  redirects; during export, browser requests to them are refused too. The container
+  image sets the variable. API: `ExportOptions.remoteImages.blockPrivateNetwork`.
+- API: `RemoteImageFetcher`, `RemoteImageError`, `DEFAULT_REMOTE_IMAGE_OPTIONS`,
+  `isPrivateAddress`, `ExportOptions.remoteImages`, and a `ServeOptions` argument for
+  `previewPresentation` and `presentPresentation`.
+
+### Changed
+
+- Remote (HTTP/HTTPS) images are downloaded by SlideForge in Node instead of being
+  loaded by the browser, so the image host's CORS and `Cross-Origin-Resource-Policy`
+  headers no longer matter. Limits: 25 MiB per image, 200 MiB per deck, 30 seconds per
+  request, 5 redirects; no cookies or credentials are sent.
+  - `export` inlines them into the export page.
+  - `preview` serves them from memory under `/@slideforge/remote/` and lists images that
+    fail, with their slide and cause, in a banner.
+  - `present` downloads them all before starting and refuses to start if one fails;
+    afterwards it needs no network for images.
+- Image errors name the slide and the cause: a web page instead of an image (with hints
+  for Google Drive, OneDrive/SharePoint, and Dropbox share links), an HTTP error, an
+  unsupported or mismatched type, too large, a timeout, or too many redirects.
 
 ## [0.3.0] - 2026-10-29
 

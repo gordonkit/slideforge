@@ -13,6 +13,8 @@ import { applyBackgrounds } from './backgrounds.js';
 import { validateLayout, type ValidationIssue } from '../validators/layout.js';
 import { validatePptx } from '../validators/pptx.js';
 import { SLIDE_SIZE } from '../themes/tokens.js';
+import { slidePrefix } from '../images/html.js';
+import { checkPublicHost, dataUrl, IMAGE_EXTENSIONS, RemoteImageFetcher, type RemoteImageOptions } from '../images/remote.js';
 
 export interface ExportOptions {
   output: string;
@@ -25,6 +27,32 @@ export interface ExportOptions {
   textSlack?: TextSlack | false;
   /** PowerPoint East Asian font for CJK text; defaults to Microsoft JhengHei. */
   eastAsianFont?: string;
+  /**
+   * Limits for downloading remote images. With `blockPrivateNetwork`, browser requests to
+   * non-public addresses are refused too, including the input URL itself.
+   */
+  remoteImages?: RemoteImageOptions;
+}
+
+/**
+ * Abort browser requests to non-public addresses and remember them. Hosts are resolved here and
+ * again by Chromium, so this is a guard against mistakes and plain links, not DNS rebinding.
+ */
+async function blockPrivateRequests(page: Page): Promise<string[]> {
+  const blocked: string[] = [];
+  const hosts = new Map<string, Promise<boolean>>();
+  await page.route(/^https?:/i, async route => {
+    const url = new URL(route.request().url());
+    let allowed = hosts.get(url.hostname);
+    if (!allowed) {
+      allowed = checkPublicHost(url.hostname).then(() => true, () => false);
+      hosts.set(url.hostname, allowed);
+    }
+    if (await allowed) return route.fallback();
+    blocked.push(url.href);
+    return route.abort('blockedbyclient');
+  });
+  return blocked;
 }
 
 export async function waitForAssets(page: Page): Promise<void> {
@@ -35,22 +63,32 @@ export async function waitForAssets(page: Page): Promise<void> {
   });
 }
 
-async function prepareImages(page: Page, selector: string): Promise<void> {
+/**
+ * Replace each rendered slide image with a data URL: local `file:` images are read from disk and
+ * remote HTTP(S) images are fetched in Node, so the host's CORS and CORP headers do not matter.
+ */
+async function prepareImages(page: Page, selector: string, fetcher: RemoteImageFetcher): Promise<void> {
   const images = page.locator(selector).locator('img');
-  const sources = await images.evaluateAll(elements =>
+  const sources = await images.evaluateAll((elements, selector) =>
     (elements as HTMLImageElement[]).map(image => {
       const bounds = image.getBoundingClientRect();
+      const slide = Array.from(document.querySelectorAll(selector)).indexOf(image.closest(selector)!) + 1;
       return image.checkVisibility({ checkOpacity: true, checkVisibilityCSS: true })
-        && bounds.width > 0 && bounds.height > 0 ? image.currentSrc || image.src : null;
-    }));
+        && bounds.width > 0 && bounds.height > 0 ? { src: image.currentSrc || image.src, slide } : null;
+    }), selector);
   const replacements = await Promise.all(sources.map(async source => {
     if (source === null) return null;
-    if (!source.startsWith('file:')) return source;
-    const path = fileURLToPath(source);
-    const mime = new Map([
-      ['.svg', 'image/svg+xml'], ['.png', 'image/png'], ['.jpg', 'image/jpeg'],
-      ['.jpeg', 'image/jpeg'], ['.gif', 'image/gif'], ['.webp', 'image/webp'], ['.avif', 'image/avif'],
-    ]).get(extname(path).toLowerCase());
+    if (/^https?:/i.test(source.src)) {
+      try {
+        const image = await fetcher.fetch(source.src);
+        return dataUrl(image.type, image.data);
+      } catch (error) {
+        throw new Error(`${slidePrefix(source.slide)}${error instanceof Error ? error.message : String(error)}`, { cause: error });
+      }
+    }
+    if (!source.src.startsWith('file:')) return source.src;
+    const path = fileURLToPath(source.src);
+    const mime = IMAGE_EXTENSIONS.get(extname(path).toLowerCase());
     if (!mime) throw new Error(`Unsupported image format: ${path}. Use SVG, PNG, JPEG, GIF, WebP, or AVIF.`);
     let bytes: Buffer;
     try {
@@ -185,9 +223,22 @@ export async function exportPresentation(input: string, options: ExportOptions):
     });
     page.setDefaultTimeout(options.timeout ?? 60_000);
     const selector = options.selector ?? '[data-pptx="slide"], .slide';
-    await page.goto(url, { waitUntil: 'load' });
-    await prepareImages(page, selector);
+    const fetcher = new RemoteImageFetcher(options.remoteImages);
+    const blocked = fetcher.options.blockPrivateNetwork ? await blockPrivateRequests(page) : [];
+    const failBlocked = () => {
+      if (blocked.length) {
+        throw new Error(`Blocked requests to non-public addresses: ${[...new Set(blocked)].join(', ')}`);
+      }
+    };
+    try {
+      await page.goto(url, { waitUntil: 'load' });
+    } catch (error) {
+      failBlocked();
+      throw error;
+    }
+    await prepareImages(page, selector, fetcher);
     await waitForAssets(page);
+    failBlocked();
     const issues = await validateLayout(page, { selector });
     if (options.validate !== false && issues.some(issue => issue.severity === 'error')) {
       throw new Error(`Layout validation failed:\n${issues.map(issue => issue.message).join('\n')}`);

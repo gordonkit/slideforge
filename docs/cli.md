@@ -8,7 +8,7 @@ entry point, `node dist/cli/index.js`, which is the same CLI.
 ```text
 node dist/cli/index.js init [presentation.json] [--template <name|./path>]
 node dist/cli/index.js example [basic|variants|templates] [--output <directory>]
-node dist/cli/index.js build presentation.json [--output presentation.html] [--present]
+node dist/cli/index.js build presentation.json [--output presentation.html] [--present] [--embed-assets]
 node dist/cli/index.js preview presentation.json [--port 5180]
 node dist/cli/index.js present presentation.json [--port 5181]
 node dist/cli/index.js export <presentation.json|slides.html|https://url>   --output presentation.pptx [--selector css]
@@ -17,6 +17,8 @@ node dist/cli/index.js --help
 ```
 
 `-o` aliases `--output`; `-h` aliases `--help`. No arguments displays help.
+`build`, `preview`, `present`, and `export` also accept `--block-private-network`
+(see [remote images](#remote-images)).
 Paths are relative to the current working directory unless absolute.
 
 To run the CLI without installing Node.js, Chromium, or fonts, use the
@@ -85,10 +87,16 @@ the JSON names a template, its background images are referenced by absolute
 [Presentation mode](#presentation-mode)) as inline scripts, so the file can be
 presented in a browser without SlideForge. Without it, the output has no scripts.
 Images are referenced exactly as without the option, so they must stay where the
-`<base>` points.
+`<base>` points, unless `--embed-assets` is also given.
+
+`--embed-assets` inlines every `<img>`, local and remote, as a data URL, so the
+file shows its images without the JSON's folder or a network connection. The
+file grows by about a third more than the images' size. Fonts and studio
+background links are not embedded. Remote images follow the rules in
+[remote images](#remote-images).
 
 ```sh
-node dist/cli/index.js build presentation.json --present --output talk.html
+node dist/cli/index.js build presentation.json --present --embed-assets --output talk.html
 ```
 
 ## `preview`
@@ -172,17 +180,46 @@ Chromium waits for page load, fonts, and image decoding, then layout validation
 and conversion run. Layout errors block export; warnings are printed. Generated
 PPTX bytes must pass structural checks before they are written.
 
-Before conversion, local `file://` `<img>` resources are read and inlined into
-data URLs to avoid the converter's anonymous-CORS reload dropping them.
-Supported local extensions are `.svg`, `.png`, `.jpg`, `.jpeg`, `.gif`, `.webp`,
-and `.avif`; other extensions fail explicitly. Other images are preflighted with
-anonymous-CORS decoding. Unavailable, undecodable, or CORS-blocked images fail
-export clearly instead of being silently omitted. This applies to page images,
-not only images inside selected slides, and does not make built HTML portable.
+Before conversion, each visible `<img>` in the selected slides is replaced with a
+data URL: local `file://` images are read from disk, and HTTP(S) images are
+downloaded by SlideForge (see [remote images](#remote-images)), so the image
+host's CORS headers do not matter. Supported local extensions are `.svg`,
+`.png`, `.jpg`, `.jpeg`, `.gif`, `.webp`, and `.avif`; other extensions fail
+explicitly. Unavailable, undecodable, or unsupported images fail export with the
+slide number and the cause instead of being silently omitted. This changes only
+the export page, not built HTML.
 
 **Trust boundary:** page scripts execute, network requests are allowed, and
 local files may be accessible to the browser. Do not export attacker-controlled
 HTML or URLs in a shared service. See [limitations](limitations.md).
+
+## Remote images
+
+`export`, `preview`, `present`, and `build --embed-assets` download HTTP(S)
+images in Node rather than letting the browser load them, with the limits and
+errors in [remote images](schema.md#remote-images):
+
+- `export` inlines them into the export page.
+- `preview` downloads them when it renders the page, serves them under
+  `/@slideforge/remote/`, and keeps them in memory until it stops, so saving the
+  JSON does not download them again; restart preview to pick up a changed remote
+  image. Images that fail keep their URL and are listed in a red banner with
+  their slide and cause.
+- `present` downloads every remote image before it starts and stops with the
+  list of failures if any fails, so problems appear before the talk. After that
+  it needs no network for images. Studio background links still load the
+  studio's page.
+- `build --embed-assets` inlines local and remote images as data URLs, so the
+  HTML file shows its images offline; it fails on the first image that cannot be
+  read. Studio background links are not embedded.
+
+`--block-private-network` refuses images, and during export every browser
+request, on loopback, private, link-local, and other non-public addresses,
+including the input URL and redirect targets. `SLIDEFORGE_BLOCK_PRIVATE_NETWORK=1`
+does the same, and the container image sets it. Use it whenever the JSON or HTML
+comes from someone else. Browser requests are checked by name before Chromium
+resolves it again, so this guards against mistakes and plain links, not against
+DNS rebinding.
 
 ## `validate`
 

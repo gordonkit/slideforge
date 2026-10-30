@@ -71,9 +71,11 @@ N 顯示備忘稿。`build --present` 會把同樣的簡報模式寫進 HTML 檔
 
 建置出的 HTML 使用指向 JSON 目錄的 `file://` `<base>` 來載入相對路徑的素材，因此**不是可攜、
 自成一體的檔案**：搬到其他電腦或透過 HTTP 發布時，需要調整素材 URL 或 base。預覽則是在本機
-loopback 上提供 JSON 目錄。匯出 PPTX 時，支援格式的本機圖片會在瀏覽器中內嵌為 data URL，其他圖片
-必須能以 anonymous CORS 解碼。遺失、不支援或被 CORS 擋下的圖片會明確報錯，而不是被默默略過。
-這不會改寫建置出的 HTML，也不會讓它變得可攜。
+loopback 上提供 JSON 目錄；`build --embed-assets` 則會把圖片內嵌進檔案，讓它單獨也能使用。
+匯出、preview、present 與 `--embed-assets` 會由 SlideForge 自行下載遠端（HTTP/HTTPS）圖片，
+所以圖片主機的 CORS 標頭不影響結果，但網址必須回傳圖片本身，而不是分享頁；詳見
+[遠端圖片](docs/schema.md#remote-images)。遺失、不支援或不是圖片的來源會註明投影片編號與原因並報錯，
+而不是被默默略過。`--block-private-network` 會拒絕 loopback 與私有位址。
 
 ## 程式化使用
 

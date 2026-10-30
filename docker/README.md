@@ -108,6 +108,12 @@ docker run --rm --read-only --tmpfs /tmp --volume "<host folder>:/work" gordonki
   `--user "$(id -u):$(id -g)"` to `docker compose run` to match your own user.
 - Export still runs page scripts and allows network access from the container.
   Export only trusted HTML and URLs, and do not mount folders with secrets.
+- The image sets `SLIDEFORGE_BLOCK_PRIVATE_NETWORK=1`, so remote images, and
+  during export every browser request, on loopback, private, link-local, and
+  other non-public addresses are refused (see
+  [remote images](../docs/cli.md#remote-images)). Pass
+  `-e SLIDEFORGE_BLOCK_PRIVATE_NETWORK=0` to `docker run` to allow them, for
+  example for an image server on your own network.
 - Chromium measures text with Liberation Sans (metric-compatible with Arial)
   and Noto Sans CJK instead of Arial and Microsoft JhengHei. On the bundled
   example the exported text boxes match a Windows export, but other content can

@@ -56,17 +56,20 @@ publishing file-based HTML over HTTP does not reproduce that asset context.
 `init` copies JSON and its diagram into a companion
 `<JSON-basename>-assets` directory; keep those source files together.
 
-Remote assets need network access and compatible CORS behavior during export.
-Browser caches, resource failures, and external changes can affect results.
-Prefer stable, local assets for repeatable exports.
+Remote images need network access during export, `preview`, `present` startup,
+and `build --embed-assets`; SlideForge downloads them itself, so the host's CORS
+headers do not matter, but share-page URLs that return a web page do not work
+(see [remote images](schema.md#remote-images)). External changes can affect
+results. Prefer stable, local assets for repeatable exports.
 
-The exporter explicitly prepares all page `<img>` elements before conversion:
-local file images with SVG/PNG/JPEG/GIF/WebP/AVIF extensions are read and inlined
-into data URLs; unsupported local extensions fail. Other images must decode
-under anonymous CORS, matching the converter's reload behavior. Unavailable,
-unsupported, or CORS-blocked images fail export clearly rather than being
-silently omitted. This is not a general CSS-background/media asset packager,
-does not change saved HTML, and does not relax the trusted-content requirement.
+The exporter explicitly prepares the visible `<img>` elements in the selected
+slides before conversion: local file images with SVG/PNG/JPEG/GIF/WebP/AVIF
+extensions are read, and remote images are downloaded, then inlined into data
+URLs; unsupported local extensions fail. Unavailable, unsupported, or non-image
+responses fail export with the slide and cause rather than being silently
+omitted. CSS `background-image` and other media are not prepared. This does not
+change saved HTML and does not relax the trusted-content requirement.
+`--block-private-network` is a guard for non-public addresses, not a sandbox.
 
 The default local font stack is `"Arial", "Microsoft JhengHei", "Noto Sans CJK TC", "Noto Sans TC", sans-serif`.
 SlideForge preserves multilingual Unicode text, but encoding does not supply

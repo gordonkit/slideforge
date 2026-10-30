@@ -32,5 +32,8 @@ RUN apt-get update \
 USER node
 WORKDIR /work
 ENV HOME=/tmp
+# Refuse remote images and browser requests to loopback and private addresses; pass
+# -e SLIDEFORGE_BLOCK_PRIVATE_NETWORK=0 to allow them.
+ENV SLIDEFORGE_BLOCK_PRIVATE_NETWORK=1
 ENTRYPOINT ["slideforge"]
 CMD ["--help"]

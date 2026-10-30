@@ -71,9 +71,11 @@ N 显示演讲者备注。`build --present` 会把同样的演示模式写进 HT
 
 构建出的 HTML 使用指向 JSON 目录的 `file://` `<base>` 来加载相对路径的素材，因此**不是可移植、
 自包含的文件**：搬到其他电脑或通过 HTTP 发布时，需要调整素材 URL 或 base。预览则是在本机
-loopback 上提供 JSON 目录。导出 PPTX 时，支持格式的本机图片会在浏览器中内嵌为 data URL，其他图片
-必须能以 anonymous CORS 解码。缺失、不支持或被 CORS 拦截的图片会明确报错，而不是被默默忽略。
-这不会改写构建出的 HTML，也不会让它变得可移植。
+loopback 上提供 JSON 目录；`build --embed-assets` 则会把图片内嵌进文件，让它单独也能使用。
+导出、preview、present 与 `--embed-assets` 会由 SlideForge 自行下载远程（HTTP/HTTPS）图片，
+所以图片主机的 CORS 标头不影响结果，但网址必须返回图片本身，而不是分享页；详见
+[远程图片](docs/schema.md#remote-images)。缺失、不支持或不是图片的来源会注明幻灯片编号与原因并报错，
+而不是被默默忽略。`--block-private-network` 会拒绝 loopback 与私有地址。
 
 ## 编程使用
 

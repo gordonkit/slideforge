@@ -38,6 +38,8 @@ browser, not as a Node DOM simulation.
 | `src/renderers/html.tsx` | Complete static HTML document |
 | `src/renderers/preview.ts` | Loopback Vite servers rooted at JSON directory (`preview`, `present`) |
 | `src/renderers/present.ts` | Presentation mode and speaker notes panel browser scripts |
+| `src/images/remote.ts` | Remote image downloads, limits, format sniffing, non-public address checks |
+| `src/images/html.ts` | Find, rewrite, and embed `<img>` sources in rendered HTML |
 | `src/exporters/browser.ts` | Published `exportToPptx` browser API adapter |
 | `src/exporters/pptx.ts` | Chromium orchestration, assets, validation, output |
 | `src/exporters/metadata.ts` | Core-properties XML patch |
@@ -96,7 +98,7 @@ described in [templates](templates.md). The CLI, `previewPresentation`, and
 `exportPresentation` read JSON through `loadPresentation`, so a JSON input's
 template applies everywhere.
 
-### `previewPresentation(input: string, port = 5180)`
+### `previewPresentation(input: string, port = 5180, options?: ServeOptions)`
 
 Accepts a JSON file path, starts the Vite loopback server, and returns its Vite
 server object. Use `server.printUrls()` to report its address and
@@ -119,12 +121,20 @@ it is skipped when `navigator.webdriver` is set, so automated export and
 validation of the preview URL measure the full canvas. The speaker notes panel
 script is added too. The CLI also validates content before starting the server.
 
-### `presentPresentation(input: string, port = 5181)`
+`ServeOptions` is `{ remoteImages?: RemoteImageOptions }`. Each render downloads
+the page's HTTP(S) images with the server's `RemoteImageFetcher` and points them
+at `/@slideforge/remote/<hash>`, served from memory for the server's lifetime.
+An image that fails keeps its URL and is listed with its slide in a fixed
+`.sf-image-errors` banner outside every slide.
+
+### `presentPresentation(input: string, port = 5181, options?: ServeOptions)`
 
 Same server, assets, and return value as `previewPresentation`, for presenting.
-Requests to `/` reread and render the JSON with `present: true`. Pages do not
-load Vite's client and the server watches nothing (`hmr: false`, `watch: null`),
-so a save never reloads the page. `DEFAULT_PRESENT_PORT` is `5181`.
+Before starting, it renders the JSON once and downloads every remote image; any
+failure rejects with the list of slides and causes. Requests to `/` reread and
+render the JSON with `present: true`. Pages do not load Vite's client and the
+server watches nothing (`hmr: false`, `watch: null`), so a save never reloads
+the page. `DEFAULT_PRESENT_PORT` is `5181`.
 
 ### Presentation mode scripts
 
@@ -152,15 +162,31 @@ Input is a JSON path, HTML path, or trusted HTTP(S) URL.
 | `timeout` | `60000` | Playwright default timeout, milliseconds |
 | `textSlack` | `{ ratio: 0.06, min: 91440, max: 457200 }` | Extra text box width in EMU; `false` keeps converter sizes |
 | `eastAsianFont` | `Microsoft JhengHei` | PowerPoint East Asian font for CJK text |
+| `remoteImages` | `{ timeout: 30000, maxBytes: 25 MiB, maxTotalBytes: 200 MiB, blockPrivateNetwork: false }` | Remote image download limits; `blockPrivateNetwork` also aborts browser requests to non-public addresses |
 
 The browser uses a 1920 × 1080 viewport at device scale 1. After page load,
-`prepareImages` reads local `file://` image bytes and substitutes data URLs inside
-the export page, avoiding upstream anonymous-CORS reloads silently dropping
-local images. Local `.svg`, `.png`, `.jpg`, `.jpeg`, `.gif`, `.webp`, and `.avif`
-extensions are accepted; unsupported extensions fail explicitly. Other image
-sources must pass an anonymous-CORS decode preflight. Missing, undecodable, or
-CORS-blocked images throw a clear export error before conversion; disabling
-layout blocking does not bypass this preparation.
+`prepareImages` replaces each image with a data URL inside the export page:
+local `file://` images are read from disk, and HTTP(S) images are downloaded by
+a `RemoteImageFetcher` in Node, so CORS and CORP headers do not apply and the
+converter's anonymous-CORS reload cannot drop them. Local `.svg`, `.png`, `.jpg`,
+`.jpeg`, `.gif`, `.webp`, and `.avif` extensions are accepted; unsupported
+extensions fail explicitly. The data URL still passes an anonymous-CORS decode
+preflight. Missing, undecodable, or unsupported images throw an error naming the
+slide before conversion; disabling layout blocking does not bypass this
+preparation.
+
+### Remote images
+
+`RemoteImageFetcher` (`src/images/remote.ts`) downloads with `node:http`/`https`:
+no cookies or credentials, at most 5 redirects, and per-request timeout,
+per-image and per-fetcher size limits (`DEFAULT_REMOTE_IMAGE_OPTIONS`). The
+format is sniffed from the bytes; a specific `Content-Type` that disagrees is an
+error, and HTML responses get hints for Google Drive, OneDrive/SharePoint, and
+Dropbox share links. Each URL is fetched once per fetcher; failures are retried.
+With `blockPrivateNetwork`, literal addresses are checked before connecting and
+named hosts through the connection's DNS lookup, so the checked address is the
+one used. `embedImages(html, fetcher, baseUrl)` (`src/images/html.ts`) inlines
+local and remote `<img>` sources for `build --embed-assets`.
 
 Image preparation applies only to visible, nonzero-size `<img>` elements within
 the selected slide roots. It freezes the selected resource by removing
