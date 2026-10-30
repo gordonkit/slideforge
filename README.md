@@ -82,11 +82,14 @@ copies one, with its template and assets, into a new or empty folder.
 Built HTML uses a `file://` `<base>` pointing to the JSON directory for relative
 assets. It is **not a portable, self-contained artifact**: moving it to another
 machine or publishing it over HTTP requires changing asset URLs/base handling.
-Preview instead serves the JSON directory on loopback.
-During PPTX export, supported local image files are inlined into data URLs in
-the browser, and other images must pass anonymous-CORS decoding. Missing,
-unsupported, or CORS-blocked images fail clearly rather than being silently
-omitted. This does not rewrite built HTML or make it portable.
+Preview instead serves the JSON directory on loopback, and
+`build --embed-assets` inlines the images so the file works on its own.
+SlideForge downloads remote (HTTP/HTTPS) images itself for export, preview,
+present, and `--embed-assets`, so the image host's CORS headers do not matter,
+but the URL must return the image rather than a share page; see
+[remote images](docs/schema.md#remote-images). Missing, unsupported, or non-image
+sources fail with the slide number and the cause rather than being silently
+omitted. `--block-private-network` refuses loopback and private addresses.
 
 ## Programmatic use
 

@@ -29,8 +29,8 @@ try {
 ```
 
 `validateLayout(page, options?)` returns `Promise<ValidationIssue[]>`. It waits for
-fonts; the export pipeline additionally prepares local file images as data URLs,
-preflights image decoding under anonymous CORS, and waits for image decode
+fonts; the export pipeline additionally inlines local and remote images as data
+URLs, preflights image decoding under anonymous CORS, and waits for image decode
 attempts. Export image-preparation failures throw before layout validation;
 calling `validateLayout` alone still reports broken images as layout errors.
 

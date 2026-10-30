@@ -10,6 +10,8 @@ export * from './components/index.js';
 export * from './renderers/html.js';
 export * from './renderers/preview.js';
 export * from './exporters/pptx.js';
+export { RemoteImageFetcher, RemoteImageError, DEFAULT_REMOTE_IMAGE_OPTIONS, isPrivateAddress, type RemoteImage, type RemoteImageOptions } from './images/remote.js';
+export { embedImages } from './images/html.js';
 export { DEFAULT_TEXT_SLACK, type TextSlack } from './exporters/text-fit.js';
 export { DEFAULT_EAST_ASIAN_FONT } from './exporters/fonts.js';
 export * from './validators/layout.js';

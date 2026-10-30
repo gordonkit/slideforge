@@ -103,6 +103,12 @@ closing image. Its `title` still names the slide (its accessible label) but is n
 
 ## Things to know
 
+- A background can also be an image URL. SlideForge downloads it itself, so the
+  host's CORS headers do not matter, but the URL must return the image, not a
+  share page: a Google Drive share link does not work, while
+  `https://lh3.googleusercontent.com/d/<ID>` does. See
+  [remote images](schema.md#remote-images) for the rules and other file hosts.
+
 - Preview and export need network access to `https://bg.gordonkit.com` and run the
   studio's page scripts. Only links from that origin, or from a `localhost`,
   `127.0.0.1`, or `[::1]` studio development server, are accepted.
