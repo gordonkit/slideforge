@@ -61,6 +61,11 @@ node dist/cli/index.js export presentation.json --output presentation.pptx
 node dist/cli/index.js validate presentation.pptx
 ```
 
+発表するときは `node dist/cli/index.js present presentation.json` を実行し、
+<http://127.0.0.1:5181/> を開きます。スライドを 1 枚ずつ表示し、矢印キーまたは PageUp/PageDown で
+移動、F で全画面、N で発表者ノートを表示します。`build --present` は同じ発表モードを HTML ファイルに
+書き込みます。詳しくは [CLI リファレンス](docs/cli.md#presentation-mode)を参照してください。
+
 `init [file]` の既定は `presentation.json` で、既存のファイルは上書きしません。サンプル画像を
 JSON の隣の `<JSON のファイル名>-assets/diagram.svg` にコピーし、画像のパスを書き換えます。既定では
 `presentation-assets/diagram.svg` が作成されるので、このディレクトリは JSON と一緒に保ってください。

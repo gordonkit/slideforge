@@ -58,6 +58,11 @@ node dist/cli/index.js export presentation.json --output presentation.pptx
 node dist/cli/index.js validate presentation.pptx
 ```
 
+要上台演示时，运行 `node dist/cli/index.js present presentation.json` 并打开
+<http://127.0.0.1:5181/>：一次显示一张，用方向键或 PageUp/PageDown 翻页，F 切换全屏，
+N 显示演讲者备注。`build --present` 会把同样的演示模式写进 HTML 文件；详见
+[CLI 参考](docs/cli.md#presentation-mode)。
+
 `init [file]` 默认创建 `presentation.json`，不会覆盖已有文件。它会把示例图片复制到 JSON 旁边的
 `<JSON 文件名>-assets/diagram.svg` 并改写图片路径；默认会创建 `presentation-assets/diagram.svg`，
 请让这个目录与 JSON 放在一起。示例中每个版式系列各有一张幻灯片，并含英文／繁体中文

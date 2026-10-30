@@ -12,7 +12,7 @@ JSON (+ template it names) → strict Zod schemas → typed presentation and tem
      → write text outlines, widen text boxes, set East Asian font
      → set slide backgrounds, patch core metadata → structural validation → output file
 
-JSON directory → Vite loopback preview → same rendered HTML
+JSON directory → Vite loopback preview or present → same rendered HTML + browser scripts
 Trusted HTML/HTTP(S) URL ──────────────→ Chromium/export pipeline
 ```
 
@@ -36,7 +36,8 @@ browser, not as a Node DOM simulation.
 | `src/layouts/<family>/` | One family's `schema.ts`, `render.tsx`, and `<family>.css` |
 | `src/layouts/index.tsx` | Renderer table, layout stylesheet, and the `SlideLayout` dispatcher |
 | `src/renderers/html.tsx` | Complete static HTML document |
-| `src/renderers/preview.ts` | Loopback Vite server rooted at JSON directory |
+| `src/renderers/preview.ts` | Loopback Vite servers rooted at JSON directory (`preview`, `present`) |
+| `src/renderers/present.ts` | Presentation mode and speaker notes panel browser scripts |
 | `src/exporters/browser.ts` | Published `exportToPptx` browser API adapter |
 | `src/exporters/pptx.ts` | Chromium orchestration, assets, validation, output |
 | `src/exporters/metadata.ts` | Core-properties XML patch |
@@ -81,7 +82,9 @@ Validates content and returns a complete HTML string, including CSS and metadata
 caller-controlled absolute HTTP(S)/file URL inserted as `<base>`. Without it,
 browser URL resolution applies. `template` is validated with `parseTemplate` and
 applied as described in [templates](templates.md); without it the output is
-unchanged.
+unchanged. `present: true` appends the presentation mode and speaker notes
+scripts (`src/renderers/present.ts`) before `</body>`, as `build --present`
+does; without it the document has no scripts.
 It does not copy assets or launch a browser. For a JSON file, supply its directory
 as a trailing-slash file URL to match the CLI's local asset behavior.
 
@@ -113,8 +116,28 @@ a save sends a full reload, debounced to one per burst of file events. Invalid
 JSON renders an error page that keeps listening, so fixing the file restores the
 preview. A preview-only script scales slides to the window width for people;
 it is skipped when `navigator.webdriver` is set, so automated export and
-validation of the preview URL measure the full canvas. The CLI also validates
-content before starting the server.
+validation of the preview URL measure the full canvas. The speaker notes panel
+script is added too. The CLI also validates content before starting the server.
+
+### `presentPresentation(input: string, port = 5181)`
+
+Same server, assets, and return value as `previewPresentation`, for presenting.
+Requests to `/` reread and render the JSON with `present: true`. Pages do not
+load Vite's client and the server watches nothing (`hmr: false`, `watch: null`),
+so a save never reloads the page. `DEFAULT_PRESENT_PORT` is `5181`.
+
+### Presentation mode scripts
+
+The presentation mode and notes panel scripts return before doing anything when
+`navigator.webdriver` is set. Their CSS applies only under `@media screen` and
+only through classes the scripts add (`sf-presenting` on `<html>`, `sf-current`
+on the shown slide), so export, print, and pages whose scripts did not run keep
+the stacked layout. They only toggle classes and attributes: slides and their
+`[data-pptx-notes]` elements are never moved, copied, or removed, and the panel
+and live region are appended to `<body>` outside every slide without `data-pptx`
+attributes or the `slide` class, so they cannot match the export selector.
+Changing slides dispatches `sf-slidechange` on the document, which the notes
+panel follows.
 
 ### `exportPresentation(input: string, options: ExportOptions): Promise<ValidationIssue[]>`
 

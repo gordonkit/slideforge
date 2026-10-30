@@ -98,9 +98,10 @@ docker run --rm --read-only --tmpfs /tmp --volume "<host folder>:/work" gordonki
 ## Behavior and limits
 
 - `init`, `build`, `export`, and `validate` work as in [the CLI reference](../docs/cli.md).
-  `preview` is not supported: it binds only to the container's loopback
-  interface, and file watching across Docker Desktop bind mounts is unreliable.
-  Preview on the host instead.
+  `preview` and `present` are not supported: they bind only to the container's
+  loopback interface, and file watching across Docker Desktop bind mounts is
+  unreliable. Preview and present on the host instead, or present a
+  `build --present` file.
 - The container runs as the image's non-root `node` user with a read-only root
   filesystem, a bounded `/tmp` tmpfs, and `no-new-privileges`. Only `/work` is
   writable. On Linux hosts, files are written as UID 1000; pass

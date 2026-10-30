@@ -48,7 +48,7 @@ Every slide requires `layout` and `title`.
 | `title` | Trimmed nonempty string, max 300 |
 | `subtitle` | Optional string, max 10,000 |
 | `footer` | Optional string, max 10,000 |
-| `notes` | Optional string, max 10,000; emitted as hidden presenter-note markup |
+| `notes` | Optional string, max 10,000; emitted as hidden presenter-note markup, exported as PowerPoint speaker notes, and shown with N in `preview` and presentation mode |
 | `background` | Optional background source, or `"none"`; see [Backgrounds](#backgrounds) |
 
 Optional strings may be empty and are not trimmed. Required text fields are

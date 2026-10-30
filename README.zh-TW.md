@@ -58,6 +58,11 @@ node dist/cli/index.js export presentation.json --output presentation.pptx
 node dist/cli/index.js validate presentation.pptx
 ```
 
+要上台簡報時，執行 `node dist/cli/index.js present presentation.json` 並開啟
+<http://127.0.0.1:5181/>：一次顯示一張，用方向鍵或 PageUp/PageDown 換頁，F 切換全螢幕，
+N 顯示備忘稿。`build --present` 會把同樣的簡報模式寫進 HTML 檔；詳見
+[CLI 參考](docs/cli.md#presentation-mode)。
+
 `init [file]` 預設建立 `presentation.json`，不會覆寫既有檔案。它會把範例圖片複製到 JSON 旁邊的
 `<JSON 檔名>-assets/diagram.svg` 並改寫圖片路徑；預設會建立 `presentation-assets/diagram.svg`，
 請讓這個目錄與 JSON 放在一起。範例中每個版型系列各有一張投影片，並含英文／繁體中文
