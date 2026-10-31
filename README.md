@@ -169,3 +169,15 @@ manual PowerPoint compatibility test or pixel-perfection claim is made.
 access the network and local resources available to the process. Loopback preview
 is not an isolation boundary; this framework is not a multi-tenant service for
 untrusted documents.
+
+## More from GordonKit
+
+SlideForge is part of [GordonKit](https://gordonkit.com/), a collection of free online tools and
+open-source projects:
+
+- [gordon-doc-converter](https://docs.gordonkit.com/) converts DOCX and other documents to PDF, HTML,
+  Markdown and images, via a Python library, CLI or HTTP API.
+- [GordonKit Math](https://math.gordonkit.com/) offers interactive mathematics learning for grades 5–9,
+  with visual, step-by-step topics.
+- [Math Background Studio](https://bg.gordonkit.com/) generates wallpapers and slide backgrounds from
+  mathematical patterns and exports them as PNG or SVG.

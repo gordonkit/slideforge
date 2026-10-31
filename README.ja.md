@@ -155,3 +155,13 @@ Microsoft PowerPoint ネイティブでの描画、より広い視覚回帰の�
 **信頼できる HTML と URL だけを書き出してください。** Chromium はページのスクリプトを実行し、そのプロセスが
 利用できるネットワークとローカルのリソースにアクセスできます。ループバックのプレビューは分離の境界では
 なく、このフレームワークは信頼できない文書を扱うマルチテナントのサービスではありません。
+
+## GordonKit のほかのサービス
+
+SlideForge は、無料のオンラインツールとオープンソースプロジェクトを提供する
+[GordonKit](https://gordonkit.com/) の一部です。
+
+- [gordon-doc-converter](https://docs.gordonkit.com/ja/overview/)：DOCX などの文書を PDF、HTML、Markdown、画像に変換します。
+  Python ライブラリ、CLI、HTTP API として利用できます。
+- [GordonKit Math](https://math.gordonkit.com/)：5〜9 年生向けのインタラクティブな数学学習サイトです。視覚的で段階的な単元で概念を学べます。
+- [Math Background Studio](https://bg.gordonkit.com/)：数学的なパターンから壁紙やスライド背景を生成し、PNG または SVG で書き出します。

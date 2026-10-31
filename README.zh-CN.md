@@ -143,3 +143,11 @@ PowerPoint 兼容性测试，也不宣称像素级一致。
 
 **请只导出受信任的 HTML 与 URL。** Chromium 会运行页面脚本，并可访问网络与该进程可用的本机资源。
 本机预览不是隔离边界；此框架不是处理不受信任文件的多租户服务。
+
+## GordonKit 的其他服务
+
+SlideForge 是 [GordonKit](https://gordonkit.com/zh-CN/) 的一部分，GordonKit 提供免费的在线工具与开源项目：
+
+- [gordon-doc-converter](https://docs.gordonkit.com/zh-CN/overview/)：将 DOCX 等文档转换为 PDF、HTML、Markdown 与图片，提供 Python 包、CLI 与 HTTP API。
+- [GordonKit Math](https://math.gordonkit.com/)：面向五到九年级的交互式数学学习，以可视化、循序渐进的单元带你理解概念。
+- [Math Background Studio](https://bg.gordonkit.com/)：用数学图案生成壁纸与演示文稿背景，并导出为 PNG 或 SVG。
