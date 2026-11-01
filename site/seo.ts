@@ -92,7 +92,9 @@ function renderMetadata(page: Page, locale: Locale): string {
         isPartOf: { "@id": websiteId },
         publisher,
         about: {
-          "@type": "SoftwareApplication",
+          // codeRepository belongs to SoftwareSourceCode, not SoftwareApplication; with only the
+          // latter, validator.schema.org flags it as an unknown field. The package is both.
+          "@type": ["SoftwareApplication", "SoftwareSourceCode"],
           name: "SlideForge",
           applicationCategory: "DeveloperApplication",
           operatingSystem: "Windows, Linux, macOS",
