@@ -2,8 +2,11 @@ import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import type { Plugin } from "vite";
 import { categories, cellText, type Locale, type Page, pages, repositoryUrl } from "./src/content.ts";
+import { parentOrganization, parentSiteLabel, parentSiteUrl } from "./src/parent.ts";
 
 const siteUrl = "https://slideforge.gordonkit.com";
+/** The same `@id` gordonkit.com uses for this site in its own JSON-LD. */
+const websiteId = `${siteUrl}/#website`;
 const locales: Locale[] = ["en", "zh-TW", "zh-CN", "ja"];
 const hreflang: Record<Locale, string> = { en: "en", "zh-TW": "zh-Hant-TW", "zh-CN": "zh-Hans-CN", ja: "ja" };
 const openGraphLocale: Record<Locale, string> = { en: "en_US", "zh-TW": "zh_TW", "zh-CN": "zh_CN", ja: "ja_JP" };
@@ -61,7 +64,12 @@ function renderContent(page: Page, locale: Locale): string {
       <p>${escapeHtml(page.summary[locale])}</p>
       ${renderSections(page, locale)}
     </article></main>
-    <footer><a href="${repositoryUrl}">GitHub</a></footer>`;
+    <footer><a href="${repositoryUrl}">GitHub</a> ${renderParentLink(locale)}</footer>`;
+}
+
+/** Visible in the served HTML, so the JSON-LD publisher is backed by a link a crawler can follow. */
+function renderParentLink(locale: Locale): string {
+  return `<span>${escapeHtml(parentSiteLabel[locale])}<a href="${parentSiteUrl(locale)}">gordonkit.com</a></span>`;
 }
 
 function renderMetadata(page: Page, locale: Locale): string {
@@ -69,25 +77,30 @@ function renderMetadata(page: Page, locale: Locale): string {
   const description = page.summary[locale];
   const url = pageUrl(locale, page);
   const alternateLocales = locales.filter((item) => item !== locale);
+  const publisher = { "@id": parentOrganization.id };
   const structuredData = JSON.stringify({
     "@context": "https://schema.org",
-    "@type": "TechArticle",
-    headline: page.heading?.[locale] ?? page.title[locale],
-    description,
-    inLanguage: locale,
-    url,
-    isPartOf: {
-      "@type": "WebSite",
-      name: "SlideForge Documentation",
-      url: siteUrl,
-    },
-    about: {
-      "@type": "SoftwareApplication",
-      name: "SlideForge",
-      applicationCategory: "DeveloperApplication",
-      operatingSystem: "Windows, Linux, macOS",
-      codeRepository: repositoryUrl,
-    },
+    "@graph": [
+      { "@type": "Organization", "@id": parentOrganization.id, name: parentOrganization.name, url: parentOrganization.url },
+      { "@type": "WebSite", "@id": websiteId, name: "SlideForge Documentation", url: `${siteUrl}/`, publisher },
+      {
+        "@type": "TechArticle",
+        headline: page.heading?.[locale] ?? page.title[locale],
+        description,
+        inLanguage: locale,
+        url,
+        isPartOf: { "@id": websiteId },
+        publisher,
+        about: {
+          "@type": "SoftwareApplication",
+          name: "SlideForge",
+          applicationCategory: "DeveloperApplication",
+          operatingSystem: "Windows, Linux, macOS",
+          codeRepository: repositoryUrl,
+          publisher,
+        },
+      },
+    ],
   }).replaceAll("<", "\\u003c");
 
   return `<link rel="canonical" href="${url}" />
@@ -141,11 +154,12 @@ function renderNotFound(template: string): string {
       <a class="text-sm text-slate-500 hover:text-ink" href="/en/overview/">SlideForge Docs</a>
       <h1 class="mt-6 text-4xl font-bold text-ink">404</h1>
       ${messages}
+      <p class="mt-10 text-sm text-slate-500">${renderParentLink("en")}</p>
     </main>`)
     .replace(/[ \t]+(?=\r?$)/gm, "");
 }
 
-/** Write a static, crawlable page per locale and page, plus the not-found page, sitemap, and robots file. */
+/** Write a static, crawlable page per locale and page, plus the not-found page, redirects, sitemap, and robots file. */
 export function seoPagesPlugin(outputDirectory: string): Plugin {
   return {
     name: "slideforge-seo-pages",
@@ -162,6 +176,10 @@ export function seoPagesPlugin(outputDirectory: string): Plugin {
       }
 
       await writeFile(join(outputDirectory, "404.html"), renderNotFound(template), "utf8");
+      // A locale root names no page of its own, but it is the address a reader or an AI assistant
+      // guesses from the URL pattern, so it is redirected to that locale's overview instead of 404.
+      const redirects = locales.flatMap((locale) => [`/${locale} /${locale}/overview/ 301`, `/${locale}/ /${locale}/overview/ 301`]);
+      await writeFile(join(outputDirectory, "_redirects"), `${redirects.join("\n")}\n`, "utf8");
       await writeFile(templatePath, renderPage(template, pages[0], "en"), "utf8");
       const sitemap = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n${pages.flatMap((page) => locales.map((locale) => `  <url><loc>${pageUrl(locale, page)}</loc>${locales.map((item) => `<xhtml:link rel="alternate" hreflang="${hreflang[item]}" href="${pageUrl(item, page)}"/>`).join("")}</url>`)).join("\n")}\n</urlset>\n`;
       await writeFile(join(outputDirectory, "sitemap.xml"), sitemap, "utf8");
