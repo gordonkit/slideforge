@@ -90,7 +90,9 @@ variant, so `"<family>"` and `"<family>/default"` render the same.
 | `cover` | `default` (left-aligned), `centered` (centered title, subtitle, and author), `split` (accent panel on the right third; text and footer stay left of it), `band` (full-bleed accent block behind the title and subtitle, which use the on-accent color) |
 | `quote` | `default` (left-aligned beside an accent bar), `centered` (centered, without the bar) |
 | `cards` | `default` (rectangular cards), `rounded` (larger corners and an accent outline), `badge` (a numbered accent circle above each centered card), `circle` (accent-filled round cards with a number), `hexagon` and `pentagon` (accent-filled regular polygons with a numbered circle; the card keeps the polygon's proportions and the shape is an editable freeform shape behind the text) |
-| `agenda`, `content`, `two-columns`, `timeline`, `gantt`, `table`, `chart`, `blank` | `default` |
+| `agenda` | `default` (numbered cards), `chapters` (a large-number index of the top level only), `outline` (each chapter as a card with its subsections listed under it) |
+| `section` | `default` (left-aligned beside an accent rail), `centered` (centered text), `band` (the whole slide in the accent color) |
+| `content`, `two-columns`, `timeline`, `gantt`, `table`, `chart`, `blank` | `default` |
 
 [`examples/variants/presentation.json`](../examples/variants/presentation.json)
 shows each cover variant. The `split` panel and `band` block are decorative
@@ -105,7 +107,8 @@ is reported with that family's valid names, such as
 | Family | Additional fields |
 | --- | --- |
 | `"cover"` | Optional `author` string, max 10,000; independent of metadata author |
-| `"agenda"` | Required `items`: 2–8 objects, each with trimmed nonempty `title` (max 200), optional `text` string, max 10,000, and optional integer `slide` (1–200): the number of the slide the item links to, which must exist in the presentation |
+| `"agenda"` | Optional `items`: 2–8 objects, each with trimmed nonempty `title` (max 200), optional `text` string, max 10,000, optional integer `slide` (1–200): the number of the slide the item links to, which must exist in the presentation, and optional `items`: 1–6 subsections, each with `title` (max 200) and optional `slide` (drawn by `agenda/outline`). Without `items` the agenda lists the `section` slides (2–8 needed). Optional integer `current` (1–8): the item to mark as the current chapter |
+| `"section"` | No additional fields: `title` is the chapter's name and `subtitle` its one-line summary. Sections are numbered `01`, `02`, … in slide order |
 | `"content"` | Required `blocks`: 1–12 content blocks |
 | `"two-columns"` | Required `left` and `right`: each 1–12 content blocks |
 | `"cards"` | Required `cards`: 1–6 objects, each with trimmed nonempty `title` (max 200) and `blocks` (1–12) |
@@ -128,7 +131,7 @@ centered in the content region; keep it to a few lines, since longer quotes clip
 
 Cards are arranged by their count: one spans the width, two sit side by side, three
 and six use three columns, four form a 2 × 2 grid, and five are three over two, with the lower two keeping the upper cards' width and centered.
-Agenda items are numbered `01`, `02`, … in array order, one row each (two columns from five items). An item with a `slide` is a link: see [Agenda](components.md#agenda).
+Agenda items are numbered `01`, `02`, … in array order, one row each (two columns from five items). An item with a `slide` is a link: see [Agenda](components.md#agenda). A long deck is split into chapters with `section` slides; see [Section](components.md#section).
 Timeline events are drawn left to right in equal columns on one rail, in array order;
 `date` is any short marker such as `2026`, `Q3`, or `Step 1`. Keep `text` to a line or
 two, especially with five or six events.

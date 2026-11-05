@@ -25,7 +25,7 @@
 - Links go from an `agenda` item to another slide of the same presentation, and nothing else: there are
   no external URLs or text hyperlinks. Export makes the shapes over the row "go to slide" buttons, which
   work in slide show (Ctrl+click while editing); they follow the slide's position, so renumber `slide`
-  after reordering.
+  after reordering (an agenda without `items` follows the `section` slides instead).
 - SlideForge has no automatic unsupported-content raster fallback. Upstream may
   rasterize pseudo-elements/effects or other content internally, which can reduce
   editability. Arbitrary scripts, canvas, video, animations, SVG features, and

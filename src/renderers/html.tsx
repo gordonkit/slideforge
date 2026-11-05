@@ -3,6 +3,7 @@ import type { CSSProperties } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { parsePresentation, slideBackground } from "../schemas/presentation.js";
 import { layoutStylesheet, SlideLayout } from "../layouts/index.js";
+import { resolveAgendas, sectionNumbers } from "../layouts/agenda/resolve.js";
 import { slideVariant } from "../layouts/registry.js";
 import { mergeTokens, parseTemplate, type Template } from "../templates/schema.js";
 import { cssVariables, defaultFontFamily, SLIDE_SIZE, themeTokens } from "../themes/tokens.js";
@@ -68,6 +69,8 @@ export function renderPresentation(input: unknown, options: RenderOptions = {}):
     "--sf-outline": palette.outline,
     fontFamily: presentation.fontFamily ?? template?.fontFamily ?? defaultFontFamily,
   } as CSSProperties;
+  const slides = resolveAgendas(presentation.slides);
+  const sections = sectionNumbers(slides);
   const html = "<!doctype html>" + renderToStaticMarkup(
     <html lang={metadata.lang}>
       <head>
@@ -82,7 +85,7 @@ export function renderPresentation(input: unknown, options: RenderOptions = {}):
       </head>
       <body style={style} data-theme={presentation.theme} data-card-shadow={tokens.shadow.card > 0 ? "" : undefined} data-text-shadow={tokens.shadow.text > 0 ? "" : undefined}>
         <main className="sf-presentation">
-          {presentation.slides.map((slide, index) => <SlideLayout key={index} slide={slide}
+          {slides.map((slide, index) => <SlideLayout key={index} slide={slide} sectionNumber={sections.get(index)}
             variant={slideVariant(slide, template?.variants)} number={index + 1} total={presentation.slides.length}
             background={slideBackground(presentation, slide, template)} />)}
         </main>

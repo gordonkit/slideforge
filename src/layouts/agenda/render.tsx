@@ -1,14 +1,28 @@
+import type { ReactNode } from "react";
 import type { LayoutProps } from "../types.js";
 
-/** An agenda: numbered rows, each optionally a link that jumps to another slide. */
-export function AgendaLayout({ slide }: LayoutProps<"agenda">) {
-  return <ol className="sf-agenda" data-count={slide.items.length}>{slide.items.map((item, index) => {
-    const content = <>
-      <span className="sf-agenda-number" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
-      <span className="sf-agenda-body"><span className="sf-agenda-title">{item.title}</span>{item.text && <span className="sf-agenda-text">{item.text}</span>}</span>
-    </>;
-    return <li key={index}>{item.slide === undefined
-      ? <div className="sf-agenda-item">{content}</div>
-      : <a className="sf-agenda-item" href={`#slide-${item.slide}`} data-sf-link={item.slide}>{content}<span className="sf-agenda-go" aria-hidden="true">→</span></a>}</li>;
+type Target = { slide?: number | undefined };
+
+/** A link to a slide when the item has a target, else a plain box. */
+function Row({ item, className, children }: { item: Target; className: string; children: ReactNode }) {
+  return item.slide === undefined
+    ? <div className={className}>{children}</div>
+    : <a className={className} href={`#slide-${item.slide}`} data-sf-link={item.slide}>{children}</a>;
+}
+
+/** An agenda: numbered rows, each optionally a link that jumps to another slide; `outline` lists the subsections under each. */
+export function AgendaLayout({ slide, variant }: LayoutProps<"agenda">) {
+  const items = slide.items ?? [];
+  const outline = variant === "outline";
+  return <ol className="sf-agenda" data-count={items.length} data-current={slide.current}>{items.map((item, index) => {
+    const number = <span className="sf-agenda-number" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>;
+    const body = <span className="sf-agenda-body"><span className="sf-agenda-title">{item.title}</span>{item.text && !outline && <span className="sf-agenda-text">{item.text}</span>}</span>;
+    const go = item.slide === undefined ? null : <span className="sf-agenda-go" aria-hidden="true">→</span>;
+    const current = slide.current === index + 1 ? " sf-agenda-current" : "";
+    return <li key={index} className={outline ? `sf-agenda-chapter${current}` : undefined}>
+      <Row item={item} className={outline ? "sf-agenda-head" : `sf-agenda-item${current}`}>{number}{body}{go}</Row>
+      {outline && item.items && <ul className="sf-agenda-subs">{item.items.map((sub, subIndex) =>
+        <li key={subIndex}><Row item={sub} className="sf-agenda-sub"><span className="sf-agenda-sub-title">{sub.title}</span>{sub.slide !== undefined && <span className="sf-agenda-go" aria-hidden="true">→</span>}</Row></li>)}</ul>}
+    </li>;
   })}</ol>;
 }

@@ -78,6 +78,36 @@ try {
     await (await page.$('[data-pptx="slide"]')).screenshot({ path: join(output, 'layout-agenda.png') });
     console.log('Saved layout-agenda.png');
   }
+  // Agenda variants with chapters and subsections, and the section divider variants.
+  {
+    const stub = title => ({ layout: 'content', title, blocks: [{ type: 'paragraph', text: title }] });
+    const items = [
+      { title: 'Results', text: 'Revenue and growth', slide: 6, items: [{ title: 'Revenue', slide: 7 }, { title: 'Margin', slide: 7 }, { title: 'Customers' }] },
+      { title: 'Roadmap', text: 'What ships next', slide: 8, items: [{ title: 'Q1 launch', slide: 9 }, { title: 'Q2 scale', slide: 9 }] },
+      { title: 'Risks', text: 'What could slow us down', slide: 10, items: [{ title: 'Supply' }, { title: 'Hiring' }, { title: 'Budget' }] },
+      { title: 'Questions', text: 'Open discussion' },
+    ];
+    // Each sample sits at the index of the slide it replaces in a ten-slide deck with three sections.
+    const samples = [
+      ['agenda-chapters', 0, { layout: 'agenda/chapters', title: 'Agenda', subtitle: 'Chapters only, with the current one marked', items, current: 2 }],
+      ['agenda-outline', 0, { layout: 'agenda/outline', title: 'Agenda', subtitle: 'Chapters with their subsections', items, current: 2 }],
+      ['section', 5, { layout: 'section', title: 'Results', subtitle: 'Revenue and growth', footer: 'section' }],
+      ['section-centered', 7, { layout: 'section/centered', title: 'Roadmap', subtitle: 'What ships next', footer: 'section/centered' }],
+      ['section-band', 9, { layout: 'section/band', title: 'Risks', subtitle: 'What could slow us down', footer: 'section/band' }],
+    ];
+    for (const [name, index, sample] of samples) {
+      const slides = [{ layout: 'agenda', title: 'Agenda', items }, stub('b'), stub('c'), stub('d'), stub('e'),
+        { layout: 'section', title: 'Results' }, stub('f'), { layout: 'section', title: 'Roadmap' }, stub('g'), { layout: 'section', title: 'Risks' }];
+      slides[index] = sample;
+      const html = renderPresentation({ metadata: { title: name }, theme: 'light', slides });
+      const file = join(work, name + '.html');
+      await writeFile(file, html);
+      await page.goto(pathToFileURL(file).href, { waitUntil: 'load' });
+      await page.evaluate(() => document.fonts.ready);
+      await (await page.$$('[data-pptx="slide"]'))[index].screenshot({ path: join(output, 'layout-' + name + '.png') });
+      console.log('Saved layout-' + name + '.png');
+    }
+  }
   // Soft shadows from the shadow tokens.
   const soft = { name: 'soft', tokens: { shadow: { card: 24, text: 8 } } };
   for (const [name, layout] of [['cards', 'cards'], ['hexagon', 'cards/hexagon']]) {

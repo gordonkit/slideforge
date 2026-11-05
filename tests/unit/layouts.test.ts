@@ -7,7 +7,7 @@ import { parsePresentation, presentationSchema, slideBackground } from "../../sr
 
 describe("layout registry", () => {
   it("lists the families in documentation order", () => {
-    expect(layoutFamilies).toEqual(["cover", "agenda", "content", "two-columns", "cards", "timeline", "gantt", "table", "chart", "quote", "blank"]);
+    expect(layoutFamilies).toEqual(["cover", "agenda", "section", "content", "two-columns", "cards", "timeline", "gantt", "table", "chart", "quote", "blank"]);
   });
 
   it("gives every family a default variant, a schema keyed by its name, a renderer, and a stylesheet", () => {
@@ -67,7 +67,7 @@ describe("family/variant layout names", () => {
     expect(issues({ layout: "cover/fancy" })).toEqual([cover]);
     expect(issues({ layout: "cover/" })).toEqual([cover]);
     expect(issues({ layout: "table/fancy", columns: ["A"], rows: [["1"]] })).toEqual(['Unknown table variant. Use "table" or "table/default"']);
-    const families = 'Unknown layout. Use "cover", "agenda", "content", "two-columns", "cards", "timeline", "gantt", "table", "chart", "quote", or "blank"';
+    const families = 'Unknown layout. Use "cover", "agenda", "section", "content", "two-columns", "cards", "timeline", "gantt", "table", "chart", "quote", or "blank"';
     expect(issues({ layout: "gallery" })).toEqual([families]);
     expect(issues({})).toEqual([families]);
   });
@@ -147,6 +147,40 @@ describe("family/variant layout names", () => {
     expect(issues({ layout: "agenda", items: [items[1], { title: "x", slide: 0 }] })).toEqual(["slides.0.items.1.slide: Too small: expected number to be >=1"]);
     expect(issues({ layout: "agenda", items: [{ title: "x", slide: 2 }, items[1]] })).toEqual(["slides.0.items.0.slide: Slide 2 does not exist; the presentation has 1"]);
     expect(issues({ layout: "agenda", items: [{ title: "y", url: "x" }, items[1]] })).toEqual(["slides.0.items.0: Unrecognized key: \"url\""]);
+  });
+
+  it("numbers section slides and builds an agenda from them when it has no items", () => {
+    const page = { title: "Page", layout: "content", blocks: [{ type: "paragraph", text: "x" }] };
+    const slides = [
+      { title: "Agenda", layout: "agenda/chapters", current: 2 },
+      { title: "One", subtitle: "First", layout: "section" }, page,
+      { title: "Two", layout: "section/band" }, page,
+    ];
+    const html = renderPresentation({ metadata: { title: "Deck" }, slides });
+    expect(html).toContain('<p class="sf-section-number">01</p>');
+    expect(html).toContain('<p class="sf-section-number">02</p>');
+    expect(html).toContain('<div class="sf-section-rail" aria-hidden="true"></div>');
+    expect(html).toContain('<ol class="sf-agenda" data-count="2" data-current="2">');
+    expect(html).toContain('<li><a class="sf-agenda-item" href="#slide-2" data-sf-link="2">');
+    expect(html).toContain('<span class="sf-agenda-title">One</span><span class="sf-agenda-text">First</span>');
+    expect(html).toContain('<li><a class="sf-agenda-item sf-agenda-current" href="#slide-4" data-sf-link="4">');
+    const issues = (list: object[]) => presentationSchema.safeParse({ metadata: { title: "Deck" }, slides: list }).error?.issues.map((issue) => `${issue.path.join(".")}: ${issue.message}`);
+    expect(issues([{ title: "Agenda", layout: "agenda" }, slides[1]!])).toEqual(["slides.0.items: An agenda without items lists the section slides; this presentation has 1 and needs 2–8"]);
+    expect(issues([{ ...slides[0]!, current: 3 }, ...slides.slice(1)])).toEqual(["slides.0.current: Item 3 does not exist; the agenda has 2"]);
+    expect(issues([slides[1]!, slides[3]!])).toBeUndefined();
+  });
+
+  it("draws agenda outlines with linked subsections, and only chapters in the other variants", () => {
+    const items = [{ title: "A", slide: 2, items: [{ title: "A1", slide: 2 }, { title: "A2" }] }, { title: "B" }];
+    const page = { title: "Page", layout: "content", blocks: [{ type: "paragraph", text: "x" }] };
+    const outline = renderPresentation({ metadata: { title: "Deck" }, slides: [{ title: "Agenda", layout: "agenda/outline", items, current: 1 }, page] });
+    expect(outline).toContain('<li class="sf-agenda-chapter sf-agenda-current"><a class="sf-agenda-head" href="#slide-2" data-sf-link="2">');
+    expect(outline).toContain('<ul class="sf-agenda-subs"><li><a class="sf-agenda-sub" href="#slide-2" data-sf-link="2"><span class="sf-agenda-sub-title">A1</span>');
+    expect(outline).toContain('<li><div class="sf-agenda-sub"><span class="sf-agenda-sub-title">A2</span></div></li>');
+    const chapters = renderPresentation({ metadata: { title: "Deck" }, slides: [{ title: "Agenda", layout: "agenda/chapters", items }, page] });
+    expect(chapters).not.toContain("<ul class=\"sf-agenda-subs\"");
+    const bad = presentationSchema.safeParse({ metadata: { title: "Deck" }, slides: [{ title: "Agenda", layout: "agenda/outline", items: [{ title: "A", items: [{ title: "A1", slide: 3 }] }, items[1]] }, page] });
+    expect(bad.error?.issues.map((issue) => `${issue.path.join(".")}: ${issue.message}`)).toEqual(["slides.0.items.0.items.0.slide: Slide 3 does not exist; the presentation has 2"]);
   });
 
   it("draws the subtitle with an accent bar", () => {

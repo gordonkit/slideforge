@@ -53,7 +53,8 @@ schema, renderer, and stylesheet, and is listed in `src/layouts/registry.ts`:
 | Layout | Composition |
 | --- | --- |
 | `cover` | Enlarged title/subtitle and optional author; `split` adds an `aria-hidden` `.sf-cover-panel` |
-| `agenda` | `ol.sf-agenda` of numbered rows: a number circle, a title, optional text, and an arrow; a row with a target slide is an `a[data-sf-link]` |
+| `agenda` | `ol.sf-agenda` of numbered rows: a number circle, a title, optional text, and an arrow; a row with a target slide is an `a[data-sf-link]`; `outline` puts a `ul.sf-agenda-subs` of subsections under each chapter |
+| `section` | A chapter divider: `.sf-section-number` (`01`, `02`, … by slide order) beside the title and subtitle; `default` adds an `aria-hidden` `.sf-section-rail` |
 | `content` | One `ContentBlocks` stack |
 | `two-columns` | Two equal-width `ContentBlocks` stacks |
 | `cards` | `.sf-cards[data-count]` grid of 1–6 titled cards, arranged by their count |
@@ -152,6 +153,37 @@ arrow and jumps to that slide.
   link follows the slide's position, so renumber `slide` when you insert or reorder slides.
 - **Layout:** up to four items are rows; five to eight are two columns. Keep titles short, and use
   `text` for a few words.
+
+An agenda for a long deck has three variants, and the same `items` work in each of them:
+
+| `agenda/chapters` | `agenda/outline` |
+| --- | --- |
+| ![Agenda with large chapter numbers and the current chapter marked](../site/public/screenshots/layout-agenda-chapters.png) | ![Agenda with each chapter as a card and its subsections listed under it](../site/public/screenshots/layout-agenda-outline.png) |
+
+- **`chapters`** lists only the top level, in a large-number index. Use it for the table of contents
+  at the start, or when there are many chapters.
+- **`outline`** draws each chapter as a card with its subsections under it, and every subsection can
+  link to a slide. Give each item `items` (1–6 subsections with `title` and an optional `slide`).
+  The other variants leave the subsections out, so you can switch between them without changing the content.
+- **`current`** (1-based) marks one item as the chapter being opened: the others are muted. Repeat the
+  agenda at the start of each chapter with a different `current` to show the reader's progress.
+- **Without `items`** the agenda lists the deck's [`section`](#section) slides, in order, each linking to its
+  slide with the section's `subtitle` as the text. The links then follow the sections when you reorder
+  slides. It needs two to eight sections, and has no subsections: write `items` yourself for `outline`.
+
+### `section`
+
+A section slide opens a chapter of a long presentation. It has only the common fields: `title` is the
+chapter's name and `subtitle` is its one-line summary. The number (`01`, `02`, …) is counted over the deck's
+section slides, so it does not need to be written.
+
+| `section` (`default`) | `section/centered` | `section/band` |
+| --- | --- | --- |
+| ![Section slide with a large number beside an accent rail](../site/public/screenshots/layout-section.png) | ![Section slide with a centered number and title](../site/public/screenshots/layout-section-centered.png) | ![Section slide in the accent color](../site/public/screenshots/layout-section-band.png) |
+
+```json
+{ "layout": "section", "title": "Results", "subtitle": "Revenue and growth" }
+```
 
 ### `timeline`
 

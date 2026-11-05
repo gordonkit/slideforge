@@ -19,7 +19,7 @@ Build the project first if `dist` is absent. Initialization also creates
 `draft-assets/diagram.svg` and rewrites the image source. Keep that companion
 directory with the JSON; replace/add assets as your content requires.
 
-Keep only schema-supported fields. Select cover for an opening, agenda for a linked table of contents (an item's `slide` is the number of the slide it jumps to), content for
+Keep only schema-supported fields. Select cover for an opening, agenda for a linked table of contents (an item's `slide` is the number of the slide it jumps to; without `items` it lists the section slides), section to open each chapter of a long deck, content for
 explanation, two-columns for comparisons, cards for two to six small parallel ideas,
 timeline for two to six steps or dates in order, gantt for a project
 schedule, table for compact grids, chart for

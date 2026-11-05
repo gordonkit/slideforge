@@ -10,6 +10,7 @@ import { ContentLayout } from "./content/render.js";
 import { CoverLayout } from "./cover/render.js";
 import { GanttLayout } from "./gantt/render.js";
 import { QuoteLayout } from "./quote/render.js";
+import { SectionLayout } from "./section/render.js";
 import { layoutFamilies, layoutFamily, slideVariant, type LayoutFamily } from "./registry.js";
 import { TableLayout } from "./table/render.js";
 import { TimelineLayout } from "./timeline/render.js";
@@ -20,6 +21,7 @@ import type { LayoutProps } from "./types.js";
 const renderers: { [F in LayoutFamily]: (props: LayoutProps<F>) => ReactNode } = {
   cover: CoverLayout,
   agenda: AgendaLayout,
+  section: SectionLayout,
   content: ContentLayout,
   "two-columns": TwoColumnsLayout,
   cards: CardsLayout,
@@ -36,11 +38,11 @@ export const layoutStylesheet = layoutFamilies
   .map((family) => readFileSync(new URL(`./${family}/${family}.css`, import.meta.url), "utf8"))
   .join("");
 
-export function SlideLayout({ slide, variant = slideVariant(slide), number, total, background }: {
-  slide: Slide; variant?: string; number: number; total: number; background?: string | undefined;
+export function SlideLayout({ slide, variant = slideVariant(slide), number, total, background, sectionNumber }: {
+  slide: Slide; variant?: string; number: number; total: number; background?: string | undefined; sectionNumber?: number | undefined;
 }) {
-  const Layout = renderers[layoutFamily(slide.layout)] as (props: { slide: Slide; variant: string }) => ReactNode;
+  const Layout = renderers[layoutFamily(slide.layout)] as (props: { slide: Slide; variant: string; sectionNumber?: number | undefined }) => ReactNode;
   return <SlideComponent slide={slide} variant={variant} number={number} total={total} background={background}>
-    <Layout slide={slide} variant={variant} />
+    <Layout slide={slide} variant={variant} sectionNumber={sectionNumber} />
   </SlideComponent>;
 }

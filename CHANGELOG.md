@@ -10,6 +10,11 @@ All notable changes to this project will be documented in this file. The format 
 - `agenda` layout: two to eight numbered rows with a title and optional text. An item with `slide` links
   to that slide: a click in present mode jumps to it, and export writes PowerPoint "go to slide"
   buttons over the row. A `slide` that does not exist is rejected. `examples/basic` now has an agenda.
+- `section` layout (`default`, `centered`, `band`): a chapter divider with an automatic number, for long
+  presentations.
+- `agenda` variants `chapters` (top level only, large numbers) and `outline` (chapters with linked
+  subsections, from `items[].items`); `current` marks the chapter being opened; an agenda without `items`
+  lists the `section` slides and links to them, so the links survive reordering.
 - Slides have the id `slide-N`, and the presentation script accepts `#slide-N` as well as `#N`.
 - Documentation of the optional slide `subtitle` as a one-line highlight under the title: what it is
   for, where it works, how long it can be, and how it exports.

@@ -21,12 +21,18 @@
       "subtitle": "Five stops, each a click away / 五個重點，點一下就能跳轉",
       "footer": "Phase 1",
       "items": [
-        { "title": "Content model / 內容模型", "text": "Short, structured slides", "slide": 3 },
-        { "title": "Layouts / 版型", "text": "Columns and cards", "slide": 4 },
-        { "title": "Time / 時程", "text": "Timeline and schedule", "slide": 6 },
-        { "title": "Data / 資料", "text": "Tables and charts", "slide": 8 },
-        { "title": "Wrap-up / 結語", "text": "One more thing", "slide": 10 }
+        { "title": "Content model / 內容模型", "text": "Short, structured slides", "slide": 4 },
+        { "title": "Layouts / 版型", "text": "Columns and cards", "slide": 5 },
+        { "title": "Time / 時程", "text": "Timeline and schedule", "slide": 7 },
+        { "title": "Data / 資料", "text": "Tables and charts", "slide": 9 },
+        { "title": "Wrap-up / 結語", "text": "One more thing", "slide": 11 }
       ]
+    },
+    {
+      "layout": "section",
+      "title": "The basics / 基礎",
+      "subtitle": "Content, columns, and cards / 內容、雙欄與卡片",
+      "footer": "Phase 1"
     },
     {
       "layout": "content",

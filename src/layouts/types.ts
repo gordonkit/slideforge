@@ -5,4 +5,6 @@ import type { LayoutFamily } from "./registry.js";
 export interface LayoutProps<F extends LayoutFamily> {
   slide: Extract<Slide, { layout: F | `${F}/${string}` }>;
   variant: string;
+  /** For a `section` slide: its 1-based number among the presentation's sections. */
+  sectionNumber?: number | undefined;
 }

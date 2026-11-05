@@ -518,7 +518,8 @@ docker compose -f docker/compose.yaml --profile cli \\
           ],
           rows: [
             ["cover", { en: "Optional author", "zh-TW": "選填 author", "zh-CN": "可选 author", ja: "任意の author" }],
-            ["agenda", { en: "items: 2–8 items with title, optional text, and optional slide (the number of an existing slide to link to)", "zh-TW": "items：2–8 個項目，含 title、選填的 text，以及選填的 slide（要連結的既有投影片編號）", "zh-CN": "items：2–8 个项目，含 title、可选的 text，以及可选的 slide（要链接的现有幻灯片编号）", ja: "items：2〜8 個の項目。title、任意の text、任意の slide（リンク先の既存スライド番号）" }],
+            ["agenda", { en: "items: 2–8 items with title, optional text, optional slide (the number of an existing slide to link to), and optional items (1–6 subsections with title and optional slide, drawn by agenda/outline); omit items to list the section slides; current: the item to mark as the current chapter", "zh-TW": "items：2–8 個項目，含 title、選填的 text、選填的 slide（要連結的既有投影片編號），以及選填的 items（1–6 個小節，含 title 與選填的 slide，由 agenda/outline 呈現）；省略 items 則列出 section 投影片；current：要標示為目前章節的項目", "zh-CN": "items：2–8 个项目，含 title、可选的 text、可选的 slide（要链接的现有幻灯片编号），以及可选的 items（1–6 个小节，含 title 与可选的 slide，由 agenda/outline 呈现）；省略 items 则列出 section 幻灯片；current：要标示为当前章节的项目", ja: "items：2〜8 個の項目。title、任意の text、任意の slide（リンク先の既存スライド番号）、任意の items（title と任意の slide を持つ 1〜6 個の小節。agenda/outline で表示）。items を省略すると section スライドを列挙します。current：現在の章として強調する項目" }],
+            ["section", { en: "No additional fields: title is the chapter name and subtitle its one-line summary; the number is automatic", "zh-TW": "沒有額外欄位：title 是章節名稱，subtitle 是一句話摘要；編號自動產生", "zh-CN": "没有额外字段：title 是章节名称，subtitle 是一句话摘要；编号自动生成", ja: "追加のフィールドはありません。title が章の名前、subtitle が一言の要約で、番号は自動で付きます" }],
             ["content", { en: "blocks: 1–12 content blocks", "zh-TW": "blocks：1–12 個內容區塊", "zh-CN": "blocks：1–12 个内容块", ja: "blocks：1〜12 個のコンテンツブロック" }],
             ["two-columns", { en: "left and right: 1–12 blocks each", "zh-TW": "left 與 right：各 1–12 個區塊", "zh-CN": "left 与 right：各 1–12 个块", ja: "left と right：それぞれ 1〜12 個のブロック" }],
             ["cards", { en: "cards: 1–6 cards with title and blocks", "zh-TW": "cards：1–6 張含 title 與 blocks 的卡片", "zh-CN": "cards：1–6 张含 title 与 blocks 的卡片", ja: "cards：title と blocks を持つ 1〜6 枚のカード" }],
@@ -774,7 +775,8 @@ docker compose -f docker/compose.yaml --profile cli \\
           ],
           rows: [
             ["cover", { en: "Opening slide with a large title and optional author; variants centered, split, and band", "zh-TW": "開場，大標題與選填的作者；另有 centered、split、band 變化", "zh-CN": "开场，大标题与可选的作者；另有 centered、split、band 变体", ja: "大きなタイトルと任意の作者を置く表紙。centered、split、band のバリアントあり" }],
-            ["agenda", { en: "A linked table of contents: two to eight numbered topics, each able to jump to a slide", "zh-TW": "可跳轉的目錄：二到八個編號主題，每項可連到一張投影片", "zh-CN": "可跳转的目录：二到八个编号主题，每项可链接到一张幻灯片", ja: "リンク付きの目次。番号付きの 2〜8 項目で、各項目からスライドへジャンプできる" }],
+            ["agenda", { en: "A linked table of contents: two to eight numbered topics, each able to jump to a slide; variants chapters (top level only) and outline (with subsections)", "zh-TW": "可跳轉的目錄：二到八個編號主題，每項可連到一張投影片；變化有 chapters（只列大章節）與 outline（含小節）", "zh-CN": "可跳转的目录：二到八个编号主题，每项可链接到一张幻灯片；变体有 chapters（只列大章节）与 outline（含小节）", ja: "リンク付きの目次。番号付きの 2〜8 項目で、各項目からスライドへジャンプできる。バリエーションは chapters（章のみ）と outline（小節付き）" }],
+            ["section", { en: "A chapter divider for long presentations, with an automatic number; variants centered and band", "zh-TW": "長簡報的章節分隔頁，附自動編號；變化有 centered 與 band", "zh-CN": "长演示文稿的章节分隔页，附自动编号；变体有 centered 与 band", ja: "長いプレゼン用の章の区切りスライド。番号は自動で付く。バリエーションは centered と band" }],
             ["content", { en: "An explanation with paragraphs, lists, and images", "zh-TW": "以段落、清單與圖片說明", "zh-CN": "以段落、列表与图片说明", ja: "段落、リスト、画像による説明" }],
             ["two-columns", { en: "Comparisons such as before and after", "zh-TW": "比較，例如前後對照", "zh-CN": "比较，例如前后对照", ja: "前後比較などの対比" }],
             ["cards", { en: "Up to six short parallel ideas, arranged by their count", "zh-TW": "最多六個簡短的並列重點，依張數自動排列", "zh-CN": "最多六个简短的并列重点，依张数自动排列", ja: "最大 6 つの短い並列項目。枚数に応じて自動で並ぶ" }],
@@ -807,10 +809,10 @@ docker compose -f docker/compose.yaml --profile cli \\
         id: "gallery-agenda",
         title: { en: "Gallery: agenda", "zh-TW": "版型一覽：agenda", "zh-CN": "版式一览：agenda", ja: "ギャラリー：agenda" },
         body: {
-          en: "agenda lists 2–8 topics as numbered rows: a number circle, a title, and optional text, in two columns from five items. Give an item slide, the number of another slide, to make it a link: the row ends with an arrow and jumps to that slide. In present mode a click jumps to it. In PowerPoint the row's box, number, text, and arrow are \"go to slide\" buttons that work in slide show, and the text keeps its design instead of turning into an underlined hyperlink. A slide that does not exist is rejected. The link follows the slide's position, so renumber it after reordering slides.",
-          "zh-TW": "agenda 以編號列呈現 2–8 個主題：編號圓形、title 與選填的 text，五項起分為兩欄。給項目一個 slide（另一張投影片的編號），它就成為連結：該列末端有箭頭，點擊會跳到那張投影片。在簡報模式中點一下即可跳轉。在 PowerPoint 中，該列的底框、編號、文字與箭頭都是「移至投影片」按鈕，在投影片放映時有效，文字也維持原本的設計，不會變成有底線的超連結。不存在的投影片會被拒絕。連結依投影片的位置而定，因此調整順序後請重新設定編號。",
-          "zh-CN": "agenda 以编号行呈现 2–8 个主题：编号圆形、title 与可选的 text，五项起分为两栏。给项目一个 slide（另一张幻灯片的编号），它就成为链接：该行末端有箭头，点击会跳到那张幻灯片。在演示模式中点一下即可跳转。在 PowerPoint 中，该行的底框、编号、文字与箭头都是“转到幻灯片”按钮，在幻灯片放映时有效，文字也保持原本的设计，不会变成有下划线的超链接。不存在的幻灯片会被拒绝。链接依幻灯片的位置而定，因此调整顺序后请重新设置编号。",
-          ja: "agenda は 2〜8 個のトピックを番号付きの行で並べます。番号の円、title、任意の text で構成され、5 項目からは 2 列になります。項目に slide（別のスライドの番号）を指定するとリンクになり、行の右端に矢印が付いて、そのスライドへジャンプします。プレゼンテーションモードではクリックで移動します。PowerPoint では、行の枠、番号、文字、矢印が「スライドへ移動」ボタンになってスライドショーで機能し、文字は下線付きのハイパーリンクにならずデザインのままです。存在しないスライドは拒否されます。リンクはスライドの位置に従うので、並べ替えたあとは番号を付け直してください。",
+          en: "agenda lists 2–8 topics as numbered rows: a number circle, a title, and optional text, in two columns from five items. Give an item slide, the number of another slide, to make it a link: the row ends with an arrow and jumps to that slide. In present mode a click jumps to it. In PowerPoint the row's box, number, text, and arrow are \"go to slide\" buttons that work in slide show, and the text keeps its design instead of turning into an underlined hyperlink. A slide that does not exist is rejected. The link follows the slide's position, so renumber it after reordering slides. For a long deck, agenda/chapters lists only the top level in a large-number index, and agenda/outline draws each chapter as a card with its subsections under it, each of which can link too. Give an item items (up to six subsections) for the outline; the other variants leave them out, so the same content works in all three. current marks the chapter being opened and mutes the others. Without items the agenda lists the section slides, linking to each, so the links survive reordering.",
+          "zh-TW": "agenda 以編號列呈現 2–8 個主題：編號圓形、title 與選填的 text，五項起分為兩欄。給項目一個 slide（另一張投影片的編號），它就成為連結：該列末端有箭頭，點擊會跳到那張投影片。在簡報模式中點一下即可跳轉。在 PowerPoint 中，該列的底框、編號、文字與箭頭都是「移至投影片」按鈕，在投影片放映時有效，文字也維持原本的設計，不會變成有底線的超連結。不存在的投影片會被拒絕。連結依投影片的位置而定，因此調整順序後請重新設定編號。簡報很長時，agenda/chapters 只以大號編號列出大章節，agenda/outline 則把每個章節畫成卡片，小節列在下方，且每個小節也能連結。為項目加上 items（最多六個小節）即可用於 outline；其他變化會略過它們，所以同一份內容三種都能用。current 標示目前的章節，其他章節變淡。省略 items 時，agenda 會列出 section 投影片並連到各頁，因此重新排序後連結仍然正確。",
+          "zh-CN": "agenda 以编号行呈现 2–8 个主题：编号圆形、title 与可选的 text，五项起分为两栏。给项目一个 slide（另一张幻灯片的编号），它就成为链接：该行末端有箭头，点击会跳到那张幻灯片。在演示模式中点一下即可跳转。在 PowerPoint 中，该行的底框、编号、文字与箭头都是“转到幻灯片”按钮，在幻灯片放映时有效，文字也保持原本的设计，不会变成有下划线的超链接。不存在的幻灯片会被拒绝。链接依幻灯片的位置而定，因此调整顺序后请重新设置编号。演示文稿很长时，agenda/chapters 只以大号编号列出大章节，agenda/outline 则把每个章节画成卡片，小节列在下方，且每个小节也能链接。为项目加上 items（最多六个小节）即可用于 outline；其他变体会略过它们，所以同一份内容三种都能用。current 标示当前的章节，其他章节变淡。省略 items 时，agenda 会列出 section 幻灯片并链接到各页，因此重新排序后链接仍然正确。",
+          ja: "agenda は 2〜8 個のトピックを番号付きの行で並べます。番号の円、title、任意の text で構成され、5 項目からは 2 列になります。項目に slide（別のスライドの番号）を指定するとリンクになり、行の右端に矢印が付いて、そのスライドへジャンプします。プレゼンテーションモードではクリックで移動します。PowerPoint では、行の枠、番号、文字、矢印が「スライドへ移動」ボタンになってスライドショーで機能し、文字は下線付きのハイパーリンクにならずデザインのままです。存在しないスライドは拒否されます。リンクはスライドの位置に従うので、並べ替えたあとは番号を付け直してください。長いプレゼンでは、agenda/chapters が大きな番号で最上位の章だけを並べ、agenda/outline が各章をカードにして下に小節を並べます。小節にもリンクを付けられます。項目に items（最大 6 個の小節）を指定すると outline で表示され、他のバリエーションでは省かれるので、同じ内容を 3 つすべてで使えます。current は開こうとしている章を示し、他の章は薄くなります。items を省略すると section スライドを列挙してそれぞれにリンクするので、並べ替えてもリンクは正しいままです。",
         },
         code: `{
   "layout": "agenda",
@@ -823,6 +825,28 @@ docker compose -f docker/compose.yaml --profile cli \\
 }`,
         images: [
           { src: "/screenshots/layout-agenda.png", alt: { en: "Agenda slide with four numbered rows, three of them linked", "zh-TW": "有四個編號列、其中三列為連結的 agenda 投影片", "zh-CN": "有四个编号行、其中三行为链接的 agenda 幻灯片", ja: "番号付きの 4 行のうち 3 行がリンクの agenda スライド" }, caption: "agenda" },
+          { src: "/screenshots/layout-agenda-chapters.png", alt: { en: "Agenda with large chapter numbers and the current chapter marked", "zh-TW": "以大號編號列出章節並標示目前章節的 agenda", "zh-CN": "以大号编号列出章节并标示当前章节的 agenda", ja: "大きな番号で章を並べ、現在の章を示す agenda" }, caption: "agenda/chapters" },
+          { src: "/screenshots/layout-agenda-outline.png", alt: { en: "Agenda with each chapter as a card and its subsections under it", "zh-TW": "每個章節為卡片、小節列在下方的 agenda", "zh-CN": "每个章节为卡片、小节列在下方的 agenda", ja: "各章をカードにして小節を下に並べた agenda" }, caption: "agenda/outline" },
+        ],
+      },
+      {
+        id: "gallery-section",
+        title: { en: "Gallery: section", "zh-TW": "版型一覽：section", "zh-CN": "版式一览：section", ja: "ギャラリー：section" },
+        body: {
+          en: "section is the divider that opens a chapter of a long presentation. It has only the common fields: title is the chapter's name and subtitle its one-line summary. The large number (01, 02, …) is counted over the section slides, so you never write it, and an agenda without items links to these slides. section is left-aligned beside an accent rail, section/centered centers the text, and section/band fills the whole slide with the accent color.",
+          "zh-TW": "section 是長簡報中開啟一個章節的分隔頁。它只有共用欄位：title 是章節名稱，subtitle 是一句話摘要。大號編號（01、02……）依 section 投影片的順序計算，因此不必自己寫；沒有 items 的 agenda 會連到這些投影片。section 為靠左並帶強調色側條，section/centered 讓文字置中，section/band 則讓整張投影片填滿強調色。",
+          "zh-CN": "section 是长演示文稿中开启一个章节的分隔页。它只有通用字段：title 是章节名称，subtitle 是一句话摘要。大号编号（01、02……）按 section 幻灯片的顺序计算，因此不必自己写；没有 items 的 agenda 会链接到这些幻灯片。section 为靠左并带强调色侧条，section/centered 让文字居中，section/band 则让整张幻灯片填满强调色。",
+          ja: "section は、長いプレゼンテーションで章の始まりを示す区切りスライドです。共通フィールドだけを持ち、title が章の名前、subtitle が一言の要約です。大きな番号（01、02、…）は section スライドの順に数えられるので書く必要はなく、items のない agenda はこれらのスライドにリンクします。section は左揃えでアクセント色のレールが付き、section/centered は文字を中央に、section/band はスライド全体をアクセント色にします。",
+        },
+        code: `{
+  "layout": "section",
+  "title": "Results",
+  "subtitle": "Revenue and growth"
+}`,
+        images: [
+          { src: "/screenshots/layout-section.png", alt: { en: "Section slide with a large number and an accent rail", "zh-TW": "有大號編號與強調色側條的 section 投影片", "zh-CN": "有大号编号与强调色侧条的 section 幻灯片", ja: "大きな番号とアクセント色のレールがある section スライド" }, caption: "section" },
+          { src: "/screenshots/layout-section-centered.png", alt: { en: "Section slide with a centered number and title", "zh-TW": "編號與標題置中的 section 投影片", "zh-CN": "编号与标题居中的 section 幻灯片", ja: "番号とタイトルが中央にある section スライド" }, caption: "section/centered" },
+          { src: "/screenshots/layout-section-band.png", alt: { en: "Section slide filled with the accent color", "zh-TW": "填滿強調色的 section 投影片", "zh-CN": "填满强调色的 section 幻灯片", ja: "アクセント色で塗りつぶした section スライド" }, caption: "section/band" },
         ],
       },
       {
@@ -1100,7 +1124,7 @@ docker compose -f docker/compose.yaml --profile cli \\
           ],
           rows: [
             ["Cover", "cover"],
-            ["Section", { en: "A slide that opens a section, through its own background", "zh-TW": "開啟新段落的投影片，以它自己的 background 設定", "zh-CN": "开启新段落的幻灯片，以它自己的 background 设置", ja: "セクションの始まりのスライド。そのスライドの background で指定" }],
+            ["Section", "section"],
             ["Content", "agenda · content · two-columns · cards · timeline · gantt · table · chart"],
             ["Quote", "quote"],
             ["Closing", "blank"],

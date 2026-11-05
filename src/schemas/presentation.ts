@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { sectionItems } from "../layouts/agenda/resolve.js";
 import { layoutFamily, layoutNames, layoutSlideSchemas, slideVariant, unknownLayoutMessage } from "../layouts/registry.js";
 import { backgroundSourceSchema, contentBlockSchema, optionalText, text, xmlText } from "./fields.js";
 
@@ -40,12 +41,26 @@ export const presentationSchema = z.object({
   slides: z.array(slideSchema).min(1).max(200),
 }).strict().superRefine((presentation, context) => {
   // An agenda item links to a slide by its 1-based number, so the slide must exist.
+  const sectionCount = sectionItems(presentation.slides).length;
+  const missing = (path: (string | number)[], target: number | undefined) => {
+    if (target !== undefined && target > presentation.slides.length) {
+      context.addIssue({ code: "custom", path, message: `Slide ${target} does not exist; the presentation has ${presentation.slides.length}` });
+    }
+  };
   presentation.slides.forEach((slide, index) => {
-    if (slide.layout !== "agenda" && !slide.layout.startsWith("agenda/")) return;
-    (slide as Extract<Slide, { layout: "agenda" | "agenda/default" }>).items.forEach((item, itemIndex) => {
-      if (item.slide !== undefined && item.slide > presentation.slides.length) {
-        context.addIssue({ code: "custom", path: ["slides", index, "items", itemIndex, "slide"], message: `Slide ${item.slide} does not exist; the presentation has ${presentation.slides.length}` });
-      }
+    if (layoutFamily(slide.layout) !== "agenda") return;
+    const { items, current } = slide as Extract<Slide, { layout: "agenda" | `agenda/${string}` }>;
+    // Without items the agenda lists the section slides, so it needs two to eight of them.
+    const count = items?.length ?? sectionCount;
+    if (items === undefined && (sectionCount < 2 || sectionCount > 8)) {
+      context.addIssue({ code: "custom", path: ["slides", index, "items"], message: `An agenda without items lists the section slides; this presentation has ${sectionCount} and needs 2–8` });
+    }
+    if (current !== undefined && current > count) {
+      context.addIssue({ code: "custom", path: ["slides", index, "current"], message: `Item ${current} does not exist; the agenda has ${count}` });
+    }
+    items?.forEach((item, itemIndex) => {
+      missing(["slides", index, "items", itemIndex, "slide"], item.slide);
+      item.items?.forEach((sub, subIndex) => missing(["slides", index, "items", itemIndex, "items", subIndex, "slide"], sub.slide));
     });
   });
 });
