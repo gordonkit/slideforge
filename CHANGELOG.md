@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file. The format 
 
 ## [Unreleased]
 
+## [0.5.0] - 2026-11-05
+
 ### Added
 
 - Layouts: `media` (a picture with text), `stats` (key figures), `matrix` (2 × 2), `compare` (options side by side),
@@ -15,6 +17,13 @@ All notable changes to this project will be documented in this file. The format 
   panel can have a `color` that fills it, with a readable text color.
 - `gradient` tokens (`card`, `panel`, 0–60): a top-to-bottom gradient on cards, agenda rows, and colored
   panels. Export draws it as a picture behind the editable text.
+
+### Changed
+
+- `process` steps and `hub` items are all the same size; every `hub` item is joined to the center circle by a line.
+- Documentation site: layouts have their own menu group with one page per group of layouts, templates have their
+  own page, the menu is grouped as Getting Started, Authoring, Layouts, Design, Reference, and Project, and every
+  layout shows its JSON settings as a code block (also in `docs/layouts-*.md`).
 
 ## [0.4.0] - 2026-11-05
 
