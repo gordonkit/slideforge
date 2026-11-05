@@ -38,7 +38,17 @@ export const presentationSchema = z.object({
   fontFamily: fontFamilySchema.optional(),
   backgrounds: backgroundsSchema.optional(),
   slides: z.array(slideSchema).min(1).max(200),
-}).strict();
+}).strict().superRefine((presentation, context) => {
+  // An agenda item links to a slide by its 1-based number, so the slide must exist.
+  presentation.slides.forEach((slide, index) => {
+    if (slide.layout !== "agenda" && !slide.layout.startsWith("agenda/")) return;
+    (slide as Extract<Slide, { layout: "agenda" | "agenda/default" }>).items.forEach((item, itemIndex) => {
+      if (item.slide !== undefined && item.slide > presentation.slides.length) {
+        context.addIssue({ code: "custom", path: ["slides", index, "items", itemIndex, "slide"], message: `Slide ${item.slide} does not exist; the presentation has ${presentation.slides.length}` });
+      }
+    });
+  });
+});
 
 export type ContentBlock = z.infer<typeof contentBlockSchema>;
 export type Slide = z.infer<typeof slideSchema>;

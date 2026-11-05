@@ -2,6 +2,7 @@ import { readFileSync } from "node:fs";
 import type { ReactNode } from "react";
 import type { Slide } from "../schemas/presentation.js";
 import { Slide as SlideComponent } from "../components/slide.js";
+import { AgendaLayout } from "./agenda/render.js";
 import { BlankLayout } from "./blank/render.js";
 import { CardsLayout } from "./cards/render.js";
 import { ChartLayout } from "./chart/render.js";
@@ -18,6 +19,7 @@ import type { LayoutProps } from "./types.js";
 // One renderer per registered family; the mapped type makes a missing family a compile error.
 const renderers: { [F in LayoutFamily]: (props: LayoutProps<F>) => ReactNode } = {
   cover: CoverLayout,
+  agenda: AgendaLayout,
   content: ContentLayout,
   "two-columns": TwoColumnsLayout,
   cards: CardsLayout,

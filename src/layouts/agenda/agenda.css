@@ -1,0 +1,14 @@
+/* agenda: numbered rows; a row with a target slide is a link (a PowerPoint jump when exported). */
+.sf-agenda { list-style: none; margin: 0; padding: 0; height: 100%; display: grid; grid-template-columns: minmax(0, 1fr); grid-auto-rows: minmax(0, 1fr); gap: var(--sf-spacing-card); align-content: start; }
+.sf-agenda[data-count="5"], .sf-agenda[data-count="6"], .sf-agenda[data-count="7"], .sf-agenda[data-count="8"] { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-flow: column; grid-template-rows: repeat(calc(var(--sf-agenda-rows)), minmax(0, 1fr)); }
+.sf-agenda[data-count="5"] { --sf-agenda-rows: 3; }
+.sf-agenda[data-count="6"] { --sf-agenda-rows: 3; }
+.sf-agenda[data-count="7"] { --sf-agenda-rows: 4; }
+.sf-agenda[data-count="8"] { --sf-agenda-rows: 4; }
+.sf-agenda li { display: flex; min-height: 0; }
+.sf-agenda-item { flex: 1; display: flex; align-items: center; gap: var(--sf-spacing-card); padding: 0 var(--sf-spacing-card-padding); background: var(--sf-surface); border: var(--sf-border-width) solid var(--sf-border); border-radius: var(--sf-border-radius); color: inherit; text-decoration: none; min-height: 0; max-height: 150px; }
+.sf-agenda-number { flex: none; display: flex; align-items: center; justify-content: center; width: 84px; height: 84px; border-radius: 50%; background: var(--sf-accent); color: var(--sf-on-accent); font-size: var(--sf-type-card-title); font-weight: var(--sf-type-bold); }
+.sf-agenda-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+.sf-agenda-title { font-size: var(--sf-type-card-title); font-weight: var(--sf-type-bold); line-height: var(--sf-type-title-leading); }
+.sf-agenda-text { color: var(--sf-muted); font-size: var(--sf-type-card-body); line-height: var(--sf-type-subtitle-leading); }
+.sf-agenda-go { flex: none; color: var(--sf-accent); font-size: var(--sf-type-card-title); font-weight: var(--sf-type-bold); }

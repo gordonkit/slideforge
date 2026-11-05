@@ -391,6 +391,31 @@ describe('templates', () => {
     expect(xml).not.toContain('slideforge-outline-');
   }, 180_000);
 
+  it('exports agenda items as PowerPoint jumps to their slides', async () => {
+    const input = join(directory, 'agenda.json');
+    await writeFile(input, JSON.stringify({
+      metadata: { title: 'Agenda' },
+      slides: [
+        { layout: 'agenda', title: 'Agenda', subtitle: 'Two stops', items: [{ title: 'Second', text: 'Go', slide: 2 }, { title: 'Third', slide: 3 }, { title: 'Here' }] },
+        { layout: 'content', title: 'Second', blocks: [{ type: 'paragraph', text: 'Two' }] },
+        { layout: 'content', title: 'Third', blocks: [{ type: 'paragraph', text: 'Three' }] },
+      ],
+    }));
+    const output = join(directory, 'agenda.pptx');
+    expect((await exportPresentation(input, { output })).filter(issue => issue.rule !== 'layout.fonts')).toEqual([]);
+    const files = unzipSync(await readFile(output));
+    const slide = strFromU8(files['ppt/slides/slide1.xml']!);
+    const relationships = strFromU8(files['ppt/slides/_rels/slide1.xml.rels']!);
+    const target = (id: string) => new RegExp(`Id="${id}"[^>]*Target="([^"]+)"|Target="([^"]+)"[^>]*Id="${id}"`).exec(relationships)?.slice(1).find(Boolean);
+    const jumps = [...slide.matchAll(/<a:hlinkClick r:id="(rId\d+)" action="ppaction:\/\/hlinksldjump"\/>/g)].map(match => target(match[1]!));
+    // Each linked row jumps from its box, number, text(s), and arrow; the last row links nowhere.
+    expect(new Set(jumps)).toEqual(new Set(['slide2.xml', 'slide3.xml']));
+    expect(jumps.filter(path => path === 'slide2.xml').length).toBeGreaterThanOrEqual(4);
+    expect(jumps.filter(path => path === 'slide3.xml').length).toBeGreaterThanOrEqual(4);
+    expect(slide).not.toContain('r:id="rId' + 'undefined');
+    expect(Object.values(files).some(file => strFromU8(file, true).includes('#slide-'))).toBe(false);
+  }, 180_000);
+
   it('exports the soft shadow tokens as native card, polygon, and text shadows', async () => {
     await mkdir(join(directory, 'shaded'), { recursive: true });
     await writeFile(join(directory, 'shaded', 'template.json'), JSON.stringify({ name: 'shaded', tokens: { shadow: { card: 24, text: 8 } } }));

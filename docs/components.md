@@ -53,6 +53,7 @@ schema, renderer, and stylesheet, and is listed in `src/layouts/registry.ts`:
 | Layout | Composition |
 | --- | --- |
 | `cover` | Enlarged title/subtitle and optional author; `split` adds an `aria-hidden` `.sf-cover-panel` |
+| `agenda` | `ol.sf-agenda` of numbered rows: a number circle, a title, optional text, and an arrow; a row with a target slide is an `a[data-sf-link]` |
 | `content` | One `ContentBlocks` stack |
 | `two-columns` | Two equal-width `ContentBlocks` stacks |
 | `cards` | `.sf-cards[data-count]` grid of 1–6 titled cards, arranged by their count |
@@ -120,6 +121,37 @@ lines.
 
 In PowerPoint the cards and circles are native shapes, and the polygons are native too: the hexagon and pentagon are
 editable freeform shapes behind the text, and the text and number stay editable.
+
+### `agenda`
+
+An agenda lists two to eight topics as numbered rows: a number circle, a title, and optional text. Give an
+item `slide` (the 1-based number of another slide) to make the row a link. A linked row ends with an
+arrow and jumps to that slide.
+
+![Agenda slide with four numbered rows, three of them linked](../site/public/screenshots/layout-agenda.png)
+
+```json
+{
+  "layout": "agenda",
+  "title": "Agenda",
+  "subtitle": "Four topics, each a click away",
+  "items": [
+    { "title": "Results", "text": "Revenue and growth", "slide": 2 },
+    { "title": "Questions" }
+  ]
+}
+```
+
+- **In HTML:** the row is an anchor to the slide (`#slide-2`). In `present` mode (and a build made with
+  `--present`) a click jumps to it; a plain built file has no scripts, so it relies on the browser's
+  anchor, which an asset base URL would resolve against that base.
+- **In PowerPoint:** each linked row (its box, number, text, and arrow) is a "go to slide" button
+  (`ppaction://hlinksldjump`), so clicking it in slide show, or Ctrl+click in editing, jumps to the
+  target. The text keeps its design: it is not recolored or underlined like a text hyperlink.
+- **Checks:** a `slide` that is less than 1 or larger than the number of slides is rejected. The
+  link follows the slide's position, so renumber `slide` when you insert or reorder slides.
+- **Layout:** up to four items are rows; five to eight are two columns. Keep titles short, and use
+  `text` for a few words.
 
 ### `timeline`
 

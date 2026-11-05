@@ -77,7 +77,7 @@ A sensible mapping from the series to layout families:
 | --- | --- |
 | Cover | `cover` |
 | Section | a `content` or `cards` slide that opens a section, through its own `background` |
-| Content | `content`, `two-columns`, `cards`, `timeline`, `gantt`, `table`, `chart` |
+| Content | `agenda`, `content`, `two-columns`, `cards`, `timeline`, `gantt`, `table`, `chart` |
 | Quote | `quote` |
 | Closing | `blank` |
 

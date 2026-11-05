@@ -4,7 +4,7 @@ import { studioRenderUrl } from "../schemas/background.js";
 import { layoutFamily, slideVariant } from "../layouts/registry.js";
 
 export function SlideSubtitle({ children }: { children: ReactNode }) {
-  return <p className="sf-subtitle">{children}</p>;
+  return <p className="sf-subtitle"><span className="sf-subtitle-mark" aria-hidden="true" /><span className="sf-subtitle-text">{children}</span></p>;
 }
 
 export function SlideTitle({ title, subtitle }: { title: string; subtitle?: string }) {
@@ -55,7 +55,7 @@ export function Slide({ slide, variant = slideVariant(slide), number, total, bac
   const family = layoutFamily(slide.layout);
   // A blank slide shows only its background; its title labels the slide but is not drawn.
   const drawn = family !== "blank";
-  return <section className={`sf-slide sf-layout-${family} sf-variant-${variant}`} data-pptx="slide" data-layout={family} data-variant={variant} aria-label={`${number}. ${slide.title}`}>
+  return <section id={`slide-${number}`} className={`sf-slide sf-layout-${family} sf-variant-${variant}`} data-pptx="slide" data-layout={family} data-variant={variant} aria-label={`${number}. ${slide.title}`}>
     {background !== undefined && <SlideBackground source={background} />}
     {drawn && <SlideTitle title={slide.title} {...(slide.subtitle === undefined ? {} : { subtitle: slide.subtitle })} />}
     {drawn && <SlideContent>{children}</SlideContent>}

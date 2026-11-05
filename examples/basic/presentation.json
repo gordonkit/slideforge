@@ -16,6 +16,19 @@
       "notes": "Welcome! 歡迎使用 SlideForge。"
     },
     {
+      "layout": "agenda",
+      "title": "Agenda / 議程",
+      "subtitle": "Five stops, each a click away / 五個重點，點一下就能跳轉",
+      "footer": "Phase 1",
+      "items": [
+        { "title": "Content model / 內容模型", "text": "Short, structured slides", "slide": 3 },
+        { "title": "Layouts / 版型", "text": "Columns and cards", "slide": 4 },
+        { "title": "Time / 時程", "text": "Timeline and schedule", "slide": 6 },
+        { "title": "Data / 資料", "text": "Tables and charts", "slide": 8 },
+        { "title": "Wrap-up / 結語", "text": "One more thing", "slide": 10 }
+      ]
+    },
+    {
       "layout": "content",
       "title": "A simple content model",
       "subtitle": "Text, lists and images / 繁體中文內容",

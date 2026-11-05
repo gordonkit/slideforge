@@ -7,7 +7,7 @@ import { parsePresentation, presentationSchema, slideBackground } from "../../sr
 
 describe("layout registry", () => {
   it("lists the families in documentation order", () => {
-    expect(layoutFamilies).toEqual(["cover", "content", "two-columns", "cards", "timeline", "gantt", "table", "chart", "quote", "blank"]);
+    expect(layoutFamilies).toEqual(["cover", "agenda", "content", "two-columns", "cards", "timeline", "gantt", "table", "chart", "quote", "blank"]);
   });
 
   it("gives every family a default variant, a schema keyed by its name, a renderer, and a stylesheet", () => {
@@ -67,7 +67,7 @@ describe("family/variant layout names", () => {
     expect(issues({ layout: "cover/fancy" })).toEqual([cover]);
     expect(issues({ layout: "cover/" })).toEqual([cover]);
     expect(issues({ layout: "table/fancy", columns: ["A"], rows: [["1"]] })).toEqual(['Unknown table variant. Use "table" or "table/default"']);
-    const families = 'Unknown layout. Use "cover", "content", "two-columns", "cards", "timeline", "gantt", "table", "chart", "quote", or "blank"';
+    const families = 'Unknown layout. Use "cover", "agenda", "content", "two-columns", "cards", "timeline", "gantt", "table", "chart", "quote", or "blank"';
     expect(issues({ layout: "gallery" })).toEqual([families]);
     expect(issues({})).toEqual([families]);
   });
@@ -134,6 +134,26 @@ describe("family/variant layout names", () => {
     expect(issues({ layout: "timeline", events: [{ ...events[0], blocks: [] }, events[1]] })).toEqual(["slides.0.events.0"]);
   });
 
+  it("validates and draws agenda slides, linking items to slides that exist", () => {
+    const items = [{ title: "Results", text: "Numbers", slide: 2 }, { title: "Questions" }];
+    const html = renderPresentation({ metadata: { title: "Deck" }, slides: [{ title: "Agenda", layout: "agenda", items }, { title: "Results", layout: "content", blocks: [{ type: "paragraph", text: "x" }] }] });
+    expect(html).toContain('class="sf-slide sf-layout-agenda sf-variant-default"');
+    expect(html).toContain('<li><a class="sf-agenda-item" href="#slide-2" data-sf-link="2"><span class="sf-agenda-number" aria-hidden="true">01</span>');
+    expect(html).toContain('<span class="sf-agenda-title">Results</span><span class="sf-agenda-text">Numbers</span>');
+    expect(html).toContain('<li><div class="sf-agenda-item"><span class="sf-agenda-number" aria-hidden="true">02</span>');
+    expect(html).toContain('<section id="slide-2" class="sf-slide sf-layout-content');
+    const issues = (input: object) => presentationSchema.safeParse(deck(input)).error?.issues.map((issue) => `${issue.path.join(".")}: ${issue.message}`);
+    expect(issues({ layout: "agenda", items: items.slice(1) })).toEqual(["slides.0.items: Too small: expected array to have >=2 items"]);
+    expect(issues({ layout: "agenda", items: [items[1], { title: "x", slide: 0 }] })).toEqual(["slides.0.items.1.slide: Too small: expected number to be >=1"]);
+    expect(issues({ layout: "agenda", items: [{ title: "x", slide: 2 }, items[1]] })).toEqual(["slides.0.items.0.slide: Slide 2 does not exist; the presentation has 1"]);
+    expect(issues({ layout: "agenda", items: [{ title: "y", url: "x" }, items[1]] })).toEqual(["slides.0.items.0: Unrecognized key: \"url\""]);
+  });
+
+  it("draws the subtitle with an accent bar", () => {
+    const html = renderPresentation(deck({ layout: "content", title: "T", subtitle: "The point", blocks: [{ type: "paragraph", text: "x" }] }));
+    expect(html).toContain('<p class="sf-subtitle"><span class="sf-subtitle-mark" aria-hidden="true"></span><span class="sf-subtitle-text">The point</span></p>');
+  });
+
   it("validates and draws gantt slides", () => {
     const periods = ["Jan", "Feb", "Mar"];
     const tasks = [{ label: "Design", start: 1, end: 2, progress: 60 }, { label: "Launch", start: 3, end: 3 }];
@@ -153,7 +173,7 @@ describe("family/variant layout names", () => {
 
   it("draws only the background of a blank slide and rejects the fields it does not draw", () => {
     const html = renderPresentation(deck({ layout: "blank", background: "bg.png", notes: "Pause here" }));
-    expect(html).toContain('<section class="sf-slide sf-layout-blank sf-variant-default" data-pptx="slide" data-layout="blank" data-variant="default" aria-label="1. x"><div class="sf-background" data-pptx-background="" aria-hidden="true"><img src="bg.png" alt=""/></div><aside data-pptx-notes="" hidden="">Pause here</aside></section>');
+    expect(html).toContain('<section id="slide-1" class="sf-slide sf-layout-blank sf-variant-default" data-pptx="slide" data-layout="blank" data-variant="default" aria-label="1. x"><div class="sf-background" data-pptx-background="" aria-hidden="true"><img src="bg.png" alt=""/></div><aside data-pptx-notes="" hidden="">Pause here</aside></section>');
     const issues = (input: object) => presentationSchema.safeParse(deck(input)).error?.issues.map((issue) => `${issue.path.join(".")}: ${issue.message}`);
     expect(issues({ layout: "blank", subtitle: "s", footer: "f" })).toEqual([
       "slides.0.subtitle: A blank slide draws only its background; remove subtitle",

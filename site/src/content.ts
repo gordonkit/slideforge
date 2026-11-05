@@ -518,6 +518,7 @@ docker compose -f docker/compose.yaml --profile cli \\
           ],
           rows: [
             ["cover", { en: "Optional author", "zh-TW": "選填 author", "zh-CN": "可选 author", ja: "任意の author" }],
+            ["agenda", { en: "items: 2–8 items with title, optional text, and optional slide (the number of an existing slide to link to)", "zh-TW": "items：2–8 個項目，含 title、選填的 text，以及選填的 slide（要連結的既有投影片編號）", "zh-CN": "items：2–8 个项目，含 title、可选的 text，以及可选的 slide（要链接的现有幻灯片编号）", ja: "items：2〜8 個の項目。title、任意の text、任意の slide（リンク先の既存スライド番号）" }],
             ["content", { en: "blocks: 1–12 content blocks", "zh-TW": "blocks：1–12 個內容區塊", "zh-CN": "blocks：1–12 个内容块", ja: "blocks：1〜12 個のコンテンツブロック" }],
             ["two-columns", { en: "left and right: 1–12 blocks each", "zh-TW": "left 與 right：各 1–12 個區塊", "zh-CN": "left 与 right：各 1–12 个块", ja: "left と right：それぞれ 1〜12 個のブロック" }],
             ["cards", { en: "cards: 1–6 cards with title and blocks", "zh-TW": "cards：1–6 張含 title 與 blocks 的卡片", "zh-CN": "cards：1–6 张含 title 与 blocks 的卡片", ja: "cards：title と blocks を持つ 1〜6 枚のカード" }],
@@ -773,6 +774,7 @@ docker compose -f docker/compose.yaml --profile cli \\
           ],
           rows: [
             ["cover", { en: "Opening slide with a large title and optional author; variants centered, split, and band", "zh-TW": "開場，大標題與選填的作者；另有 centered、split、band 變化", "zh-CN": "开场，大标题与可选的作者；另有 centered、split、band 变体", ja: "大きなタイトルと任意の作者を置く表紙。centered、split、band のバリアントあり" }],
+            ["agenda", { en: "A linked table of contents: two to eight numbered topics, each able to jump to a slide", "zh-TW": "可跳轉的目錄：二到八個編號主題，每項可連到一張投影片", "zh-CN": "可跳转的目录：二到八个编号主题，每项可链接到一张幻灯片", ja: "リンク付きの目次。番号付きの 2〜8 項目で、各項目からスライドへジャンプできる" }],
             ["content", { en: "An explanation with paragraphs, lists, and images", "zh-TW": "以段落、清單與圖片說明", "zh-CN": "以段落、列表与图片说明", ja: "段落、リスト、画像による説明" }],
             ["two-columns", { en: "Comparisons such as before and after", "zh-TW": "比較，例如前後對照", "zh-CN": "比较，例如前后对照", ja: "前後比較などの対比" }],
             ["cards", { en: "Up to six short parallel ideas, arranged by their count", "zh-TW": "最多六個簡短的並列重點，依張數自動排列", "zh-CN": "最多六个简短的并列重点，依张数自动排列", ja: "最大 6 つの短い並列項目。枚数に応じて自動で並ぶ" }],
@@ -802,6 +804,28 @@ docker compose -f docker/compose.yaml --profile cli \\
         ],
       },
       {
+        id: "gallery-agenda",
+        title: { en: "Gallery: agenda", "zh-TW": "版型一覽：agenda", "zh-CN": "版式一览：agenda", ja: "ギャラリー：agenda" },
+        body: {
+          en: "agenda lists 2–8 topics as numbered rows: a number circle, a title, and optional text, in two columns from five items. Give an item slide, the number of another slide, to make it a link: the row ends with an arrow and jumps to that slide. In present mode a click jumps to it. In PowerPoint the row's box, number, text, and arrow are \"go to slide\" buttons that work in slide show, and the text keeps its design instead of turning into an underlined hyperlink. A slide that does not exist is rejected. The link follows the slide's position, so renumber it after reordering slides.",
+          "zh-TW": "agenda 以編號列呈現 2–8 個主題：編號圓形、title 與選填的 text，五項起分為兩欄。給項目一個 slide（另一張投影片的編號），它就成為連結：該列末端有箭頭，點擊會跳到那張投影片。在簡報模式中點一下即可跳轉。在 PowerPoint 中，該列的底框、編號、文字與箭頭都是「移至投影片」按鈕，在投影片放映時有效，文字也維持原本的設計，不會變成有底線的超連結。不存在的投影片會被拒絕。連結依投影片的位置而定，因此調整順序後請重新設定編號。",
+          "zh-CN": "agenda 以编号行呈现 2–8 个主题：编号圆形、title 与可选的 text，五项起分为两栏。给项目一个 slide（另一张幻灯片的编号），它就成为链接：该行末端有箭头，点击会跳到那张幻灯片。在演示模式中点一下即可跳转。在 PowerPoint 中，该行的底框、编号、文字与箭头都是“转到幻灯片”按钮，在幻灯片放映时有效，文字也保持原本的设计，不会变成有下划线的超链接。不存在的幻灯片会被拒绝。链接依幻灯片的位置而定，因此调整顺序后请重新设置编号。",
+          ja: "agenda は 2〜8 個のトピックを番号付きの行で並べます。番号の円、title、任意の text で構成され、5 項目からは 2 列になります。項目に slide（別のスライドの番号）を指定するとリンクになり、行の右端に矢印が付いて、そのスライドへジャンプします。プレゼンテーションモードではクリックで移動します。PowerPoint では、行の枠、番号、文字、矢印が「スライドへ移動」ボタンになってスライドショーで機能し、文字は下線付きのハイパーリンクにならずデザインのままです。存在しないスライドは拒否されます。リンクはスライドの位置に従うので、並べ替えたあとは番号を付け直してください。",
+        },
+        code: `{
+  "layout": "agenda",
+  "title": "Agenda",
+  "subtitle": "Four topics, each a click away",
+  "items": [
+    { "title": "Results", "text": "Revenue and growth", "slide": 2 },
+    { "title": "Questions" }
+  ]
+}`,
+        images: [
+          { src: "/screenshots/layout-agenda.png", alt: { en: "Agenda slide with four numbered rows, three of them linked", "zh-TW": "有四個編號列、其中三列為連結的 agenda 投影片", "zh-CN": "有四个编号行、其中三行为链接的 agenda 幻灯片", ja: "番号付きの 4 行のうち 3 行がリンクの agenda スライド" }, caption: "agenda" },
+        ],
+      },
+      {
         id: "gallery-content",
         title: { en: "Gallery: content and two-columns", "zh-TW": "版型一覽：content 與 two-columns", "zh-CN": "版式一览：content 与 two-columns", ja: "ギャラリー：content と two-columns" },
         body: {
@@ -819,13 +843,13 @@ docker compose -f docker/compose.yaml --profile cli \\
         id: "subtitle",
         title: { en: "Subtitle: the one-line highlight", "zh-TW": "副標題：一句話重點", "zh-CN": "副标题：一句话重点", ja: "サブタイトル：ひとことの要点" },
         body: {
-          en: "subtitle is an optional slide field for a one-line highlight or slogan under the title, so a reader grasps the point of the page at a glance. The title names the topic; the subtitle states the takeaway. It works on every layout except blank, which rejects it, and on cover it is the larger tagline. Keep it to one line, about 80 characters in English or 45 in Chinese or Japanese: the header has a fixed height, so a longer subtitle wraps and the overflow is clipped. It exports as its own editable PowerPoint text box, and templates adjust it with the type.subtitle and spacing.subtitle tokens. Use it on the slides whose message a skimming reader should not miss rather than on every slide.",
-          "zh-TW": "subtitle 是選填的投影片欄位，放在標題下方的一句話重點或口號，讓讀者一眼掌握這一頁的主旨。標題說明主題，副標題寫出結論。除了會拒絕它的 blank 之外，所有版型都能使用；在 cover 上則是較大的標語。請控制在一行內，英文約 80 字元、中日文約 45 字：標題區高度固定，過長的副標題會換行，超出的部分會被裁掉。匯出後是標題下方獨立、可編輯的 PowerPoint 文字方塊，範本可用 type.subtitle 與 spacing.subtitle token 調整。建議只用在讀者快速瀏覽時不應錯過重點的投影片，而不是每一頁都加。",
-          "zh-CN": "subtitle 是可选的幻灯片字段，放在标题下方的一句话重点或口号，让读者一眼掌握这一页的主旨。标题说明主题，副标题写出结论。除了会拒绝它的 blank 之外，所有版式都能使用；在 cover 上则是较大的标语。请控制在一行内，英文约 80 字符、中日文约 45 字：标题区高度固定，过长的副标题会换行，超出的部分会被裁掉。导出后是标题下方独立、可编辑的 PowerPoint 文本框，模板可用 type.subtitle 与 spacing.subtitle token 调整。建议只用在读者快速浏览时不应错过重点的幻灯片，而不是每一页都加。",
-          ja: "subtitle は、タイトルの下に置くひとことの要点やスローガンを書く任意のフィールドで、読み手がそのページの主旨をひと目でつかめます。タイトルはトピックを示し、サブタイトルは結論を述べます。subtitle を拒否する blank 以外のすべてのレイアウトで使え、cover ではより大きなキャッチコピーになります。1 行に収め、英語なら約 80 文字、日本語・中国語なら約 45 文字が目安です。ヘッダーの高さは固定なので、長いと折り返して、はみ出した部分は切り取られます。エクスポートするとタイトルの下に独立した編集可能な PowerPoint テキストボックスになり、テンプレートでは type.subtitle と spacing.subtitle トークンで調整できます。すべてのスライドではなく、流し読みする人にも見逃してほしくないスライドに使ってください。",
+          en: "subtitle is an optional slide field for a one-line highlight or slogan under the title, so a reader grasps the point of the page at a glance. The title names the topic; the subtitle states the takeaway. It works on every layout except blank, which rejects it, and on cover it is the larger tagline in the muted color. Elsewhere it is drawn as a highlight: accent colored and semibold, after a short accent bar. Keep it to one line, about 80 characters in English or 45 in Chinese or Japanese: the header has a fixed height, so a longer subtitle wraps and the overflow is clipped. The text exports as its own editable PowerPoint text box and the bar as an editable rectangle, and templates adjust it with the type.subtitle and spacing.subtitle tokens. Use it on the slides whose message a skimming reader should not miss rather than on every slide.",
+          "zh-TW": "subtitle 是選填的投影片欄位，放在標題下方的一句話重點或口號，讓讀者一眼掌握這一頁的主旨。標題說明主題，副標題寫出結論。除了會拒絕它的 blank 之外，所有版型都能使用；在 cover 上則是較大的灰色標語。其他版型則以強調色、半粗體，並在前面加一小段強調色色條呈現，讓它像重點而不是說明文字。請控制在一行內，英文約 80 字元、中日文約 45 字：標題區高度固定，過長的副標題會換行，超出的部分會被裁掉。匯出後文字是標題下方獨立、可編輯的 PowerPoint 文字方塊，色條是可編輯的矩形，範本可用 type.subtitle 與 spacing.subtitle token 調整。建議只用在讀者快速瀏覽時不應錯過重點的投影片，而不是每一頁都加。",
+          "zh-CN": "subtitle 是可选的幻灯片字段，放在标题下方的一句话重点或口号，让读者一眼掌握这一页的主旨。标题说明主题，副标题写出结论。除了会拒绝它的 blank 之外，所有版式都能使用；在 cover 上则是较大的灰色标语。其他版式则以强调色、半粗体，并在前面加一小段强调色色条呈现，让它像重点而不是说明文字。请控制在一行内，英文约 80 字符、中日文约 45 字：标题区高度固定，过长的副标题会换行，超出的部分会被裁掉。导出后文字是标题下方独立、可编辑的 PowerPoint 文本框，色条是可编辑的矩形，模板可用 type.subtitle 与 spacing.subtitle token 调整。建议只用在读者快速浏览时不应错过重点的幻灯片，而不是每一页都加。",
+          ja: "subtitle は、タイトルの下に置くひとことの要点やスローガンを書く任意のフィールドで、読み手がそのページの主旨をひと目でつかめます。タイトルはトピックを示し、サブタイトルは結論を述べます。subtitle を拒否する blank 以外のすべてのレイアウトで使え、cover ではより大きな控えめな色のキャッチコピーになります。それ以外のレイアウトでは、アクセント色の太めの文字で、短いアクセント色のバーを前に付けて、要点として目立たせます。1 行に収め、英語なら約 80 文字、日本語・中国語なら約 45 文字が目安です。ヘッダーの高さは固定なので、長いと折り返して、はみ出した部分は切り取られます。エクスポートすると、文字はタイトルの下に独立した編集可能な PowerPoint テキストボックスに、バーは編集可能な長方形になり、テンプレートでは type.subtitle と spacing.subtitle トークンで調整できます。すべてのスライドではなく、流し読みする人にも見逃してほしくないスライドに使ってください。",
         },
         images: [
-          { src: "/screenshots/layout-subtitle.png", alt: { en: "Cards slide with a one-line subtitle under the title", "zh-TW": "標題下方有一句話副標題的 cards 投影片", "zh-CN": "标题下方有一句话副标题的 cards 幻灯片", ja: "タイトルの下にひとことのサブタイトルがある cards スライド" }, caption: "subtitle" },
+          { src: "/screenshots/layout-subtitle.png", alt: { en: "Cards slide with an accent-colored subtitle and bar under the title", "zh-TW": "標題下方有強調色副標題與色條的 cards 投影片", "zh-CN": "标题下方有强调色副标题与色条的 cards 幻灯片", ja: "タイトルの下にアクセント色のサブタイトルとバーがある cards スライド" }, caption: "subtitle" },
         ],
       },
       {
@@ -1077,7 +1101,7 @@ docker compose -f docker/compose.yaml --profile cli \\
           rows: [
             ["Cover", "cover"],
             ["Section", { en: "A slide that opens a section, through its own background", "zh-TW": "開啟新段落的投影片，以它自己的 background 設定", "zh-CN": "开启新段落的幻灯片，以它自己的 background 设置", ja: "セクションの始まりのスライド。そのスライドの background で指定" }],
-            ["Content", "content · two-columns · cards · timeline · gantt · table · chart"],
+            ["Content", "agenda · content · two-columns · cards · timeline · gantt · table · chart"],
             ["Quote", "quote"],
             ["Closing", "blank"],
           ],

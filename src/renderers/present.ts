@@ -38,7 +38,7 @@ export const presentationScript = `<style>@media screen {
     document.body.style.setProperty('--sf-present-scale', String(scale));
   };
   const fromHash = () => {
-    const number = Number.parseInt(location.hash.slice(1), 10);
+    const number = Number.parseInt(location.hash.replace(/^#(?:slide-)?/, ''), 10);
     return Number.isNaN(number) ? 0 : Math.min(Math.max(number, 1), slides.length) - 1;
   };
   let current = -1;
@@ -65,6 +65,13 @@ export const presentationScript = `<style>@media screen {
       (document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen()).catch(() => {});
     } else return;
     event.preventDefault();
+  });
+  // An agenda item jumps to its slide; handled here because a <base href> would send a bare "#n" elsewhere.
+  document.addEventListener('click', event => {
+    const link = event.target instanceof Element ? event.target.closest('a[data-sf-link]') : null;
+    if (!link) return;
+    event.preventDefault();
+    show(Number(link.getAttribute('data-sf-link')) - 1);
   });
   addEventListener('hashchange', () => show(fromHash()));
   addEventListener('resize', fit);

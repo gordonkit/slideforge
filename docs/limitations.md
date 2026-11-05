@@ -22,6 +22,10 @@
 - The export ignores CSS `clip-path`, so a non-rectangular shape has to be an inline SVG.
   `cards/hexagon` and `cards/pentagon` draw their polygons that way, and export rewrites each
   as a native freeform shape with its soft shadow; other inline SVGs stay pictures.
+- Links go from an `agenda` item to another slide of the same presentation, and nothing else: there are
+  no external URLs or text hyperlinks. Export makes the shapes over the row "go to slide" buttons, which
+  work in slide show (Ctrl+click while editing); they follow the slide's position, so renumber `slide`
+  after reordering.
 - SlideForge has no automatic unsupported-content raster fallback. Upstream may
   rasterize pseudo-elements/effects or other content internally, which can reduce
   editability. Arbitrary scripts, canvas, video, animations, SVG features, and

@@ -62,14 +62,16 @@ reader the point of the page before they read the content. The title names the t
 (`Three principles`); the subtitle states the takeaway (`One design system keeps every slide
 consistent and editable`).
 
-![A cards slide with a one-line subtitle under the title](../site/public/screenshots/layout-subtitle.png)
+![A cards slide with an accent-colored subtitle and bar under the title](../site/public/screenshots/layout-subtitle.png)
 
-- **Where it works:** every layout except `blank`, which rejects `subtitle`. On `cover` it is the
-  larger tagline; on other layouts it sits under the title in the muted color.
+- **Where it works:** every layout except `blank`, which rejects `subtitle`. On other layouts it is
+  drawn in the accent color, in semibold, after a short accent bar, so it reads as a highlight rather
+  than as a caption. On `cover` it is the larger tagline in the muted color, without the bar.
 - **Length:** keep it to one line, about 80 characters in English or 45 in Chinese or Japanese. The
   header has a fixed height, so a long subtitle wraps and the overflow is clipped. Say the point,
   not a paragraph.
-- **Export:** it becomes its own editable PowerPoint text box under the title.
+- **Export:** the text is its own editable PowerPoint text box under the title, and the bar is an
+  editable rectangle.
 - **Styling:** a template adjusts it with the `type.subtitle` (size) and `spacing.subtitle` (gap)
   tokens; see [Design tokens](design-tokens.md).
 - **Optional:** omit it where the title says enough. Using it on every slide dilutes it; use it on
@@ -88,7 +90,7 @@ variant, so `"<family>"` and `"<family>/default"` render the same.
 | `cover` | `default` (left-aligned), `centered` (centered title, subtitle, and author), `split` (accent panel on the right third; text and footer stay left of it), `band` (full-bleed accent block behind the title and subtitle, which use the on-accent color) |
 | `quote` | `default` (left-aligned beside an accent bar), `centered` (centered, without the bar) |
 | `cards` | `default` (rectangular cards), `rounded` (larger corners and an accent outline), `badge` (a numbered accent circle above each centered card), `circle` (accent-filled round cards with a number), `hexagon` and `pentagon` (accent-filled regular polygons with a numbered circle; the card keeps the polygon's proportions and the shape is an editable freeform shape behind the text) |
-| `content`, `two-columns`, `timeline`, `gantt`, `table`, `chart`, `blank` | `default` |
+| `agenda`, `content`, `two-columns`, `timeline`, `gantt`, `table`, `chart`, `blank` | `default` |
 
 [`examples/variants/presentation.json`](../examples/variants/presentation.json)
 shows each cover variant. The `split` panel and `band` block are decorative
@@ -103,6 +105,7 @@ is reported with that family's valid names, such as
 | Family | Additional fields |
 | --- | --- |
 | `"cover"` | Optional `author` string, max 10,000; independent of metadata author |
+| `"agenda"` | Required `items`: 2–8 objects, each with trimmed nonempty `title` (max 200), optional `text` string, max 10,000, and optional integer `slide` (1–200): the number of the slide the item links to, which must exist in the presentation |
 | `"content"` | Required `blocks`: 1–12 content blocks |
 | `"two-columns"` | Required `left` and `right`: each 1–12 content blocks |
 | `"cards"` | Required `cards`: 1–6 objects, each with trimmed nonempty `title` (max 200) and `blocks` (1–12) |
@@ -125,6 +128,7 @@ centered in the content region; keep it to a few lines, since longer quotes clip
 
 Cards are arranged by their count: one spans the width, two sit side by side, three
 and six use three columns, four form a 2 × 2 grid, and five are three over two, with the lower two keeping the upper cards' width and centered.
+Agenda items are numbered `01`, `02`, … in array order, one row each (two columns from five items). An item with a `slide` is a link: see [Agenda](components.md#agenda).
 Timeline events are drawn left to right in equal columns on one rail, in array order;
 `date` is any short marker such as `2026`, `Q3`, or `Step 1`. Keep `text` to a line or
 two, especially with five or six events.

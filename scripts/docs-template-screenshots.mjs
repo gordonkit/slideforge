@@ -59,6 +59,25 @@ try {
     await (await page.$('[data-pptx="slide"]')).screenshot({ path: join(output, 'layout-subtitle.png') });
     console.log('Saved layout-subtitle.png');
   }
+  // An agenda whose items link to later slides.
+  {
+    const stub = title => ({ layout: 'content', title, blocks: [{ type: 'paragraph', text: title }] });
+    const html = renderPresentation({ metadata: { title: 'agenda' }, theme: 'light', slides: [
+      { layout: 'agenda', title: 'Agenda', subtitle: 'Four topics, each a click away', footer: 'agenda', items: [
+        { title: 'Results', text: 'Revenue and growth', slide: 2 },
+        { title: 'Roadmap', text: 'What ships next', slide: 3 },
+        { title: 'Risks', text: 'What could slow us down', slide: 4 },
+        { title: 'Questions', text: 'Open discussion' },
+      ] },
+      stub('Results'), stub('Roadmap'), stub('Risks'),
+    ] });
+    const file = join(work, 'agenda.html');
+    await writeFile(file, html);
+    await page.goto(pathToFileURL(file).href, { waitUntil: 'load' });
+    await page.evaluate(() => document.fonts.ready);
+    await (await page.$('[data-pptx="slide"]')).screenshot({ path: join(output, 'layout-agenda.png') });
+    console.log('Saved layout-agenda.png');
+  }
   // Soft shadows from the shadow tokens.
   const soft = { name: 'soft', tokens: { shadow: { card: 24, text: 8 } } };
   for (const [name, layout] of [['cards', 'cards'], ['hexagon', 'cards/hexagon']]) {

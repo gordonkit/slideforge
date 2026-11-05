@@ -7,8 +7,14 @@ All notable changes to this project will be documented in this file. The format 
 
 ### Added
 
+- `agenda` layout: two to eight numbered rows with a title and optional text. An item with `slide` links
+  to that slide: a click in present mode jumps to it, and export writes PowerPoint "go to slide"
+  buttons over the row. A `slide` that does not exist is rejected. `examples/basic` now has an agenda.
+- Slides have the id `slide-N`, and the presentation script accepts `#slide-N` as well as `#N`.
 - Documentation of the optional slide `subtitle` as a one-line highlight under the title: what it is
   for, where it works, how long it can be, and how it exports.
+- The `subtitle` is drawn as a highlight: accent colored, semibold, after a short accent bar (an editable
+  rectangle in PowerPoint). Covers keep the muted tagline.
 - `shadow` design tokens, off by default: `shadow.card` (0–60 px) puts a soft, blurred shadow under
   cards and hexagon and pentagon cards, and `shadow.text` (0–20 px) under slide, cover, and card
   titles. Export writes native PowerPoint shadows with a blur radius, including a text shadow on
