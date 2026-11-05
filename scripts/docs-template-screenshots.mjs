@@ -49,6 +49,16 @@ try {
     await (await page.$('[data-pptx="slide"]')).screenshot({ path: join(output, `layout-cards-${variant}.png`) });
     console.log(`Saved layout-cards-${variant}.png`);
   }
+  // A subtitle as the one-line takeaway under the title.
+  {
+    const html = renderPresentation({ metadata: { title: 'subtitle' }, theme: 'light', slides: [{ layout: 'cards', title: 'Three principles', subtitle: 'One design system keeps every slide consistent and editable', footer: 'cards', cards }] });
+    const file = join(work, 'subtitle.html');
+    await writeFile(file, html);
+    await page.goto(pathToFileURL(file).href, { waitUntil: 'load' });
+    await page.evaluate(() => document.fonts.ready);
+    await (await page.$('[data-pptx="slide"]')).screenshot({ path: join(output, 'layout-subtitle.png') });
+    console.log('Saved layout-subtitle.png');
+  }
   // Soft shadows from the shadow tokens.
   const soft = { name: 'soft', tokens: { shadow: { card: 24, text: 8 } } };
   for (const [name, layout] of [['cards', 'cards'], ['hexagon', 'cards/hexagon']]) {

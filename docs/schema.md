@@ -46,7 +46,7 @@ Every slide requires `layout` and `title`.
 | --- | --- |
 | `layout` | A layout family below, or `family/variant`; see [Layout names](#layout-names) |
 | `title` | Trimmed nonempty string, max 300 |
-| `subtitle` | Optional string, max 10,000 |
+| `subtitle` | Optional string, max 10,000; a one-line takeaway under the title, see [Subtitle](#subtitle) |
 | `footer` | Optional string, max 10,000 |
 | `notes` | Optional string, max 10,000; emitted as hidden presenter-note markup, exported as PowerPoint speaker notes, and shown with N in `preview` and presentation mode |
 | `background` | Optional background source, or `"none"`; see [Backgrounds](#backgrounds) |
@@ -54,6 +54,26 @@ Every slide requires `layout` and `title`.
 Optional strings may be empty and are not trimmed. Required text fields are
 trimmed and must remain nonempty. Schema maxima are data limits, **not promises
 that content will fit a slide**; check rendered layout separately.
+
+## Subtitle
+
+`subtitle` is the slide's one-line highlight or slogan: a sentence under the title that tells the
+reader the point of the page before they read the content. The title names the topic
+(`Three principles`); the subtitle states the takeaway (`One design system keeps every slide
+consistent and editable`).
+
+![A cards slide with a one-line subtitle under the title](../site/public/screenshots/layout-subtitle.png)
+
+- **Where it works:** every layout except `blank`, which rejects `subtitle`. On `cover` it is the
+  larger tagline; on other layouts it sits under the title in the muted color.
+- **Length:** keep it to one line, about 80 characters in English or 45 in Chinese or Japanese. The
+  header has a fixed height, so a long subtitle wraps and the overflow is clipped. Say the point,
+  not a paragraph.
+- **Export:** it becomes its own editable PowerPoint text box under the title.
+- **Styling:** a template adjusts it with the `type.subtitle` (size) and `spacing.subtitle` (gap)
+  tokens; see [Design tokens](design-tokens.md).
+- **Optional:** omit it where the title says enough. Using it on every slide dilutes it; use it on
+  the slides whose message a skimming reader should not miss.
 
 ## Layout names
 

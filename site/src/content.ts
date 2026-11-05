@@ -816,6 +816,19 @@ docker compose -f docker/compose.yaml --profile cli \\
         ],
       },
       {
+        id: "subtitle",
+        title: { en: "Subtitle: the one-line highlight", "zh-TW": "副標題：一句話重點", "zh-CN": "副标题：一句话重点", ja: "サブタイトル：ひとことの要点" },
+        body: {
+          en: "subtitle is an optional slide field for a one-line highlight or slogan under the title, so a reader grasps the point of the page at a glance. The title names the topic; the subtitle states the takeaway. It works on every layout except blank, which rejects it, and on cover it is the larger tagline. Keep it to one line, about 80 characters in English or 45 in Chinese or Japanese: the header has a fixed height, so a longer subtitle wraps and the overflow is clipped. It exports as its own editable PowerPoint text box, and templates adjust it with the type.subtitle and spacing.subtitle tokens. Use it on the slides whose message a skimming reader should not miss rather than on every slide.",
+          "zh-TW": "subtitle 是選填的投影片欄位，放在標題下方的一句話重點或口號，讓讀者一眼掌握這一頁的主旨。標題說明主題，副標題寫出結論。除了會拒絕它的 blank 之外，所有版型都能使用；在 cover 上則是較大的標語。請控制在一行內，英文約 80 字元、中日文約 45 字：標題區高度固定，過長的副標題會換行，超出的部分會被裁掉。匯出後是標題下方獨立、可編輯的 PowerPoint 文字方塊，範本可用 type.subtitle 與 spacing.subtitle token 調整。建議只用在讀者快速瀏覽時不應錯過重點的投影片，而不是每一頁都加。",
+          "zh-CN": "subtitle 是可选的幻灯片字段，放在标题下方的一句话重点或口号，让读者一眼掌握这一页的主旨。标题说明主题，副标题写出结论。除了会拒绝它的 blank 之外，所有版式都能使用；在 cover 上则是较大的标语。请控制在一行内，英文约 80 字符、中日文约 45 字：标题区高度固定，过长的副标题会换行，超出的部分会被裁掉。导出后是标题下方独立、可编辑的 PowerPoint 文本框，模板可用 type.subtitle 与 spacing.subtitle token 调整。建议只用在读者快速浏览时不应错过重点的幻灯片，而不是每一页都加。",
+          ja: "subtitle は、タイトルの下に置くひとことの要点やスローガンを書く任意のフィールドで、読み手がそのページの主旨をひと目でつかめます。タイトルはトピックを示し、サブタイトルは結論を述べます。subtitle を拒否する blank 以外のすべてのレイアウトで使え、cover ではより大きなキャッチコピーになります。1 行に収め、英語なら約 80 文字、日本語・中国語なら約 45 文字が目安です。ヘッダーの高さは固定なので、長いと折り返して、はみ出した部分は切り取られます。エクスポートするとタイトルの下に独立した編集可能な PowerPoint テキストボックスになり、テンプレートでは type.subtitle と spacing.subtitle トークンで調整できます。すべてのスライドではなく、流し読みする人にも見逃してほしくないスライドに使ってください。",
+        },
+        images: [
+          { src: "/screenshots/layout-subtitle.png", alt: { en: "Cards slide with a one-line subtitle under the title", "zh-TW": "標題下方有一句話副標題的 cards 投影片", "zh-CN": "标题下方有一句话副标题的 cards 幻灯片", ja: "タイトルの下にひとことのサブタイトルがある cards スライド" }, caption: "subtitle" },
+        ],
+      },
+      {
         id: "gallery-cards",
         title: { en: "Gallery: cards", "zh-TW": "版型一覽：cards", "zh-CN": "版式一览：cards", ja: "ギャラリー：cards" },
         body: {

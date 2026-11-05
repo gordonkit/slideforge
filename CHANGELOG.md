@@ -7,6 +7,8 @@ All notable changes to this project will be documented in this file. The format 
 
 ### Added
 
+- Documentation of the optional slide `subtitle` as a one-line highlight under the title: what it is
+  for, where it works, how long it can be, and how it exports.
 - `shadow` design tokens, off by default: `shadow.card` (0–60 px) puts a soft, blurred shadow under
   cards and hexagon and pentagon cards, and `shadow.text` (0–20 px) under slide, cover, and card
   titles. Export writes native PowerPoint shadows with a blur radius, including a text shadow on
