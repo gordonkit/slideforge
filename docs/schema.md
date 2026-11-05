@@ -67,7 +67,8 @@ variant, so `"<family>"` and `"<family>/default"` render the same.
 | --- | --- |
 | `cover` | `default` (left-aligned), `centered` (centered title, subtitle, and author), `split` (accent panel on the right third; text and footer stay left of it), `band` (full-bleed accent block behind the title and subtitle, which use the on-accent color) |
 | `quote` | `default` (left-aligned beside an accent bar), `centered` (centered, without the bar) |
-| `content`, `two-columns`, `cards`, `timeline`, `gantt`, `table`, `chart`, `blank` | `default` |
+| `cards` | `default` (rectangular cards), `rounded` (larger corners and an accent outline), `circle` (a numbered accent circle above each centered card), `hexagon` and `pentagon` (accent-filled regular polygons with a numbered circle; the card keeps the polygon's proportions and the shape is a vector graphic behind the text) |
+| `content`, `two-columns`, `timeline`, `gantt`, `table`, `chart`, `blank` | `default` |
 
 [`examples/variants/presentation.json`](../examples/variants/presentation.json)
 shows each cover variant. The `split` panel and `band` block are decorative
@@ -103,7 +104,7 @@ full-width chart. A quote is plain text drawn larger than body text, vertically
 centered in the content region; keep it to a few lines, since longer quotes clip.
 
 Cards are arranged by their count: one spans the width, two sit side by side, three
-and six use three columns, four form a 2 × 2 grid, and five are three over two.
+and six use three columns, four form a 2 × 2 grid, and five are three over two, with the lower two keeping the upper cards' width and centered.
 Timeline events are drawn left to right in equal columns on one rail, in array order;
 `date` is any short marker such as `2026`, `Q3`, or `Step 1`. Keep `text` to a line or
 two, especially with five or six events.

@@ -96,12 +96,26 @@ describe("family/variant layout names", () => {
     expect(issues({ layout: "quote/split", quote: "x" })).toEqual(['slides.0.layout: Unknown quote variant. Use "quote", "quote/default", or "quote/centered"']);
   });
 
+  it("numbers the cards of the circle, hexagon, and pentagon variants and draws the polygon", () => {
+    const cards = [1, 2, 3].map((index) => ({ title: `Card ${index}`, blocks: [{ type: "paragraph", text: "x" }] }));
+    const html = (layout: string) => renderPresentation(deck({ layout, cards }));
+    expect(html("cards")).not.toContain('class="sf-card-badge"');
+    expect(html("cards/rounded")).not.toContain('class="sf-card-badge"');
+    expect(html("cards/circle").match(/class="sf-card-badge"/g)).toHaveLength(3);
+    expect(html("cards/circle")).not.toContain('class="sf-card-shape"');
+    expect(html("cards/hexagon").match(/class="sf-card-shape"/g)).toHaveLength(3);
+    expect(html("cards/hexagon").match(/class="sf-card-badge"/g)).toHaveLength(3);
+    expect(html("cards/pentagon").match(/class="sf-card-shape"/g)).toHaveLength(3);
+    expect(html("cards/pentagon")).toContain('points="50,95.1 100,58.8 80.9,0 19.1,0 0,58.8"');
+  });
+
   it("arranges cards by their count", () => {
     for (const count of [1, 2, 3, 4, 5, 6]) {
       const cards = Array.from({ length: count }, (_, index) => ({ title: `Card ${index + 1}`, blocks: [{ type: "paragraph", text: "x" }] }));
       expect(renderPresentation(deck({ layout: "cards", cards }))).toContain(`<div class="sf-cards" data-count="${count}">`);
     }
-    expect(layoutStylesheet).toContain('.sf-cards[data-count="5"] .sf-card:nth-child(n + 4) { grid-column: span 3; }');
+    expect(layoutStylesheet).toContain('.sf-cards[data-count="5"] .sf-card:nth-child(4) { grid-column: 2 / span 2; }');
+    expect(layoutStylesheet).toContain('.sf-cards[data-count="5"] .sf-card:nth-child(5) { grid-column: 4 / span 2; }');
   });
 
   it("validates and draws timeline slides", () => {

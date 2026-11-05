@@ -15,8 +15,18 @@ export function SlideContent({ children }: { children: ReactNode }) {
   return <div className="sf-content">{children}</div>;
 }
 
-export function SlideCard({ title, children }: { title: string; children: ReactNode }) {
-  return <article className="sf-card"><h2>{title}</h2>{children}</article>;
+/** Regular polygons (the pentagon points down) drawn behind a card's text; the card keeps the polygon's aspect ratio. */
+export const cardShapes = {
+  hexagon: { viewBox: "0 0 100 86.6", points: "25,0 75,0 100,43.3 75,86.6 25,86.6 0,43.3" },
+  pentagon: { viewBox: "0 0 100 95.1", points: "50,95.1 100,58.8 80.9,0 19.1,0 0,58.8" },
+} as const;
+export type CardShape = keyof typeof cardShapes;
+
+export function SlideCard({ title, badge, shape, children }: { title: string; badge?: number | undefined; shape?: CardShape | undefined; children: ReactNode }) {
+  const content = <>{badge !== undefined && <span className="sf-card-badge" aria-hidden="true">{badge}</span>}<h2>{title}</h2>{children}</>;
+  if (shape === undefined) return <article className="sf-card">{content}</article>;
+  const { viewBox, points } = cardShapes[shape];
+  return <article className="sf-card"><div className="sf-card-inner"><svg className="sf-card-shape" viewBox={viewBox} aria-hidden="true"><polygon points={points} /></svg>{content}</div></article>;
 }
 
 export function SlideColumns({ children }: { children: ReactNode }) {

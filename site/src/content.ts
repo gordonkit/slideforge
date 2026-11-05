@@ -505,10 +505,10 @@ docker compose -f docker/compose.yaml --profile cli \\
         id: "slides",
         title: { en: "Slides and layouts", "zh-TW": "投影片與版型", "zh-CN": "幻灯片与版式", ja: "スライドとレイアウト" },
         body: {
-          en: "Every slide needs layout and title, and may have subtitle, footer, notes, and background. Notes become PowerPoint speaker notes. layout is a family, or family/variant such as cover/default: the family decides the fields and the variant only how the slide is drawn, so changing it leaves the content unchanged. A bare family is drawn as default. cover also has centered, split (an accent panel on the right third), and band (an accent block behind the title), and quote has centered; the other families have only default. Each family adds its own fields:",
-          "zh-TW": "每張投影片都需要 layout 與 title，可另加 subtitle、footer、notes 與 background，notes 會成為 PowerPoint 的演講者備忘稿。layout 可以是版型系列，或 cover/default 這類「系列/變化」：系列決定欄位，變化只決定呈現方式，因此換變化不必改內容。只寫系列名稱時使用 default。cover 另有 centered、split（右側三分之一的強調色塊）與 band（標題後方的強調色帶），quote 另有 centered，其他系列只有 default。各系列另有專屬欄位：",
-          "zh-CN": "每张幻灯片都需要 layout 与 title，可另加 subtitle、footer、notes 与 background，notes 会成为 PowerPoint 的演讲者备注。layout 可以是版式系列，或 cover/default 这类“系列/变体”：系列决定字段，变体只决定呈现方式，因此换变体不必改内容。只写系列名称时使用 default。cover 另有 centered、split（右侧三分之一的强调色块）与 band（标题后方的强调色带），quote 另有 centered，其他系列只有 default。各系列另有专属字段：",
-          ja: "各スライドには layout と title が必要で、subtitle、footer、notes、background も指定できます。notes は PowerPoint の発表者ノートになります。layout はレイアウトのファミリー、または cover/default のような「ファミリー/バリアント」です。ファミリーがフィールドを決め、バリアントは描き方だけを決めるので、バリアントを変えても内容はそのままです。ファミリー名だけなら default で描かれます。cover にはほかに centered、split（右側 3 分の 1 の強調色パネル）、band（タイトルの背後の強調色の帯）が、quote には centered があり、ほかのファミリーは default だけです。ファミリーごとに次のフィールドが加わります。",
+          en: "Every slide needs layout and title, and may have subtitle, footer, notes, and background. Notes become PowerPoint speaker notes. layout is a family, or family/variant such as cover/default: the family decides the fields and the variant only how the slide is drawn, so changing it leaves the content unchanged. A bare family is drawn as default. cover also has centered, split (an accent panel on the right third), and band (an accent block behind the title); quote has centered; cards has rounded, circle (a numbered circle above each card), hexagon (a regular six-sided shape), and pentagon (a regular five-sided shape); the other families have only default. Each family adds its own fields:",
+          "zh-TW": "每張投影片都需要 layout 與 title，可另加 subtitle、footer、notes 與 background，notes 會成為 PowerPoint 的演講者備忘稿。layout 可以是版型系列，或 cover/default 這類「系列/變化」：系列決定欄位，變化只決定呈現方式，因此換變化不必改內容。只寫系列名稱時使用 default。cover 另有 centered、split（右側三分之一的強調色塊）與 band（標題後方的強調色帶），quote 另有 centered，cards 另有 rounded、circle（每張卡片上方有編號圓形）、hexagon（正六角形）與 pentagon（正五角形），其他系列只有 default。各系列另有專屬欄位：",
+          "zh-CN": "每张幻灯片都需要 layout 与 title，可另加 subtitle、footer、notes 与 background，notes 会成为 PowerPoint 的演讲者备注。layout 可以是版式系列，或 cover/default 这类“系列/变体”：系列决定字段，变体只决定呈现方式，因此换变体不必改内容。只写系列名称时使用 default。cover 另有 centered、split（右侧三分之一的强调色块）与 band（标题后方的强调色带），quote 另有 centered，cards 另有 rounded、circle（每张卡片上方有编号圆形）、hexagon（正六边形）与 pentagon（正五边形），其他系列只有 default。各系列另有专属字段：",
+          ja: "各スライドには layout と title が必要で、subtitle、footer、notes、background も指定できます。notes は PowerPoint の発表者ノートになります。layout はレイアウトのファミリー、または cover/default のような「ファミリー/バリアント」です。ファミリーがフィールドを決め、バリアントは描き方だけを決めるので、バリアントを変えても内容はそのままです。ファミリー名だけなら default で描かれます。cover にはほかに centered、split（右側 3 分の 1 の強調色パネル）、band（タイトルの背後の強調色の帯）が、quote には centered が、cards には rounded、circle（各カードの上に番号付きの円）、hexagon（正六角形）、pentagon（正五角形）があり、ほかのファミリーは default だけです。ファミリーごとに次のフィールドが加わります。",
         },
         table: {
           caption: { en: "Layout fields", "zh-TW": "版型欄位", "zh-CN": "版式字段", ja: "レイアウトのフィールド" },
@@ -800,16 +800,21 @@ docker compose -f docker/compose.yaml --profile cli \\
         id: "gallery-cards",
         title: { en: "Gallery: cards", "zh-TW": "版型一覽：cards", "zh-CN": "版式一览：cards", ja: "ギャラリー：cards" },
         body: {
-          en: "The grid follows the number of cards, with no extra field: one card spans the width, two sit side by side, three and six use three columns, four form a 2 × 2 grid, and five are three over two.",
-          "zh-TW": "格線依卡片張數自動決定，不需要額外欄位：一張佔滿寬度、兩張並排、三張與六張為三欄、四張為 2 × 2、五張為上三下二。",
-          "zh-CN": "网格依卡片张数自动决定，不需要额外字段：一张占满宽度、两张并排、三张与六张为三栏、四张为 2 × 2、五张为上三下二。",
-          ja: "グリッドはカードの枚数で決まり、追加のフィールドは要りません。1 枚は全幅、2 枚は横並び、3 枚と 6 枚は 3 列、4 枚は 2 × 2、5 枚は上に 3 枚、下に 2 枚です。",
+          en: "The grid follows the number of cards, with no extra field: one card spans the width, two sit side by side, three and six use three columns, four form a 2 × 2 grid, and five are three over two, with the lower two keeping the upper cards' width and centered. Four variants change only the card shape: rounded (larger corners and an accent outline), circle (a numbered accent circle above each centered card), and hexagon and pentagon (accent-filled regular polygons with the number). A polygon keeps its proportions, leaving room above and below instead of stretching, so it suits a short title and a line or two. It is drawn as a vector graphic behind the text, which stays editable in PowerPoint.",
+          "zh-TW": "格線依卡片張數自動決定，不需要額外欄位：一張佔滿寬度、兩張並排、三張與六張為三欄、四張為 2 × 2、五張為上三下二（下排兩張維持與上排相同的寬度並置中）。另有四種變化只改變卡片形狀：rounded（較大的圓角與強調色外框）、circle（置中的卡片上方有編號強調色圓形），以及 hexagon 與 pentagon（強調色填滿、附編號的正六角形與正五角形）。多邊形維持固有比例，上下會留白而不會被拉長，適合短標題加一兩行文字。多邊形是畫在文字後方的向量圖形，文字在 PowerPoint 中仍可編輯。",
+          "zh-CN": "网格依卡片张数自动决定，不需要额外字段：一张占满宽度、两张并排、三张与六张为三栏、四张为 2 × 2、五张为上三下二（下排两张保持与上排相同的宽度并居中）。另有四种变体只改变卡片形状：rounded（较大的圆角与强调色外框）、circle（居中的卡片上方有编号强调色圆形），以及 hexagon 与 pentagon（强调色填满、附编号的正六边形与正五边形）。多边形保持固有比例，上下会留白而不会被拉长，适合短标题加一两行文字。多边形是画在文字后方的矢量图形，文字在 PowerPoint 中仍可编辑。",
+          ja: "グリッドはカードの枚数で決まり、追加のフィールドは要りません。1 枚は全幅、2 枚は横並び、3 枚と 6 枚は 3 列、4 枚は 2 × 2、5 枚は上に 3 枚、下に 2 枚（下の 2 枚は上と同じ幅のまま中央に配置）です。ほかに、カードの形だけを変える 4 つのバリアントがあります。rounded（大きめの角丸とアクセント色の枠）、circle（中央揃えのカードの上に番号付きのアクセント色の円）、hexagon と pentagon（アクセント色で塗りつぶした番号付きの正六角形と正五角形）です。多角形は縦横比を保つため、引き伸ばされずに上下に余白ができ、短いタイトルと 1〜2 行の文に向いています。多角形は文字の背後にベクター図形として描かれ、文字は PowerPoint で編集できます。",
         },
-        images: [2, 3, 4, 5, 6].map((count) => ({
+        images: [...[2, 3, 4, 5, 6].map((count) => ({
           src: `/screenshots/layout-cards-${count}.png`,
           alt: { en: `Cards slide with ${count} cards`, "zh-TW": `含 ${count} 張卡片的 cards 投影片`, "zh-CN": `含 ${count} 张卡片的 cards 幻灯片`, ja: `カードが ${count} 枚の cards スライド` },
           caption: { en: `${count} cards`, "zh-TW": `${count} 張卡片`, "zh-CN": `${count} 张卡片`, ja: `カード ${count} 枚` },
         })),
+          { src: "/screenshots/layout-cards-rounded.png", alt: { en: "Cards slide with rounded cards and accent outlines", "zh-TW": "圓角卡片與強調色外框的 cards 投影片", "zh-CN": "圆角卡片与强调色外框的 cards 幻灯片", ja: "角丸でアクセント色の枠の cards スライド" }, caption: "cards/rounded" },
+          { src: "/screenshots/layout-cards-circle.png", alt: { en: "Cards slide with a numbered circle above each card", "zh-TW": "每張卡片上方有編號圓形的 cards 投影片", "zh-CN": "每张卡片上方有编号圆形的 cards 幻灯片", ja: "各カードの上に番号付きの円がある cards スライド" }, caption: "cards/circle" },
+          { src: "/screenshots/layout-cards-hexagon.png", alt: { en: "Cards slide with accent-filled hexagon cards", "zh-TW": "強調色六角形卡片的 cards 投影片", "zh-CN": "强调色六边形卡片的 cards 幻灯片", ja: "アクセント色の六角形カードの cards スライド" }, caption: "cards/hexagon" },
+          { src: "/screenshots/layout-cards-pentagon.png", alt: { en: "Cards slide with accent-filled pentagon cards", "zh-TW": "強調色五角形卡片的 cards 投影片", "zh-CN": "强调色五边形卡片的 cards 幻灯片", ja: "アクセント色の五角形カードの cards スライド" }, caption: "cards/pentagon" },
+        ],
       },
       {
         id: "gallery-timeline",

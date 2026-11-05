@@ -3,9 +3,31 @@
 .sf-card h2 { margin: 0 0 var(--sf-spacing-card-title); font-size: var(--sf-type-card-title); line-height: var(--sf-type-title-leading); }
 .sf-card .sf-blocks { font-size: var(--sf-type-card-body); }
 /* The grid follows the card count: 1 full width, 2 side by side, 3 and 6 in threes, 4 as 2 × 2,
-   and 5 as three over two on a six-column grid. */
+   and 5 as three over two on a six-column grid. The two lower cards keep the width of the upper
+   ones and sit centered, rather than stretching to fill the row. */
 .sf-cards[data-count="1"] { grid-template-columns: minmax(0, 1fr); }
 .sf-cards[data-count="2"], .sf-cards[data-count="4"] { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .sf-cards[data-count="5"] { grid-template-columns: repeat(6, minmax(0, 1fr)); }
 .sf-cards[data-count="5"] .sf-card { grid-column: span 2; }
-.sf-cards[data-count="5"] .sf-card:nth-child(n + 4) { grid-column: span 3; }
+.sf-cards[data-count="5"] .sf-card:nth-child(4) { grid-column: 2 / span 2; }
+.sf-cards[data-count="5"] .sf-card:nth-child(5) { grid-column: 4 / span 2; }
+/* rounded: softer corners and an accent outline. */
+.sf-variant-rounded .sf-card { border-radius: calc(var(--sf-border-radius) * 2.5); border-color: var(--sf-accent); }
+/* circle: a numbered accent circle above a centered card. */
+.sf-variant-circle .sf-card { align-items: center; text-align: center; border-radius: calc(var(--sf-border-radius) * 2.5); }
+.sf-variant-circle .sf-card-badge, .sf-variant-hexagon .sf-card-badge, .sf-variant-pentagon .sf-card-badge { flex: none; display: flex; align-items: center; justify-content: center; width: 84px; height: 84px; margin-bottom: var(--sf-spacing-card-title); border-radius: 50%; background: var(--sf-accent); color: var(--sf-on-accent); font-size: var(--sf-type-card-title); font-weight: var(--sf-type-bold); }
+/* hexagon and pentagon: a regular accent-filled polygon drawn behind the text. The card is a size
+   container, and the inner box takes the largest polygon-shaped area that fits it, centered, so the
+   shape is never stretched and leaves room above and below (or to the sides) instead. Padding is in
+   terms of the polygon's own width (--sf-shape-width). */
+.sf-variant-hexagon .sf-card, .sf-variant-pentagon .sf-card { container-type: size; display: grid; place-items: center; padding: 0; background: none; border: 0; color: var(--sf-on-accent); }
+.sf-variant-hexagon .sf-card-inner { --sf-shape-ratio: 1.1547; }
+.sf-variant-pentagon .sf-card-inner { --sf-shape-ratio: 1.0515; }
+.sf-card-inner { --sf-shape-width: min(100cqw, calc(100cqh * var(--sf-shape-ratio))); position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; width: var(--sf-shape-width); height: calc(var(--sf-shape-width) / var(--sf-shape-ratio)); text-align: center; overflow: hidden; }
+.sf-variant-hexagon .sf-card-inner { padding: calc(var(--sf-shape-width) * 0.04) calc(var(--sf-shape-width) * 0.18); }
+.sf-variant-pentagon .sf-card-inner { padding: calc(var(--sf-shape-width) * 0.1) calc(var(--sf-shape-width) * 0.1) calc(var(--sf-shape-width) * 0.3); }
+.sf-card-shape { position: absolute; inset: 0; width: 100%; height: 100%; z-index: -1; }
+.sf-card-shape polygon { fill: var(--sf-accent); }
+.sf-variant-hexagon .sf-card-badge, .sf-variant-pentagon .sf-card-badge { position: relative; width: 60px; height: 60px; margin-bottom: 12px; background: var(--sf-on-accent); color: var(--sf-accent); font-size: var(--sf-type-card-body); }
+.sf-variant-hexagon .sf-card h2, .sf-variant-pentagon .sf-card h2 { margin-bottom: 12px; }
+.sf-variant-hexagon .sf-card .sf-blocks, .sf-variant-pentagon .sf-card .sf-blocks { height: auto; flex: none; font-size: calc(var(--sf-type-card-body) * 0.8); }

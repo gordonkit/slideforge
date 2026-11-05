@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Regenerates the built-in template screenshots in site/public/screenshots/: npm run docs:template-screenshots
+// Regenerates the built-in template and cards variant screenshots in site/public/screenshots/: npm run docs:template-screenshots
 // Run `npm run build` first. Needs no network access; the pixels depend on the installed fonts.
 import { mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
@@ -36,6 +36,18 @@ try {
       await (await page.$('[data-pptx="slide"]')).screenshot({ path: join(output, `template-${name}-${theme}.png`) });
       console.log(`Saved template-${name}-${theme}.png`);
     }
+  }
+  // The cards variants that change the card shape, three cards each.
+  const card = (title, text) => ({ title, blocks: [{ type: 'paragraph', text }] });
+  const cards = [card('Clarity', 'One idea at a time.'), card('Consistency', 'Shared layouts and tokens.'), card('Editability', 'Text stays editable.')];
+  for (const variant of ['rounded', 'circle', 'hexagon', 'pentagon']) {
+    const html = renderPresentation({ metadata: { title: variant }, theme: 'light', slides: [{ layout: `cards/${variant}`, title: 'Three principles', footer: `cards/${variant}`, cards }] });
+    const file = join(work, `cards-${variant}.html`);
+    await writeFile(file, html);
+    await page.goto(pathToFileURL(file).href, { waitUntil: 'load' });
+    await page.evaluate(() => document.fonts.ready);
+    await (await page.$('[data-pptx="slide"]')).screenshot({ path: join(output, `layout-cards-${variant}.png`) });
+    console.log(`Saved layout-cards-${variant}.png`);
   }
 } finally {
   await browser.close();

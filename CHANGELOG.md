@@ -7,6 +7,11 @@ All notable changes to this project will be documented in this file. The format 
 
 ### Added
 
+- `cards/rounded`, `cards/circle`, `cards/hexagon`, and `cards/pentagon` variants: larger
+  corners with an accent outline, a numbered accent circle above each centered card, and
+  accent-filled regular hexagons and pentagons that keep their proportions instead of
+  stretching. Cards and circles export as native PowerPoint shapes; the polygons are SVG
+  pictures behind editable text.
 - Eight built-in color templates, each with a light and a dark palette: `indigo-midnight`,
   `forest-emerald`, `ocean-violet`, `terracotta-graphite`, `sunset-orange`, `coffee-brown`,
   `crimson-red`, and `magenta-pink`. Light-theme accents keep at least about 4.5:1 contrast
@@ -39,6 +44,8 @@ All notable changes to this project will be documented in this file. The format 
 
 ### Changed
 
+- Five cards: the lower two keep the width of the upper three and are centered, instead of
+  stretching to fill the row.
 - Remote (HTTP/HTTPS) images are downloaded by SlideForge in Node instead of being
   loaded by the browser, so the image host's CORS and `Cross-Origin-Resource-Policy`
   headers no longer matter. Limits: 25 MiB per image, 200 MiB per deck, 30 seconds per

@@ -19,6 +19,9 @@
   that every browser feature becomes a native Office object. Charts are
   HTML/CSS bars, not Office chart objects. Images remain images; table conversion
   behavior depends on the converter.
+- The export ignores CSS `clip-path`, so a non-rectangular shape has to be an inline SVG.
+  `cards/hexagon` and `cards/pentagon` draw their polygons that way: each becomes a vector
+  picture behind the card's text, and the text and number stay editable.
 - SlideForge has no automatic unsupported-content raster fallback. Upstream may
   rasterize pseudo-elements/effects or other content internally, which can reduce
   editability. Arbitrary scripts, canvas, video, animations, SVG features, and

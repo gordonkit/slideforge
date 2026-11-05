@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { blocks, slideObject, text } from "../../schemas/fields.js";
 
-const variants = ["default"] as const;
+const variants = ["default", "rounded", "circle", "hexagon", "pentagon"] as const;
 
 export const cards = {
   family: "cards",
