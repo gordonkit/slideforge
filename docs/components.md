@@ -86,7 +86,7 @@ track marked the same way. All of them export as editable shapes.
 
 The screenshots and the fields of every layout moved to the [layout gallery](layouts.md), split into
 [opening and structure](layouts-structure.md), [text and media](layouts-content.md),
-[cards and panels](layouts-cards.md), [flows and diagrams](layouts-flow.md), and [tables and charts](layouts-data.md).
+[cards and panels](layouts-cards.md), [flows and diagrams](layouts-flow.md), and [tables, charts, and quotes](layouts-data.md).
 
 ## Custom trusted HTML
 

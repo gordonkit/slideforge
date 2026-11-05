@@ -22,12 +22,6 @@ A picture as the subject. `image` is an image source (relative path, HTTP(S) URL
 - **Cropping:** the picture fills its area, cropped to fit, so choose an image with room around its subject. The
   export keeps the crop as a picture.
 
-### `quote`
-
-| `quote` (`default`) | `quote/centered` |
-| --- | --- |
-| ![Quote beside an accent bar](../site/public/screenshots/layout-quote.png) | ![Centered quote without the bar](../site/public/screenshots/layout-quote-centered.png) |
-
 ### `code`
 
 A code listing in a monospaced font, kept as written, with an optional `language` label above it. The listing may

@@ -1,6 +1,6 @@
-# Layouts: tables and charts
+# Layouts: tables, charts, and quotes
 
-Slides that present data. See the [layout gallery](layouts.md) for every layout.
+Slides that present data, and a quotation. See the [layout gallery](layouts.md) for every layout.
 
 ### `table` and `chart`
 
@@ -17,3 +17,9 @@ The chart has three variants over the same `data`:
 - **`columns`** draws vertical columns with the value above and the label below.
 - **`donut`** draws a ring of shares with a legend of each label and its percentage of the total. The ring is exported as
   editable freeform shapes; the legend text stays editable.
+
+### `quote`
+
+| `quote` (`default`) | `quote/centered` |
+| --- | --- |
+| ![Quote beside an accent bar](../site/public/screenshots/layout-quote.png) | ![Centered quote without the bar](../site/public/screenshots/layout-quote-centered.png) |
