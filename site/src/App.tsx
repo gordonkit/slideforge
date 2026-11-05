@@ -174,13 +174,13 @@ function App() {
 
       <aside className={`scrollbar-hidden fixed inset-y-0 left-0 z-50 w-72 overflow-y-auto overscroll-y-contain border-r border-slate-200 bg-mist px-5 pb-8 pt-5 transition-transform dark:border-slate-800 dark:bg-[#151b23] lg:top-16 lg:z-30 lg:w-64 lg:translate-x-0 lg:pt-7 ${mobileOpen ? "translate-x-0" : "-translate-x-full"}`}>
         <div className="mb-7 flex items-center justify-between lg:hidden"><Logo /><button className="icon-button" onClick={() => setMobileOpen(false)} aria-label={t.close}><XMarkIcon className="h-5 w-5" /></button></div>
-        <nav className="space-y-7">
+        <nav>
           {categories.map((category) => (
-            <div key={category.id}>
-              <p className="mb-2 px-2 text-[11px] font-bold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-500">{category.label[locale]}</p>
-              <div className="space-y-0.5">
+            <div key={category.id} className="mt-5 border-t border-slate-300 pt-4 first:mt-0 first:border-t-0 first:pt-0 dark:border-slate-700">
+              <p className="mb-1.5 px-2 text-[11px] font-bold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-500">{category.label[locale]}</p>
+              <div>
                 {pages.filter((item) => item.category === category.id).map((item) => (
-                  <a key={item.id} href={routeHref(locale, item.id)} onClick={(event) => { event.preventDefault(); navigate(item.id); }} className={`block w-full border-l-2 px-3 py-2 text-left text-sm transition ${item.id === page.id ? "border-signal bg-white font-semibold text-ink shadow-xs dark:bg-slate-900 dark:text-white" : "border-transparent text-slate-600 hover:border-slate-300 hover:text-ink dark:text-slate-400 dark:hover:text-white"}`}>{item.title[locale]}</a>
+                  <a key={item.id} href={routeHref(locale, item.id)} onClick={(event) => { event.preventDefault(); navigate(item.id); }} className={`block w-full border-l-2 px-3 py-1.5 text-left text-sm transition ${item.id === page.id ? "border-signal bg-white font-semibold text-ink shadow-xs dark:bg-slate-900 dark:text-white" : "border-transparent text-slate-600 hover:border-slate-300 hover:text-ink dark:text-slate-400 dark:hover:text-white"}`}>{item.title[locale]}</a>
                 ))}
               </div>
             </div>
