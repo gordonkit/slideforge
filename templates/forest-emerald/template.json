@@ -1,0 +1,28 @@
+{
+  "name": "forest-emerald",
+  "description": "Forest and emerald green: calm, nature and sustainability.",
+  "palette": {
+    "light": {
+      "background": "#fbfdf9",
+      "foreground": "#14281d",
+      "muted": "#4b6355",
+      "accent": "#15803d",
+      "onAccent": "#ffffff",
+      "surface": "#ecf4ec",
+      "border": "#bfd5c4",
+      "canvas": "#dde6df",
+      "outline": "#fbfdf9"
+    },
+    "dark": {
+      "background": "#08170f",
+      "foreground": "#ecfdf5",
+      "muted": "#8fb8a3",
+      "accent": "#34d399",
+      "onAccent": "#08170f",
+      "surface": "#12281c",
+      "border": "#26493a",
+      "canvas": "#d8dee8",
+      "outline": "#08170f"
+    }
+  }
+}

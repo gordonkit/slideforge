@@ -117,6 +117,79 @@ variant; a slide that names one (`"cover/default"`) keeps it.
 For example, a template with `backgrounds.cover` and a presentation with only
 `backgrounds.default` still draws covers with the template's cover background.
 
+## Built-in templates
+
+Besides `default`, these templates ship with the package. Each one overrides both
+palettes; choose the look with `template` and the palette with `theme`:
+
+```json
+{ "template": "indigo-midnight", "theme": "dark" }
+```
+
+| Template | Light accent | Dark accent | Suited to |
+| --- | --- | --- | --- |
+| `indigo-midnight` | `#4f46e5` | `#60a5fa` | Professional and tech-leaning: product and engineering decks |
+| `forest-emerald` | `#15803d` | `#34d399` | Calm and natural: sustainability, education, health |
+| `ocean-violet` | `#0e7490` | `#a78bfa` | Clean data reports (light, teal) and a creative dark mode (violet) |
+| `corporate` | `#b45309` | `#f5a524` | Navy and amber, square corners, banded cover |
+| `terracotta-graphite` | `#c2410c` | `#fbbf24` | Warm brand stories (light) and polished keynotes (graphite and amber, dark) |
+| `sunset-orange` | `#cf450a` | `#fb923c` | Energetic launches and pitches |
+| `coffee-brown` | `#8b4513` | `#d4a373` | Editorial and heritage brands |
+| `crimson-red` | `#c81e3a` | `#fb7185` | Urgent, confident, high-impact messages |
+| `magenta-pink` | `#c026d3` | `#e879f9` | Playful, creative, youth-facing decks |
+
+Light-theme accents keep at least about 4.5:1 contrast with the background, which is why
+the orange, pink, and red light accents are deeper than their dark counterparts. SlideForge
+does not check contrast; test your own colors.
+
+Each screenshot is the same chart slide, so only the colors differ. Regenerate them with
+`npm run docs:template-screenshots` after `npm run build`.
+
+**`indigo-midnight`**
+
+![indigo-midnight template, light theme](../site/public/screenshots/template-indigo-midnight-light.png)
+![indigo-midnight template, dark theme](../site/public/screenshots/template-indigo-midnight-dark.png)
+
+**`forest-emerald`**
+
+![forest-emerald template, light theme](../site/public/screenshots/template-forest-emerald-light.png)
+![forest-emerald template, dark theme](../site/public/screenshots/template-forest-emerald-dark.png)
+
+**`ocean-violet`**
+
+![ocean-violet template, light theme](../site/public/screenshots/template-ocean-violet-light.png)
+![ocean-violet template, dark theme](../site/public/screenshots/template-ocean-violet-dark.png)
+
+**`corporate`**
+
+![corporate template, light theme](../site/public/screenshots/template-corporate-light.png)
+![corporate template, dark theme](../site/public/screenshots/template-corporate-dark.png)
+
+**`terracotta-graphite`**
+
+![terracotta-graphite template, light theme](../site/public/screenshots/template-terracotta-graphite-light.png)
+![terracotta-graphite template, dark theme](../site/public/screenshots/template-terracotta-graphite-dark.png)
+
+**`sunset-orange`**
+
+![sunset-orange template, light theme](../site/public/screenshots/template-sunset-orange-light.png)
+![sunset-orange template, dark theme](../site/public/screenshots/template-sunset-orange-dark.png)
+
+**`coffee-brown`**
+
+![coffee-brown template, light theme](../site/public/screenshots/template-coffee-brown-light.png)
+![coffee-brown template, dark theme](../site/public/screenshots/template-coffee-brown-dark.png)
+
+**`crimson-red`**
+
+![crimson-red template, light theme](../site/public/screenshots/template-crimson-red-light.png)
+![crimson-red template, dark theme](../site/public/screenshots/template-crimson-red-dark.png)
+
+**`magenta-pink`**
+
+![magenta-pink template, light theme](../site/public/screenshots/template-magenta-pink-light.png)
+![magenta-pink template, dark theme](../site/public/screenshots/template-magenta-pink-dark.png)
+
 ## Using a template
 
 Name it in the presentation's `template` field:
@@ -131,8 +204,9 @@ Name it in the presentation's `template` field:
 
 The value is one of:
 
-- a **built-in** template name: `default` (no overrides) or `corporate` (navy and
-  amber, square corners, `cover/band`, and an amber rule above each title). They
+- a **built-in** template name: `default` (no overrides), `corporate` (navy and
+  amber, square corners, `cover/band`, and an amber rule above each title), or one
+  of the color templates under [Built-in templates](#built-in-templates). They
   ship in the package's `templates/` folder and in the container image;
 - a **path** starting with `./` or `../`, relative to the presentation JSON's
   folder, to a template `.json` file or to a folder that holds `template.json`.

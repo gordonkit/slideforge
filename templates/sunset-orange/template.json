@@ -1,0 +1,28 @@
+{
+  "name": "sunset-orange",
+  "description": "Vivid orange on warm neutrals: energetic, launches and pitches.",
+  "palette": {
+    "light": {
+      "background": "#fffbf7",
+      "foreground": "#2a1608",
+      "muted": "#7c5a43",
+      "accent": "#cf450a",
+      "onAccent": "#ffffff",
+      "surface": "#fff0e3",
+      "border": "#fdc9a0",
+      "canvas": "#f1e0d3",
+      "outline": "#fffbf7"
+    },
+    "dark": {
+      "background": "#1a0f08",
+      "foreground": "#fff7ed",
+      "muted": "#d6b79e",
+      "accent": "#fb923c",
+      "onAccent": "#1a0f08",
+      "surface": "#2b1a0f",
+      "border": "#5a3820",
+      "canvas": "#d8dee8",
+      "outline": "#1a0f08"
+    }
+  }
+}

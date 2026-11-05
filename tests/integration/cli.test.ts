@@ -291,7 +291,7 @@ describe('templates', () => {
     expect(backgroundCount(data)).toBe(layoutFamilies.length);
 
     await expect(exec(process.execPath, [cli, 'init', join(directory, 'unknown.json'), '--template', 'nope']))
-      .rejects.toMatchObject({ code: 1, stderr: expect.stringContaining('Unknown template "nope". Use "corporate" or "default"') });
+      .rejects.toMatchObject({ code: 1, stderr: expect.stringContaining('Unknown template "nope". Use "coffee-brown", "corporate"') });
     await expect(readFile(join(directory, 'unknown.json'))).rejects.toMatchObject({ code: 'ENOENT' });
 
     const nested = join(directory, 'new', 'folder', 'deck.json');

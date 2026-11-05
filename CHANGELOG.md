@@ -7,6 +7,11 @@ All notable changes to this project will be documented in this file. The format 
 
 ### Added
 
+- Eight built-in color templates, each with a light and a dark palette: `indigo-midnight`,
+  `forest-emerald`, `ocean-violet`, `terracotta-graphite`, `sunset-orange`, `coffee-brown`,
+  `crimson-red`, and `magenta-pink`. Light-theme accents keep at least about 4.5:1 contrast
+  with the background. The documentation lists them with screenshots, and
+  `npm run docs:template-screenshots` regenerates the images.
 - `present <json> [--port 5181]` CLI command: serves the deck on loopback in presentation
   mode, with no reload client and no file watching, so a save never changes the screen
   mid-talk. API: `presentPresentation(input, port)` and `DEFAULT_PRESENT_PORT`.

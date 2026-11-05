@@ -1,0 +1,28 @@
+{
+  "name": "magenta-pink",
+  "description": "Electric magenta and pink: playful, creative, youth-facing.",
+  "palette": {
+    "light": {
+      "background": "#fffafd",
+      "foreground": "#2d0f22",
+      "muted": "#80506f",
+      "accent": "#c026d3",
+      "onAccent": "#ffffff",
+      "surface": "#fdf0fb",
+      "border": "#f3c6ec",
+      "canvas": "#ecdae8",
+      "outline": "#fffafd"
+    },
+    "dark": {
+      "background": "#190a1c",
+      "foreground": "#fdf4ff",
+      "muted": "#d0a6d6",
+      "accent": "#e879f9",
+      "onAccent": "#190a1c",
+      "surface": "#2a1230",
+      "border": "#5a2a63",
+      "canvas": "#d8dee8",
+      "outline": "#190a1c"
+    }
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "name": "crimson-red",
+  "description": "Bold crimson red: urgent, confident, high-impact.",
+  "palette": {
+    "light": {
+      "background": "#fffafa",
+      "foreground": "#2a0f14",
+      "muted": "#7a4a52",
+      "accent": "#c81e3a",
+      "onAccent": "#ffffff",
+      "surface": "#fdecee",
+      "border": "#f5c0c8",
+      "canvas": "#ecd9dc",
+      "outline": "#fffafa"
+    },
+    "dark": {
+      "background": "#1a0a0e",
+      "foreground": "#fff1f2",
+      "muted": "#d4a5ad",
+      "accent": "#fb7185",
+      "onAccent": "#1a0a0e",
+      "surface": "#2b1219",
+      "border": "#5c2a35",
+      "canvas": "#d8dee8",
+      "outline": "#1a0a0e"
+    }
+  }
+}

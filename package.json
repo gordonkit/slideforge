@@ -31,7 +31,8 @@
     "test:package": "node scripts/check-package.mjs",
     "check:release": "node scripts/check-release.mjs",
     "prepack": "npm run build",
-    "docs:screenshots": "node scripts/docs-screenshots.mjs"
+    "docs:screenshots": "node scripts/docs-screenshots.mjs",
+    "docs:template-screenshots": "node scripts/docs-template-screenshots.mjs"
   },
   "repository": {
     "type": "git",

@@ -1,0 +1,28 @@
+{
+  "name": "coffee-brown",
+  "description": "Rich coffee brown: grounded, editorial and heritage brands.",
+  "palette": {
+    "light": {
+      "background": "#fbf7f2",
+      "foreground": "#2e1f14",
+      "muted": "#78604d",
+      "accent": "#8b4513",
+      "onAccent": "#ffffff",
+      "surface": "#f1e6d9",
+      "border": "#d9c0a5",
+      "canvas": "#e5d9cb",
+      "outline": "#fbf7f2"
+    },
+    "dark": {
+      "background": "#1c1410",
+      "foreground": "#f6ede4",
+      "muted": "#bfa58f",
+      "accent": "#d4a373",
+      "onAccent": "#1c1410",
+      "surface": "#2b2019",
+      "border": "#55412f",
+      "canvas": "#d8dee8",
+      "outline": "#1c1410"
+    }
+  }
+}

@@ -593,10 +593,10 @@ docker compose -f docker/compose.yaml --profile cli \\
         id: "templates",
         title: { en: "Templates", "zh-TW": "範本", "zh-CN": "模板", ja: "テンプレート" },
         body: {
-          en: "A template holds the look apart from the content: palette overrides for light and dark, a font family, numeric design tokens within bounds that keep the canvas geometry, backgrounds, and the variant each family's bare-name slides use. Name one with template: a built-in (default or corporate) or a ./ or ../ path to a template file or a folder with template.json. Its relative images resolve from the template's folder. The presentation's own theme, fontFamily, backgrounds entries, and a variant written in layout take precedence; changing the template restyles the deck without touching its slides. examples/templates is a deck with its own template to try this on.",
-          "zh-TW": "範本把外觀與內容分開：淺色與深色的配色覆寫、字型、在不破壞畫布幾何的範圍內調整數值 design token、背景，以及各系列只寫系列名稱時使用的變化。以 template 指定：內建範本（default 或 corporate），或以 ./、../ 開頭、指向範本檔或含 template.json 資料夾的路徑。範本的相對圖片路徑以範本資料夾為基準。簡報自己的 theme、fontFamily、backgrounds 項目，以及 layout 中寫明的變化優先；換範本即可改變整份簡報的外觀，不必修改投影片。examples/templates 是一份附有自己範本的簡報，可以直接試試看。",
-          "zh-CN": "模板把外观与内容分开：浅色与深色的配色覆盖、字体、在不破坏画布几何的范围内调整数值 design token、背景，以及各系列只写系列名称时使用的变体。以 template 指定：内置模板（default 或 corporate），或以 ./、../ 开头、指向模板文件或含 template.json 文件夹的路径。模板的相对图片路径以模板文件夹为基准。演示文稿自己的 theme、fontFamily、backgrounds 条目，以及 layout 中写明的变体优先；换模板即可改变整份演示文稿的外观，不必修改幻灯片。examples/templates 是一份附有自己模板的演示文稿，可以直接试试看。",
-          ja: "テンプレートは見た目を内容から切り離します。ライトとダークの配色の上書き、フォントファミリー、キャンバスの幾何を崩さない範囲の数値デザイントークン、背景、そしてファミリー名だけのスライドに使うバリアントを指定できます。template で指定し、値は組み込み（default または corporate）か、テンプレートのファイルまたは template.json を含むフォルダーを指す ./ か ../ で始まるパスです。テンプレートの相対画像パスはテンプレートのフォルダーから解決されます。プレゼンテーション自身の theme、fontFamily、backgrounds の項目、layout に書いたバリアントが優先されます。テンプレートを替えれば、スライドに手を入れずにデッキ全体の見た目が変わります。examples/templates は独自のテンプレートを持つデッキで、そのまま試せます。",
+          en: "A template holds the look apart from the content: palette overrides for light and dark, a font family, numeric design tokens within bounds that keep the canvas geometry, backgrounds, and the variant each family's bare-name slides use. Name one with template: a built-in (default, corporate, or one of the color templates listed below) or a ./ or ../ path to a template file or a folder with template.json. Its relative images resolve from the template's folder. The presentation's own theme, fontFamily, backgrounds entries, and a variant written in layout take precedence; changing the template restyles the deck without touching its slides. examples/templates is a deck with its own template to try this on.",
+          "zh-TW": "範本把外觀與內容分開：淺色與深色的配色覆寫、字型、在不破壞畫布幾何的範圍內調整數值 design token、背景，以及各系列只寫系列名稱時使用的變化。以 template 指定：內建範本（default、corporate，或下方列出的配色範本），或以 ./、../ 開頭、指向範本檔或含 template.json 資料夾的路徑。範本的相對圖片路徑以範本資料夾為基準。簡報自己的 theme、fontFamily、backgrounds 項目，以及 layout 中寫明的變化優先；換範本即可改變整份簡報的外觀，不必修改投影片。examples/templates 是一份附有自己範本的簡報，可以直接試試看。",
+          "zh-CN": "模板把外观与内容分开：浅色与深色的配色覆盖、字体、在不破坏画布几何的范围内调整数值 design token、背景，以及各系列只写系列名称时使用的变体。以 template 指定：内置模板（default、corporate，或下方列出的配色模板），或以 ./、../ 开头、指向模板文件或含 template.json 文件夹的路径。模板的相对图片路径以模板文件夹为基准。演示文稿自己的 theme、fontFamily、backgrounds 条目，以及 layout 中写明的变体优先；换模板即可改变整份演示文稿的外观，不必修改幻灯片。examples/templates 是一份附有自己模板的演示文稿，可以直接试试看。",
+          ja: "テンプレートは見た目を内容から切り離します。ライトとダークの配色の上書き、フォントファミリー、キャンバスの幾何を崩さない範囲の数値デザイントークン、背景、そしてファミリー名だけのスライドに使うバリアントを指定できます。template で指定し、値は組み込み（default、corporate、または下に挙げた配色テンプレート）か、テンプレートのファイルまたは template.json を含むフォルダーを指す ./ か ../ で始まるパスです。テンプレートの相対画像パスはテンプレートのフォルダーから解決されます。プレゼンテーション自身の theme、fontFamily、backgrounds の項目、layout に書いたバリアントが優先されます。テンプレートを替えれば、スライドに手を入れずにデッキ全体の見た目が変わります。examples/templates は独自のテンプレートを持つデッキで、そのまま試せます。",
         },
         code: `// brand/template.json
 {
@@ -622,6 +622,76 @@ docker compose -f docker/compose.yaml --profile cli \\
           "zh-CN": "模板只有数据：无法加入 CSS、HTML、版式系列或变体。token 检查能让各区域留在幻灯片内，但无法保证内容放得下，也无法保证色彩对比足够。",
           ja: "テンプレートはデータだけで、CSS、HTML、レイアウトファミリー、バリアントは追加できません。トークンの検査は各領域をスライド内に収めますが、内容が収まることや色のコントラストが十分なことは保証しません。",
         },
+      },
+      {
+        id: "templates-cool",
+        title: { en: "Built-in templates: cool and calm", "zh-TW": "內建範本：冷靜沉穩", "zh-CN": "内置模板：冷静沉稳", ja: "組み込みテンプレート：クールで落ち着いた色" },
+        body: {
+          en: "Each screenshot is the same chart slide drawn with one template in the light and the dark theme, so only the colors differ. Choose the look with template and the palette with theme, for example template: indigo-midnight with theme: dark. Light-theme accents are chosen to keep at least about 4.5:1 contrast with the background.",
+          "zh-TW": "每張截圖都是同一頁圖表投影片，分別以一個範本的淺色與深色主題繪製，所以只有色彩不同。以 template 選外觀、以 theme 選色盤，例如 template: indigo-midnight 搭配 theme: dark。淺色主題的強調色都選在與背景至少約 4.5:1 的對比。",
+          "zh-CN": "每张截图都是同一页图表幻灯片，分别以一个模板的浅色与深色主题绘制，所以只有色彩不同。以 template 选外观、以 theme 选配色，例如 template: indigo-midnight 搭配 theme: dark。浅色主题的强调色都选在与背景至少约 4.5:1 的对比。",
+          ja: "各スクリーンショットは同じチャートスライドを、ひとつのテンプレートのライトテーマとダークテーマで描いたもので、違うのは色だけです。template で見た目を、theme で配色を選びます（例：template: indigo-midnight と theme: dark）。ライトテーマのアクセント色は、背景とのコントラストが少なくとも約 4.5:1 になるように選んであります。",
+        },
+        code: `{
+  "metadata": { "title": "Product review" },
+  "template": "indigo-midnight",
+  "theme": "dark",
+  "slides": [ … ]
+}`,
+        table: {
+          caption: { en: "Accent colors and typical use", "zh-TW": "強調色與適用情境", "zh-CN": "强调色与适用场景", ja: "アクセント色と用途" },
+          headers: [{ en: "Template", "zh-TW": "範本", "zh-CN": "模板", ja: "テンプレート" }, { en: "Light accent", "zh-TW": "淺色強調色", "zh-CN": "浅色强调色", ja: "ライトのアクセント" }, { en: "Dark accent", "zh-TW": "深色強調色", "zh-CN": "深色强调色", ja: "ダークのアクセント" }, { en: "Suited to", "zh-TW": "適合", "zh-CN": "适合", ja: "向いている用途" }],
+          rows: [
+            ["indigo-midnight", "#4f46e5", "#60a5fa", { en: "Professional and tech-leaning: product and engineering decks", "zh-TW": "專業、偏科技：產品與工程簡報", "zh-CN": "专业、偏科技：产品与工程演示", ja: "プロフェッショナルで技術寄り：製品・エンジニアリング向け" }],
+            ["forest-emerald", "#15803d", "#34d399", { en: "Calm and natural: sustainability, education, health", "zh-TW": "沉穩自然：永續、教育、健康", "zh-CN": "沉稳自然：可持续、教育、健康", ja: "落ち着いた自然な印象：サステナビリティ、教育、ヘルスケア" }],
+            ["ocean-violet", "#0e7490", "#a78bfa", { en: "Clean data reports (light, teal) and a creative dark mode (violet)", "zh-TW": "清爽的數據報告（淺色，青）與有個性的深色（紫）", "zh-CN": "清爽的数据报告（浅色，青）与有个性的深色（紫）", ja: "すっきりしたデータレポート（ライト、ティール）と個性的なダーク（バイオレット）" }],
+          ],
+        },
+        images: [
+          { src: "/screenshots/template-indigo-midnight-light.png", alt: { en: "indigo-midnight template, light theme", "zh-TW": "indigo-midnight 範本，淺色主題", "zh-CN": "indigo-midnight 模板，浅色主题", ja: "indigo-midnight テンプレート、ライトテーマ" }, caption: "indigo-midnight · light" },
+          { src: "/screenshots/template-indigo-midnight-dark.png", alt: { en: "indigo-midnight template, dark theme", "zh-TW": "indigo-midnight 範本，深色主題", "zh-CN": "indigo-midnight 模板，深色主题", ja: "indigo-midnight テンプレート、ダークテーマ" }, caption: "indigo-midnight · dark" },
+          { src: "/screenshots/template-forest-emerald-light.png", alt: { en: "forest-emerald template, light theme", "zh-TW": "forest-emerald 範本，淺色主題", "zh-CN": "forest-emerald 模板，浅色主题", ja: "forest-emerald テンプレート、ライトテーマ" }, caption: "forest-emerald · light" },
+          { src: "/screenshots/template-forest-emerald-dark.png", alt: { en: "forest-emerald template, dark theme", "zh-TW": "forest-emerald 範本，深色主題", "zh-CN": "forest-emerald 模板，深色主题", ja: "forest-emerald テンプレート、ダークテーマ" }, caption: "forest-emerald · dark" },
+          { src: "/screenshots/template-ocean-violet-light.png", alt: { en: "ocean-violet template, light theme", "zh-TW": "ocean-violet 範本，淺色主題", "zh-CN": "ocean-violet 模板，浅色主题", ja: "ocean-violet テンプレート、ライトテーマ" }, caption: "ocean-violet · light" },
+          { src: "/screenshots/template-ocean-violet-dark.png", alt: { en: "ocean-violet template, dark theme", "zh-TW": "ocean-violet 範本，深色主題", "zh-CN": "ocean-violet 模板，深色主题", ja: "ocean-violet テンプレート、ダークテーマ" }, caption: "ocean-violet · dark" },
+        ],
+      },
+      {
+        id: "templates-warm",
+        title: { en: "Built-in templates: warm and vivid", "zh-TW": "內建範本：溫暖鮮明", "zh-CN": "内置模板：温暖鲜明", ja: "組み込みテンプレート：暖かく鮮やかな色" },
+        body: {
+          en: "The same chart slide in the warmer and more saturated templates. corporate also squares the corners and uses the banded cover; the others change only colors.",
+          "zh-TW": "同一頁圖表投影片套用在較溫暖、飽和度較高的範本上。corporate 另外會讓圓角變直角並使用色帶封面，其他範本只改變色彩。",
+          "zh-CN": "同一页图表幻灯片套用在较温暖、饱和度较高的模板上。corporate 另外会让圆角变直角并使用色带封面，其他模板只改变色彩。",
+          ja: "同じチャートスライドを、暖色系や彩度の高いテンプレートで描いたものです。corporate は角を直角にして帯状の表紙も使い、ほかは色だけを変えます。",
+        },
+        table: {
+          caption: { en: "Accent colors and typical use", "zh-TW": "強調色與適用情境", "zh-CN": "强调色与适用场景", ja: "アクセント色と用途" },
+          headers: [{ en: "Template", "zh-TW": "範本", "zh-CN": "模板", ja: "テンプレート" }, { en: "Light accent", "zh-TW": "淺色強調色", "zh-CN": "浅色强调色", ja: "ライトのアクセント" }, { en: "Dark accent", "zh-TW": "深色強調色", "zh-CN": "深色强调色", ja: "ダークのアクセント" }, { en: "Suited to", "zh-TW": "適合", "zh-CN": "适合", ja: "向いている用途" }],
+          rows: [
+            ["corporate", "#b45309", "#f5a524", { en: "Navy and amber, square corners, banded cover", "zh-TW": "海軍藍與琥珀色、直角、色帶封面", "zh-CN": "海军蓝与琥珀色、直角、色带封面", ja: "ネイビーとアンバー、角丸なし、帯状の表紙" }],
+            ["terracotta-graphite", "#c2410c", "#fbbf24", { en: "Warm brand stories (light) and polished keynotes (graphite and amber, dark)", "zh-TW": "溫暖的品牌故事（淺色）與高質感發表（石墨與琥珀，深色）", "zh-CN": "温暖的品牌故事（浅色）与高质感发布（石墨与琥珀，深色）", ja: "温かいブランドストーリー（ライト）と洗練された発表（グラファイトとアンバー、ダーク）" }],
+            ["sunset-orange", "#cf450a", "#fb923c", { en: "Energetic launches and pitches", "zh-TW": "有活力的發表與募資簡報", "zh-CN": "有活力的发布与融资演示", ja: "エネルギッシュな発表・ピッチ" }],
+            ["coffee-brown", "#8b4513", "#d4a373", { en: "Editorial and heritage brands", "zh-TW": "編輯風格與歷史悠久的品牌", "zh-CN": "编辑风格与历史悠久的品牌", ja: "エディトリアル調、伝統あるブランド" }],
+            ["crimson-red", "#c81e3a", "#fb7185", { en: "Urgent, confident, high-impact messages", "zh-TW": "緊急、自信、高衝擊的訊息", "zh-CN": "紧急、自信、高冲击的信息", ja: "緊急性があり自信に満ちた、インパクトの強い内容" }],
+            ["magenta-pink", "#c026d3", "#e879f9", { en: "Playful, creative, youth-facing decks", "zh-TW": "活潑、有創意、面向年輕族群", "zh-CN": "活泼、有创意、面向年轻群体", ja: "遊び心があり創造的、若い層向け" }],
+          ],
+        },
+        note: { en: "Pure bright orange and pink fail contrast on a white background, so the light theme uses deeper accents and the dark theme the bright ones. SlideForge does not check contrast; test your own colors.", "zh-TW": "純亮橘與粉紅在白底上對比不足，所以淺色主題用較深的強調色、深色主題才用明亮的顏色。SlideForge 不會檢查對比，自訂色彩時請自行確認。", "zh-CN": "纯亮橙与粉红在白底上对比不足，所以浅色主题用较深的强调色，深色主题才用明亮的颜色。SlideForge 不会检查对比，自定义颜色时请自行确认。", ja: "純粋な明るいオレンジやピンクは白背景ではコントラストが足りないため、ライトテーマでは深めのアクセント色、ダークテーマでは明るい色を使います。SlideForge はコントラストを検査しないので、独自の色は自分で確認してください。" },
+        images: [
+          { src: "/screenshots/template-corporate-light.png", alt: { en: "corporate template, light theme", "zh-TW": "corporate 範本，淺色主題", "zh-CN": "corporate 模板，浅色主题", ja: "corporate テンプレート、ライトテーマ" }, caption: "corporate · light" },
+          { src: "/screenshots/template-corporate-dark.png", alt: { en: "corporate template, dark theme", "zh-TW": "corporate 範本，深色主題", "zh-CN": "corporate 模板，深色主题", ja: "corporate テンプレート、ダークテーマ" }, caption: "corporate · dark" },
+          { src: "/screenshots/template-terracotta-graphite-light.png", alt: { en: "terracotta-graphite template, light theme", "zh-TW": "terracotta-graphite 範本，淺色主題", "zh-CN": "terracotta-graphite 模板，浅色主题", ja: "terracotta-graphite テンプレート、ライトテーマ" }, caption: "terracotta-graphite · light" },
+          { src: "/screenshots/template-terracotta-graphite-dark.png", alt: { en: "terracotta-graphite template, dark theme", "zh-TW": "terracotta-graphite 範本，深色主題", "zh-CN": "terracotta-graphite 模板，深色主题", ja: "terracotta-graphite テンプレート、ダークテーマ" }, caption: "terracotta-graphite · dark" },
+          { src: "/screenshots/template-sunset-orange-light.png", alt: { en: "sunset-orange template, light theme", "zh-TW": "sunset-orange 範本，淺色主題", "zh-CN": "sunset-orange 模板，浅色主题", ja: "sunset-orange テンプレート、ライトテーマ" }, caption: "sunset-orange · light" },
+          { src: "/screenshots/template-sunset-orange-dark.png", alt: { en: "sunset-orange template, dark theme", "zh-TW": "sunset-orange 範本，深色主題", "zh-CN": "sunset-orange 模板，深色主题", ja: "sunset-orange テンプレート、ダークテーマ" }, caption: "sunset-orange · dark" },
+          { src: "/screenshots/template-coffee-brown-light.png", alt: { en: "coffee-brown template, light theme", "zh-TW": "coffee-brown 範本，淺色主題", "zh-CN": "coffee-brown 模板，浅色主题", ja: "coffee-brown テンプレート、ライトテーマ" }, caption: "coffee-brown · light" },
+          { src: "/screenshots/template-coffee-brown-dark.png", alt: { en: "coffee-brown template, dark theme", "zh-TW": "coffee-brown 範本，深色主題", "zh-CN": "coffee-brown 模板，深色主题", ja: "coffee-brown テンプレート、ダークテーマ" }, caption: "coffee-brown · dark" },
+          { src: "/screenshots/template-crimson-red-light.png", alt: { en: "crimson-red template, light theme", "zh-TW": "crimson-red 範本，淺色主題", "zh-CN": "crimson-red 模板，浅色主题", ja: "crimson-red テンプレート、ライトテーマ" }, caption: "crimson-red · light" },
+          { src: "/screenshots/template-crimson-red-dark.png", alt: { en: "crimson-red template, dark theme", "zh-TW": "crimson-red 範本，深色主題", "zh-CN": "crimson-red 模板，深色主题", ja: "crimson-red テンプレート、ダークテーマ" }, caption: "crimson-red · dark" },
+          { src: "/screenshots/template-magenta-pink-light.png", alt: { en: "magenta-pink template, light theme", "zh-TW": "magenta-pink 範本，淺色主題", "zh-CN": "magenta-pink 模板，浅色主题", ja: "magenta-pink テンプレート、ライトテーマ" }, caption: "magenta-pink · light" },
+          { src: "/screenshots/template-magenta-pink-dark.png", alt: { en: "magenta-pink template, dark theme", "zh-TW": "magenta-pink 範本，深色主題", "zh-CN": "magenta-pink 模板，深色主题", ja: "magenta-pink テンプレート、ダークテーマ" }, caption: "magenta-pink · dark" },
+        ],
       },
       {
         id: "minimal",

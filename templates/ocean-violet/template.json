@@ -1,0 +1,28 @@
+{
+  "name": "ocean-violet",
+  "description": "Ocean teal and violet night: clean data reports, creative dark mode.",
+  "palette": {
+    "light": {
+      "background": "#f8fcfd",
+      "foreground": "#0f2a33",
+      "muted": "#4a6670",
+      "accent": "#0e7490",
+      "onAccent": "#ffffff",
+      "surface": "#e6f3f6",
+      "border": "#b8d9e0",
+      "canvas": "#d9e6ea",
+      "outline": "#f8fcfd"
+    },
+    "dark": {
+      "background": "#130f24",
+      "foreground": "#f5f3ff",
+      "muted": "#b0a6d4",
+      "accent": "#a78bfa",
+      "onAccent": "#130f24",
+      "surface": "#1f1a38",
+      "border": "#3b3363",
+      "canvas": "#d8dee8",
+      "outline": "#130f24"
+    }
+  }
+}

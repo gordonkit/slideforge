@@ -1,0 +1,28 @@
+{
+  "name": "indigo-midnight",
+  "description": "Indigo and midnight blue: professional, tech-leaning.",
+  "palette": {
+    "light": {
+      "background": "#ffffff",
+      "foreground": "#1e1b4b",
+      "muted": "#55557a",
+      "accent": "#4f46e5",
+      "onAccent": "#ffffff",
+      "surface": "#eef2ff",
+      "border": "#c7d2fe",
+      "canvas": "#dfe3f0",
+      "outline": "#ffffff"
+    },
+    "dark": {
+      "background": "#0b1220",
+      "foreground": "#f1f5f9",
+      "muted": "#9fb0c8",
+      "accent": "#60a5fa",
+      "onAccent": "#0b1220",
+      "surface": "#162033",
+      "border": "#2c3b55",
+      "canvas": "#d8dee8",
+      "outline": "#0b1220"
+    }
+  }
+}
