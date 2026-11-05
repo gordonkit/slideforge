@@ -1,18 +1,18 @@
 /* process: numbered steps in order, joined by arrows. */
-.sf-process { list-style: none; margin: 0; padding: 0; height: 100%; display: flex; align-items: center; gap: 18px; }
-.sf-step { flex: 1 1 0; min-width: 0; align-self: center; display: flex; flex-direction: column; align-items: center; gap: 20px; padding: var(--sf-spacing-card-padding) 24px; text-align: center; background: var(--sf-card-fill); border: var(--sf-border-width) solid var(--sf-border); border-radius: var(--sf-border-radius); }
+.sf-process { list-style: none; margin: 0; padding: 0; height: 100%; display: flex; flex-wrap: wrap; align-content: center; align-items: stretch; gap: 18px; }
+.sf-step { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px; padding: var(--sf-spacing-card-padding) 24px; text-align: center; background: var(--sf-card-fill); border: var(--sf-border-width) solid var(--sf-border); border-radius: var(--sf-border-radius); }
 .sf-step-number { flex: none; display: flex; align-items: center; justify-content: center; width: 72px; height: 72px; border-radius: 50%; background: var(--sf-accent); color: var(--sf-on-accent); font-size: var(--sf-type-card-title); font-weight: var(--sf-type-bold); }
 .sf-step-body { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
 .sf-step-title { font-size: var(--sf-type-card-title); font-weight: var(--sf-type-bold); line-height: var(--sf-type-title-leading); }
 .sf-step-text { color: var(--sf-muted); font-size: var(--sf-type-card-body); line-height: var(--sf-type-subtitle-leading); }
-.sf-process-arrow { flex: none; color: var(--sf-accent); font-size: 60px; font-weight: var(--sf-type-bold); line-height: 1; }
+.sf-process-arrow { flex: none; align-self: center; color: var(--sf-accent); font-size: 60px; font-weight: var(--sf-type-bold); line-height: 1; }
 .sf-process[data-count="5"] .sf-step-title, .sf-process[data-count="6"] .sf-step-title { font-size: calc(var(--sf-type-card-title) * 0.85); }
 .sf-process[data-count="5"] .sf-step-text, .sf-process[data-count="6"] .sf-step-text { font-size: calc(var(--sf-type-card-body) * 0.8); }
 .sf-process[data-count="5"] .sf-step, .sf-process[data-count="6"] .sf-step { padding-left: 12px; padding-right: 12px; }
 .sf-process[data-count="6"] .sf-process-arrow, .sf-process[data-count="5"] .sf-process-arrow { font-size: 42px; }
 /* vertical: stacked rows, the number beside the text. */
-.sf-variant-vertical .sf-process { flex-direction: column; align-items: stretch; justify-content: center; gap: 6px; }
-.sf-variant-vertical .sf-step { align-self: stretch; flex: 0 1 auto; flex-direction: row; align-items: center; gap: var(--sf-spacing-card); padding: 14px var(--sf-spacing-card-padding); text-align: left; }
+.sf-variant-vertical .sf-process { flex-wrap: nowrap; flex-direction: column; align-items: stretch; justify-content: center; gap: 6px; }
+.sf-variant-vertical .sf-step { flex: 0 1 auto; flex-direction: row; align-items: center; justify-content: flex-start; gap: var(--sf-spacing-card); padding: 14px var(--sf-spacing-card-padding); text-align: left; }
 .sf-variant-vertical .sf-step-number { width: 60px; height: 60px; }
 .sf-variant-vertical .sf-step-body { flex-direction: row; align-items: baseline; gap: 24px; flex-wrap: wrap; }
 .sf-variant-vertical .sf-process-arrow { align-self: flex-start; padding-left: 48px; font-size: 40px; line-height: 1; }
