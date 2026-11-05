@@ -98,6 +98,33 @@ fill in dense CJK characters, so the token stops at 4. PowerPoint text outlines
 cannot sit outside the glyph only, so `paint-order` is not used. Export writes it as a
 native PowerPoint text outline; see [limitations](limitations.md#text-outlines).
 
+### Soft shadows
+
+`tokens.shadow` turns on soft, blurred shadows. Both values are blur radii in px
+and default to 0, which draws no shadow:
+
+| Token | Range | Shadow under |
+| --- | --- | --- |
+| `card` | 0–60 | cards, and hexagon and pentagon cards |
+| `text` | 0–20 | slide, cover, and card titles |
+
+```json
+{
+  "name": "soft",
+  "tokens": { "shadow": { "card": 24, "text": 8 } }
+}
+```
+
+The shadow fades out smoothly over the blur radius, with no hard edge, and is
+offset down by a third of it. It is black at a fixed opacity (cards 30%, titles
+45%), so it is subtle on dark backgrounds; SlideForge does not check that a shadow
+stays readable. Export writes native PowerPoint shadows with a blur radius: cards
+and number circles get a shape shadow, hexagons and pentagons are editable
+freeform shapes with a shadow, and titles get a text shadow on the editable run.
+
+![Cards with a soft blurred shadow and shadowed titles](../site/public/screenshots/layout-shadow-cards.png)
+![Hexagon cards with a soft blurred shadow](../site/public/screenshots/layout-shadow-hexagon.png)
+
 ### Variants
 
 `variants` maps a family to one of its [variants](schema.md#layout-names). A slide

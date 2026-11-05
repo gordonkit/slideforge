@@ -13,21 +13,25 @@
 .sf-cards[data-count="5"] .sf-card:nth-child(5) { grid-column: 4 / span 2; }
 /* rounded: softer corners and an accent outline. */
 .sf-variant-rounded .sf-card { border-radius: calc(var(--sf-border-radius) * 2.5); border-color: var(--sf-accent); }
-/* circle: a numbered accent circle above a centered card. */
-.sf-variant-circle .sf-card { align-items: center; text-align: center; border-radius: calc(var(--sf-border-radius) * 2.5); }
-.sf-variant-circle .sf-card-badge, .sf-variant-hexagon .sf-card-badge, .sf-variant-pentagon .sf-card-badge { flex: none; display: flex; align-items: center; justify-content: center; width: 84px; height: 84px; margin-bottom: var(--sf-spacing-card-title); border-radius: 50%; background: var(--sf-accent); color: var(--sf-on-accent); font-size: var(--sf-type-card-title); font-weight: var(--sf-type-bold); }
-/* hexagon and pentagon: a regular accent-filled polygon drawn behind the text. The card is a size
+/* badge: a numbered accent circle above a centered card. */
+.sf-variant-badge .sf-card { align-items: center; text-align: center; border-radius: calc(var(--sf-border-radius) * 2.5); }
+.sf-variant-badge .sf-card-badge, .sf-variant-circle .sf-card-badge, .sf-variant-hexagon .sf-card-badge, .sf-variant-pentagon .sf-card-badge { flex: none; display: flex; align-items: center; justify-content: center; width: 84px; height: 84px; margin-bottom: var(--sf-spacing-card-title); border-radius: 50%; background: var(--sf-accent); color: var(--sf-on-accent); font-size: var(--sf-type-card-title); font-weight: var(--sf-type-bold); }
+/* circle, hexagon, and pentagon: a regular accent-filled shape drawn behind the text. The card is a size
    container, and the inner box takes the largest polygon-shaped area that fits it, centered, so the
    shape is never stretched and leaves room above and below (or to the sides) instead. Padding is in
    terms of the polygon's own width (--sf-shape-width). */
-.sf-variant-hexagon .sf-card, .sf-variant-pentagon .sf-card { container-type: size; display: grid; place-items: center; padding: 0; background: none; border: 0; color: var(--sf-on-accent); }
+.sf-variant-circle .sf-card, .sf-variant-hexagon .sf-card, .sf-variant-pentagon .sf-card { overflow: visible; container-type: size; display: grid; place-items: center; padding: 0; background: none; border: 0; color: var(--sf-on-accent); }
+.sf-variant-circle .sf-card-inner { --sf-shape-ratio: 1; padding: calc(var(--sf-shape-width) * 0.16); border-radius: 50%; background: var(--sf-accent); overflow: visible; }
 .sf-variant-hexagon .sf-card-inner { --sf-shape-ratio: 1.1547; }
 .sf-variant-pentagon .sf-card-inner { --sf-shape-ratio: 1.0515; }
-.sf-card-inner { --sf-shape-width: min(100cqw, calc(100cqh * var(--sf-shape-ratio))); position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; width: var(--sf-shape-width); height: calc(var(--sf-shape-width) / var(--sf-shape-ratio)); text-align: center; overflow: hidden; }
+.sf-card-inner { --sf-shape-width: min(100cqw, calc(100cqh * var(--sf-shape-ratio))); position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; width: var(--sf-shape-width); height: calc(var(--sf-shape-width) / var(--sf-shape-ratio)); text-align: center; overflow: clip; overflow-clip-margin: calc(var(--sf-shadow-card) * 2); }
 .sf-variant-hexagon .sf-card-inner { padding: calc(var(--sf-shape-width) * 0.04) calc(var(--sf-shape-width) * 0.18); }
 .sf-variant-pentagon .sf-card-inner { padding: calc(var(--sf-shape-width) * 0.1) calc(var(--sf-shape-width) * 0.1) calc(var(--sf-shape-width) * 0.3); }
 .sf-card-shape { position: absolute; inset: 0; width: 100%; height: 100%; z-index: -1; }
 .sf-card-shape polygon { fill: var(--sf-accent); }
-.sf-variant-hexagon .sf-card-badge, .sf-variant-pentagon .sf-card-badge { position: relative; width: 60px; height: 60px; margin-bottom: 12px; background: var(--sf-on-accent); color: var(--sf-accent); font-size: var(--sf-type-card-body); }
-.sf-variant-hexagon .sf-card h2, .sf-variant-pentagon .sf-card h2 { margin-bottom: 12px; }
-.sf-variant-hexagon .sf-card .sf-blocks, .sf-variant-pentagon .sf-card .sf-blocks { height: auto; flex: none; font-size: calc(var(--sf-type-card-body) * 0.8); }
+.sf-variant-circle .sf-card-badge, .sf-variant-hexagon .sf-card-badge, .sf-variant-pentagon .sf-card-badge { position: relative; width: 60px; height: 60px; margin-bottom: 12px; background: var(--sf-on-accent); color: var(--sf-accent); font-size: var(--sf-type-card-body); }
+.sf-variant-circle .sf-card h2, .sf-variant-hexagon .sf-card h2, .sf-variant-pentagon .sf-card h2 { margin-bottom: 12px; }
+.sf-variant-circle .sf-card .sf-blocks, .sf-variant-hexagon .sf-card .sf-blocks, .sf-variant-pentagon .sf-card .sf-blocks { height: auto; flex: none; font-size: calc(var(--sf-type-card-body) * 0.8); }
+.sf-variant-circle .sf-card-badge { width: 72px; height: 72px; margin-bottom: 16px; font-size: var(--sf-type-card-title); }
+.sf-variant-circle .sf-card h2 { margin-bottom: 16px; }
+.sf-variant-circle .sf-card .sf-blocks { font-size: var(--sf-type-card-body); }

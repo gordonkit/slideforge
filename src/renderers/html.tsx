@@ -52,8 +52,9 @@ export function renderPresentation(input: unknown, options: RenderOptions = {}):
   const template = parsed && { ...parsed, backgrounds: rebaseBackgrounds(parsed.backgrounds, options.templateBaseUrl) };
   const { metadata } = presentation;
   const palette = { ...themeTokens[presentation.theme], ...template?.palette?.[presentation.theme] };
+  const tokens = mergeTokens(template?.tokens);
   const style = {
-    ...cssVariables(mergeTokens(template?.tokens)),
+    ...cssVariables(tokens),
     "--slide-width": `${SLIDE_SIZE.widthPx}px`,
     "--slide-height": `${SLIDE_SIZE.heightPx}px`,
     "--sf-background": palette.background,
@@ -79,7 +80,7 @@ export function renderPresentation(input: unknown, options: RenderOptions = {}):
         <meta name="subject" content={metadata.subject ?? ""} />
         <style>{stylesheet}</style>
       </head>
-      <body style={style} data-theme={presentation.theme}>
+      <body style={style} data-theme={presentation.theme} data-card-shadow={tokens.shadow.card > 0 ? "" : undefined} data-text-shadow={tokens.shadow.text > 0 ? "" : undefined}>
         <main className="sf-presentation">
           {presentation.slides.map((slide, index) => <SlideLayout key={index} slide={slide}
             variant={slideVariant(slide, template?.variants)} number={index + 1} total={presentation.slides.length}

@@ -96,12 +96,15 @@ describe("family/variant layout names", () => {
     expect(issues({ layout: "quote/split", quote: "x" })).toEqual(['slides.0.layout: Unknown quote variant. Use "quote", "quote/default", or "quote/centered"']);
   });
 
-  it("numbers the cards of the circle, hexagon, and pentagon variants and draws the polygon", () => {
+  it("numbers the cards of the badge, circle, hexagon, and pentagon variants and draws the polygon", () => {
     const cards = [1, 2, 3].map((index) => ({ title: `Card ${index}`, blocks: [{ type: "paragraph", text: "x" }] }));
     const html = (layout: string) => renderPresentation(deck({ layout, cards }));
     expect(html("cards")).not.toContain('class="sf-card-badge"');
     expect(html("cards/rounded")).not.toContain('class="sf-card-badge"');
+    expect(html("cards/badge").match(/class="sf-card-badge"/g)).toHaveLength(3);
+    expect(html("cards/badge")).not.toContain('class="sf-card-inner"');
     expect(html("cards/circle").match(/class="sf-card-badge"/g)).toHaveLength(3);
+    expect(html("cards/circle").match(/class="sf-card-inner"/g)).toHaveLength(3);
     expect(html("cards/circle")).not.toContain('class="sf-card-shape"');
     expect(html("cards/hexagon").match(/class="sf-card-shape"/g)).toHaveLength(3);
     expect(html("cards/hexagon").match(/class="sf-card-badge"/g)).toHaveLength(3);

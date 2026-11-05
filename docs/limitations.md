@@ -20,8 +20,8 @@
   HTML/CSS bars, not Office chart objects. Images remain images; table conversion
   behavior depends on the converter.
 - The export ignores CSS `clip-path`, so a non-rectangular shape has to be an inline SVG.
-  `cards/hexagon` and `cards/pentagon` draw their polygons that way: each becomes a vector
-  picture behind the card's text, and the text and number stay editable.
+  `cards/hexagon` and `cards/pentagon` draw their polygons that way, and export rewrites each
+  as a native freeform shape with its soft shadow; other inline SVGs stay pictures.
 - SlideForge has no automatic unsupported-content raster fallback. Upstream may
   rasterize pseudo-elements/effects or other content internally, which can reduce
   editability. Arbitrary scripts, canvas, video, animations, SVG features, and
@@ -110,8 +110,10 @@ drawn over the fill, as in Chromium. Tests check the generated XML only; a one-o
 render in PowerPoint for Windows matched the HTML closely, but line joins and
 anti-aliasing differ slightly, and other PowerPoint versions are untested. LibreOffice
 Impress does not draw these outlines, so LibreOffice-based visual comparison shows
-titles without them. Text shadows (`text-shadow`), glows, gradients, and
-`paint-order` are not converted; they render in HTML only.
+titles without them. The first `text-shadow` (from the [`shadow.text`](templates.md#soft-shadows)
+token or any trusted HTML) is written as a PowerPoint text shadow with its blur radius,
+but a second shadow, glows, gradients, and `paint-order` are not converted; they render
+in HTML only.
 
 ## Browser execution is privileged
 

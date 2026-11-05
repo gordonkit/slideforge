@@ -505,10 +505,10 @@ docker compose -f docker/compose.yaml --profile cli \\
         id: "slides",
         title: { en: "Slides and layouts", "zh-TW": "投影片與版型", "zh-CN": "幻灯片与版式", ja: "スライドとレイアウト" },
         body: {
-          en: "Every slide needs layout and title, and may have subtitle, footer, notes, and background. Notes become PowerPoint speaker notes. layout is a family, or family/variant such as cover/default: the family decides the fields and the variant only how the slide is drawn, so changing it leaves the content unchanged. A bare family is drawn as default. cover also has centered, split (an accent panel on the right third), and band (an accent block behind the title); quote has centered; cards has rounded, circle (a numbered circle above each card), hexagon (a regular six-sided shape), and pentagon (a regular five-sided shape); the other families have only default. Each family adds its own fields:",
-          "zh-TW": "每張投影片都需要 layout 與 title，可另加 subtitle、footer、notes 與 background，notes 會成為 PowerPoint 的演講者備忘稿。layout 可以是版型系列，或 cover/default 這類「系列/變化」：系列決定欄位，變化只決定呈現方式，因此換變化不必改內容。只寫系列名稱時使用 default。cover 另有 centered、split（右側三分之一的強調色塊）與 band（標題後方的強調色帶），quote 另有 centered，cards 另有 rounded、circle（每張卡片上方有編號圓形）、hexagon（正六角形）與 pentagon（正五角形），其他系列只有 default。各系列另有專屬欄位：",
-          "zh-CN": "每张幻灯片都需要 layout 与 title，可另加 subtitle、footer、notes 与 background，notes 会成为 PowerPoint 的演讲者备注。layout 可以是版式系列，或 cover/default 这类“系列/变体”：系列决定字段，变体只决定呈现方式，因此换变体不必改内容。只写系列名称时使用 default。cover 另有 centered、split（右侧三分之一的强调色块）与 band（标题后方的强调色带），quote 另有 centered，cards 另有 rounded、circle（每张卡片上方有编号圆形）、hexagon（正六边形）与 pentagon（正五边形），其他系列只有 default。各系列另有专属字段：",
-          ja: "各スライドには layout と title が必要で、subtitle、footer、notes、background も指定できます。notes は PowerPoint の発表者ノートになります。layout はレイアウトのファミリー、または cover/default のような「ファミリー/バリアント」です。ファミリーがフィールドを決め、バリアントは描き方だけを決めるので、バリアントを変えても内容はそのままです。ファミリー名だけなら default で描かれます。cover にはほかに centered、split（右側 3 分の 1 の強調色パネル）、band（タイトルの背後の強調色の帯）が、quote には centered が、cards には rounded、circle（各カードの上に番号付きの円）、hexagon（正六角形）、pentagon（正五角形）があり、ほかのファミリーは default だけです。ファミリーごとに次のフィールドが加わります。",
+          en: "Every slide needs layout and title, and may have subtitle, footer, notes, and background. Notes become PowerPoint speaker notes. layout is a family, or family/variant such as cover/default: the family decides the fields and the variant only how the slide is drawn, so changing it leaves the content unchanged. A bare family is drawn as default. cover also has centered, split (an accent panel on the right third), and band (an accent block behind the title); quote has centered; cards has rounded, badge (a numbered circle above each card), circle (a round card), hexagon (a regular six-sided shape), and pentagon (a regular five-sided shape); the other families have only default. Each family adds its own fields:",
+          "zh-TW": "每張投影片都需要 layout 與 title，可另加 subtitle、footer、notes 與 background，notes 會成為 PowerPoint 的演講者備忘稿。layout 可以是版型系列，或 cover/default 這類「系列/變化」：系列決定欄位，變化只決定呈現方式，因此換變化不必改內容。只寫系列名稱時使用 default。cover 另有 centered、split（右側三分之一的強調色塊）與 band（標題後方的強調色帶），quote 另有 centered，cards 另有 rounded、badge（每張卡片上方有編號圓形）、circle（圓形卡片）、hexagon（正六角形）與 pentagon（正五角形），其他系列只有 default。各系列另有專屬欄位：",
+          "zh-CN": "每张幻灯片都需要 layout 与 title，可另加 subtitle、footer、notes 与 background，notes 会成为 PowerPoint 的演讲者备注。layout 可以是版式系列，或 cover/default 这类“系列/变体”：系列决定字段，变体只决定呈现方式，因此换变体不必改内容。只写系列名称时使用 default。cover 另有 centered、split（右侧三分之一的强调色块）与 band（标题后方的强调色带），quote 另有 centered，cards 另有 rounded、badge（每张卡片上方有编号圆形）、circle（圆形卡片）、hexagon（正六边形）与 pentagon（正五边形），其他系列只有 default。各系列另有专属字段：",
+          ja: "各スライドには layout と title が必要で、subtitle、footer、notes、background も指定できます。notes は PowerPoint の発表者ノートになります。layout はレイアウトのファミリー、または cover/default のような「ファミリー/バリアント」です。ファミリーがフィールドを決め、バリアントは描き方だけを決めるので、バリアントを変えても内容はそのままです。ファミリー名だけなら default で描かれます。cover にはほかに centered、split（右側 3 分の 1 の強調色パネル）、band（タイトルの背後の強調色の帯）が、quote には centered が、cards には rounded、badge（各カードの上に番号付きの円）、circle（円形のカード）、hexagon（正六角形）、pentagon（正五角形）があり、ほかのファミリーは default だけです。ファミリーごとに次のフィールドが加わります。",
         },
         table: {
           caption: { en: "Layout fields", "zh-TW": "版型欄位", "zh-CN": "版式字段", ja: "レイアウトのフィールド" },
@@ -694,6 +694,25 @@ docker compose -f docker/compose.yaml --profile cli \\
         ],
       },
       {
+        id: "soft-shadows",
+        title: { en: "Soft shadows", "zh-TW": "柔和陰影", "zh-CN": "柔和阴影", ja: "やわらかい影" },
+        body: {
+          en: "Two template tokens turn on soft, blurred shadows: shadow.card (0–60 px, default 0) under cards and under hexagon and pentagon cards, and shadow.text (0–20 px, default 0) under slide, cover, and card titles. The number is the blur radius: the shadow fades out smoothly over it, with no hard edge, and sits a third of it lower. Export writes them as native PowerPoint shadows with a blur radius: cards and circles get a shape shadow, hexagons and pentagons are freeform shapes with a shadow, and titles get a text shadow, so they stay editable and soft in PowerPoint.",
+          "zh-TW": "兩個範本 token 可開啟柔和、漸層模糊的陰影：shadow.card（0–60 px，預設 0）作用於卡片與六角形、五角形卡片下方，shadow.text（0–20 px，預設 0）作用於投影片、封面與卡片標題下方。數值是模糊半徑：陰影會在這個範圍內平滑淡出，沒有硬邊，並向下偏移其三分之一。匯出時會寫成帶模糊半徑的 PowerPoint 原生陰影：卡片與圓形是圖案陰影，六角形與五角形是帶陰影的任意多邊形，標題則是文字陰影，因此在 PowerPoint 中仍可編輯且保持柔和。",
+          "zh-CN": "两个模板 token 可开启柔和、渐变模糊的阴影：shadow.card（0–60 px，默认 0）作用于卡片与六边形、五边形卡片下方，shadow.text（0–20 px，默认 0）作用于幻灯片、封面与卡片标题下方。数值是模糊半径：阴影会在这个范围内平滑淡出，没有硬边，并向下偏移其三分之一。导出时会写成带模糊半径的 PowerPoint 原生阴影：卡片与圆形是形状阴影，六边形与五边形是带阴影的任意多边形，标题则是文字阴影，因此在 PowerPoint 中仍可编辑且保持柔和。",
+          ja: "2 つのテンプレートトークンで、やわらかくぼかした影を有効にできます。shadow.card（0〜60 px、既定は 0）はカードと、六角形・五角形のカードの下に、shadow.text（0〜20 px、既定は 0）はスライド、表紙、カードのタイトルの下に付きます。値はぼかしの半径で、影はその範囲でなだらかに薄れ、硬い縁はなく、その 3 分の 1 だけ下にずれます。書き出しではぼかし半径つきの PowerPoint ネイティブの影になります。カードと円は図形の影、六角形と五角形は影つきのフリーフォーム図形、タイトルは文字の影なので、PowerPoint でも編集でき、やわらかさも保たれます。",
+        },
+        code: `{
+  "name": "soft",
+  "tokens": { "shadow": { "card": 24, "text": 8 } }
+}`,
+        note: { en: "Shadows are black with a fixed opacity (cards 30%, titles 45%), so they are subtle on dark backgrounds. SlideForge does not check that a shadow stays readable.", "zh-TW": "陰影是固定透明度的黑色（卡片 30%、標題 45%），在深色背景上較不明顯。SlideForge 不會檢查陰影是否仍清晰可讀。", "zh-CN": "阴影是固定透明度的黑色（卡片 30%、标题 45%），在深色背景上较不明显。SlideForge 不会检查阴影是否仍清晰可读。", ja: "影は固定の不透明度の黒（カード 30%、タイトル 45%）なので、暗い背景では目立ちません。SlideForge は影が読みやすいかどうかを検査しません。" },
+        images: [
+          { src: "/screenshots/layout-shadow-cards.png", alt: { en: "Cards with a soft blurred shadow and shadowed titles", "zh-TW": "帶柔和模糊陰影的卡片與有陰影的標題", "zh-CN": "带柔和模糊阴影的卡片与有阴影的标题", ja: "やわらかくぼかした影のカードと、影つきのタイトル" }, caption: "cards · shadow.card 24, shadow.text 8" },
+          { src: "/screenshots/layout-shadow-hexagon.png", alt: { en: "Hexagon cards with a soft blurred shadow", "zh-TW": "帶柔和模糊陰影的六角形卡片", "zh-CN": "带柔和模糊阴影的六边形卡片", ja: "やわらかくぼかした影の六角形カード" }, caption: "cards/hexagon · shadow.card 24, shadow.text 8" },
+        ],
+      },
+      {
         id: "minimal",
         title: { en: "Minimal deck", "zh-TW": "最小範例", "zh-CN": "最小示例", ja: "最小構成のデッキ" },
         body: {
@@ -800,10 +819,10 @@ docker compose -f docker/compose.yaml --profile cli \\
         id: "gallery-cards",
         title: { en: "Gallery: cards", "zh-TW": "版型一覽：cards", "zh-CN": "版式一览：cards", ja: "ギャラリー：cards" },
         body: {
-          en: "The grid follows the number of cards, with no extra field: one card spans the width, two sit side by side, three and six use three columns, four form a 2 × 2 grid, and five are three over two, with the lower two keeping the upper cards' width and centered. Four variants change only the card shape: rounded (larger corners and an accent outline), circle (a numbered accent circle above each centered card), and hexagon and pentagon (accent-filled regular polygons with the number). A polygon keeps its proportions, leaving room above and below instead of stretching, so it suits a short title and a line or two. It is drawn as a vector graphic behind the text, which stays editable in PowerPoint.",
-          "zh-TW": "格線依卡片張數自動決定，不需要額外欄位：一張佔滿寬度、兩張並排、三張與六張為三欄、四張為 2 × 2、五張為上三下二（下排兩張維持與上排相同的寬度並置中）。另有四種變化只改變卡片形狀：rounded（較大的圓角與強調色外框）、circle（置中的卡片上方有編號強調色圓形），以及 hexagon 與 pentagon（強調色填滿、附編號的正六角形與正五角形）。多邊形維持固有比例，上下會留白而不會被拉長，適合短標題加一兩行文字。多邊形是畫在文字後方的向量圖形，文字在 PowerPoint 中仍可編輯。",
-          "zh-CN": "网格依卡片张数自动决定，不需要额外字段：一张占满宽度、两张并排、三张与六张为三栏、四张为 2 × 2、五张为上三下二（下排两张保持与上排相同的宽度并居中）。另有四种变体只改变卡片形状：rounded（较大的圆角与强调色外框）、circle（居中的卡片上方有编号强调色圆形），以及 hexagon 与 pentagon（强调色填满、附编号的正六边形与正五边形）。多边形保持固有比例，上下会留白而不会被拉长，适合短标题加一两行文字。多边形是画在文字后方的矢量图形，文字在 PowerPoint 中仍可编辑。",
-          ja: "グリッドはカードの枚数で決まり、追加のフィールドは要りません。1 枚は全幅、2 枚は横並び、3 枚と 6 枚は 3 列、4 枚は 2 × 2、5 枚は上に 3 枚、下に 2 枚（下の 2 枚は上と同じ幅のまま中央に配置）です。ほかに、カードの形だけを変える 4 つのバリアントがあります。rounded（大きめの角丸とアクセント色の枠）、circle（中央揃えのカードの上に番号付きのアクセント色の円）、hexagon と pentagon（アクセント色で塗りつぶした番号付きの正六角形と正五角形）です。多角形は縦横比を保つため、引き伸ばされずに上下に余白ができ、短いタイトルと 1〜2 行の文に向いています。多角形は文字の背後にベクター図形として描かれ、文字は PowerPoint で編集できます。",
+          en: "The grid follows the number of cards, with no extra field: one card spans the width, two sit side by side, three and six use three columns, four form a 2 × 2 grid, and five are three over two, with the lower two keeping the upper cards' width and centered. Five variants change only the card shape: rounded (larger corners and an accent outline), badge (a numbered accent circle above each centered card), and circle, hexagon, and pentagon (accent-filled regular shapes with the number). These shapes keep their proportions, leaving room above and below instead of stretching, so they suit a short title and a line or two. In PowerPoint the circle is a native oval and the polygons are native, editable freeform shapes behind the text.",
+          "zh-TW": "格線依卡片張數自動決定，不需要額外欄位：一張佔滿寬度、兩張並排、三張與六張為三欄、四張為 2 × 2、五張為上三下二（下排兩張維持與上排相同的寬度並置中）。另有五種變化只改變卡片形狀：rounded（較大的圓角與強調色外框）、badge（置中的卡片上方有編號強調色圓形），以及 circle、hexagon 與 pentagon（強調色填滿、附編號的正圓形、正六角形與正五角形）。這些形狀維持固有比例，上下會留白而不會被拉長，適合短標題加一兩行文字。在 PowerPoint 中，圓形是原生橢圓，多邊形是文字後方原生、可編輯的任意多邊形圖案。",
+          "zh-CN": "网格依卡片张数自动决定，不需要额外字段：一张占满宽度、两张并排、三张与六张为三栏、四张为 2 × 2、五张为上三下二（下排两张保持与上排相同的宽度并居中）。另有五种变体只改变卡片形状：rounded（较大的圆角与强调色外框）、badge（居中的卡片上方有编号强调色圆形），以及 circle、hexagon 与 pentagon（强调色填满、附编号的正圆形、正六边形与正五边形）。这些形状保持固有比例，上下会留白而不会被拉长，适合短标题加一两行文字。在 PowerPoint 中，圆形是原生椭圆，多边形是文字后方原生、可编辑的任意多边形图形。",
+          ja: "グリッドはカードの枚数で決まり、追加のフィールドは要りません。1 枚は全幅、2 枚は横並び、3 枚と 6 枚は 3 列、4 枚は 2 × 2、5 枚は上に 3 枚、下に 2 枚（下の 2 枚は上と同じ幅のまま中央に配置）です。ほかに、カードの形だけを変える 5 つのバリアントがあります。rounded（大きめの角丸とアクセント色の枠）、badge（中央揃えのカードの上に番号付きのアクセント色の円）、circle・hexagon・pentagon（アクセント色で塗りつぶした番号付きの正円・正六角形・正五角形）です。これらの形は縦横比を保つため、引き伸ばされずに上下に余白ができ、短いタイトルと 1〜2 行の文に向いています。PowerPoint では、円はネイティブの楕円、多角形は文字の背後にあるネイティブで編集可能なフリーフォーム図形になります。",
         },
         images: [...[2, 3, 4, 5, 6].map((count) => ({
           src: `/screenshots/layout-cards-${count}.png`,
@@ -811,7 +830,8 @@ docker compose -f docker/compose.yaml --profile cli \\
           caption: { en: `${count} cards`, "zh-TW": `${count} 張卡片`, "zh-CN": `${count} 张卡片`, ja: `カード ${count} 枚` },
         })),
           { src: "/screenshots/layout-cards-rounded.png", alt: { en: "Cards slide with rounded cards and accent outlines", "zh-TW": "圓角卡片與強調色外框的 cards 投影片", "zh-CN": "圆角卡片与强调色外框的 cards 幻灯片", ja: "角丸でアクセント色の枠の cards スライド" }, caption: "cards/rounded" },
-          { src: "/screenshots/layout-cards-circle.png", alt: { en: "Cards slide with a numbered circle above each card", "zh-TW": "每張卡片上方有編號圓形的 cards 投影片", "zh-CN": "每张卡片上方有编号圆形的 cards 幻灯片", ja: "各カードの上に番号付きの円がある cards スライド" }, caption: "cards/circle" },
+          { src: "/screenshots/layout-cards-badge.png", alt: { en: "Cards slide with a numbered circle above each card", "zh-TW": "每張卡片上方有編號圓形的 cards 投影片", "zh-CN": "每张卡片上方有编号圆形的 cards 幻灯片", ja: "各カードの上に番号付きの円がある cards スライド" }, caption: "cards/badge" },
+          { src: "/screenshots/layout-cards-circle.png", alt: { en: "Cards slide with accent-filled circle cards", "zh-TW": "強調色圓形卡片的 cards 投影片", "zh-CN": "强调色圆形卡片的 cards 幻灯片", ja: "アクセント色の円形カードの cards スライド" }, caption: "cards/circle" },
           { src: "/screenshots/layout-cards-hexagon.png", alt: { en: "Cards slide with accent-filled hexagon cards", "zh-TW": "強調色六角形卡片的 cards 投影片", "zh-CN": "强调色六边形卡片的 cards 幻灯片", ja: "アクセント色の六角形カードの cards スライド" }, caption: "cards/hexagon" },
           { src: "/screenshots/layout-cards-pentagon.png", alt: { en: "Cards slide with accent-filled pentagon cards", "zh-TW": "強調色五角形卡片的 cards 投影片", "zh-CN": "强调色五边形卡片的 cards 幻灯片", ja: "アクセント色の五角形カードの cards スライド" }, caption: "cards/pentagon" },
         ],
@@ -1487,10 +1507,10 @@ console.log(reports.map(report => report.differenceRatio));`,
         id: "text-outlines",
         title: { en: "Text outlines", "zh-TW": "文字邊線", "zh-CN": "文字描边", ja: "文字の輪郭線" },
         body: {
-          en: "The template token border.title-outline (0–4 px) strokes slide and cover titles in the palette's outline color. Export writes CSS -webkit-text-stroke as a native PowerPoint text outline on the editable run. In HTML and PowerPoint alike, half of the stroke covers the glyph, so keep it to 2–3 px for CJK titles. LibreOffice does not draw these outlines, and text-shadow and other text effects stay HTML-only.",
-          "zh-TW": "範本 token border.title-outline（0–4 px）會用配色中的 outline 顏色替投影片與封面標題加上邊線。匯出時，CSS 的 -webkit-text-stroke 會寫成 PowerPoint 原生的文字外框，文字仍可編輯。HTML 與 PowerPoint 的邊線都有一半蓋在字形上，中文標題建議 2–3 px。LibreOffice 不會畫出這種外框；text-shadow 等其他文字特效只在 HTML 中顯示。",
-          "zh-CN": "模板 token border.title-outline（0–4 px）会用配色中的 outline 颜色为幻灯片与封面标题加上描边。导出时，CSS 的 -webkit-text-stroke 会写成 PowerPoint 原生的文字轮廓，文字仍可编辑。HTML 与 PowerPoint 的描边都有一半盖在字形上，中文标题建议 2–3 px。LibreOffice 不会画出这种轮廓；text-shadow 等其他文字特效只在 HTML 中显示。",
-          ja: "テンプレートのトークン border.title-outline（0〜4 px）は、配色の outline の色でスライドと表紙のタイトルに輪郭線を付けます。書き出し時、CSS の -webkit-text-stroke は編集可能なテキストのまま PowerPoint ネイティブの文字の輪郭になります。HTML でも PowerPoint でも線の半分は字形に重なるため、CJK のタイトルでは 2〜3 px にしてください。LibreOffice はこの輪郭を描画せず、text-shadow などほかの文字効果は HTML でのみ表示されます。",
+          en: "The template token border.title-outline (0–4 px) strokes slide and cover titles in the palette's outline color. Export writes CSS -webkit-text-stroke as a native PowerPoint text outline on the editable run. In HTML and PowerPoint alike, half of the stroke covers the glyph, so keep it to 2–3 px for CJK titles. LibreOffice does not draw these outlines, and glows and gradients stay HTML-only. The shadow.text token writes a native text shadow; see Soft shadows.",
+          "zh-TW": "範本 token border.title-outline（0–4 px）會用配色中的 outline 顏色替投影片與封面標題加上邊線。匯出時，CSS 的 -webkit-text-stroke 會寫成 PowerPoint 原生的文字外框，文字仍可編輯。HTML 與 PowerPoint 的邊線都有一半蓋在字形上，中文標題建議 2–3 px。LibreOffice 不會畫出這種外框；光暈、漸層等其他文字特效只在 HTML 中顯示。以 shadow.text token 設定的文字陰影會寫成原生文字陰影，見「柔和陰影」。",
+          "zh-CN": "模板 token border.title-outline（0–4 px）会用配色中的 outline 颜色为幻灯片与封面标题加上描边。导出时，CSS 的 -webkit-text-stroke 会写成 PowerPoint 原生的文字轮廓，文字仍可编辑。HTML 与 PowerPoint 的描边都有一半盖在字形上，中文标题建议 2–3 px。LibreOffice 不会画出这种轮廓；光晕、渐变等其他文字特效只在 HTML 中显示。以 shadow.text token 设置的文字阴影会写成原生文字阴影，见“柔和阴影”。",
+          ja: "テンプレートのトークン border.title-outline（0〜4 px）は、配色の outline の色でスライドと表紙のタイトルに輪郭線を付けます。書き出し時、CSS の -webkit-text-stroke は編集可能なテキストのまま PowerPoint ネイティブの文字の輪郭になります。HTML でも PowerPoint でも線の半分は字形に重なるため、CJK のタイトルでは 2〜3 px にしてください。LibreOffice はこの輪郭を描画せず、光彩やグラデーションなどほかの文字効果は HTML でのみ表示されます。shadow.text トークンによる文字の影はネイティブの文字の影として書き出されます（「やわらかい影」を参照）。",
         },
       },
       {

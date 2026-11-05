@@ -24,3 +24,12 @@ body { margin: 0; background: var(--sf-canvas); color: var(--sf-foreground); }
   .sf-presentation { display: block; padding: 0; }
   .sf-slide { break-after: page; }
 }
+/* Soft shadows fade out with a blur. The body carries data-card-shadow / data-text-shadow only when the shadow
+   tokens are above 0, so the default draws no shadow. The content area clips with a margin, so a card's shadow
+   at the edge of the area is not cut off. */
+body[data-card-shadow] .sf-content { overflow: clip; overflow-clip-margin: calc(var(--sf-shadow-card) * 2); }
+body[data-card-shadow] .sf-card { box-shadow: 0 calc(var(--sf-shadow-card) / 3) var(--sf-shadow-card) rgb(0 0 0 / 0.3); }
+body[data-card-shadow] .sf-card-shape { filter: drop-shadow(0 calc(var(--sf-shadow-card) / 3) calc(var(--sf-shadow-card) / 2) rgb(0 0 0 / 0.3)); }
+body[data-card-shadow] .sf-variant-circle .sf-card, body[data-card-shadow] .sf-variant-hexagon .sf-card, body[data-card-shadow] .sf-variant-pentagon .sf-card { box-shadow: none; }
+body[data-card-shadow] .sf-variant-circle .sf-card-inner { box-shadow: 0 calc(var(--sf-shadow-card) / 3) var(--sf-shadow-card) rgb(0 0 0 / 0.3); }
+body[data-text-shadow] .sf-header h1, body[data-text-shadow] .sf-card h2 { text-shadow: 0 calc(var(--sf-shadow-text) / 3) var(--sf-shadow-text) rgb(0 0 0 / 0.45); }

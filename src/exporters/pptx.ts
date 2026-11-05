@@ -8,6 +8,7 @@ import { fileRenderOptions, loadPresentation } from '../templates/load.js';
 import { applyMetadata, type PresentationMetadata } from './metadata.js';
 import { widenTextBoxes, type TextSlack } from './text-fit.js';
 import { applyEastAsianFont } from './fonts.js';
+import { applyPolygonShapes, markPolygonShadows } from './shapes.js';
 import { applyTextOutlines, markTextOutlines } from './text-outline.js';
 import { applyBackgrounds } from './backgrounds.js';
 import { validateLayout, type ValidationIssue } from '../validators/layout.js';
@@ -251,6 +252,7 @@ export async function exportPresentation(input: string, options: ExportOptions):
     const backgrounds = await captureBackgrounds(page, selector, options.timeout ?? 60_000);
     // After layout validation, which would report the placeholder fonts as unavailable.
     const outlines = await markTextOutlines(page, selector);
+    await markPolygonShadows(page, selector);
     await page.addScriptTag({ path: fileURLToPath(new URL('./engine.js', import.meta.url)) });
     const base64 = await page.evaluate(async ({ selector, size }) => {
       const engine = (window as unknown as {
@@ -258,7 +260,7 @@ export async function exportPresentation(input: string, options: ExportOptions):
       }).SlideForgeEngine;
       return engine.convert(selector, size.widthInches, size.heightInches);
     }, { selector, size: SLIDE_SIZE });
-    const converted = applyTextOutlines(Buffer.from(base64, 'base64'), outlines);
+    const converted = applyPolygonShapes(applyTextOutlines(Buffer.from(base64, 'base64'), outlines));
     const fitted = options.textSlack === false ? converted : widenTextBoxes(converted, options.textSlack);
     const data = applyMetadata(applyBackgrounds(applyEastAsianFont(fitted, options.eastAsianFont), backgrounds), metadata);
     const report = validatePptx(data);

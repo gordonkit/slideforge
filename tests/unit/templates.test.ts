@@ -64,6 +64,14 @@ describe("template schema", () => {
     expect(describePresentationError(result(5).error)).toContain("tokens.border: title-outline must not exceed 4 (got 5)");
   });
 
+  it("bounds the soft shadow tokens and limits the text shadow", () => {
+    const result = (shadow: Record<string, number>) => templateSchema.safeParse({ name: "x", tokens: { shadow } });
+    expect(result({ card: 60, text: 20 }).success).toBe(true);
+    expect(result({ card: 61 }).success).toBe(false);
+    expect(describePresentationError(result({ text: 21 }).error)).toContain("tokens.shadow: text must not exceed 20 (got 21)");
+    expect(designTokens.shadow).toEqual({ card: 0, text: 0 });
+  });
+
   it("merges token overrides over the built-in tokens", () => {
     const tokens = mergeTokens({ type: { title: 64 } });
     expect(tokens.type.title).toBe(64);
@@ -110,6 +118,20 @@ describe("rendering with a template", () => {
     expect(html).toContain("--sf-outline:#0b1f3a");
     expect(html).toContain("-webkit-text-stroke: var(--sf-border-title-outline) var(--sf-outline)");
     expect(render(deck({ theme: "dark" }))).toContain(`--sf-outline:${themeTokens.dark.outline}`);
+  });
+
+  it("draws soft shadows only when the shadow tokens are above 0", () => {
+    const plain = render(deck());
+    expect(plain).toContain("--sf-shadow-card:0px");
+    expect(plain).not.toContain(`data-card-shadow=""`);
+    expect(plain).not.toContain(`data-text-shadow=""`);
+    const shadowed = render(deck(), { name: "x", tokens: { shadow: { card: 24, text: 8 } } });
+    expect(shadowed).toContain("--sf-shadow-card:24px");
+    expect(shadowed).toContain('data-card-shadow=""');
+    expect(shadowed).toContain('data-text-shadow=""');
+    expect(shadowed).toContain("box-shadow: 0 calc(var(--sf-shadow-card) / 3) var(--sf-shadow-card)");
+    expect(shadowed).toContain("drop-shadow(0 calc(var(--sf-shadow-card) / 3) calc(var(--sf-shadow-card) / 2)");
+    expect(shadowed).toContain("text-shadow: 0 calc(var(--sf-shadow-text) / 3) var(--sf-shadow-text)");
   });
 
   it("draws a bare family with the template's variant and a named variant as written", () => {

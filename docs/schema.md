@@ -67,7 +67,7 @@ variant, so `"<family>"` and `"<family>/default"` render the same.
 | --- | --- |
 | `cover` | `default` (left-aligned), `centered` (centered title, subtitle, and author), `split` (accent panel on the right third; text and footer stay left of it), `band` (full-bleed accent block behind the title and subtitle, which use the on-accent color) |
 | `quote` | `default` (left-aligned beside an accent bar), `centered` (centered, without the bar) |
-| `cards` | `default` (rectangular cards), `rounded` (larger corners and an accent outline), `circle` (a numbered accent circle above each centered card), `hexagon` and `pentagon` (accent-filled regular polygons with a numbered circle; the card keeps the polygon's proportions and the shape is a vector graphic behind the text) |
+| `cards` | `default` (rectangular cards), `rounded` (larger corners and an accent outline), `badge` (a numbered accent circle above each centered card), `circle` (accent-filled round cards with a number), `hexagon` and `pentagon` (accent-filled regular polygons with a numbered circle; the card keeps the polygon's proportions and the shape is an editable freeform shape behind the text) |
 | `content`, `two-columns`, `timeline`, `gantt`, `table`, `chart`, `blank` | `default` |
 
 [`examples/variants/presentation.json`](../examples/variants/presentation.json)

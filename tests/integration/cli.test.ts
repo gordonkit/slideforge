@@ -390,4 +390,28 @@ describe('templates', () => {
     expect(parts.find(run => run.includes('plain'))).not.toContain('<a:ln');
     expect(xml).not.toContain('slideforge-outline-');
   }, 180_000);
+
+  it('exports the soft shadow tokens as native card, polygon, and text shadows', async () => {
+    await mkdir(join(directory, 'shaded'), { recursive: true });
+    await writeFile(join(directory, 'shaded', 'template.json'), JSON.stringify({ name: 'shaded', tokens: { shadow: { card: 24, text: 8 } } }));
+    const cards = [1, 2, 3].map(index => ({ title: `Card ${index}`, blocks: [{ type: 'paragraph', text: 'Short line.' }] }));
+    const input = join(directory, 'shaded.json');
+    await writeFile(input, JSON.stringify({
+      metadata: { title: 'Shaded' }, template: './shaded',
+      slides: [{ layout: 'cards', title: 'Cards', cards }, { layout: 'cards/hexagon', title: 'Hexagons', cards }],
+    }));
+    const output = join(directory, 'shaded.pptx');
+    expect((await exportPresentation(input, { output })).filter(issue => issue.rule !== 'layout.fonts')).toEqual([]);
+    const files = unzipSync(await readFile(output));
+    const slides = [1, 2].map(number => strFromU8(files[`ppt/slides/slide${number}.xml`]!));
+    // 24 CSS px of blur is 12 pt: 152400 EMU; the title's 8 px is 4 pt: 50800 EMU.
+    expect(slides[0]!.split('blurRad="152400" dist="50800"')).toHaveLength(4);
+    expect(slides[0]!.split('<a:outerShdw blurRad="50800"')).toHaveLength(5);
+    // The hexagons are editable freeforms with the shadow, not pictures.
+    expect(slides[1]!).not.toContain('<p:pic>');
+    expect(slides[1]!.match(/<a:custGeom>/g)).toHaveLength(3);
+    expect(slides[1]!.split('<a:ln><a:noFill/></a:ln><a:effectLst><a:outerShdw blurRad="152400" dist="50800"')).toHaveLength(4);
+    expect(Object.keys(files).filter(path => path.endsWith('.svg'))).toEqual([]);
+    expect(Object.values(files).some(file => strFromU8(file, true).includes('slideforge-outline-'))).toBe(false);
+  }, 180_000);
 });

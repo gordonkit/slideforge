@@ -7,11 +7,17 @@ All notable changes to this project will be documented in this file. The format 
 
 ### Added
 
-- `cards/rounded`, `cards/circle`, `cards/hexagon`, and `cards/pentagon` variants: larger
-  corners with an accent outline, a numbered accent circle above each centered card, and
-  accent-filled regular hexagons and pentagons that keep their proportions instead of
-  stretching. Cards and circles export as native PowerPoint shapes; the polygons are SVG
-  pictures behind editable text.
+- `shadow` design tokens, off by default: `shadow.card` (0–60 px) puts a soft, blurred shadow under
+  cards and hexagon and pentagon cards, and `shadow.text` (0–20 px) under slide, cover, and card
+  titles. Export writes native PowerPoint shadows with a blur radius, including a text shadow on
+  the editable run and a shadow on the hexagon and pentagon freeform shapes, which replace their
+  SVG pictures.
+- Export converts the first CSS `text-shadow` of any text to a PowerPoint text shadow.
+- `cards/rounded`, `cards/badge`, `cards/circle`, `cards/hexagon`, and `cards/pentagon` variants:
+  larger corners with an accent outline, a numbered accent circle above each centered card
+  (`badge`), and accent-filled regular circles, hexagons, and pentagons that keep their
+  proportions instead of stretching. Cards and circles export as native PowerPoint shapes; the
+  polygons are editable freeform shapes.
 - Eight built-in color templates, each with a light and a dark palette: `indigo-midnight`,
   `forest-emerald`, `ocean-violet`, `terracotta-graphite`, `sunset-orange`, `coffee-brown`,
   `crimson-red`, and `magenta-pink`. Light-theme accents keep at least about 4.5:1 contrast

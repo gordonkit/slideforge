@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Regenerates the built-in template and cards variant screenshots in site/public/screenshots/: npm run docs:template-screenshots
+// Regenerates the built-in template, cards variant, and soft shadow screenshots in site/public/screenshots/: npm run docs:template-screenshots
 // Run `npm run build` first. Needs no network access; the pixels depend on the installed fonts.
 import { mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
@@ -40,7 +40,7 @@ try {
   // The cards variants that change the card shape, three cards each.
   const card = (title, text) => ({ title, blocks: [{ type: 'paragraph', text }] });
   const cards = [card('Clarity', 'One idea at a time.'), card('Consistency', 'Shared layouts and tokens.'), card('Editability', 'Text stays editable.')];
-  for (const variant of ['rounded', 'circle', 'hexagon', 'pentagon']) {
+  for (const variant of ['rounded', 'badge', 'circle', 'hexagon', 'pentagon']) {
     const html = renderPresentation({ metadata: { title: variant }, theme: 'light', slides: [{ layout: `cards/${variant}`, title: 'Three principles', footer: `cards/${variant}`, cards }] });
     const file = join(work, `cards-${variant}.html`);
     await writeFile(file, html);
@@ -48,6 +48,17 @@ try {
     await page.evaluate(() => document.fonts.ready);
     await (await page.$('[data-pptx="slide"]')).screenshot({ path: join(output, `layout-cards-${variant}.png`) });
     console.log(`Saved layout-cards-${variant}.png`);
+  }
+  // Soft shadows from the shadow tokens.
+  const soft = { name: 'soft', tokens: { shadow: { card: 24, text: 8 } } };
+  for (const [name, layout] of [['cards', 'cards'], ['hexagon', 'cards/hexagon']]) {
+    const html = renderPresentation({ metadata: { title: name }, theme: 'light', slides: [{ layout, title: 'Soft shadows', footer: layout, cards }] }, { template: soft });
+    const file = join(work, `shadow-${name}.html`);
+    await writeFile(file, html);
+    await page.goto(pathToFileURL(file).href, { waitUntil: 'load' });
+    await page.evaluate(() => document.fonts.ready);
+    await (await page.$('[data-pptx="slide"]')).screenshot({ path: join(output, `layout-shadow-${name}.png`) });
+    console.log(`Saved layout-shadow-${name}.png`);
   }
 } finally {
   await browser.close();

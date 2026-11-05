@@ -105,6 +105,7 @@ strings unchanged. For example, `spacingTokens.column` becomes
 | `spacingTokens` / `spacing` | `page: 36`, `block: 27`, `column: 60`, `card: 30`, `card-padding: 36`, `subtitle: 18`, `cover-subtitle: 36`, `card-title: 24`, `list: 48`, `item: 15`, `caption: 12`, `table-x: 24`, `table-y: 15`, `chart: 30`, `chart-explanation: 24` |
 | `typographyTokens` / `type` | `title: 60`, `subtitle: 33`, `body: 36`, `caption: 25.5`, `card-title: 39`, `card-body: 30`, `table: 31.5`, `chart: 31.5`, `footer: 24`, `cover-title: 90`, `cover-subtitle: 45`, `author: 39`, `quote: 54`, `title-leading: "1.2"`, `subtitle-leading: "1.35"`, `body-leading: "1.45"`, `bold: "700"` |
 | `borderTokens` / `border` | `width: 2`, `radius: 18`, `accent: 6` (the quote's accent bar and the timeline rail), `title-outline: 0` (slide and cover title `-webkit-text-stroke` width in the `outline` color) |
+| `shadowTokens` / `shadow` | `card: 0` (blur radius in px of the soft shadow under cards and hexagon and pentagon cards; 0 draws none), `text: 0` (the same under slide, cover, and card titles; at most 20) |
 | `chartTokens` / `chart` | `height: 39`, `label: 285`, `value: 210`, `explanation-label: 210`, `explanation-value: 150` |
 
 For custom HTML you may reuse these maps and CSS conventions, but arbitrary

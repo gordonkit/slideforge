@@ -48,9 +48,13 @@ export const chartTokens = Object.freeze({
   height: 39, label: 285, value: 210, "explanation-label": 210, "explanation-value": 150,
 });
 
+// Blur radius, in px, of the soft shadow under cards and card-shaped polygons (`card`) and under slide and
+// card titles (`text`). The shadow fades out smoothly; 0 draws none.
+export const shadowTokens = Object.freeze({ card: 0, text: 0 });
+
 export const designTokens = Object.freeze({
   layout: layoutTokens, spacing: spacingTokens, type: typographyTokens,
-  border: borderTokens, chart: chartTokens,
+  border: borderTokens, chart: chartTokens, shadow: shadowTokens,
 });
 
 export type DesignTokens = { readonly [G in keyof typeof designTokens]: { readonly [K in keyof (typeof designTokens)[G]]: (typeof designTokens)[G][K] extends number ? number : string } };

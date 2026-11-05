@@ -12,9 +12,11 @@ const paletteSchema = z.object(Object.fromEntries(
 // Each group's numeric tokens can be overridden within these bounds; string tokens are fixed.
 const tokenBounds = {
   layout: [0, SLIDE_SIZE.widthPx], spacing: [0, 480], type: [8, 240], border: [0, 120], chart: [0, SLIDE_SIZE.widthPx],
+  shadow: [0, 60],
 } as const satisfies Record<keyof typeof designTokens, readonly [number, number]>;
 
 const MAX_TITLE_OUTLINE = 4;
+const MAX_TEXT_SHADOW = 20;
 
 const tokensSchema =z.object(Object.fromEntries(Object.entries(designTokens).map(([group, tokens]) => {
   const [min, max] = tokenBounds[group as keyof typeof designTokens];
@@ -46,7 +48,7 @@ export const templateSchema = z.object({
   backgrounds: backgroundsSchema.optional(),
   variants: variantsSchema.optional(),
 }).strict().superRefine((template, context) => {
-  const { layout, border } = mergeTokens(template.tokens);
+  const { layout, border, shadow } = mergeTokens(template.tokens);
   const check = (ok: boolean, message: string) => {
     if (!ok) context.addIssue({ code: "custom", path: ["tokens", "layout"], message });
   };
@@ -62,6 +64,10 @@ export const templateSchema = z.object({
   // A thick stroke fills in the counters of title glyphs, CJK ones first.
   if (border["title-outline"] > MAX_TITLE_OUTLINE) {
     context.addIssue({ code: "custom", path: ["tokens", "border"], message: `title-outline must not exceed ${MAX_TITLE_OUTLINE} (got ${border["title-outline"]})` });
+  }
+  // A wide blur spreads text shadows into an unreadable haze.
+  if (shadow.text > MAX_TEXT_SHADOW) {
+    context.addIssue({ code: "custom", path: ["tokens", "shadow"], message: `text must not exceed ${MAX_TEXT_SHADOW} (got ${shadow.text})` });
   }
 });
 

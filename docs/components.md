@@ -103,20 +103,23 @@ three and six use three columns, four form a 2 × 2 grid, and five are three ove
 | **6 cards** | |
 | ![Six cards in two rows of three](../site/public/screenshots/layout-cards-6.png) | |
 
-Four variants change only the card shape; the fields and the grid are the same. `circle`, `hexagon`, and
-`pentagon` number the cards 1 to 6 and center their text. The polygons are regular and keep their
-proportions, so they leave room above and below (or at the sides) instead of stretching, and their
-text area is small: they suit a title and one or two short lines.
+Five variants change only the card shape; the fields and the grid are the same. `badge` keeps the
+rectangular card and puts a numbered accent circle above its centered text. `circle`, `hexagon`, and
+`pentagon` fill the whole card with an accent-colored regular shape, number the cards 1 to 6, and
+center their text. These shapes keep their proportions, so they leave room above and below (or at the
+sides) instead of stretching, and their text area is small: they suit a title and one or two short
+lines.
 
-| `cards/rounded` | `cards/circle` |
+| `cards/rounded` | `cards/badge` |
 | --- | --- |
-| ![Rounded cards with accent outlines](../site/public/screenshots/layout-cards-rounded.png) | ![A numbered circle above each card](../site/public/screenshots/layout-cards-circle.png) |
+| ![Rounded cards with accent outlines](../site/public/screenshots/layout-cards-rounded.png) | ![A numbered circle above each card](../site/public/screenshots/layout-cards-badge.png) |
+| **`cards/circle`** | |
+| ![Accent-filled circle cards](../site/public/screenshots/layout-cards-circle.png) | |
 | **`cards/hexagon`** | **`cards/pentagon`** |
 | ![Accent-filled hexagon cards](../site/public/screenshots/layout-cards-hexagon.png) | ![Accent-filled pentagon cards](../site/public/screenshots/layout-cards-pentagon.png) |
 
-In PowerPoint the cards and circles are native shapes. The polygons are SVG pictures behind the
-text, so the text and number stay editable but the polygon is a vector graphic, not an editable
-shape (PowerPoint can convert it to one).
+In PowerPoint the cards and circles are native shapes, and the polygons are native too: the hexagon and pentagon are
+editable freeform shapes behind the text, and the text and number stay editable.
 
 ### `timeline`
 
