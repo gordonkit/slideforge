@@ -7,4 +7,6 @@ export interface LayoutProps<F extends LayoutFamily> {
   variant: string;
   /** For a `section` slide: its 1-based number among the presentation's sections. */
   sectionNumber?: number | undefined;
+  /** The `gradient.panel` token: how far a colored panel's gradient moves toward black, in percent. */
+  panelGradient?: number | undefined;
 }

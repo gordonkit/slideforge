@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file. The format 
 
 ## [Unreleased]
 
+### Added
+
+- `panels` layout (`default` columns, `rows`): two to seven sections split by thin lines instead of cards. A
+  panel can have a `color` that fills it, with a readable text color.
+- `gradient` tokens (`card`, `panel`, 0–60): a top-to-bottom gradient on cards, agenda rows, and colored
+  panels. Export draws it as a picture behind the editable text.
+
 ## [0.4.0] - 2026-11-05
 
 ### Added

@@ -106,6 +106,7 @@ strings unchanged. For example, `spacingTokens.column` becomes
 | `typographyTokens` / `type` | `title: 60`, `subtitle: 33`, `body: 36`, `caption: 25.5`, `card-title: 39`, `card-body: 30`, `table: 31.5`, `chart: 31.5`, `footer: 24`, `cover-title: 90`, `cover-subtitle: 45`, `author: 39`, `quote: 54`, `title-leading: "1.2"`, `subtitle-leading: "1.35"`, `body-leading: "1.45"`, `bold: "700"` |
 | `borderTokens` / `border` | `width: 2`, `radius: 18`, `accent: 6` (the quote's accent bar and the timeline rail), `title-outline: 0` (slide and cover title `-webkit-text-stroke` width in the `outline` color) |
 | `shadowTokens` / `shadow` | `card: 0` (blur radius in px of the soft shadow under cards and hexagon and pentagon cards; 0 draws none), `text: 0` (the same under slide, cover, and card titles; at most 20) |
+| `gradientTokens` / `gradient` | `card: 0` (percent a card's or agenda row's fill moves from the surface color toward the accent by the bottom of its top-to-bottom gradient; at most 60), `panel: 0` (the same for a colored panel, moving toward black); 0 keeps the fill solid |
 | `chartTokens` / `chart` | `height: 39`, `label: 285`, `value: 210`, `explanation-label: 210`, `explanation-value: 150` |
 
 For custom HTML you may reuse these maps and CSS conventions, but arbitrary

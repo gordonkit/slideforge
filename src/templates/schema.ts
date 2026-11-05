@@ -1,10 +1,10 @@
 import { z } from "zod";
 import { layouts } from "../layouts/registry.js";
-import { optionalText } from "../schemas/fields.js";
+import { hexColor, optionalText } from "../schemas/fields.js";
 import { backgroundsSchema, fontFamilySchema } from "../schemas/presentation.js";
 import { designTokens, SLIDE_SIZE, themeTokens, type DesignTokens } from "../themes/tokens.js";
 
-const color = z.string().regex(/^#[0-9a-f]{6}$/i, 'Use a six-digit hex color such as "#2563eb"');
+const color = hexColor;
 const paletteSchema = z.object(Object.fromEntries(
   Object.keys(themeTokens.light).map((key) => [key, color.optional()]),
 ) as Record<keyof typeof themeTokens.light, z.ZodOptional<typeof color>>).strict();
@@ -12,7 +12,7 @@ const paletteSchema = z.object(Object.fromEntries(
 // Each group's numeric tokens can be overridden within these bounds; string tokens are fixed.
 const tokenBounds = {
   layout: [0, SLIDE_SIZE.widthPx], spacing: [0, 480], type: [8, 240], border: [0, 120], chart: [0, SLIDE_SIZE.widthPx],
-  shadow: [0, 60],
+  shadow: [0, 60], gradient: [0, 60],
 } as const satisfies Record<keyof typeof designTokens, readonly [number, number]>;
 
 const MAX_TITLE_OUTLINE = 4;

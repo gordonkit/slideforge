@@ -26,6 +26,8 @@
   no external URLs or text hyperlinks. Export makes the shapes over the row "go to slide" buttons, which
   work in slide show (Ctrl+click while editing); they follow the slide's position, so renumber `slide`
   after reordering (an agenda without `items` follows the `section` slides instead).
+- A gradient fill (the `gradient` tokens) is exported as a picture behind the text, so the gradient is not an
+  editable PowerPoint fill; the text on it stays editable. Gradients run from top to bottom.
 - SlideForge has no automatic unsupported-content raster fallback. Upstream may
   rasterize pseudo-elements/effects or other content internally, which can reduce
   editability. Arbitrary scripts, canvas, video, animations, SVG features, and

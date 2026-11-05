@@ -58,6 +58,7 @@ schema, renderer, and stylesheet, and is listed in `src/layouts/registry.ts`:
 | `content` | One `ContentBlocks` stack |
 | `two-columns` | Two equal-width `ContentBlocks` stacks |
 | `cards` | `.sf-cards[data-count]` grid of 1–6 titled cards, arranged by their count |
+| `panels` | `.sf-panels[data-count]` of 2–7 `.sf-panel` sections (number, title, blocks) with an `aria-hidden` `.sf-panel-line` between them; a panel with a color is `.sf-panel-filled` |
 | `timeline` | `ol.sf-timeline` with one column per event: date, an `aria-hidden` marker on a rail, title, and optional text |
 | `gantt` | `.sf-gantt` rows on one grid: a period header, then per task a label (and progress) and a `role="img"` track holding its bar |
 | `table` | `SlideTable` |
@@ -184,6 +185,36 @@ section slides, so it does not need to be written.
 ```json
 { "layout": "section", "title": "Results", "subtitle": "Revenue and growth" }
 ```
+
+### `panels`
+
+Panels split the slide with thin lines instead of cards: two to seven sections, each with a number, a
+title, and content. Give a panel a `color` (a six-digit hex color) to fill it with that color; the text
+color switches between white and near-black to stay readable.
+
+| `panels` (`default`) | `panels/rows` |
+| --- | --- |
+| ![Panels split by vertical lines](../site/public/screenshots/layout-panels.png) | ![Panels split by horizontal lines](../site/public/screenshots/layout-panels-rows.png) |
+| ![Panels filled with their own colors](../site/public/screenshots/layout-panels-colored.png) | ![Colored panels with a gradient](../site/public/screenshots/layout-panels-gradient.png) |
+
+```json
+{
+  "layout": "panels",
+  "title": "Three steps",
+  "panels": [
+    { "title": "Plan", "color": "#2563eb", "blocks": [{ "type": "paragraph", "text": "Define scope." }] },
+    { "title": "Build", "blocks": [{ "type": "paragraph", "text": "Ship the first version." }] }
+  ]
+}
+```
+
+- **Columns and rows:** `panels` places the panels side by side, split by vertical lines. `panels/rows`
+  stacks them, split by horizontal lines, with the title on the left and the content on the right. The same
+  content works in both.
+- **Many panels:** five or more columns are narrow, so the text is smaller. With six or seven panels, keep
+  each to a short title and a line or two. Rows are shorter still.
+- **Color:** a panel without `color` has no fill, only the lines. Colored panels sit flush against each other.
+  The `gradient.panel` template token turns each fill into a gradient (see [templates](templates.md#gradients)).
 
 ### `timeline`
 

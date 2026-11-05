@@ -125,6 +125,32 @@ freeform shapes with a shadow, and titles get a text shadow on the editable run.
 ![Cards with a soft blurred shadow and shadowed titles](../site/public/screenshots/layout-shadow-cards.png)
 ![Hexagon cards with a soft blurred shadow](../site/public/screenshots/layout-shadow-hexagon.png)
 
+### Gradients
+
+`tokens.gradient` turns the fill of cards and colored panels into a gradient from the top to the bottom. Both
+values are percentages, from 0 to 60, and default to 0, which keeps the fill solid:
+
+| Token | Gradient |
+| --- | --- |
+| `card` | cards and agenda rows: from the surface color toward the accent color |
+| `panel` | a [panel](components.md#panels) with a `color`: from that color toward black |
+
+```json
+{
+  "name": "gradient",
+  "tokens": { "gradient": { "card": 40, "panel": 30 } }
+}
+```
+
+The value is how far the bottom color has moved toward its target, so a larger number is a stronger
+gradient. The text color of a panel is chosen for the middle of its gradient. The circle, hexagon, and pentagon
+cards and the number badges keep their solid accent. Export draws a gradient fill as a picture behind the
+text, which stays editable; the gradient itself is not an editable PowerPoint fill.
+
+| Cards | Colored panels |
+| --- | --- |
+| ![Cards with a gradient](../site/public/screenshots/layout-cards-gradient.png) | ![Panels with a gradient](../site/public/screenshots/layout-panels-gradient.png) |
+
 ### Variants
 
 `variants` maps a family to one of its [variants](schema.md#layout-names). A slide

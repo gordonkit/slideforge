@@ -523,6 +523,7 @@ docker compose -f docker/compose.yaml --profile cli \\
             ["content", { en: "blocks: 1–12 content blocks", "zh-TW": "blocks：1–12 個內容區塊", "zh-CN": "blocks：1–12 个内容块", ja: "blocks：1〜12 個のコンテンツブロック" }],
             ["two-columns", { en: "left and right: 1–12 blocks each", "zh-TW": "left 與 right：各 1–12 個區塊", "zh-CN": "left 与 right：各 1–12 个块", ja: "left と right：それぞれ 1〜12 個のブロック" }],
             ["cards", { en: "cards: 1–6 cards with title and blocks", "zh-TW": "cards：1–6 張含 title 與 blocks 的卡片", "zh-CN": "cards：1–6 张含 title 与 blocks 的卡片", ja: "cards：title と blocks を持つ 1〜6 枚のカード" }],
+            ["panels", { en: "panels: 2–7 objects, each with title, blocks (1–12), and an optional color (a six-digit hex color) that fills the panel", "zh-TW": "panels：2–7 個物件，每個含 title、blocks（1–12），以及選填的 color（六位數十六進位色碼），用來填滿該區塊", "zh-CN": "panels：2–7 个对象，每个含 title、blocks（1–12），以及可选的 color（六位十六进制色码），用来填满该区块", ja: "panels：2〜7 個のオブジェクト。各 title、blocks（1〜12）、任意の color（6 桁の 16 進カラー）でそのパネルを塗りつぶす" }],
             ["timeline", { en: "events: 2–6 events with date (up to 100 characters), title, and optional text", "zh-TW": "events：2–6 個事件，含 date（最多 100 字元）、title 與選填的 text", "zh-CN": "events：2–6 个事件，含 date（最多 100 字符）、title 与可选的 text", ja: "events：date（最大 100 文字）、title、任意の text を持つ 2〜6 個のイベント" }],
             ["gantt", { en: "periods (2–12) and tasks (1–8) with label, start and end (one-based period numbers, inclusive), and optional progress 0–100", "zh-TW": "periods（2–12）與 tasks（1–8），每個任務含 label、start 與 end（從 1 起算的時段編號，含頭尾）及選填的 progress 0–100", "zh-CN": "periods（2–12）与 tasks（1–8），每个任务含 label、start 与 end（从 1 起算的时段编号，含首尾）及可选的 progress 0–100", ja: "periods（2〜12）と tasks（1〜8）。各タスクは label、start と end（1 から数える期間の番号で両端を含む）、任意の progress 0〜100" }],
             ["table", { en: "columns (1–8) and rows (1–14), one cell per column", "zh-TW": "columns（1–8）與 rows（1–14），每列儲存格數須等於欄數", "zh-CN": "columns（1–8）与 rows（1–14），每行单元格数须等于列数", ja: "columns（1〜8）と rows（1〜14）。各行のセル数は列数と同じ" }],
@@ -715,6 +716,25 @@ docker compose -f docker/compose.yaml --profile cli \\
         ],
       },
       {
+        id: "gradients",
+        title: { en: "Gradients", "zh-TW": "漸層填色", "zh-CN": "渐变填色", ja: "グラデーション" },
+        body: {
+          en: "The gradient template tokens turn the fill of cards and colored panels into a gradient from the top to the bottom. Both are percentages from 0 to 60 and default to 0, which keeps the fill solid. gradient.card moves a card's or agenda row's fill from the surface color toward the accent, and gradient.panel moves a colored panel from its own color toward black. A larger number is a stronger gradient.",
+          "zh-TW": "gradient 範本 token 會把卡片與有顏色的區段填色變成由上到下的漸層。兩個值都是 0 到 60 的百分比，預設為 0，也就是維持單色。gradient.card 讓卡片或議程列的填色由表面色往強調色漸變，gradient.panel 讓有顏色的區段由它自己的顏色往黑色漸變。數字越大，漸層越明顯。",
+          "zh-CN": "gradient 模板 token 会把卡片与有颜色的区段填色变成由上到下的渐变。两个值都是 0 到 60 的百分比，默认为 0，也就是保持单色。gradient.card 让卡片或议程行的填色由表面色向强调色渐变，gradient.panel 让有颜色的区段由它自己的颜色向黑色渐变。数字越大，渐变越明显。",
+          ja: "gradient テンプレートトークンは、カードと色付きパネルの塗りを上から下へのグラデーションにします。どちらも 0〜60 のパーセントで、既定は 0（単色のまま）です。gradient.card はカードやアジェンダの行の塗りを面の色からアクセント色へ、gradient.panel は色付きパネルを自身の色から黒へ変化させます。数値が大きいほどグラデーションが強くなります。",
+        },
+        code: `{
+  "name": "gradient",
+  "tokens": { "gradient": { "card": 40, "panel": 30 } }
+}`,
+        note: { en: "Export draws a gradient fill as a picture behind the text, which stays editable; the gradient itself is not an editable PowerPoint fill.", "zh-TW": "匯出時漸層填色會畫成文字後方的圖片，文字仍可編輯；漸層本身不是可編輯的 PowerPoint 填色。", "zh-CN": "导出时渐变填色会画成文字后方的图片，文字仍可编辑；渐变本身不是可编辑的 PowerPoint 填色。", ja: "エクスポートでは、グラデーションの塗りは文字の背後の画像として描かれ、文字は編集できます。グラデーション自体は編集可能な PowerPoint の塗りではありません。" },
+        images: [
+          { src: "/screenshots/layout-cards-gradient.png", alt: { en: "Cards with a gradient fill", "zh-TW": "漸層填色的卡片", "zh-CN": "渐变填色的卡片", ja: "グラデーションで塗られたカード" } },
+          { src: "/screenshots/layout-panels-gradient.png", alt: { en: "Colored panels with a gradient fill", "zh-TW": "漸層填色的彩色區段", "zh-CN": "渐变填色的彩色区段", ja: "グラデーションで塗られた色付きパネル" } },
+        ],
+      },
+      {
         id: "minimal",
         title: { en: "Minimal deck", "zh-TW": "最小範例", "zh-CN": "最小示例", ja: "最小構成のデッキ" },
         body: {
@@ -780,6 +800,7 @@ docker compose -f docker/compose.yaml --profile cli \\
             ["content", { en: "An explanation with paragraphs, lists, and images", "zh-TW": "以段落、清單與圖片說明", "zh-CN": "以段落、列表与图片说明", ja: "段落、リスト、画像による説明" }],
             ["two-columns", { en: "Comparisons such as before and after", "zh-TW": "比較，例如前後對照", "zh-CN": "比较，例如前后对照", ja: "前後比較などの対比" }],
             ["cards", { en: "Up to six short parallel ideas, arranged by their count", "zh-TW": "最多六個簡短的並列重點，依張數自動排列", "zh-CN": "最多六个简短的并列重点，依张数自动排列", ja: "最大 6 つの短い並列項目。枚数に応じて自動で並ぶ" }],
+            ["panels", { en: "Two to seven sections split by thin vertical or horizontal lines instead of cards; each can have its own fill color", "zh-TW": "以細線（垂直或水平）而不是卡片分隔的二到七個區段，每個區段可有自己的填色", "zh-CN": "以细线（垂直或水平）而不是卡片分隔的二到七个区段，每个区段可有自己的填色", ja: "カードではなく縦または横の細い線で区切る 2〜7 個のセクション。それぞれに塗りつぶしの色を指定できる" }],
             ["timeline", { en: "Two to six steps or dates in order", "zh-TW": "二到六個依序排列的步驟或時間點", "zh-CN": "二到六个依序排列的步骤或时间点", ja: "順に並ぶ 2〜6 個のステップや日付" }],
             ["gantt", { en: "A project schedule: up to eight tasks as bars over labeled periods, with optional progress", "zh-TW": "專案進度表：最多八個任務，以長條橫跨各時段，可標示完成度", "zh-CN": "项目进度表：最多八个任务，以长条横跨各时段，可标示完成度", ja: "プロジェクトの進捗表。最大 8 つのタスクを期間にまたがるバーで示し、進捗も表示できる" }],
             ["table", { en: "Compact grids of text", "zh-TW": "精簡的文字表格", "zh-CN": "精简的文字表格", ja: "コンパクトな表" }],
@@ -895,6 +916,29 @@ docker compose -f docker/compose.yaml --profile cli \\
           { src: "/screenshots/layout-cards-circle.png", alt: { en: "Cards slide with accent-filled circle cards", "zh-TW": "強調色圓形卡片的 cards 投影片", "zh-CN": "强调色圆形卡片的 cards 幻灯片", ja: "アクセント色の円形カードの cards スライド" }, caption: "cards/circle" },
           { src: "/screenshots/layout-cards-hexagon.png", alt: { en: "Cards slide with accent-filled hexagon cards", "zh-TW": "強調色六角形卡片的 cards 投影片", "zh-CN": "强调色六边形卡片的 cards 幻灯片", ja: "アクセント色の六角形カードの cards スライド" }, caption: "cards/hexagon" },
           { src: "/screenshots/layout-cards-pentagon.png", alt: { en: "Cards slide with accent-filled pentagon cards", "zh-TW": "強調色五角形卡片的 cards 投影片", "zh-CN": "强调色五边形卡片的 cards 幻灯片", ja: "アクセント色の五角形カードの cards スライド" }, caption: "cards/pentagon" },
+        ],
+      },
+      {
+        id: "gallery-panels",
+        title: { en: "Gallery: panels", "zh-TW": "版型一覽：panels", "zh-CN": "版式一览：panels", ja: "ギャラリー：panels" },
+        body: {
+          en: "panels splits the slide with thin lines instead of cards: 2–7 sections, each with a number, a title, and content. The default variant places them side by side with vertical lines, and panels/rows stacks them with horizontal lines, the title on the left and the content on the right. Give a panel a color, a six-digit hex color, to fill it; the text switches between white and near-black to stay readable, and the gradient.panel template token turns the fill into a gradient. Five or more columns are narrow, so keep each to a short title and a line or two.",
+          "zh-TW": "panels 以細線而不是卡片分隔投影片：2–7 個區段，每段有編號、標題與內容。預設變化以垂直線並排排列，panels/rows 則以水平線上下堆疊，標題在左、內容在右。給區段一個 color（六位數十六進位色碼）即可填色，文字會在白色與近黑色之間切換以保持易讀；範本 token gradient.panel 可把填色變成漸層。五欄以上每欄很窄，請只放簡短的標題與一兩行文字。",
+          "zh-CN": "panels 以细线而不是卡片分隔幻灯片：2–7 个区段，每段有编号、标题与内容。默认变体以垂直线并排排列，panels/rows 则以水平线上下堆叠，标题在左、内容在右。给区段一个 color（六位十六进制色码）即可填色，文字会在白色与近黑色之间切换以保持易读；模板 token gradient.panel 可把填色变成渐变。五栏以上每栏很窄，请只放简短的标题与一两行文字。",
+          ja: "panels はカードの代わりに細い線でスライドを区切ります。2〜7 個のセクションで、それぞれ番号、タイトル、内容を持ちます。既定のバリエーションは縦線で左右に並べ、panels/rows は横線で上下に積み、左にタイトル、右に内容を置きます。パネルに color（6 桁の 16 進カラー）を指定すると塗りつぶされ、文字は読みやすいように白と黒に近い色から自動で選ばれます。テンプレートトークン gradient.panel で塗りをグラデーションにできます。5 列以上は幅が狭いので、短いタイトルと 1〜2 行の文にとどめてください。",
+        },
+        code: `{
+  "layout": "panels",
+  "title": "Three steps",
+  "panels": [
+    { "title": "Plan", "color": "#2563eb", "blocks": [{ "type": "paragraph", "text": "Define scope." }] },
+    { "title": "Build", "blocks": [{ "type": "paragraph", "text": "Ship the first version." }] }
+  ]
+}`,
+        images: [
+          { src: "/screenshots/layout-panels.png", alt: { en: "Three panels split by vertical lines", "zh-TW": "以垂直線分隔的三個區段", "zh-CN": "以垂直线分隔的三个区段", ja: "縦線で区切られた 3 つのパネル" }, caption: "panels" },
+          { src: "/screenshots/layout-panels-rows.png", alt: { en: "Three panels split by horizontal lines", "zh-TW": "以水平線分隔的三個區段", "zh-CN": "以水平线分隔的三个区段", ja: "横線で区切られた 3 つのパネル" }, caption: "panels/rows" },
+          { src: "/screenshots/layout-panels-colored.png", alt: { en: "Four panels filled with their own colors", "zh-TW": "各自填色的四個區段", "zh-CN": "各自填色的四个区段", ja: "それぞれの色で塗りつぶされた 4 つのパネル" }, caption: "panels + color" },
         ],
       },
       {
@@ -1125,7 +1169,7 @@ docker compose -f docker/compose.yaml --profile cli \\
           rows: [
             ["Cover", "cover"],
             ["Section", "section"],
-            ["Content", "agenda · content · two-columns · cards · timeline · gantt · table · chart"],
+            ["Content", "agenda · content · two-columns · cards · panels · timeline · gantt · table · chart"],
             ["Quote", "quote"],
             ["Closing", "blank"],
           ],

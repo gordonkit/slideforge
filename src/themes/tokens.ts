@@ -52,9 +52,14 @@ export const chartTokens = Object.freeze({
 // card titles (`text`). The shadow fades out smoothly; 0 draws none.
 export const shadowTokens = Object.freeze({ card: 0, text: 0 });
 
+// Percent a fill moves toward its target by the end of its gradient from top to bottom: cards and agenda rows move from
+// the surface color toward the accent (`card`), and a colored panel moves from its color toward black
+// (`panel`). 0 keeps the fill solid.
+export const gradientTokens = Object.freeze({ card: 0, panel: 0 });
+
 export const designTokens = Object.freeze({
   layout: layoutTokens, spacing: spacingTokens, type: typographyTokens,
-  border: borderTokens, chart: chartTokens, shadow: shadowTokens,
+  border: borderTokens, chart: chartTokens, shadow: shadowTokens, gradient: gradientTokens,
 });
 
 export type DesignTokens = { readonly [G in keyof typeof designTokens]: { readonly [K in keyof (typeof designTokens)[G]]: (typeof designTokens)[G][K] extends number ? number : string } };

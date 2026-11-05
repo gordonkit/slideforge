@@ -9,6 +9,7 @@ import { ChartLayout } from "./chart/render.js";
 import { ContentLayout } from "./content/render.js";
 import { CoverLayout } from "./cover/render.js";
 import { GanttLayout } from "./gantt/render.js";
+import { PanelsLayout } from "./panels/render.js";
 import { QuoteLayout } from "./quote/render.js";
 import { SectionLayout } from "./section/render.js";
 import { layoutFamilies, layoutFamily, slideVariant, type LayoutFamily } from "./registry.js";
@@ -25,6 +26,7 @@ const renderers: { [F in LayoutFamily]: (props: LayoutProps<F>) => ReactNode } =
   content: ContentLayout,
   "two-columns": TwoColumnsLayout,
   cards: CardsLayout,
+  panels: PanelsLayout,
   timeline: TimelineLayout,
   gantt: GanttLayout,
   table: TableLayout,
@@ -38,11 +40,11 @@ export const layoutStylesheet = layoutFamilies
   .map((family) => readFileSync(new URL(`./${family}/${family}.css`, import.meta.url), "utf8"))
   .join("");
 
-export function SlideLayout({ slide, variant = slideVariant(slide), number, total, background, sectionNumber }: {
-  slide: Slide; variant?: string; number: number; total: number; background?: string | undefined; sectionNumber?: number | undefined;
+export function SlideLayout({ slide, variant = slideVariant(slide), number, total, background, sectionNumber, panelGradient }: {
+  slide: Slide; variant?: string; number: number; total: number; background?: string | undefined; sectionNumber?: number | undefined; panelGradient?: number | undefined;
 }) {
-  const Layout = renderers[layoutFamily(slide.layout)] as (props: { slide: Slide; variant: string; sectionNumber?: number | undefined }) => ReactNode;
+  const Layout = renderers[layoutFamily(slide.layout)] as (props: { slide: Slide; variant: string; sectionNumber?: number | undefined; panelGradient?: number | undefined }) => ReactNode;
   return <SlideComponent slide={slide} variant={variant} number={number} total={total} background={background}>
-    <Layout slide={slide} variant={variant} sectionNumber={sectionNumber} />
+    <Layout slide={slide} variant={variant} sectionNumber={sectionNumber} panelGradient={panelGradient} />
   </SlideComponent>;
 }

@@ -23,9 +23,9 @@
       "items": [
         { "title": "Content model / 內容模型", "text": "Short, structured slides", "slide": 4 },
         { "title": "Layouts / 版型", "text": "Columns and cards", "slide": 5 },
-        { "title": "Time / 時程", "text": "Timeline and schedule", "slide": 7 },
-        { "title": "Data / 資料", "text": "Tables and charts", "slide": 9 },
-        { "title": "Wrap-up / 結語", "text": "One more thing", "slide": 11 }
+        { "title": "Time / 時程", "text": "Timeline and schedule", "slide": 8 },
+        { "title": "Data / 資料", "text": "Tables and charts", "slide": 10 },
+        { "title": "Wrap-up / 結語", "text": "One more thing", "slide": 12 }
       ]
     },
     {
@@ -58,6 +58,15 @@
         { "title": "Clarity", "blocks": [{ "type": "paragraph", "text": "One idea at a time." }] },
         { "title": "一致性", "blocks": [{ "type": "paragraph", "text": "共用版面與設計規範。" }] },
         { "title": "Editability", "blocks": [{ "type": "paragraph", "text": "Keep text, tables and charts editable." }] }
+      ]
+    },
+    {
+      "layout": "panels",
+      "title": "Plan, build, learn / 規劃、建置、學習",
+      "panels": [
+        { "title": "Plan", "color": "#2563eb", "blocks": [{ "type": "paragraph", "text": "Define scope and goals." }] },
+        { "title": "建置", "color": "#0d9488", "blocks": [{ "type": "paragraph", "text": "先完成第一版。" }] },
+        { "title": "Learn", "blocks": [{ "type": "paragraph", "text": "Measure, then adjust." }] }
       ]
     },
     {

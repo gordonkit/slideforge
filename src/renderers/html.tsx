@@ -6,6 +6,7 @@ import { layoutStylesheet, SlideLayout } from "../layouts/index.js";
 import { resolveAgendas, sectionNumbers } from "../layouts/agenda/resolve.js";
 import { slideVariant } from "../layouts/registry.js";
 import { mergeTokens, parseTemplate, type Template } from "../templates/schema.js";
+import { gradientFill } from "../themes/color.js";
 import { cssVariables, defaultFontFamily, SLIDE_SIZE, themeTokens } from "../themes/tokens.js";
 import { injectBeforeBodyEnd, notesScript, presentationScript } from "./present.js";
 
@@ -65,6 +66,7 @@ export function renderPresentation(input: unknown, options: RenderOptions = {}):
     "--sf-on-accent": palette.onAccent,
     "--sf-canvas": palette.canvas,
     "--sf-surface": palette.surface,
+    "--sf-card-fill": gradientFill(palette.surface, palette.accent, tokens.gradient.card),
     "--sf-border": palette.border,
     "--sf-outline": palette.outline,
     fontFamily: presentation.fontFamily ?? template?.fontFamily ?? defaultFontFamily,
@@ -85,7 +87,7 @@ export function renderPresentation(input: unknown, options: RenderOptions = {}):
       </head>
       <body style={style} data-theme={presentation.theme} data-card-shadow={tokens.shadow.card > 0 ? "" : undefined} data-text-shadow={tokens.shadow.text > 0 ? "" : undefined}>
         <main className="sf-presentation">
-          {slides.map((slide, index) => <SlideLayout key={index} slide={slide} sectionNumber={sections.get(index)}
+          {slides.map((slide, index) => <SlideLayout key={index} slide={slide} sectionNumber={sections.get(index)} panelGradient={tokens.gradient.panel}
             variant={slideVariant(slide, template?.variants)} number={index + 1} total={presentation.slides.length}
             background={slideBackground(presentation, slide, template)} />)}
         </main>

@@ -7,7 +7,7 @@ import { parsePresentation, presentationSchema, slideBackground } from "../../sr
 
 describe("layout registry", () => {
   it("lists the families in documentation order", () => {
-    expect(layoutFamilies).toEqual(["cover", "agenda", "section", "content", "two-columns", "cards", "timeline", "gantt", "table", "chart", "quote", "blank"]);
+    expect(layoutFamilies).toEqual(["cover", "agenda", "section", "content", "two-columns", "cards", "panels", "timeline", "gantt", "table", "chart", "quote", "blank"]);
   });
 
   it("gives every family a default variant, a schema keyed by its name, a renderer, and a stylesheet", () => {
@@ -67,7 +67,7 @@ describe("family/variant layout names", () => {
     expect(issues({ layout: "cover/fancy" })).toEqual([cover]);
     expect(issues({ layout: "cover/" })).toEqual([cover]);
     expect(issues({ layout: "table/fancy", columns: ["A"], rows: [["1"]] })).toEqual(['Unknown table variant. Use "table" or "table/default"']);
-    const families = 'Unknown layout. Use "cover", "agenda", "section", "content", "two-columns", "cards", "timeline", "gantt", "table", "chart", "quote", or "blank"';
+    const families = 'Unknown layout. Use "cover", "agenda", "section", "content", "two-columns", "cards", "panels", "timeline", "gantt", "table", "chart", "quote", or "blank"';
     expect(issues({ layout: "gallery" })).toEqual([families]);
     expect(issues({})).toEqual([families]);
   });
@@ -181,6 +181,25 @@ describe("family/variant layout names", () => {
     expect(chapters).not.toContain("<ul class=\"sf-agenda-subs\"");
     const bad = presentationSchema.safeParse({ metadata: { title: "Deck" }, slides: [{ title: "Agenda", layout: "agenda/outline", items: [{ title: "A", items: [{ title: "A1", slide: 3 }] }, items[1]] }, page] });
     expect(bad.error?.issues.map((issue) => `${issue.path.join(".")}: ${issue.message}`)).toEqual(["slides.0.items.0.items.0.slide: Slide 3 does not exist; the presentation has 2"]);
+  });
+
+  it("validates and draws panels split by lines, filling the ones with a color", () => {
+    const panel = (title: string, color?: string) => ({ title, blocks: [{ type: "paragraph", text: "x" }], ...(color === undefined ? {} : { color }) });
+    const draw = (panels: object[], template?: object) => renderPresentation({ metadata: { title: "Deck" }, slides: [{ title: "P", layout: "panels", panels }] }, template === undefined ? {} : { template });
+    const html = draw([panel("A", "#2563eb"), panel("B")]);
+    expect(html).toContain('<div class="sf-panels" data-count="2">');
+    expect(html).toContain('<section class="sf-panel sf-panel-filled" style="--sf-panel-fill:#2563eb;--sf-panel-text:#ffffff">');
+    expect(html).toContain('<div class="sf-panel-line" aria-hidden="true"></div><section class="sf-panel">');
+    // The gradient token moves a colored panel toward black, and a light color gets dark text.
+    const soft = draw([panel("A", "#ffff00"), panel("B")], { name: "g", tokens: { gradient: { panel: 20 } } });
+    expect(soft).toContain("--sf-panel-fill:linear-gradient(180deg, #ffff00, #cccc00);--sf-panel-text:#111827");
+    expect(draw([panel("A"), panel("B")], { name: "g", tokens: { gradient: { card: 30 } } })).toContain("--sf-card-fill:linear-gradient(180deg, #f1f5f9, #");
+    expect(html).toContain("--sf-card-fill:#f1f5f9");
+    const issues = (input: object) => presentationSchema.safeParse({ metadata: { title: "Deck" }, slides: [{ title: "P", layout: "panels", ...input }] }).error?.issues.map((issue) => `${issue.path.join(".")}: ${issue.message}`);
+    expect(issues({ panels: [panel("A")] })).toEqual(["slides.0.panels: Too small: expected array to have >=2 items"]);
+    expect(issues({ panels: Array.from({ length: 8 }, () => panel("A")) })).toEqual(["slides.0.panels: Too big: expected array to have <=7 items"]);
+    expect(issues({ panels: [panel("A", "blue"), panel("B")] })).toEqual(['slides.0.panels.0.color: Use a six-digit hex color such as "#2563eb"']);
+    expect(issues({ layout: "panels/rows", panels: [panel("A"), panel("B")] })).toBeUndefined();
   });
 
   it("draws the subtitle with an accent bar", () => {

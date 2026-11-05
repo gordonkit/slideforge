@@ -90,6 +90,7 @@ variant, so `"<family>"` and `"<family>/default"` render the same.
 | `cover` | `default` (left-aligned), `centered` (centered title, subtitle, and author), `split` (accent panel on the right third; text and footer stay left of it), `band` (full-bleed accent block behind the title and subtitle, which use the on-accent color) |
 | `quote` | `default` (left-aligned beside an accent bar), `centered` (centered, without the bar) |
 | `cards` | `default` (rectangular cards), `rounded` (larger corners and an accent outline), `badge` (a numbered accent circle above each centered card), `circle` (accent-filled round cards with a number), `hexagon` and `pentagon` (accent-filled regular polygons with a numbered circle; the card keeps the polygon's proportions and the shape is an editable freeform shape behind the text) |
+| `panels` | `default` (side-by-side columns split by vertical lines), `rows` (stacked rows split by horizontal lines) |
 | `agenda` | `default` (numbered cards), `chapters` (a large-number index of the top level only), `outline` (each chapter as a card with its subsections listed under it) |
 | `section` | `default` (left-aligned beside an accent rail), `centered` (centered text), `band` (the whole slide in the accent color) |
 | `content`, `two-columns`, `timeline`, `gantt`, `table`, `chart`, `blank` | `default` |
@@ -112,6 +113,7 @@ is reported with that family's valid names, such as
 | `"content"` | Required `blocks`: 1–12 content blocks |
 | `"two-columns"` | Required `left` and `right`: each 1–12 content blocks |
 | `"cards"` | Required `cards`: 1–6 objects, each with trimmed nonempty `title` (max 200) and `blocks` (1–12) |
+| `"panels"` | Required `panels`: 2–7 objects, each with trimmed nonempty `title` (max 200), `blocks` (1–12), and an optional `color`, a six-digit hex color such as `"#2563eb"` that fills the panel |
 | `"timeline"` | Required `events`: 2–6 objects, each with trimmed nonempty `date` (max 100) and `title` (max 200), and optional `text` string, max 10,000 |
 | `"gantt"` | Required `periods` (2–12 trimmed nonempty strings, max 40 each) and `tasks` (1–8 objects, each with trimmed nonempty `label` (max 100), integer `start` and `end`, and optional `progress` from 0 to 100) |
 | `"table"` | Required `columns` (1–8 trimmed nonempty strings, max 200 each) and `rows` (1–14 arrays of 1–8 string cells, max 2,000 each) |

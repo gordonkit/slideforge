@@ -108,6 +108,29 @@ try {
       console.log('Saved layout-' + name + '.png');
     }
   }
+  // Panels split by lines, with colored panels, and the gradient tokens on cards and panels.
+  {
+    const panel = (title, text, color) => ({ title, blocks: [{ type: 'paragraph', text }], ...(color === undefined ? {} : { color }) });
+    const plain = [panel('Plan', 'Define scope and goals.'), panel('Build', 'Ship the first version.'), panel('Learn', 'Measure and adjust.')];
+    const colored = [panel('Plan', 'Define scope.', '#2563eb'), panel('Build', 'Ship v1.', '#0d9488'), panel('Learn', 'Measure.', '#d97706'), panel('Grow', 'Scale up.', '#7c3aed')];
+    const gradient = { name: 'gradient', tokens: { gradient: { card: 40, panel: 30 } } };
+    const samples = [
+      ['panels', { layout: 'panels', title: 'Three steps', footer: 'panels', panels: plain }, undefined],
+      ['panels-rows', { layout: 'panels/rows', title: 'Three steps', footer: 'panels/rows', panels: plain }, undefined],
+      ['panels-colored', { layout: 'panels', title: 'Each panel has its color', footer: 'panels', panels: colored }, undefined],
+      ['panels-gradient', { layout: 'panels', title: 'With a gradient', footer: 'gradient.panel: 30', panels: colored }, gradient],
+      ['cards-gradient', { layout: 'cards', title: 'Cards with a gradient', footer: 'gradient.card: 40', cards }, gradient],
+    ];
+    for (const [name, slide, template] of samples) {
+      const html = renderPresentation({ metadata: { title: name }, theme: 'light', slides: [slide] }, template === undefined ? {} : { template });
+      const file = join(work, name + '.html');
+      await writeFile(file, html);
+      await page.goto(pathToFileURL(file).href, { waitUntil: 'load' });
+      await page.evaluate(() => document.fonts.ready);
+      await (await page.$('[data-pptx="slide"]')).screenshot({ path: join(output, 'layout-' + name + '.png') });
+      console.log('Saved layout-' + name + '.png');
+    }
+  }
   // Soft shadows from the shadow tokens.
   const soft = { name: 'soft', tokens: { shadow: { card: 24, text: 8 } } };
   for (const [name, layout] of [['cards', 'cards'], ['hexagon', 'cards/hexagon']]) {

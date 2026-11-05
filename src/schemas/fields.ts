@@ -8,6 +8,8 @@ export const xmlText = z.string().regex(
 );
 export const text = xmlText.trim().min(1);
 export const optionalText = xmlText.max(10000).optional();
+/** A six-digit hex color such as "#2563eb". */
+export const hexColor = z.string().regex(/^#[0-9a-f]{6}$/i, 'Use a six-digit hex color such as "#2563eb"');
 
 export const imageSourceSchema = xmlText.trim().min(1).max(2_000_000).refine((source) => {
   if (/[\u0000-\u0020\u007f\\]/u.test(source)) return false;
