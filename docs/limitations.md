@@ -28,6 +28,10 @@
   after reordering (an agenda without `items` follows the `section` slides instead).
 - A gradient fill (the `gradient` tokens) is exported as a picture behind the text, so the gradient is not an
   editable PowerPoint fill; the text on it stays editable. Gradients run from top to bottom.
+- A `media` or `team` picture is cropped to fit its area (`object-fit: cover`) and exported as a picture; a portrait is
+  clipped to a circle.
+- The `code` layout draws plain text in a monospaced font, with no syntax coloring, and PowerPoint needs that font
+  installed. The `chart/donut` ring is exported as freeform shapes, not a native PowerPoint chart.
 - SlideForge has no automatic unsupported-content raster fallback. Upstream may
   rasterize pseudo-elements/effects or other content internally, which can reduce
   editability. Arbitrary scripts, canvas, video, animations, SVG features, and

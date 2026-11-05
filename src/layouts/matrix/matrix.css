@@ -1,0 +1,14 @@
+/* matrix: a 2 × 2 grid with the axis names outside it. */
+.sf-matrix { height: 100%; display: flex; flex-direction: column; gap: 12px; }
+.sf-matrix-axis { margin: 0; flex: none; color: var(--sf-accent); font-size: var(--sf-type-card-body); font-weight: var(--sf-type-bold); }
+.sf-matrix-x { text-align: right; }
+.sf-matrix-grid { position: relative; flex: 1; min-height: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: repeat(2, minmax(0, 1fr)); gap: var(--sf-spacing-card); }
+.sf-matrix-cell { display: flex; flex-direction: column; min-height: 0; overflow: hidden; padding: var(--sf-spacing-card-padding); background: var(--sf-card-fill); border: var(--sf-border-width) solid var(--sf-border); border-radius: var(--sf-border-radius); }
+.sf-matrix-cell h2 { margin: 0 0 var(--sf-spacing-card-title); font-size: var(--sf-type-card-title); line-height: var(--sf-type-title-leading); }
+.sf-matrix-cell .sf-blocks { font-size: var(--sf-type-card-body); }
+/* lines: no cells, a cross between the quadrants. */
+.sf-variant-lines .sf-matrix-grid { gap: 0; }
+.sf-variant-lines .sf-matrix-cell { background: none; border: 0; border-radius: 0; }
+.sf-variant-lines .sf-matrix-line { position: absolute; background: var(--sf-border); }
+.sf-variant-lines .sf-matrix-vline { top: 0; bottom: 0; left: 50%; width: var(--sf-border-width); }
+.sf-variant-lines .sf-matrix-hline { left: 0; right: 0; top: 50%; height: var(--sf-border-width); }

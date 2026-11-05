@@ -1,0 +1,11 @@
+/* media: the image is the subject; the text sits beside it, or below it for full. */
+.sf-media { height: 100%; display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--sf-spacing-column); }
+.sf-media[data-text] { grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); align-items: center; }
+.sf-media-figure { margin: 0; height: 100%; min-height: 0; display: flex; flex-direction: column; gap: 12px; }
+.sf-media-figure img { display: block; flex: 1; min-height: 0; width: 100%; object-fit: cover; border-radius: var(--sf-border-radius); }
+.sf-media-figure figcaption { flex: none; color: var(--sf-muted); font-size: var(--sf-type-caption); }
+.sf-media .sf-blocks { min-width: 0; }
+.sf-variant-right .sf-media[data-text] { grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); }
+.sf-variant-right .sf-media-figure { order: 2; }
+.sf-variant-full .sf-media[data-text] { grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 1fr) auto; align-items: stretch; gap: 24px; }
+.sf-variant-full .sf-media .sf-blocks { font-size: var(--sf-type-card-body); }

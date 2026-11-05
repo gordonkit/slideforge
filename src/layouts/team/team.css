@@ -1,0 +1,14 @@
+/* team: people in cards laid out like the cards layout: up to three in a row, and the lower two of five centered. */
+.sf-team { list-style: none; margin: 0; padding: 0; height: 100%; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); grid-auto-rows: 1fr; gap: var(--sf-spacing-card); }
+.sf-team[data-count="2"] { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.sf-team[data-count="4"] { grid-template-columns: repeat(4, minmax(0, 1fr)); grid-auto-rows: auto; align-content: center; }
+.sf-team[data-count="5"] { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+.sf-team[data-count="5"] .sf-member { grid-column: span 2; }
+.sf-team[data-count="5"] .sf-member:nth-child(4) { grid-column: 2 / span 2; }
+.sf-team[data-count="5"] .sf-member:nth-child(5) { grid-column: 4 / span 2; }
+.sf-member { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; min-width: 0; padding: var(--sf-spacing-card-padding); text-align: center; background: var(--sf-card-fill); border: var(--sf-border-width) solid var(--sf-border); border-radius: var(--sf-border-radius); }
+.sf-avatar { flex: none; display: flex; align-items: center; justify-content: center; width: 150px; height: 150px; margin-bottom: 8px; border-radius: 9999px; object-fit: cover; background: var(--sf-accent); color: var(--sf-on-accent); font-size: 66px; font-weight: var(--sf-type-bold); }
+.sf-team[data-count="5"] .sf-avatar, .sf-team[data-count="6"] .sf-avatar { width: 108px; height: 108px; font-size: 48px; }
+.sf-member-name { font-size: var(--sf-type-card-title); font-weight: var(--sf-type-bold); line-height: var(--sf-type-title-leading); }
+.sf-member-role { color: var(--sf-accent); font-size: var(--sf-type-card-body); font-weight: 600; }
+.sf-member-text { color: var(--sf-muted); font-size: calc(var(--sf-type-card-body) * 0.85); line-height: var(--sf-type-subtitle-leading); }

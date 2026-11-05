@@ -23,9 +23,9 @@
       "items": [
         { "title": "Content model / 內容模型", "text": "Short, structured slides", "slide": 4 },
         { "title": "Layouts / 版型", "text": "Columns and cards", "slide": 5 },
-        { "title": "Time / 時程", "text": "Timeline and schedule", "slide": 8 },
-        { "title": "Data / 資料", "text": "Tables and charts", "slide": 10 },
-        { "title": "Wrap-up / 結語", "text": "One more thing", "slide": 12 }
+        { "title": "Time / 時程", "text": "Timeline and schedule", "slide": 15 },
+        { "title": "Data / 資料", "text": "Tables and charts", "slide": 17 },
+        { "title": "Wrap-up / 結語", "text": "One more thing", "slide": 20 }
       ]
     },
     {
@@ -52,6 +52,17 @@
       "right": [{ "type": "bullets", "items": ["Structured content", "一致的設計系統", "Repeatable exports"] }]
     },
     {
+      "layout": "media",
+      "title": "One picture, one point / 一張圖，一個重點",
+      "image": "assets/diagram.svg",
+      "alt": "JSON to HTML to PowerPoint flow",
+      "caption": "Source, HTML, PowerPoint / 來源、HTML、PowerPoint",
+      "blocks": [
+        { "type": "paragraph", "text": "The image is the subject; the text explains it." },
+        { "type": "bullets", "items": ["Cropped to fit", "Alt text is required", "Caption is optional"] }
+      ]
+    },
+    {
       "layout": "cards",
       "title": "Three principles / 三大原則",
       "cards": [
@@ -61,12 +72,71 @@
       ]
     },
     {
+      "layout": "stats",
+      "title": "Numbers to remember / 重點數字",
+      "stats": [
+        { "value": "16:9", "label": "Canvas / 畫布", "text": "A fixed slide size" },
+        { "value": "4", "label": "Locales / 語系" },
+        { "value": "100%", "label": "Editable text / 可編輯文字" }
+      ]
+    },
+    {
       "layout": "panels",
       "title": "Plan, build, learn / 規劃、建置、學習",
       "panels": [
         { "title": "Plan", "color": "#2563eb", "blocks": [{ "type": "paragraph", "text": "Define scope and goals." }] },
         { "title": "建置", "color": "#0d9488", "blocks": [{ "type": "paragraph", "text": "先完成第一版。" }] },
         { "title": "Learn", "blocks": [{ "type": "paragraph", "text": "Measure, then adjust." }] }
+      ]
+    },
+    {
+      "layout": "matrix",
+      "title": "Where to start / 從哪裡開始",
+      "xAxis": "Impact / 影響",
+      "yAxis": "Effort / 投入",
+      "quadrants": [
+        { "title": "Quick wins", "blocks": [{ "type": "paragraph", "text": "Small effort, clear gain." }] },
+        { "title": "重大專案", "blocks": [{ "type": "paragraph", "text": "投入大、影響大。" }] },
+        { "title": "Fill-ins", "blocks": [{ "type": "paragraph", "text": "Do when there is time." }] },
+        { "title": "暫不處理", "blocks": [{ "type": "paragraph", "text": "投入大、影響小。" }] }
+      ]
+    },
+    {
+      "layout": "compare",
+      "title": "Choose a plan / 選擇方案",
+      "options": [
+        { "title": "Basic", "label": "$9", "items": ["One user", "Email support"] },
+        { "title": "Pro / 專業版", "label": "$29", "highlight": true, "items": ["Five users", "Priority support", "Exports / 匯出"] },
+        { "title": "Team", "label": "$79", "items": ["Unlimited users", "SSO", "Audit log"] }
+      ]
+    },
+    {
+      "layout": "team",
+      "title": "The team / 團隊",
+      "members": [
+        { "name": "Ada Lin", "role": "Design", "text": "Systems and layout." },
+        { "name": "王小明", "role": "Engineering / 工程", "text": "前端與匯出。" },
+        { "name": "Sam Roe", "role": "Product" }
+      ]
+    },
+    {
+      "layout": "process",
+      "title": "How it works / 運作方式",
+      "steps": [
+        { "title": "Write / 撰寫", "text": "JSON content" },
+        { "title": "Build / 建置", "text": "HTML slides" },
+        { "title": "Export / 匯出", "text": "PPTX file" }
+      ]
+    },
+    {
+      "layout": "hub",
+      "title": "The platform / 平台",
+      "center": "SlideForge",
+      "items": [
+        { "title": "Layouts", "text": "Families and variants" },
+        { "title": "Templates", "text": "Data only" },
+        { "title": "Export", "text": "Editable PPTX" },
+        { "title": "Present", "text": "In the browser" }
       ]
     },
     {
@@ -108,11 +178,23 @@
       "notes": "These are illustrative values, not measured project metrics."
     },
     {
+      "layout": "code",
+      "title": "Try it / 試試看",
+      "language": "bash",
+      "code": "npm install slideforge\nslideforge init my-deck\nslideforge build my-deck/presentation.json"
+    },
+    {
       "layout": "quote",
       "title": "One more thing / 最後一句話",
       "quote": "Keep content and design apart, and both stay easy to change. 內容與設計分開，兩者都容易修改。",
       "attribution": "SlideForge design principle",
       "footer": "Phase 1"
+    },
+    {
+      "layout": "closing",
+      "title": "Thank you / 謝謝",
+      "subtitle": "Questions welcome / 歡迎提問",
+      "contacts": [{ "label": "Web", "value": "slideforge.gordonkit.com" }]
     },
     {
       "layout": "blank",

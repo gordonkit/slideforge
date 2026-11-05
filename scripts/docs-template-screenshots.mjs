@@ -131,6 +131,51 @@ try {
       console.log('Saved layout-' + name + '.png');
     }
   }
+  // The layouts added for stats, media, matrices, comparisons, teams, flows, code, charts, and endings.
+  {
+    // A sample picture, drawn here so no image file is needed.
+    await page.setViewportSize({ width: 1200, height: 800 });
+    await page.setContent('<body style="margin:0"><div id="art" style="width:1200px;height:800px;background:linear-gradient(135deg,#0ea5e9,#6366f1,#ec4899)"><div style="position:absolute;left:760px;top:140px;width:300px;height:300px;border-radius:50%;background:#fde68a"></div></div></body>');
+    const image = 'data:image/png;base64,' + (await (await page.$('#art')).screenshot({ type: 'png' })).toString('base64');
+    await page.setViewportSize({ width: 1920, height: 1080 });
+    const para = text => [{ type: 'paragraph', text }];
+    const stat = (value, label, text) => ({ value, label, ...(text === undefined ? {} : { text }) });
+    const quadrants = ['Quick wins', 'Big bets', 'Fill-ins', 'Avoid'].map(title => ({ title, blocks: para('A short note.') }));
+    const swot = ['Strengths', 'Weaknesses', 'Opportunities', 'Threats'].map(title => ({ title, blocks: para('A short note.') }));
+    const steps = [{ title: 'Write', text: 'JSON content' }, { title: 'Build', text: 'HTML slides' }, { title: 'Export', text: 'PPTX file' }, { title: 'Present' }];
+    const progress = [{ label: 'Plan', value: 100 }, { label: 'Build', value: 80 }, { label: 'Review', value: 60 }, { label: 'Launch', value: 35 }];
+    const share = [{ label: 'Plan', value: 40 }, { label: 'Build', value: 30 }, { label: 'Review', value: 20 }, { label: 'Launch', value: 10 }];
+    const samples = [
+      ['stats', { layout: 'stats', title: 'Results', subtitle: 'Four numbers to remember', stats: [stat('98%', 'Satisfaction', 'Up 6 points'), stat('$4.2M', 'Revenue'), stat('12k', 'Users', 'Monthly'), stat('3.1x', 'Growth')] }],
+      ['stats-cards', { layout: 'stats/cards', title: 'Results', stats: [stat('98%', 'Satisfaction'), stat('$4.2M', 'Revenue'), stat('12k', 'Users'), stat('3.1x', 'Growth'), stat('24', 'Markets')] }],
+      ['media', { layout: 'media', title: 'The product', image, alt: 'A sample picture', caption: 'Figure 1', blocks: [...para('A short explanation beside the picture.'), { type: 'bullets', items: ['First point', 'Second point', 'Third point'] }] }],
+      ['media-right', { layout: 'media/right', title: 'The product', image, alt: 'A sample picture', blocks: para('The image on the right.') }],
+      ['media-full', { layout: 'media/full', title: 'The product', image, alt: 'A sample picture', blocks: para('A caption under the full-width image.') }],
+      ['matrix', { layout: 'matrix', title: 'Priorities', xAxis: 'Impact', yAxis: 'Effort', quadrants }],
+      ['matrix-lines', { layout: 'matrix/lines', title: 'SWOT', quadrants: swot }],
+      ['compare', { layout: 'compare', title: 'Plans', options: [{ title: 'Basic', label: '$9', items: ['One user', 'Email support'] }, { title: 'Pro', label: '$29', highlight: true, items: ['Five users', 'Priority support', 'Exports'] }, { title: 'Team', label: '$79', items: ['Unlimited users', 'SSO', 'Audit log'] }] }],
+      ['team', { layout: 'team', title: 'The team', members: [{ name: 'Ada Lin', role: 'Design', text: 'Systems and layout.' }, { name: 'Wang Ming', role: 'Engineering', text: 'Front end and export.' }, { name: 'Sam Roe', role: 'Product' }, { name: 'Mia Cho', role: 'Data', image }] }],
+      ['process', { layout: 'process', title: 'How it works', steps }],
+      ['process-vertical', { layout: 'process/vertical', title: 'How it works', steps: steps.slice(0, 3) }],
+      ['hub', { layout: 'hub', title: 'The platform', center: 'SlideForge', items: [{ title: 'Layouts', text: 'Many families' }, { title: 'Templates', text: 'Data only' }, { title: 'Export', text: 'Editable PPTX' }, { title: 'Present', text: 'Browser mode' }, { title: 'Docs' }] }],
+      ['code', { layout: 'code', title: 'Usage', language: 'bash', code: 'npm install slideforge\nslideforge init my-deck\nslideforge build my-deck/presentation.json\nslideforge export my-deck/presentation.json' }],
+      ['code-dark', { layout: 'code/dark', title: 'Usage', language: 'TypeScript', code: 'import { renderPresentation } from "slideforge";\n\nconst html = renderPresentation(deck);\nconsole.log(html.length);' }],
+      ['chart-columns', { layout: 'chart/columns', title: 'Progress', unit: '%', data: progress }],
+      ['chart-donut', { layout: 'chart/donut', title: 'Share of effort', data: share }],
+      ['closing', { layout: 'closing', title: 'Thank you', subtitle: 'Questions welcome', contacts: [{ label: 'Email', value: 'hello@example.com' }, { label: 'Web', value: 'slideforge.gordonkit.com' }] }],
+      ['closing-centered', { layout: 'closing/centered', title: 'Thank you', subtitle: 'Questions welcome', contacts: [{ label: 'Email', value: 'hello@example.com' }] }],
+      ['closing-band', { layout: 'closing/band', title: 'Thank you', subtitle: 'Questions welcome', contacts: [{ label: 'Email', value: 'hello@example.com' }] }],
+    ];
+    for (const [name, slide] of samples) {
+      const html = renderPresentation({ metadata: { title: name }, theme: 'light', slides: [{ ...slide, footer: slide.layout }] });
+      const file = join(work, name + '.html');
+      await writeFile(file, html);
+      await page.goto(pathToFileURL(file).href, { waitUntil: 'load' });
+      await page.evaluate(() => document.fonts.ready);
+      await (await page.$('[data-pptx="slide"]')).screenshot({ path: join(output, 'layout-' + name + '.png') });
+      console.log('Saved layout-' + name + '.png');
+    }
+  }
   // Soft shadows from the shadow tokens.
   const soft = { name: 'soft', tokens: { shadow: { card: 24, text: 8 } } };
   for (const [name, layout] of [['cards', 'cards'], ['hexagon', 'cards/hexagon']]) {

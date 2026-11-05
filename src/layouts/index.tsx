@@ -3,6 +3,15 @@ import type { ReactNode } from "react";
 import type { Slide } from "../schemas/presentation.js";
 import { Slide as SlideComponent } from "../components/slide.js";
 import { AgendaLayout } from "./agenda/render.js";
+import { ClosingLayout } from "./closing/render.js";
+import { CodeLayout } from "./code/render.js";
+import { CompareLayout } from "./compare/render.js";
+import { HubLayout } from "./hub/render.js";
+import { MatrixLayout } from "./matrix/render.js";
+import { MediaLayout } from "./media/render.js";
+import { ProcessLayout } from "./process/render.js";
+import { StatsLayout } from "./stats/render.js";
+import { TeamLayout } from "./team/render.js";
 import { BlankLayout } from "./blank/render.js";
 import { CardsLayout } from "./cards/render.js";
 import { ChartLayout } from "./chart/render.js";
@@ -27,6 +36,15 @@ const renderers: { [F in LayoutFamily]: (props: LayoutProps<F>) => ReactNode } =
   "two-columns": TwoColumnsLayout,
   cards: CardsLayout,
   panels: PanelsLayout,
+  closing: ClosingLayout,
+  code: CodeLayout,
+  compare: CompareLayout,
+  hub: HubLayout,
+  matrix: MatrixLayout,
+  media: MediaLayout,
+  process: ProcessLayout,
+  stats: StatsLayout,
+  team: TeamLayout,
   timeline: TimelineLayout,
   gantt: GanttLayout,
   table: TableLayout,

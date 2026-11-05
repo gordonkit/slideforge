@@ -1,0 +1,15 @@
+/* stats: large figures. Up to four sit in one row; five and six are three columns, and the lower two of five stay centered. */
+.sf-stats { list-style: none; margin: 0; padding: 0; height: 100%; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); align-content: center; gap: 60px var(--sf-spacing-column); }
+.sf-stats[data-count="2"] { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.sf-stats[data-count="4"] { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--sf-spacing-column); }
+.sf-stats[data-count="5"] { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+.sf-stats[data-count="5"] .sf-stat { grid-column: span 2; }
+.sf-stats[data-count="5"] .sf-stat:nth-child(4) { grid-column: 2 / span 2; }
+.sf-stats[data-count="5"] .sf-stat:nth-child(5) { grid-column: 4 / span 2; }
+.sf-stat { display: flex; flex-direction: column; gap: 12px; min-width: 0; padding-top: 24px; border-top: 6px solid var(--sf-accent); }
+.sf-stat-value { color: var(--sf-accent); font-size: 120px; line-height: 1.05; font-weight: var(--sf-type-bold); overflow-wrap: anywhere; }
+.sf-stats[data-count="4"] .sf-stat-value, .sf-stats[data-count="5"] .sf-stat-value, .sf-stats[data-count="6"] .sf-stat-value { font-size: 84px; }
+.sf-stat-label { font-size: var(--sf-type-card-title); font-weight: var(--sf-type-bold); line-height: var(--sf-type-title-leading); }
+.sf-stat-text { color: var(--sf-muted); font-size: var(--sf-type-card-body); line-height: var(--sf-type-subtitle-leading); }
+/* cards: centered figures on surface cards. */
+.sf-variant-cards .sf-stat { align-items: center; text-align: center; justify-content: center; padding: var(--sf-spacing-card-padding); border: var(--sf-border-width) solid var(--sf-border); border-radius: var(--sf-border-radius); background: var(--sf-card-fill); }

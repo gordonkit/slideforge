@@ -1,0 +1,16 @@
+/* closing: the title and subtitle centered vertically, with the contact lines below. */
+.sf-layout-closing { display: flex; flex-direction: column; justify-content: center; }
+.sf-layout-closing .sf-header, .sf-layout-closing .sf-content { height: auto; flex: none; overflow: visible; }
+.sf-layout-closing .sf-header h1 { font-size: var(--sf-type-cover-title); }
+.sf-layout-closing .sf-subtitle-mark { display: none; }
+.sf-layout-closing .sf-subtitle { display: block; color: var(--sf-muted); font-weight: 400; font-size: var(--sf-type-cover-subtitle); margin-top: var(--sf-spacing-cover-subtitle); }
+.sf-closing-rail { position: absolute; top: 0; bottom: 0; left: 0; width: 28px; background: var(--sf-accent); }
+.sf-contacts { list-style: none; margin: 60px 0 0; padding: 0; display: flex; flex-direction: column; gap: 14px; }
+.sf-contacts li { display: flex; align-items: baseline; gap: 24px; font-size: var(--sf-type-author); line-height: 1.3; }
+.sf-contact-label { flex: none; min-width: 180px; color: var(--sf-accent); font-weight: var(--sf-type-bold); }
+.sf-variant-centered.sf-layout-closing { text-align: center; }
+.sf-variant-centered .sf-contacts { align-items: center; }
+.sf-variant-centered .sf-contacts li { flex-direction: column; gap: 0; align-items: center; }
+.sf-variant-centered .sf-contact-label { min-width: 0; font-size: var(--sf-type-card-body); }
+.sf-variant-band.sf-layout-closing { background: var(--sf-accent); color: var(--sf-on-accent); }
+.sf-variant-band.sf-layout-closing .sf-subtitle, .sf-variant-band.sf-layout-closing .sf-footer, .sf-variant-band .sf-contact-label { color: var(--sf-on-accent); }

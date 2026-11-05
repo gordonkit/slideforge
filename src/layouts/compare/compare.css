@@ -1,0 +1,13 @@
+/* compare: options side by side; the highlighted one has an accent header and outline. */
+.sf-compare { height: 100%; display: flex; gap: var(--sf-spacing-card); align-items: stretch; }
+.sf-option { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; overflow: hidden; background: var(--sf-card-fill); border: var(--sf-border-width) solid var(--sf-border); border-radius: var(--sf-border-radius); }
+.sf-option-head { flex: none; padding: 28px var(--sf-spacing-card-padding); border-bottom: var(--sf-border-width) solid var(--sf-border); }
+.sf-option-head h2 { margin: 0; font-size: var(--sf-type-card-title); line-height: var(--sf-type-title-leading); }
+.sf-option-label { margin: 8px 0 0; color: var(--sf-accent); font-size: 54px; line-height: 1.1; font-weight: var(--sf-type-bold); }
+.sf-option-items { flex: 1; list-style: none; margin: 0; padding: 24px var(--sf-spacing-card-padding); display: flex; flex-direction: column; gap: 16px; font-size: var(--sf-type-card-body); line-height: var(--sf-type-subtitle-leading); }
+.sf-option-items li { padding-left: 36px; position: relative; }
+.sf-option-items li::before { content: "✓"; position: absolute; left: 0; color: var(--sf-accent); font-weight: var(--sf-type-bold); }
+.sf-option-highlight { border: 6px solid var(--sf-accent); }
+.sf-option-highlight .sf-option-head { background: var(--sf-accent); color: var(--sf-on-accent); border-bottom-color: var(--sf-accent); }
+.sf-option-highlight .sf-option-label { color: var(--sf-on-accent); }
+.sf-compare[data-count="4"] .sf-option-items { font-size: calc(var(--sf-type-card-body) * 0.85); }

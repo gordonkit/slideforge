@@ -6,3 +6,19 @@
 .sf-chart-track { height: var(--sf-chart-height); background: var(--sf-surface); }
 .sf-chart-bar { height: var(--sf-chart-height); background: var(--sf-accent); }
 .sf-chart-value { text-align: right; }
+/* columns: vertical columns, the value above and the label below each. */
+.sf-chart-columns { flex-direction: row; justify-content: space-evenly; align-items: stretch; gap: 24px; }
+.sf-column { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; align-items: center; gap: 12px; font-size: var(--sf-type-chart); }
+.sf-column-value { flex: none; font-weight: var(--sf-type-bold); }
+.sf-column-track { flex: 1; min-height: 0; width: 100%; display: flex; align-items: flex-end; justify-content: center; }
+.sf-column-bar { width: 70%; max-width: 160px; background: var(--sf-accent); border-radius: 6px 6px 0 0; }
+.sf-column-label { flex: none; text-align: center; overflow-wrap: anywhere; line-height: 1.2; }
+/* donut: a ring of shares, with the legend beside it. */
+.sf-chart-donut { flex-direction: row; justify-content: center; align-items: center; gap: var(--sf-spacing-column); }
+.sf-donut { flex: none; width: 520px; height: 520px; }
+.sf-donut-legend { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 14px; min-width: 0; font-size: var(--sf-type-chart); }
+.sf-donut-legend li { display: flex; align-items: center; gap: 18px; }
+.sf-donut-swatch { flex: none; width: 30px; height: 30px; border-radius: 6px; background: var(--sf-accent); }
+.sf-donut-label { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.sf-donut-value { flex: none; font-weight: var(--sf-type-bold); }
+.sf-chart-layout .sf-donut { width: 360px; height: 360px; }

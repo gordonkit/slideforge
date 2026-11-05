@@ -94,7 +94,7 @@ The schema, the unknown-layout and unknown-variant errors, `backgrounds` keys, t
   `docs/design-tokens.md` for new tokens, `CHANGELOG.md`, and both layout tables in all
   four locales of `site/src/content.ts`;
 - add a slide for it to `scripts/docs-screenshots.mjs`, regenerate the screenshots, and
-  show it in the layout gallery of `docs/components.md` and the site.
+  show it in the layout gallery (`docs/layouts.md` and the page for its group) and the site.
 
 Describe the set of families without a count ("each layout family") so that a new
 family does not mean editing every place that states how many there are.

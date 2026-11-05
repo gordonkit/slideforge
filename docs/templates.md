@@ -133,7 +133,7 @@ values are percentages, from 0 to 60, and default to 0, which keeps the fill sol
 | Token | Gradient |
 | --- | --- |
 | `card` | cards and agenda rows: from the surface color toward the accent color |
-| `panel` | a [panel](components.md#panels) with a `color`: from that color toward black |
+| `panel` | a [panel](layouts-cards.md#panels) with a `color`: from that color toward black |
 
 ```json
 {

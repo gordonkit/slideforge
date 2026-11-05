@@ -21,7 +21,7 @@ directory with the JSON; replace/add assets as your content requires.
 
 Keep only schema-supported fields. Select cover for an opening, agenda for a linked table of contents (an item's `slide` is the number of the slide it jumps to; without `items` it lists the section slides), section to open each chapter of a long deck, content for
 explanation, two-columns for comparisons, cards for two to six small parallel ideas, panels for two to seven parallel sections split by lines (each can have a `color`),
-timeline for two to six steps or dates in order, gantt for a project
+stats for two to six key figures, media for one picture with text, matrix for a 2 × 2 grid, compare for two to four options, team for people, process for two to six steps joined by arrows, hub for a central idea with items around it, code for a listing, closing for the last slide, timeline for two to six steps or dates in order, gantt for a project
 schedule, table for compact grids, chart for
 simple nonnegative values, quote for one short quotation, and blank for a slide
 that shows only its background. Use plain strings,

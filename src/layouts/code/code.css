@@ -1,0 +1,6 @@
+/* code: a monospaced listing on a panel; the language label sits above it. */
+.sf-code { margin: 0; height: 100%; display: flex; flex-direction: column; gap: 14px; }
+.sf-code-language { flex: none; color: var(--sf-accent); font-size: var(--sf-type-caption); font-weight: var(--sf-type-bold); }
+.sf-code-body { flex: 1; min-height: 0; margin: 0; overflow: hidden; padding: 36px 42px; background: var(--sf-card-fill); border: var(--sf-border-width) solid var(--sf-border); border-radius: var(--sf-border-radius); font-family: Consolas, "Cascadia Mono", "Courier New", monospace; font-size: 33px; line-height: 1.5; white-space: pre; }
+.sf-code-body code { font-family: inherit; }
+.sf-variant-dark .sf-code-body { background: #0f172a; border-color: #0f172a; color: #e2e8f0; }

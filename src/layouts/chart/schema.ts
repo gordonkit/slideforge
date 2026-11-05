@@ -1,7 +1,8 @@
 import { z } from "zod";
 import { contentBlockSchema, slideObject, text, xmlText } from "../../schemas/fields.js";
 
-const variants = ["default"] as const;
+// default: horizontal bars; columns: vertical columns; donut: a ring of shares with a legend.
+const variants = ["default", "columns", "donut"] as const;
 
 export const chart = {
   family: "chart",

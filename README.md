@@ -132,7 +132,7 @@ in this repository are:
 - [JSON schema reference](docs/schema.md)
 - [Templates](docs/templates.md)
 - [Design tokens](docs/design-tokens.md)
-- [Components and layouts](docs/components.md), with a screenshot of each layout
+- [Components](docs/components.md) and the [layout gallery](docs/layouts.md), with a screenshot of each layout
 - [Backgrounds with Math Background Studio](docs/backgrounds.md)
 - [Architecture, APIs, and upstream references](docs/architecture.md)
 - [Validation and optional visual comparison](docs/validation.md)

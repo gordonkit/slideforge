@@ -7,6 +7,10 @@ All notable changes to this project will be documented in this file. The format 
 
 ### Added
 
+- Layouts: `media` (a picture with text), `stats` (key figures), `matrix` (2 × 2), `compare` (options side by side),
+  `team` (people), `process` (steps joined by arrows), `hub` (a central idea), `code` (a listing), and `closing` (the
+  last slide with contacts). `chart` gains the variants `columns` and `donut`.
+- The layout gallery moved from `docs/components.md` to `docs/layouts.md` and one page per group of layouts.
 - `panels` layout (`default` columns, `rows`): two to seven sections split by thin lines instead of cards. A
   panel can have a `color` that fills it, with a readable text color.
 - `gradient` tokens (`card`, `panel`, 0–60): a top-to-bottom gradient on cards, agenda rows, and colored

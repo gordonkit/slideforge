@@ -524,6 +524,15 @@ docker compose -f docker/compose.yaml --profile cli \\
             ["two-columns", { en: "left and right: 1–12 blocks each", "zh-TW": "left 與 right：各 1–12 個區塊", "zh-CN": "left 与 right：各 1–12 个块", ja: "left と right：それぞれ 1〜12 個のブロック" }],
             ["cards", { en: "cards: 1–6 cards with title and blocks", "zh-TW": "cards：1–6 張含 title 與 blocks 的卡片", "zh-CN": "cards：1–6 张含 title 与 blocks 的卡片", ja: "cards：title と blocks を持つ 1〜6 枚のカード" }],
             ["panels", { en: "panels: 2–7 objects, each with title, blocks (1–12), and an optional color (a six-digit hex color) that fills the panel", "zh-TW": "panels：2–7 個物件，每個含 title、blocks（1–12），以及選填的 color（六位數十六進位色碼），用來填滿該區塊", "zh-CN": "panels：2–7 个对象，每个含 title、blocks（1–12），以及可选的 color（六位十六进制色码），用来填满该区块", ja: "panels：2〜7 個のオブジェクト。各 title、blocks（1〜12）、任意の color（6 桁の 16 進カラー）でそのパネルを塗りつぶす" }],
+            ["media", { en: "media: image, alt, optional caption, and optional blocks beside it", "zh-TW": "media：image、alt、選填的 caption，以及旁邊的選填 blocks", "zh-CN": "media：image、alt、可选的 caption，以及旁边的可选 blocks", ja: "media：image、alt、任意の caption、横に置く任意の blocks" }],
+            ["stats", { en: "stats: 2–6 items with value, label, and optional text", "zh-TW": "stats：2–6 個項目，含 value、label 與選填的 text", "zh-CN": "stats：2–6 个项目，含 value、label 与可选的 text", ja: "stats：2〜6 個の項目。value、label、任意の text" }],
+            ["matrix", { en: "quadrants: exactly 4 titled block groups; optional xAxis and yAxis names", "zh-TW": "quadrants：剛好 4 組含標題的 blocks；選填的 xAxis 與 yAxis 名稱", "zh-CN": "quadrants：恰好 4 组含标题的 blocks；可选的 xAxis 与 yAxis 名称", ja: "quadrants：タイトル付きの blocks をちょうど 4 組。任意の xAxis と yAxis の名前" }],
+            ["compare", { en: "options: 2–4 options with title, items (1–8), optional label and highlight", "zh-TW": "options：2–4 個選項，含 title、items（1–8），以及選填的 label 與 highlight", "zh-CN": "options：2–4 个选项，含 title、items（1–8），以及可选的 label 与 highlight", ja: "options：2〜4 個の選択肢。title、items（1〜8）、任意の label と highlight" }],
+            ["team", { en: "members: 2–6 people with name and optional role, text, and image", "zh-TW": "members：2–6 位成員，含 name 與選填的 role、text、image", "zh-CN": "members：2–6 位成员，含 name 与可选的 role、text、image", ja: "members：2〜6 人。name と任意の role、text、image" }],
+            ["process", { en: "steps: 2–6 steps with title and optional text", "zh-TW": "steps：2–6 個步驟，含 title 與選填的 text", "zh-CN": "steps：2–6 个步骤，含 title 与可选的 text", ja: "steps：2〜6 個のステップ。title と任意の text" }],
+            ["hub", { en: "center and items: 3–6 items with title and optional text", "zh-TW": "center 與 items：3–6 個項目，含 title 與選填的 text", "zh-CN": "center 与 items：3–6 个项目，含 title 与可选的 text", ja: "center と items：3〜6 個の項目。title と任意の text" }],
+            ["code", { en: "code: up to 18 lines and 3,000 characters; optional language label", "zh-TW": "code：最多 18 行與 3,000 字元；選填的 language 標籤", "zh-CN": "code：最多 18 行与 3,000 字符；可选的 language 标签", ja: "code：最大 18 行・3,000 文字。任意の language ラベル" }],
+            ["closing", { en: "Optional contacts: up to 4 label/value lines", "zh-TW": "選填的 contacts：最多 4 組 label/value", "zh-CN": "可选的 contacts：最多 4 组 label/value", ja: "任意の contacts：label/value を最大 4 行" }],
             ["timeline", { en: "events: 2–6 events with date (up to 100 characters), title, and optional text", "zh-TW": "events：2–6 個事件，含 date（最多 100 字元）、title 與選填的 text", "zh-CN": "events：2–6 个事件，含 date（最多 100 字符）、title 与可选的 text", ja: "events：date（最大 100 文字）、title、任意の text を持つ 2〜6 個のイベント" }],
             ["gantt", { en: "periods (2–12) and tasks (1–8) with label, start and end (one-based period numbers, inclusive), and optional progress 0–100", "zh-TW": "periods（2–12）與 tasks（1–8），每個任務含 label、start 與 end（從 1 起算的時段編號，含頭尾）及選填的 progress 0–100", "zh-CN": "periods（2–12）与 tasks（1–8），每个任务含 label、start 与 end（从 1 起算的时段编号，含首尾）及可选的 progress 0–100", ja: "periods（2〜12）と tasks（1〜8）。各タスクは label、start と end（1 から数える期間の番号で両端を含む）、任意の progress 0〜100" }],
             ["table", { en: "columns (1–8) and rows (1–14), one cell per column", "zh-TW": "columns（1–8）與 rows（1–14），每列儲存格數須等於欄數", "zh-CN": "columns（1–8）与 rows（1–14），每行单元格数须等于列数", ja: "columns（1〜8）と rows（1〜14）。各行のセル数は列数と同じ" }],
@@ -801,6 +810,15 @@ docker compose -f docker/compose.yaml --profile cli \\
             ["two-columns", { en: "Comparisons such as before and after", "zh-TW": "比較，例如前後對照", "zh-CN": "比较，例如前后对照", ja: "前後比較などの対比" }],
             ["cards", { en: "Up to six short parallel ideas, arranged by their count", "zh-TW": "最多六個簡短的並列重點，依張數自動排列", "zh-CN": "最多六个简短的并列重点，依张数自动排列", ja: "最大 6 つの短い並列項目。枚数に応じて自動で並ぶ" }],
             ["panels", { en: "Two to seven sections split by thin vertical or horizontal lines instead of cards; each can have its own fill color", "zh-TW": "以細線（垂直或水平）而不是卡片分隔的二到七個區段，每個區段可有自己的填色", "zh-CN": "以细线（垂直或水平）而不是卡片分隔的二到七个区段，每个区段可有自己的填色", ja: "カードではなく縦または横の細い線で区切る 2〜7 個のセクション。それぞれに塗りつぶしの色を指定できる" }],
+            ["media", { en: "A picture as the subject, with a caption and text beside or below it; variants right and full", "zh-TW": "以圖片為主角，附圖說與旁邊或下方的文字；變化有 right 與 full", "zh-CN": "以图片为主角，附图说与旁边或下方的文字；变体有 right 与 full", ja: "画像を主役にし、キャプションと横または下の文を添える。バリエーションは right と full" }],
+            ["stats", { en: "Two to six key figures with labels; variant cards", "zh-TW": "二到六個重點數字，附標籤；變化有 cards", "zh-CN": "二到六个重点数字，附标签；变体有 cards", ja: "2〜6 個の重要な数値とラベル。バリエーションは cards" }],
+            ["matrix", { en: "A 2 × 2 matrix with optional axis names; variant lines", "zh-TW": "2 × 2 矩陣，可加座標軸名稱；變化有 lines", "zh-CN": "2 × 2 矩阵，可加坐标轴名称；变体有 lines", ja: "軸の名前を付けられる 2 × 2 のマトリクス。バリエーションは lines" }],
+            ["compare", { en: "Two to four options side by side, one of them highlighted", "zh-TW": "並排比較二到四個選項，可標示其中一個", "zh-CN": "并排比较二到四个选项，可标示其中一个", ja: "2〜4 個の選択肢を並べ、1 つを強調できる" }],
+            ["team", { en: "Two to six people with a portrait or initial, a role, and a line of text", "zh-TW": "二到六位成員，附頭像或姓名首字、職稱與一行說明", "zh-CN": "二到六位成员，附头像或姓名首字、职称与一行说明", ja: "2〜6 人。顔写真またはイニシャル、役割、一行の説明" }],
+            ["process", { en: "Two to six numbered steps joined by arrows; variant vertical", "zh-TW": "以箭頭連接的二到六個編號步驟；變化有 vertical", "zh-CN": "以箭头连接的二到六个编号步骤；变体有 vertical", ja: "矢印でつなぐ 2〜6 個の番号付きステップ。バリエーションは vertical" }],
+            ["hub", { en: "A central idea with three to six items joined to it by lines", "zh-TW": "中心概念，周圍以線連接三到六個項目", "zh-CN": "中心概念，周围以线连接三到六个项目", ja: "中心の考えと、線でつないだ 3〜6 個の項目" }],
+            ["code", { en: "A monospaced code listing of up to 18 lines; variant dark", "zh-TW": "等寬字型的程式碼，最多 18 行；變化有 dark", "zh-CN": "等宽字体的代码，最多 18 行；变体有 dark", ja: "等幅フォントのコード（最大 18 行）。バリエーションは dark" }],
+            ["closing", { en: "The last slide with contact lines; variants centered and band", "zh-TW": "附聯絡資訊的結尾頁；變化有 centered 與 band", "zh-CN": "附联系信息的结尾页；变体有 centered 与 band", ja: "連絡先付きの最後のスライド。バリエーションは centered と band" }],
             ["timeline", { en: "Two to six steps or dates in order", "zh-TW": "二到六個依序排列的步驟或時間點", "zh-CN": "二到六个依序排列的步骤或时间点", ja: "順に並ぶ 2〜6 個のステップや日付" }],
             ["gantt", { en: "A project schedule: up to eight tasks as bars over labeled periods, with optional progress", "zh-TW": "專案進度表：最多八個任務，以長條橫跨各時段，可標示完成度", "zh-CN": "项目进度表：最多八个任务，以长条横跨各时段，可标示完成度", ja: "プロジェクトの進捗表。最大 8 つのタスクを期間にまたがるバーで示し、進捗も表示できる" }],
             ["table", { en: "Compact grids of text", "zh-TW": "精簡的文字表格", "zh-CN": "精简的文字表格", ja: "コンパクトな表" }],
@@ -898,6 +916,29 @@ docker compose -f docker/compose.yaml --profile cli \\
         ],
       },
       {
+        id: "gallery-media",
+        title: { en: "Gallery: media", "zh-TW": "版型一覽：media", "zh-CN": "版式一览：media", ja: "ギャラリー：media" },
+        body: {
+          en: "media makes a picture the subject: image with required alt text, an optional caption, and optional blocks of text. The default variant puts the picture on the left, media/right on the right, and media/full across the slide with the text below it. The picture fills its area and is cropped to fit, so choose one with room around its subject.",
+          "zh-TW": "media 讓圖片成為主角：image 加上必填的 alt 文字、選填的 caption，以及選填的文字 blocks。預設變化把圖片放在左邊，media/right 放在右邊，media/full 則橫跨整張投影片，文字在下方。圖片會填滿它的區域並裁切以符合，請選主體周圍有餘裕的圖。",
+          "zh-CN": "media 让图片成为主角：image 加上必填的 alt 文字、可选的 caption，以及可选的文字 blocks。默认变体把图片放在左边，media/right 放在右边，media/full 则横跨整张幻灯片，文字在下方。图片会填满它的区域并裁剪以适应，请选主体周围有余裕的图。",
+          ja: "media は画像を主役にします。image と必須の alt テキスト、任意の caption、任意の文章 blocks を指定します。既定のバリエーションは画像を左に、media/right は右に、media/full はスライド全幅に置いて文章を下に配置します。画像は領域を埋めるようにトリミングされるので、被写体の周りに余白のある画像を選んでください。",
+        },
+        code: `{
+  "layout": "media",
+  "title": "The product",
+  "image": "assets/product.png",
+  "alt": "The product on a desk",
+  "caption": "Figure 1",
+  "blocks": [{ "type": "paragraph", "text": "A short explanation." }]
+}`,
+        images: [
+          { src: "/screenshots/layout-media.png", alt: { en: "A picture on the left with text on the right", "zh-TW": "左邊圖片、右邊文字", "zh-CN": "左边图片、右边文字", ja: "左に画像、右に文章" }, caption: "media" },
+          { src: "/screenshots/layout-media-right.png", alt: { en: "A picture on the right with text on the left", "zh-TW": "右邊圖片、左邊文字", "zh-CN": "右边图片、左边文字", ja: "右に画像、左に文章" }, caption: "media/right" },
+          { src: "/screenshots/layout-media-full.png", alt: { en: "A full-width picture with text below it", "zh-TW": "橫跨整張的圖片，文字在下方", "zh-CN": "横跨整张的图片，文字在下方", ja: "全幅の画像と下の文章" }, caption: "media/full" },
+        ],
+      },
+      {
         id: "gallery-cards",
         title: { en: "Gallery: cards", "zh-TW": "版型一覽：cards", "zh-CN": "版式一览：cards", ja: "ギャラリー：cards" },
         body: {
@@ -916,6 +957,28 @@ docker compose -f docker/compose.yaml --profile cli \\
           { src: "/screenshots/layout-cards-circle.png", alt: { en: "Cards slide with accent-filled circle cards", "zh-TW": "強調色圓形卡片的 cards 投影片", "zh-CN": "强调色圆形卡片的 cards 幻灯片", ja: "アクセント色の円形カードの cards スライド" }, caption: "cards/circle" },
           { src: "/screenshots/layout-cards-hexagon.png", alt: { en: "Cards slide with accent-filled hexagon cards", "zh-TW": "強調色六角形卡片的 cards 投影片", "zh-CN": "强调色六边形卡片的 cards 幻灯片", ja: "アクセント色の六角形カードの cards スライド" }, caption: "cards/hexagon" },
           { src: "/screenshots/layout-cards-pentagon.png", alt: { en: "Cards slide with accent-filled pentagon cards", "zh-TW": "強調色五角形卡片的 cards 投影片", "zh-CN": "强调色五边形卡片的 cards 幻灯片", ja: "アクセント色の五角形カードの cards スライド" }, caption: "cards/pentagon" },
+        ],
+      },
+      {
+        id: "gallery-stats",
+        title: { en: "Gallery: stats", "zh-TW": "版型一覽：stats", "zh-CN": "版式一览：stats", ja: "ギャラリー：stats" },
+        body: {
+          en: "stats shows two to six key figures: a short value such as 98% or $4.2M in a large accent size, a label, and an optional line of text. Up to four sit in one row, five and six use three columns, and the lower two of five stay centered. stats/cards puts each figure on a centered card.",
+          "zh-TW": "stats 呈現二到六個重點數字：像 98% 或 $4.2M 這樣的簡短 value 以大字級強調色呈現，並附 label 與選填的一行說明。四個以內排成一列，五、六個用三欄，五個時下方兩個維持置中。stats/cards 把每個數字放在置中的卡片上。",
+          "zh-CN": "stats 呈现二到六个重点数字：像 98% 或 $4.2M 这样的简短 value 以大字号强调色呈现，并附 label 与可选的一行说明。四个以内排成一行，五、六个用三列，五个时下方两个保持居中。stats/cards 把每个数字放在居中的卡片上。",
+          ja: "stats は 2〜6 個の重要な数値を示します。98% や $4.2M のような短い value を大きなアクセント色で表示し、label と任意の一行の説明を添えます。4 個までは 1 行、5 個と 6 個は 3 列で、5 個のときは下の 2 個が中央に寄ります。stats/cards は各数値を中央揃えのカードに載せます。",
+        },
+        code: `{
+  "layout": "stats",
+  "title": "Results",
+  "stats": [
+    { "value": "98%", "label": "Satisfaction", "text": "Up 6 points" },
+    { "value": "$4.2M", "label": "Revenue" }
+  ]
+}`,
+        images: [
+          { src: "/screenshots/layout-stats.png", alt: { en: "Four large figures over accent rules", "zh-TW": "強調線上方的四個大數字", "zh-CN": "强调线上方的四个大数字", ja: "アクセントの線の上に並ぶ 4 つの大きな数値" }, caption: "stats" },
+          { src: "/screenshots/layout-stats-cards.png", alt: { en: "Five figures on centered cards", "zh-TW": "置中卡片上的五個數字", "zh-CN": "居中卡片上的五个数字", ja: "中央揃えのカード上の 5 つの数値" }, caption: "stats/cards" },
         ],
       },
       {
@@ -939,6 +1002,46 @@ docker compose -f docker/compose.yaml --profile cli \\
           { src: "/screenshots/layout-panels.png", alt: { en: "Three panels split by vertical lines", "zh-TW": "以垂直線分隔的三個區段", "zh-CN": "以垂直线分隔的三个区段", ja: "縦線で区切られた 3 つのパネル" }, caption: "panels" },
           { src: "/screenshots/layout-panels-rows.png", alt: { en: "Three panels split by horizontal lines", "zh-TW": "以水平線分隔的三個區段", "zh-CN": "以水平线分隔的三个区段", ja: "横線で区切られた 3 つのパネル" }, caption: "panels/rows" },
           { src: "/screenshots/layout-panels-colored.png", alt: { en: "Four panels filled with their own colors", "zh-TW": "各自填色的四個區段", "zh-CN": "各自填色的四个区段", ja: "それぞれの色で塗りつぶされた 4 つのパネル" }, caption: "panels + color" },
+        ],
+      },
+      {
+        id: "gallery-matrix",
+        title: { en: "Gallery: matrix, compare, and team", "zh-TW": "版型一覽：matrix, compare, and team", "zh-CN": "版式一览：matrix, compare, and team", ja: "ギャラリー：matrix, compare, and team" },
+        body: {
+          en: "matrix is a 2 × 2 grid of exactly four quadrants (top left, top right, bottom left, bottom right) with optional xAxis and yAxis names; matrix/lines splits them with a cross instead of cards. compare puts two to four options side by side, each with a title, an optional label such as a price, and a list with check marks; highlight draws one in the accent color. team shows two to six people with a round portrait or the first letter of the name, a role, and a line of text.",
+          "zh-TW": "matrix 是剛好四個象限（左上、右上、左下、右下）的 2 × 2 格，可加 xAxis 與 yAxis 座標軸名稱；matrix/lines 以十字線取代卡片分隔。compare 並排二到四個選項，每個含標題、選填的 label（例如價格）與帶勾號的清單；highlight 會以強調色標示其中一個。team 呈現二到六位成員，附圓形頭像或姓名首字、職稱與一行說明。",
+          "zh-CN": "matrix 是恰好四个象限（左上、右上、左下、右下）的 2 × 2 格，可加 xAxis 与 yAxis 坐标轴名称；matrix/lines 以十字线取代卡片分隔。compare 并排二到四个选项，每个含标题、可选的 label（例如价格）与带勾号的列表；highlight 会以强调色标示其中一个。team 呈现二到六位成员，附圆形头像或姓名首字、职称与一行说明。",
+          ja: "matrix は、ちょうど 4 つの象限（左上、右上、左下、右下）を持つ 2 × 2 のグリッドで、任意の xAxis と yAxis の名前を付けられます。matrix/lines はカードの代わりに十字線で区切ります。compare は 2〜4 個の選択肢を並べ、それぞれにタイトル、価格などの任意の label、チェックマーク付きの一覧を持ちます。highlight で 1 つをアクセント色にできます。team は 2〜6 人を、丸い顔写真または名前の頭文字、役割、一行の説明で示します。",
+        },
+        images: [
+          { src: "/screenshots/layout-matrix.png", alt: { en: "A 2 by 2 matrix of four cards with axis names", "zh-TW": "四張卡片組成、附座標軸名稱的 2 × 2 矩陣", "zh-CN": "四张卡片组成、附坐标轴名称的 2 × 2 矩阵", ja: "軸の名前付きで 4 枚のカードからなる 2 × 2 のマトリクス" }, caption: "matrix" },
+          { src: "/screenshots/layout-matrix-lines.png", alt: { en: "Four quadrants split by a cross", "zh-TW": "以十字線分隔的四個象限", "zh-CN": "以十字线分隔的四个象限", ja: "十字線で区切られた 4 つの象限" }, caption: "matrix/lines" },
+          { src: "/screenshots/layout-compare.png", alt: { en: "Three plans side by side, the middle one highlighted", "zh-TW": "並排的三個方案，中間的被標示", "zh-CN": "并排的三个方案，中间的被标示", ja: "3 つのプランが並び、中央が強調されている" }, caption: "compare" },
+          { src: "/screenshots/layout-team.png", alt: { en: "Four team cards: three with initials and one with a portrait", "zh-TW": "四張成員卡片：三張是首字、一張是頭像", "zh-CN": "四张成员卡片：三张是首字、一张是头像", ja: "4 枚のメンバーカード。3 枚はイニシャル、1 枚は顔写真" }, caption: "team" },
+        ],
+      },
+      {
+        id: "gallery-process",
+        title: { en: "Gallery: process and hub", "zh-TW": "版型一覽：process and hub", "zh-CN": "版式一览：process and hub", ja: "ギャラリー：process and hub" },
+        body: {
+          en: "process shows two to six numbered steps joined by arrows; process/vertical stacks them with down arrows. Use it for a flow, and timeline when the steps have dates. hub puts a central idea in an accent circle with three to six items around it, the first half on the left and the rest on the right, each joined to the center by a line.",
+          "zh-TW": "process 以箭頭連接二到六個編號步驟；process/vertical 則上下堆疊並用向下箭頭。流程用它，步驟有日期時用 timeline。hub 把中心概念放在強調色圓形裡，周圍有三到六個項目，前半在左、其餘在右，各以一條線連到中心。",
+          "zh-CN": "process 以箭头连接二到六个编号步骤；process/vertical 则上下堆叠并用向下箭头。流程用它，步骤有日期时用 timeline。hub 把中心概念放在强调色圆形里，周围有三到六个项目，前一半在左、其余在右，各以一条线连到中心。",
+          ja: "process は 2〜6 個の番号付きステップを矢印でつなぎます。process/vertical は縦に積み、下向きの矢印でつなぎます。流れにはこれを、日付のあるステップには timeline を使います。hub は中心の考えをアクセント色の円に置き、周りに 3〜6 個の項目を、前半を左に、残りを右に並べて、それぞれ線で中心とつなぎます。",
+        },
+        code: `{
+  "layout": "process",
+  "title": "How it works",
+  "steps": [
+    { "title": "Write", "text": "JSON content" },
+    { "title": "Build", "text": "HTML slides" },
+    { "title": "Export" }
+  ]
+}`,
+        images: [
+          { src: "/screenshots/layout-process.png", alt: { en: "Four steps in a row joined by arrows", "zh-TW": "以箭頭連接、排成一列的四個步驟", "zh-CN": "以箭头连接、排成一行的四个步骤", ja: "矢印でつながった一列の 4 ステップ" }, caption: "process" },
+          { src: "/screenshots/layout-process-vertical.png", alt: { en: "Three steps stacked and joined by down arrows", "zh-TW": "以向下箭頭連接、上下堆疊的三個步驟", "zh-CN": "以向下箭头连接、上下堆叠的三个步骤", ja: "下向きの矢印でつながった縦の 3 ステップ" }, caption: "process/vertical" },
+          { src: "/screenshots/layout-hub.png", alt: { en: "A central circle with five items joined to it by lines", "zh-TW": "中心圓形與以線連接的五個項目", "zh-CN": "中心圆形与以线连接的五个项目", ja: "中央の円と線でつながった 5 つの項目" }, caption: "hub" },
         ],
       },
       {
@@ -991,19 +1094,62 @@ docker compose -f docker/compose.yaml --profile cli \\
         ],
       },
       {
+        id: "gallery-code",
+        title: { en: "Gallery: code", "zh-TW": "版型一覽：code", "zh-CN": "版式一览：code", ja: "ギャラリー：code" },
+        body: {
+          en: "code shows a listing in a monospaced font, kept as written, with an optional language label above it. It holds up to 18 lines and 3,000 characters. The default variant is a light panel and code/dark a dark one. SlideForge does not color the syntax, and PowerPoint needs the font (Consolas, Cascadia Mono, or Courier New) installed.",
+          "zh-TW": "code 以等寬字型呈現程式碼，保持原樣，上方可加選填的 language 標籤。最多 18 行、3,000 字元。預設變化是淺色面板，code/dark 是深色面板。SlideForge 不會為語法上色，PowerPoint 也需要安裝該字型（Consolas、Cascadia Mono 或 Courier New）。",
+          "zh-CN": "code 以等宽字体呈现代码，保持原样，上方可加可选的 language 标签。最多 18 行、3,000 字符。默认变体是浅色面板，code/dark 是深色面板。SlideForge 不会为语法上色，PowerPoint 也需要安装该字体（Consolas、Cascadia Mono 或 Courier New）。",
+          ja: "code は等幅フォントでコードを書いたままの形で表示し、上に任意の language ラベルを付けられます。最大 18 行・3,000 文字です。既定は明るいパネル、code/dark は暗いパネルです。SlideForge は構文に色を付けません。PowerPoint には対象のフォント（Consolas、Cascadia Mono、Courier New）が必要です。",
+        },
+        code: `{
+  "layout": "code",
+  "title": "Usage",
+  "language": "bash",
+  "code": "npm install slideforge\nslideforge init my-deck"
+}`,
+        images: [
+          { src: "/screenshots/layout-code.png", alt: { en: "A listing on a light panel", "zh-TW": "淺色面板上的程式碼", "zh-CN": "浅色面板上的代码", ja: "明るいパネル上のコード" }, caption: "code" },
+          { src: "/screenshots/layout-code-dark.png", alt: { en: "A listing on a dark panel", "zh-TW": "深色面板上的程式碼", "zh-CN": "深色面板上的代码", ja: "暗いパネル上のコード" }, caption: "code/dark" },
+        ],
+      },
+      {
         id: "gallery-data",
         title: { en: "Gallery: table, chart, and quote", "zh-TW": "版型一覽：table、chart 與 quote", "zh-CN": "版式一览：table、chart 与 quote", ja: "ギャラリー：table、chart、quote" },
         body: {
-          en: "Tables and bars are editable text and shapes; chart blocks form an explanation column. quote/centered drops the accent bar.",
-          "zh-TW": "表格與長條都是可編輯的文字與圖形；chart 的 blocks 會成為右側說明欄。quote/centered 不顯示強調線。",
-          "zh-CN": "表格与长条都是可编辑的文字与图形；chart 的 blocks 会成为右侧说明栏。quote/centered 不显示强调线。",
-          ja: "表とバーは編集できるテキストと図形です。chart の blocks は説明列になります。quote/centered では強調線がなくなります。",
+          en: "Tables and bars are editable text and shapes; chart blocks form an explanation column. chart/columns draws vertical columns, and chart/donut a ring of shares with a legend, exported as editable freeform shapes. quote/centered drops the accent bar.",
+          "zh-TW": "表格與長條都是可編輯的文字與圖形；chart 的 blocks 會成為右側說明欄。chart/columns 畫出直條，chart/donut 畫出附圖例的環形比例圖，匯出為可編輯的自由形狀。quote/centered 不顯示強調線。",
+          "zh-CN": "表格与长条都是可编辑的文字与图形；chart 的 blocks 会成为右侧说明栏。chart/columns 画出竖条，chart/donut 画出附图例的环形比例图，导出为可编辑的自由形状。quote/centered 不显示强调线。",
+          ja: "表とバーは編集できるテキストと図形です。chart の blocks は説明列になります。chart/columns は縦の棒、chart/donut は凡例付きのリング状の割合を描き、編集できる自由形状としてエクスポートされます。quote/centered では強調線がなくなります。",
         },
         images: [
           { src: "/screenshots/layout-table.png", alt: { en: "Table slide with three columns", "zh-TW": "三欄的表格投影片", "zh-CN": "三列的表格幻灯片", ja: "3 列の表のスライド" }, caption: "table" },
           { src: "/screenshots/layout-chart.png", alt: { en: "Chart slide with bars and an explanation column", "zh-TW": "含長條與說明欄的圖表投影片", "zh-CN": "含长条与说明栏的图表幻灯片", ja: "バーと説明列のあるグラフのスライド" }, caption: "chart" },
+          { src: "/screenshots/layout-chart-columns.png", alt: { en: "Four vertical columns with values above and labels below", "zh-TW": "上方標值、下方標籤的四根直條", "zh-CN": "上方标值、下方标签的四根竖条", ja: "上に値、下にラベルのある 4 本の縦棒" }, caption: "chart/columns" },
+          { src: "/screenshots/layout-chart-donut.png", alt: { en: "A ring of four shares with a legend", "zh-TW": "含圖例的四段環形比例圖", "zh-CN": "含图例的四段环形比例图", ja: "凡例付きの 4 区分のリング" }, caption: "chart/donut" },
           { src: "/screenshots/layout-quote.png", alt: { en: "Quote beside an accent bar", "zh-TW": "旁邊有強調線的引言", "zh-CN": "旁边有强调线的引言", ja: "強調線の横の引用" }, caption: "quote" },
           { src: "/screenshots/layout-quote-centered.png", alt: { en: "Centered quote without the bar", "zh-TW": "置中、沒有強調線的引言", "zh-CN": "居中、没有强调线的引言", ja: "強調線のない中央揃えの引用" }, caption: "quote/centered" },
+        ],
+      },
+      {
+        id: "gallery-closing",
+        title: { en: "Gallery: closing", "zh-TW": "版型一覽：closing", "zh-CN": "版式一览：closing", ja: "ギャラリー：closing" },
+        body: {
+          en: "closing is the last slide: the title and subtitle as the farewell, and up to four contacts, each a label and a value. Its variants match section: the default has an accent rail, closing/centered centers the text, and closing/band fills the slide with the accent color.",
+          "zh-TW": "closing 是最後一張投影片：title 與 subtitle 作為結語，最多四組 contacts，每組是 label 與 value。它的變化與 section 一致：預設有強調色側條，closing/centered 讓文字置中，closing/band 讓整張投影片填滿強調色。",
+          "zh-CN": "closing 是最后一张幻灯片：title 与 subtitle 作为结语，最多四组 contacts，每组是 label 与 value。它的变体与 section 一致：默认有强调色侧条，closing/centered 让文字居中，closing/band 让整张幻灯片填满强调色。",
+          ja: "closing は最後のスライドです。title と subtitle を結びの言葉とし、label と value からなる contacts を最大 4 つ置けます。バリエーションは section と同じで、既定はアクセント色のレール付き、closing/centered は文字を中央に、closing/band はスライド全体をアクセント色にします。",
+        },
+        code: `{
+  "layout": "closing",
+  "title": "Thank you",
+  "subtitle": "Questions welcome",
+  "contacts": [{ "label": "Email", "value": "hello@example.com" }]
+}`,
+        images: [
+          { src: "/screenshots/layout-closing.png", alt: { en: "A thank-you slide beside an accent rail with two contacts", "zh-TW": "強調色側條旁、附兩項聯絡資訊的結尾頁", "zh-CN": "强调色侧条旁、附两项联系信息的结尾页", ja: "アクセント色のレールの横に 2 件の連絡先がある結びのスライド" }, caption: "closing" },
+          { src: "/screenshots/layout-closing-centered.png", alt: { en: "A centered thank-you slide with one contact", "zh-TW": "置中、附一項聯絡資訊的結尾頁", "zh-CN": "居中、附一项联系信息的结尾页", ja: "連絡先が 1 件の中央揃えの結びのスライド" }, caption: "closing/centered" },
+          { src: "/screenshots/layout-closing-band.png", alt: { en: "A thank-you slide in the accent color", "zh-TW": "填滿強調色的結尾頁", "zh-CN": "填满强调色的结尾页", ja: "アクセント色で塗りつぶした結びのスライド" }, caption: "closing/band" },
         ],
       },
       {

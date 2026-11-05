@@ -1,0 +1,10 @@
+/* hub: a circle at the center with items on both sides, joined to it by lines. */
+.sf-hub { height: 100%; display: grid; grid-template-columns: minmax(0, 1fr) 380px minmax(0, 1fr); align-items: stretch; }
+.sf-hub-side { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; justify-content: space-evenly; gap: 20px; }
+.sf-hub-row { display: flex; align-items: center; }
+.sf-hub-line { flex: none; width: 60px; height: 6px; background: var(--sf-accent); }
+.sf-hub-item { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px; padding: 18px 28px; background: var(--sf-card-fill); border: var(--sf-border-width) solid var(--sf-border); border-radius: var(--sf-border-radius); }
+.sf-hub-title { font-size: var(--sf-type-card-title); font-weight: var(--sf-type-bold); line-height: var(--sf-type-title-leading); }
+.sf-hub-text { color: var(--sf-muted); font-size: calc(var(--sf-type-card-body) * 0.85); line-height: var(--sf-type-subtitle-leading); }
+.sf-hub-right .sf-hub-item { text-align: left; }
+.sf-hub-center { align-self: center; justify-self: center; display: flex; align-items: center; justify-content: center; width: 380px; height: 380px; padding: 40px; border-radius: 50%; background: var(--sf-accent); color: var(--sf-on-accent); text-align: center; font-size: var(--sf-type-cover-subtitle); font-weight: var(--sf-type-bold); line-height: 1.2; overflow-wrap: anywhere; }

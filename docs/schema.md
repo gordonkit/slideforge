@@ -93,7 +93,14 @@ variant, so `"<family>"` and `"<family>/default"` render the same.
 | `panels` | `default` (side-by-side columns split by vertical lines), `rows` (stacked rows split by horizontal lines) |
 | `agenda` | `default` (numbered cards), `chapters` (a large-number index of the top level only), `outline` (each chapter as a card with its subsections listed under it) |
 | `section` | `default` (left-aligned beside an accent rail), `centered` (centered text), `band` (the whole slide in the accent color) |
-| `content`, `two-columns`, `timeline`, `gantt`, `table`, `chart`, `blank` | `default` |
+| `media` | `default` (the image on the left), `right` (the image on the right), `full` (the image across the slide, the text below it) |
+| `stats` | `default` (large figures over accent rules), `cards` (centered figures on cards) |
+| `matrix` | `default` (four cards), `lines` (four open quadrants split by a cross) |
+| `process` | `default` (steps in a row joined by arrows), `vertical` (steps stacked, joined by down arrows) |
+| `code` | `default` (a light panel), `dark` (a dark panel) |
+| `chart` | `default` (horizontal bars), `columns` (vertical columns), `donut` (a ring of shares with a legend) |
+| `closing` | `default` (left-aligned beside an accent rail), `centered` (centered text), `band` (the whole slide in the accent color) |
+| `content`, `two-columns`, `compare`, `team`, `hub`, `timeline`, `gantt`, `table`, `blank` | `default` |
 
 [`examples/variants/presentation.json`](../examples/variants/presentation.json)
 shows each cover variant. The `split` panel and `band` block are decorative
@@ -114,11 +121,20 @@ is reported with that family's valid names, such as
 | `"two-columns"` | Required `left` and `right`: each 1–12 content blocks |
 | `"cards"` | Required `cards`: 1–6 objects, each with trimmed nonempty `title` (max 200) and `blocks` (1–12) |
 | `"panels"` | Required `panels`: 2–7 objects, each with trimmed nonempty `title` (max 200), `blocks` (1–12), and an optional `color`, a six-digit hex color such as `"#2563eb"` that fills the panel |
+| `"media"` | Required `image` (an image source) and `alt` (max 1,000, may be empty); optional `caption` and `blocks` (up to 6 content blocks, default none) |
+| `"stats"` | Required `stats`: 2–6 objects, each with trimmed nonempty `value` (max 30), `label` (max 100), and optional `text` |
+| `"matrix"` | Required `quadrants`: exactly 4 objects (top left, top right, bottom left, bottom right), each with `title` (max 200) and `blocks` (1–12); optional `xAxis` and `yAxis` names (max 80) |
+| `"compare"` | Required `options`: 2–4 objects, each with `title` (max 100), `items` (1–8 strings, max 200), optional `label` and optional boolean `highlight` |
+| `"team"` | Required `members`: 2–6 objects, each with `name` (max 100) and optional `role`, `text`, and `image` (an image source) |
+| `"process"` | Required `steps`: 2–6 objects, each with `title` (max 100) and optional `text` |
+| `"hub"` | Required `center` (max 100) and `items`: 3–6 objects, each with `title` (max 100) and optional `text` |
 | `"timeline"` | Required `events`: 2–6 objects, each with trimmed nonempty `date` (max 100) and `title` (max 200), and optional `text` string, max 10,000 |
 | `"gantt"` | Required `periods` (2–12 trimmed nonempty strings, max 40 each) and `tasks` (1–8 objects, each with trimmed nonempty `label` (max 100), integer `start` and `end`, and optional `progress` from 0 to 100) |
 | `"table"` | Required `columns` (1–8 trimmed nonempty strings, max 200 each) and `rows` (1–14 arrays of 1–8 string cells, max 2,000 each) |
 | `"chart"` | Required `data` (1–10 `{ "label", "value" }` objects); optional `unit` string, max 40; optional `blocks` (0–4 content blocks, default `[]`) |
 | `"quote"` | Required `quote`: trimmed nonempty string, max 1,000; optional `attribution` string, max 10,000 |
+| `"code"` | Required `code` (1–3,000 characters, at most 18 lines, kept as written); optional `language` label (max 60) |
+| `"closing"` | Optional `contacts`: up to 4 objects, each with `label` (max 60) and `value` (max 200) |
 | `"blank"` | None; `subtitle` and `footer` are rejected |
 
 Every table row must contain exactly one cell per column. Empty table cell
@@ -133,7 +149,7 @@ centered in the content region; keep it to a few lines, since longer quotes clip
 
 Cards are arranged by their count: one spans the width, two sit side by side, three
 and six use three columns, four form a 2 × 2 grid, and five are three over two, with the lower two keeping the upper cards' width and centered.
-Agenda items are numbered `01`, `02`, … in array order, one row each (two columns from five items). An item with a `slide` is a link: see [Agenda](components.md#agenda). A long deck is split into chapters with `section` slides; see [Section](components.md#section).
+Agenda items are numbered `01`, `02`, … in array order, one row each (two columns from five items). An item with a `slide` is a link: see [Agenda](layouts-structure.md#agenda). A long deck is split into chapters with `section` slides; see [Section](layouts-structure.md#section).
 Timeline events are drawn left to right in equal columns on one rail, in array order;
 `date` is any short marker such as `2026`, `Q3`, or `Step 1`. Keep `text` to a line or
 two, especially with five or six events.

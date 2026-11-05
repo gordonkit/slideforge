@@ -7,7 +7,7 @@ import { parsePresentation, presentationSchema, slideBackground } from "../../sr
 
 describe("layout registry", () => {
   it("lists the families in documentation order", () => {
-    expect(layoutFamilies).toEqual(["cover", "agenda", "section", "content", "two-columns", "cards", "panels", "timeline", "gantt", "table", "chart", "quote", "blank"]);
+    expect(layoutFamilies).toEqual(["cover", "agenda", "section", "content", "two-columns", "media", "cards", "stats", "panels", "matrix", "compare", "team", "process", "hub", "timeline", "gantt", "table", "chart", "code", "quote", "closing", "blank"]);
   });
 
   it("gives every family a default variant, a schema keyed by its name, a renderer, and a stylesheet", () => {
@@ -67,7 +67,7 @@ describe("family/variant layout names", () => {
     expect(issues({ layout: "cover/fancy" })).toEqual([cover]);
     expect(issues({ layout: "cover/" })).toEqual([cover]);
     expect(issues({ layout: "table/fancy", columns: ["A"], rows: [["1"]] })).toEqual(['Unknown table variant. Use "table" or "table/default"']);
-    const families = 'Unknown layout. Use "cover", "agenda", "section", "content", "two-columns", "cards", "panels", "timeline", "gantt", "table", "chart", "quote", or "blank"';
+    const families = 'Unknown layout. Use "cover", "agenda", "section", "content", "two-columns", "media", "cards", "stats", "panels", "matrix", "compare", "team", "process", "hub", "timeline", "gantt", "table", "chart", "code", "quote", "closing", or "blank"';
     expect(issues({ layout: "gallery" })).toEqual([families]);
     expect(issues({})).toEqual([families]);
   });
@@ -200,6 +200,57 @@ describe("family/variant layout names", () => {
     expect(issues({ panels: Array.from({ length: 8 }, () => panel("A")) })).toEqual(["slides.0.panels: Too big: expected array to have <=7 items"]);
     expect(issues({ panels: [panel("A", "blue"), panel("B")] })).toEqual(['slides.0.panels.0.color: Use a six-digit hex color such as "#2563eb"']);
     expect(issues({ layout: "panels/rows", panels: [panel("A"), panel("B")] })).toBeUndefined();
+  });
+
+  it("validates and draws the stats, matrix, compare, team, process, hub, code, media, and closing layouts", () => {
+    const para = [{ type: "paragraph", text: "x" }];
+    const draw = (slide: object) => renderPresentation({ metadata: { title: "Deck" }, slides: [{ title: "T", ...slide }] });
+    const issues = (slide: object) => presentationSchema.safeParse({ metadata: { title: "Deck" }, slides: [{ title: "T", ...slide }] }).error?.issues.map((issue) => `${issue.path.join(".")}: ${issue.message}`);
+    const stat = (value: string) => ({ value, label: "L" });
+    expect(draw({ layout: "stats", stats: [stat("98%"), stat("4x")] })).toContain('<ul class="sf-stats" data-count="2"><li class="sf-stat"><span class="sf-stat-value">98%</span><span class="sf-stat-label">L</span></li>');
+    expect(issues({ layout: "stats", stats: [stat("1")] })).toEqual(["slides.0.stats: Too small: expected array to have >=2 items"]);
+    const quadrants = ["a", "b", "c", "d"].map((title) => ({ title, blocks: para }));
+    const matrix = draw({ layout: "matrix/lines", quadrants, xAxis: "Impact", yAxis: "Effort" });
+    expect(matrix).toContain('<p class="sf-matrix-axis sf-matrix-y">↑ Effort</p>');
+    expect(matrix).toContain('<p class="sf-matrix-axis sf-matrix-x">Impact →</p>');
+    expect(matrix).toContain("sf-matrix-vline");
+    expect(issues({ layout: "matrix", quadrants: quadrants.slice(1) })).toEqual(["slides.0.quadrants: Too small: expected array to have exactly 4 items"]);
+    const options = [{ title: "A", items: ["x"] }, { title: "B", label: "$9", highlight: true, items: ["y"] }];
+    const compare = draw({ layout: "compare", options });
+    expect(compare).toContain('<section class="sf-option sf-option-highlight">');
+    expect(compare).toContain('<p class="sf-option-label">$9</p>');
+    expect(issues({ layout: "compare", options: [options[0]] })).toEqual(["slides.0.options: Too small: expected array to have >=2 items"]);
+    const members = [{ name: "Ada", role: "Design" }, { name: "王小明" }];
+    const team = draw({ layout: "team", members });
+    expect(team).toContain('<span class="sf-avatar" aria-hidden="true">A</span>');
+    expect(team).toContain('<span class="sf-avatar" aria-hidden="true">王</span>');
+    const process = draw({ layout: "process/vertical", steps: [{ title: "One" }, { title: "Two", text: "t" }] });
+    expect(process).toContain('<li class="sf-process-arrow" aria-hidden="true">↓</li>');
+    expect(draw({ layout: "process", steps: [{ title: "One" }, { title: "Two" }] })).toContain(">→</li>");
+    const hub = draw({ layout: "hub", center: "Core", items: [{ title: "a" }, { title: "b" }, { title: "c" }] });
+    // Three items: two on the left, one on the right.
+    expect(hub.match(/class="sf-hub-row sf-hub-left"/g)).toHaveLength(2);
+    expect(hub.match(/class="sf-hub-row sf-hub-right"/g)).toHaveLength(1);
+    expect(hub).toContain('<div class="sf-hub-center"><span>Core</span></div>');
+    expect(issues({ layout: "hub", center: "Core", items: [{ title: "a" }, { title: "b" }] })).toEqual(["slides.0.items: Too small: expected array to have >=3 items"]);
+    expect(draw({ layout: "code/dark", language: "bash", code: "a\n  b" })).toContain('<pre class="sf-code-body"><code>a\n  b</code></pre>');
+    expect(issues({ layout: "code", code: Array.from({ length: 19 }, () => "x").join("\n") })).toEqual(["slides.0.code: Code has 19 lines; the slide fits 18"]);
+    const media = draw({ layout: "media/right", image: "a.png", alt: "Alt", caption: "Cap", blocks: para });
+    expect(media).toContain('<div class="sf-media" data-text=""><figure class="sf-media-figure"><img src="a.png" alt="Alt"/><figcaption>Cap</figcaption></figure>');
+    expect(draw({ layout: "media", image: "a.png", alt: "Alt" })).toContain('<div class="sf-media"><figure');
+    expect(issues({ layout: "media", image: "https://u:p@x.com/a.png", alt: "" })).toHaveLength(1);
+    const closing = draw({ layout: "closing", contacts: [{ label: "Email", value: "a@b.c" }] });
+    expect(closing).toContain('<div class="sf-closing-rail" aria-hidden="true"></div><ul class="sf-contacts"><li><span class="sf-contact-label">Email</span><span class="sf-contact-value">a@b.c</span></li></ul>');
+    expect(issues({ layout: "closing", contacts: Array.from({ length: 5 }, () => ({ label: "a", value: "b" })) })).toEqual(["slides.0.contacts: Too big: expected array to have <=4 items"]);
+  });
+
+  it("draws the chart as columns and as a donut", () => {
+    const data = [{ label: "A", value: 3 }, { label: "B", value: 1 }];
+    const columns = renderPresentation({ metadata: { title: "Deck" }, slides: [{ title: "T", layout: "chart/columns", unit: "%", data }] });
+    expect(columns).toContain('<div class="sf-column-value">3%</div><div class="sf-column-track"><div class="sf-column-bar" style="height:100%"></div></div>');
+    const donut = renderPresentation({ metadata: { title: "Deck" }, slides: [{ title: "T", layout: "chart/donut", data }] });
+    expect(donut).toContain('<svg class="sf-donut" viewBox="0 0 200 200" aria-hidden="true"><path d="M ');
+    expect(donut).toContain('<span class="sf-donut-label">A</span><span class="sf-donut-value">75%</span>');
   });
 
   it("draws the subtitle with an accent bar", () => {
