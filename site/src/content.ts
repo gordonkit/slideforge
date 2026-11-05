@@ -14,6 +14,8 @@ export type Section = {
     href: string;
   };
   code?: string;
+  /** Titled code blocks, one per layout, for a section that covers several. */
+  examples?: Array<{ title: string; code: string }>;
   bullets?: Record<Locale, string[]>;
   note?: Text;
   links?: Array<{
@@ -43,7 +45,7 @@ export type Section = {
 
 export type Page = {
   id: string;
-  category: "getting-started" | "layouts" | "authoring" | "reference" | "project";
+  category: "getting-started" | "authoring" | "layouts" | "design" | "reference" | "project";
   title: Text;
   heading?: Text;
   summary: Text;
@@ -58,8 +60,9 @@ export function cellText(cell: Cell, locale: Locale): string {
 
 export const categories = [
   { id: "getting-started", label: { en: "Getting Started", "zh-TW": "快速開始", "zh-CN": "快速开始", ja: "はじめに" } },
-  { id: "layouts", label: { en: "Layouts", "zh-TW": "版型", "zh-CN": "版式", ja: "レイアウト" } },
   { id: "authoring", label: { en: "Authoring", "zh-TW": "簡報撰寫", "zh-CN": "演示文稿编写", ja: "スライド作成" } },
+  { id: "layouts", label: { en: "Layouts", "zh-TW": "版型", "zh-CN": "版式", ja: "レイアウト" } },
+  { id: "design", label: { en: "Design", "zh-TW": "設計", "zh-CN": "设计", ja: "デザイン" } },
   { id: "reference", label: { en: "Reference", "zh-TW": "參考資料", "zh-CN": "参考资料", ja: "リファレンス" } },
   { id: "project", label: { en: "Project", "zh-TW": "專案資訊", "zh-CN": "项目信息", ja: "プロジェクト" } },
 ] as const;
@@ -466,507 +469,6 @@ docker compose -f docker/compose.yaml --profile cli \\
     ],
   },
   {
-    id: "layouts",
-    category: "layouts",
-    title: { en: "Layouts and components", "zh-TW": "版型與元件", "zh-CN": "版式与组件", ja: "レイアウトとコンポーネント" },
-    summary: {
-      en: "How to choose a layout, how the layouts are built from components, and where each group of layouts is shown with screenshots.",
-      "zh-TW": "如何選擇版型、版型如何由元件組成，以及各組版型的截圖分別在哪一頁。",
-      "zh-CN": "如何选择版式、版式如何由组件组成，以及各组版式的截图分别在哪一页。",
-      ja: "レイアウトの選び方、コンポーネントからの構成、グループごとのスクリーンショットの場所。",
-    },
-    sections: [
-      {
-        id: "six-layouts",
-        title: { en: "Choosing a layout", "zh-TW": "選擇版型", "zh-CN": "选择版式", ja: "レイアウトの選び方" },
-        body: {
-          en: "Keep one main idea per slide. Split crowded slides instead of shrinking text.",
-          "zh-TW": "每張投影片只放一個重點。內容太擠時請拆成多張，不要縮小文字。",
-          "zh-CN": "每张幻灯片只放一个重点。内容太挤时请拆成多张，不要缩小文字。",
-          ja: "1 枚のスライドには 1 つの主題だけを置きます。詰め込みすぎた場合は文字を小さくせず、スライドを分けてください。",
-        },
-        table: {
-          caption: { en: "Layouts", "zh-TW": "版型", "zh-CN": "版式", ja: "レイアウト" },
-          headers: [
-            "layout",
-            { en: "Use for", "zh-TW": "適用情境", "zh-CN": "适用场景", ja: "用途" },
-          ],
-          rows: [
-            ["cover", { en: "Opening slide with a large title and optional author; variants centered, split, and band", "zh-TW": "開場，大標題與選填的作者；另有 centered、split、band 變化", "zh-CN": "开场，大标题与可选的作者；另有 centered、split、band 变体", ja: "大きなタイトルと任意の作者を置く表紙。centered、split、band のバリアントあり" }],
-            ["agenda", { en: "A linked table of contents: two to eight numbered topics, each able to jump to a slide; variants chapters (top level only) and outline (with subsections)", "zh-TW": "可跳轉的目錄：二到八個編號主題，每項可連到一張投影片；變化有 chapters（只列大章節）與 outline（含小節）", "zh-CN": "可跳转的目录：二到八个编号主题，每项可链接到一张幻灯片；变体有 chapters（只列大章节）与 outline（含小节）", ja: "リンク付きの目次。番号付きの 2〜8 項目で、各項目からスライドへジャンプできる。バリエーションは chapters（章のみ）と outline（小節付き）" }],
-            ["section", { en: "A chapter divider for long presentations, with an automatic number; variants centered and band", "zh-TW": "長簡報的章節分隔頁，附自動編號；變化有 centered 與 band", "zh-CN": "长演示文稿的章节分隔页，附自动编号；变体有 centered 与 band", ja: "長いプレゼン用の章の区切りスライド。番号は自動で付く。バリエーションは centered と band" }],
-            ["content", { en: "An explanation with paragraphs, lists, and images", "zh-TW": "以段落、清單與圖片說明", "zh-CN": "以段落、列表与图片说明", ja: "段落、リスト、画像による説明" }],
-            ["two-columns", { en: "Comparisons such as before and after", "zh-TW": "比較，例如前後對照", "zh-CN": "比较，例如前后对照", ja: "前後比較などの対比" }],
-            ["cards", { en: "Up to six short parallel ideas, arranged by their count", "zh-TW": "最多六個簡短的並列重點，依張數自動排列", "zh-CN": "最多六个简短的并列重点，依张数自动排列", ja: "最大 6 つの短い並列項目。枚数に応じて自動で並ぶ" }],
-            ["panels", { en: "Two to seven sections split by thin vertical or horizontal lines instead of cards; each can have its own fill color", "zh-TW": "以細線（垂直或水平）而不是卡片分隔的二到七個區段，每個區段可有自己的填色", "zh-CN": "以细线（垂直或水平）而不是卡片分隔的二到七个区段，每个区段可有自己的填色", ja: "カードではなく縦または横の細い線で区切る 2〜7 個のセクション。それぞれに塗りつぶしの色を指定できる" }],
-            ["media", { en: "A picture as the subject, with a caption and text beside or below it; variants right and full", "zh-TW": "以圖片為主角，附圖說與旁邊或下方的文字；變化有 right 與 full", "zh-CN": "以图片为主角，附图说与旁边或下方的文字；变体有 right 与 full", ja: "画像を主役にし、キャプションと横または下の文を添える。バリエーションは right と full" }],
-            ["stats", { en: "Two to six key figures with labels; variant cards", "zh-TW": "二到六個重點數字，附標籤；變化有 cards", "zh-CN": "二到六个重点数字，附标签；变体有 cards", ja: "2〜6 個の重要な数値とラベル。バリエーションは cards" }],
-            ["matrix", { en: "A 2 × 2 matrix with optional axis names; variant lines", "zh-TW": "2 × 2 矩陣，可加座標軸名稱；變化有 lines", "zh-CN": "2 × 2 矩阵，可加坐标轴名称；变体有 lines", ja: "軸の名前を付けられる 2 × 2 のマトリクス。バリエーションは lines" }],
-            ["compare", { en: "Two to four options side by side, one of them highlighted", "zh-TW": "並排比較二到四個選項，可標示其中一個", "zh-CN": "并排比较二到四个选项，可标示其中一个", ja: "2〜4 個の選択肢を並べ、1 つを強調できる" }],
-            ["team", { en: "Two to six people with a portrait or initial, a role, and a line of text", "zh-TW": "二到六位成員，附頭像或姓名首字、職稱與一行說明", "zh-CN": "二到六位成员，附头像或姓名首字、职称与一行说明", ja: "2〜6 人。顔写真またはイニシャル、役割、一行の説明" }],
-            ["process", { en: "Two to six numbered steps joined by arrows; variant vertical", "zh-TW": "以箭頭連接的二到六個編號步驟；變化有 vertical", "zh-CN": "以箭头连接的二到六个编号步骤；变体有 vertical", ja: "矢印でつなぐ 2〜6 個の番号付きステップ。バリエーションは vertical" }],
-            ["hub", { en: "A central idea with three to six items joined to it by lines", "zh-TW": "中心概念，周圍以線連接三到六個項目", "zh-CN": "中心概念，周围以线连接三到六个项目", ja: "中心の考えと、線でつないだ 3〜6 個の項目" }],
-            ["code", { en: "A monospaced code listing of up to 18 lines; variant dark", "zh-TW": "等寬字型的程式碼，最多 18 行；變化有 dark", "zh-CN": "等宽字体的代码，最多 18 行；变体有 dark", ja: "等幅フォントのコード（最大 18 行）。バリエーションは dark" }],
-            ["closing", { en: "The last slide with contact lines; variants centered and band", "zh-TW": "附聯絡資訊的結尾頁；變化有 centered 與 band", "zh-CN": "附联系信息的结尾页；变体有 centered 与 band", ja: "連絡先付きの最後のスライド。バリエーションは centered と band" }],
-            ["timeline", { en: "Two to six steps or dates in order", "zh-TW": "二到六個依序排列的步驟或時間點", "zh-CN": "二到六个依序排列的步骤或时间点", ja: "順に並ぶ 2〜6 個のステップや日付" }],
-            ["gantt", { en: "A project schedule: up to eight tasks as bars over labeled periods, with optional progress", "zh-TW": "專案進度表：最多八個任務，以長條橫跨各時段，可標示完成度", "zh-CN": "项目进度表：最多八个任务，以长条横跨各时段，可标示完成度", ja: "プロジェクトの進捗表。最大 8 つのタスクを期間にまたがるバーで示し、進捗も表示できる" }],
-            ["table", { en: "Compact grids of text", "zh-TW": "精簡的文字表格", "zh-CN": "精简的文字表格", ja: "コンパクトな表" }],
-            ["chart", { en: "Simple nonnegative values, optionally with an explanation column", "zh-TW": "簡單的非負數值，可附說明欄", "zh-CN": "简单的非负数值，可附说明栏", ja: "単純な非負の値。説明列も付けられる" }],
-            ["quote", { en: "One short quotation with an optional attribution; variant centered", "zh-TW": "一段簡短引言與選填的出處；另有 centered 變化", "zh-CN": "一段简短引言与可选的出处；另有 centered 变体", ja: "短い引用 1 つと任意の出典。centered のバリアントあり" }],
-            ["blank", { en: "Only the background, such as a full-bleed image or a Math Background Studio design", "zh-TW": "只有背景，例如滿版圖片或 Math Background Studio 的設計", "zh-CN": "只有背景，例如满版图片或 Math Background Studio 的设计", ja: "背景だけ。全面の画像や Math Background Studio のデザインなど" }],
-          ],
-        },
-      },
-      {
-        id: "components",
-        title: { en: "Components", "zh-TW": "元件", "zh-CN": "组件", ja: "コンポーネント" },
-        body: {
-          en: "Components are exported from the package root. They emit markup only; renderPresentation supplies the stylesheet, theme, font, and fixed canvas.",
-          "zh-TW": "元件從套件根目錄匯出，只產生 HTML 標記；樣式表、主題、字型與固定畫布由 renderPresentation 提供。",
-          "zh-CN": "组件从包根目录导出，只生成 HTML 标记；样式表、主题、字体与固定画布由 renderPresentation 提供。",
-          ja: "コンポーネントはパッケージのルートからエクスポートされ、マークアップだけを出力します。スタイルシート、テーマ、フォント、固定キャンバスは renderPresentation が提供します。",
-        },
-        table: {
-          caption: { en: "Components", "zh-TW": "元件", "zh-CN": "组件", ja: "コンポーネント" },
-          headers: [
-            { en: "Component", "zh-TW": "元件", "zh-CN": "组件", ja: "コンポーネント" },
-            { en: "Output", "zh-TW": "輸出", "zh-CN": "输出", ja: "出力" },
-          ],
-          rows: [
-            ["Slide", { en: "Full slide frame with title, content, footer, and notes", "zh-TW": "完整投影片框架，含標題、內容、頁尾與備忘稿", "zh-CN": "完整幻灯片框架，含标题、内容、页脚与备注", ja: "タイトル、内容、フッター、ノートを含むスライド枠" }],
-            ["SlideTitle · SlideSubtitle", { en: "Header with heading and subtitle", "zh-TW": "含標題與副標題的頁首", "zh-CN": "含标题与副标题的页眉", ja: "見出しとサブタイトルのヘッダー" }],
-            ["SlideContent · SlideColumns", { en: "Content region and equal two-column grid", "zh-TW": "內容區與等寬雙欄", "zh-CN": "内容区与等宽双栏", ja: "コンテンツ領域と等幅 2 列グリッド" }],
-            ["SlideCard", { en: "Titled card", "zh-TW": "含標題的卡片", "zh-CN": "含标题的卡片", ja: "タイトル付きカード" }],
-            ["SlideImage · SlideTable", { en: "Image figure with caption, semantic table", "zh-TW": "含說明的圖片、語意化表格", "zh-CN": "含说明的图片、语义化表格", ja: "キャプション付き画像、セマンティックな表" }],
-            ["SlideChart", { en: "Horizontal HTML/CSS bars with labels and values", "zh-TW": "含標籤與數值的 HTML/CSS 橫條", "zh-CN": "含标签与数值的 HTML/CSS 横条", ja: "ラベルと値付きの HTML/CSS 横棒" }],
-            ["SlideFooter", { en: "Footer text and slide number", "zh-TW": "頁尾文字與頁碼", "zh-CN": "页脚文字与页码", ja: "フッターテキストとページ番号" }],
-          ],
-        },
-      },
-      {
-        id: "custom-html",
-        title: { en: "Custom trusted HTML", "zh-TW": "自訂受信任的 HTML", "zh-CN": "自定义受信任的 HTML", ja: "独自の信頼できる HTML" },
-        body: {
-          en: "Give each slide a fixed 1920 × 1080 box marked with data-pptx=\"slide\". Keep text and simple fills as DOM and CSS when editability matters. Mark intentional decorative overlap so the overlap check skips it.",
-          "zh-TW": "每張投影片給定固定的 1920 × 1080 區塊並標上 data-pptx=\"slide\"。需要可編輯時，文字與簡單填色請保留為 DOM 與 CSS。刻意的裝飾性重疊請加上標記，讓重疊檢查略過。",
-          "zh-CN": "每张幻灯片给定固定的 1920 × 1080 区块并标上 data-pptx=\"slide\"。需要可编辑时，文字与简单填色请保留为 DOM 与 CSS。刻意的装饰性重叠请加上标记，让重叠检查跳过。",
-          ja: "各スライドに data-pptx=\"slide\" を付けた固定 1920 × 1080 のボックスを用意します。編集可能性が重要な場合は、テキストと単純な塗りを DOM と CSS のまま保ってください。意図的な装飾の重なりには印を付けると、重なり検査の対象外になります。",
-        },
-        code: `<section data-pptx="slide" style="width:1920px;height:1080px">
-  <h1>Editable title</h1>
-  <div data-pptx-allow-overlap="true">…decorative layers…</div>
-</section>`,
-      },
-    ],
-  },
-  {
-    id: "layouts-structure",
-    category: "layouts",
-    title: { en: "Opening, structure, and ending", "zh-TW": "開場、結構與結尾", "zh-CN": "开场、结构与结尾", ja: "冒頭・構成・結び" },
-    summary: {
-      en: "cover, agenda, section, closing, and blank: the slides that open a deck, divide it into chapters, and end it.",
-      "zh-TW": "cover、agenda、section、closing 與 blank：開場、分章與結尾的投影片。",
-      "zh-CN": "cover、agenda、section、closing 与 blank：开场、分章与结尾的幻灯片。",
-      ja: "cover、agenda、section、closing、blank：スライドの冒頭、章の区切り、結びを担うレイアウト。",
-    },
-    sections: [
-      {
-        id: "gallery-cover",
-        title: { en: "Gallery: cover", "zh-TW": "版型一覽：cover", "zh-CN": "版式一览：cover", ja: "ギャラリー：cover" },
-        body: {
-          en: "Each screenshot uses the light theme and the built-in tokens; a template or the dark theme changes colors and sizes, not the arrangement. The four cover variants share the same fields.",
-          "zh-TW": "以下截圖皆為淺色主題與內建 tokens；範本或深色主題只會改變色彩與尺寸，不會改變排列方式。四種 cover 變化的欄位完全相同。",
-          "zh-CN": "以下截图均为浅色主题与内置 tokens；模板或深色主题只会改变色彩与尺寸，不会改变排列方式。四种 cover 变体的字段完全相同。",
-          ja: "スクリーンショットはすべてライトテーマと組み込みのトークンです。テンプレートやダークテーマで変わるのは色とサイズで、配置は変わりません。cover の 4 つのバリアントはフィールドが同じです。",
-        },
-        images: [
-          { src: "/screenshots/layout-cover.png", alt: { en: "Cover slide with a left-aligned title", "zh-TW": "標題靠左的封面投影片", "zh-CN": "标题靠左的封面幻灯片", ja: "タイトルが左寄せの表紙スライド" }, caption: "cover" },
-          { src: "/screenshots/layout-cover-centered.png", alt: { en: "Cover slide with a centered title", "zh-TW": "標題置中的封面投影片", "zh-CN": "标题居中的封面幻灯片", ja: "タイトルが中央揃えの表紙スライド" }, caption: "cover/centered" },
-          { src: "/screenshots/layout-cover-split.png", alt: { en: "Cover slide with an accent panel on the right third", "zh-TW": "右側三分之一為強調色塊的封面投影片", "zh-CN": "右侧三分之一为强调色块的封面幻灯片", ja: "右側 3 分の 1 に強調色のパネルがある表紙スライド" }, caption: "cover/split" },
-          { src: "/screenshots/layout-cover-band.png", alt: { en: "Cover slide with a full-bleed accent band behind the title", "zh-TW": "標題後方有滿版強調色帶的封面投影片", "zh-CN": "标题后方有满版强调色带的封面幻灯片", ja: "タイトルの背後に全幅の強調色の帯がある表紙スライド" }, caption: "cover/band" },
-        ],
-      },
-      {
-        id: "gallery-agenda",
-        title: { en: "Gallery: agenda", "zh-TW": "版型一覽：agenda", "zh-CN": "版式一览：agenda", ja: "ギャラリー：agenda" },
-        body: {
-          en: "agenda lists 2–8 topics as numbered rows: a number circle, a title, and optional text, in two columns from five items. Give an item slide, the number of another slide, to make it a link: the row ends with an arrow and jumps to that slide. In present mode a click jumps to it. In PowerPoint the row's box, number, text, and arrow are \"go to slide\" buttons that work in slide show, and the text keeps its design instead of turning into an underlined hyperlink. A slide that does not exist is rejected. The link follows the slide's position, so renumber it after reordering slides. For a long deck, agenda/chapters lists only the top level in a large-number index, and agenda/outline draws each chapter as a card with its subsections under it, each of which can link too. Give an item items (up to six subsections) for the outline; the other variants leave them out, so the same content works in all three. current marks the chapter being opened and mutes the others. Without items the agenda lists the section slides, linking to each, so the links survive reordering.",
-          "zh-TW": "agenda 以編號列呈現 2–8 個主題：編號圓形、title 與選填的 text，五項起分為兩欄。給項目一個 slide（另一張投影片的編號），它就成為連結：該列末端有箭頭，點擊會跳到那張投影片。在簡報模式中點一下即可跳轉。在 PowerPoint 中，該列的底框、編號、文字與箭頭都是「移至投影片」按鈕，在投影片放映時有效，文字也維持原本的設計，不會變成有底線的超連結。不存在的投影片會被拒絕。連結依投影片的位置而定，因此調整順序後請重新設定編號。簡報很長時，agenda/chapters 只以大號編號列出大章節，agenda/outline 則把每個章節畫成卡片，小節列在下方，且每個小節也能連結。為項目加上 items（最多六個小節）即可用於 outline；其他變化會略過它們，所以同一份內容三種都能用。current 標示目前的章節，其他章節變淡。省略 items 時，agenda 會列出 section 投影片並連到各頁，因此重新排序後連結仍然正確。",
-          "zh-CN": "agenda 以编号行呈现 2–8 个主题：编号圆形、title 与可选的 text，五项起分为两栏。给项目一个 slide（另一张幻灯片的编号），它就成为链接：该行末端有箭头，点击会跳到那张幻灯片。在演示模式中点一下即可跳转。在 PowerPoint 中，该行的底框、编号、文字与箭头都是“转到幻灯片”按钮，在幻灯片放映时有效，文字也保持原本的设计，不会变成有下划线的超链接。不存在的幻灯片会被拒绝。链接依幻灯片的位置而定，因此调整顺序后请重新设置编号。演示文稿很长时，agenda/chapters 只以大号编号列出大章节，agenda/outline 则把每个章节画成卡片，小节列在下方，且每个小节也能链接。为项目加上 items（最多六个小节）即可用于 outline；其他变体会略过它们，所以同一份内容三种都能用。current 标示当前的章节，其他章节变淡。省略 items 时，agenda 会列出 section 幻灯片并链接到各页，因此重新排序后链接仍然正确。",
-          ja: "agenda は 2〜8 個のトピックを番号付きの行で並べます。番号の円、title、任意の text で構成され、5 項目からは 2 列になります。項目に slide（別のスライドの番号）を指定するとリンクになり、行の右端に矢印が付いて、そのスライドへジャンプします。プレゼンテーションモードではクリックで移動します。PowerPoint では、行の枠、番号、文字、矢印が「スライドへ移動」ボタンになってスライドショーで機能し、文字は下線付きのハイパーリンクにならずデザインのままです。存在しないスライドは拒否されます。リンクはスライドの位置に従うので、並べ替えたあとは番号を付け直してください。長いプレゼンでは、agenda/chapters が大きな番号で最上位の章だけを並べ、agenda/outline が各章をカードにして下に小節を並べます。小節にもリンクを付けられます。項目に items（最大 6 個の小節）を指定すると outline で表示され、他のバリエーションでは省かれるので、同じ内容を 3 つすべてで使えます。current は開こうとしている章を示し、他の章は薄くなります。items を省略すると section スライドを列挙してそれぞれにリンクするので、並べ替えてもリンクは正しいままです。",
-        },
-        code: `{
-  "layout": "agenda",
-  "title": "Agenda",
-  "subtitle": "Four topics, each a click away",
-  "items": [
-    { "title": "Results", "text": "Revenue and growth", "slide": 2 },
-    { "title": "Questions" }
-  ]
-}`,
-        images: [
-          { src: "/screenshots/layout-agenda.png", alt: { en: "Agenda slide with four numbered rows, three of them linked", "zh-TW": "有四個編號列、其中三列為連結的 agenda 投影片", "zh-CN": "有四个编号行、其中三行为链接的 agenda 幻灯片", ja: "番号付きの 4 行のうち 3 行がリンクの agenda スライド" }, caption: "agenda" },
-          { src: "/screenshots/layout-agenda-chapters.png", alt: { en: "Agenda with large chapter numbers and the current chapter marked", "zh-TW": "以大號編號列出章節並標示目前章節的 agenda", "zh-CN": "以大号编号列出章节并标示当前章节的 agenda", ja: "大きな番号で章を並べ、現在の章を示す agenda" }, caption: "agenda/chapters" },
-          { src: "/screenshots/layout-agenda-outline.png", alt: { en: "Agenda with each chapter as a card and its subsections under it", "zh-TW": "每個章節為卡片、小節列在下方的 agenda", "zh-CN": "每个章节为卡片、小节列在下方的 agenda", ja: "各章をカードにして小節を下に並べた agenda" }, caption: "agenda/outline" },
-        ],
-      },
-      {
-        id: "gallery-section",
-        title: { en: "Gallery: section", "zh-TW": "版型一覽：section", "zh-CN": "版式一览：section", ja: "ギャラリー：section" },
-        body: {
-          en: "section is the divider that opens a chapter of a long presentation. It has only the common fields: title is the chapter's name and subtitle its one-line summary. The large number (01, 02, …) is counted over the section slides, so you never write it, and an agenda without items links to these slides. section is left-aligned beside an accent rail, section/centered centers the text, and section/band fills the whole slide with the accent color.",
-          "zh-TW": "section 是長簡報中開啟一個章節的分隔頁。它只有共用欄位：title 是章節名稱，subtitle 是一句話摘要。大號編號（01、02……）依 section 投影片的順序計算，因此不必自己寫；沒有 items 的 agenda 會連到這些投影片。section 為靠左並帶強調色側條，section/centered 讓文字置中，section/band 則讓整張投影片填滿強調色。",
-          "zh-CN": "section 是长演示文稿中开启一个章节的分隔页。它只有通用字段：title 是章节名称，subtitle 是一句话摘要。大号编号（01、02……）按 section 幻灯片的顺序计算，因此不必自己写；没有 items 的 agenda 会链接到这些幻灯片。section 为靠左并带强调色侧条，section/centered 让文字居中，section/band 则让整张幻灯片填满强调色。",
-          ja: "section は、長いプレゼンテーションで章の始まりを示す区切りスライドです。共通フィールドだけを持ち、title が章の名前、subtitle が一言の要約です。大きな番号（01、02、…）は section スライドの順に数えられるので書く必要はなく、items のない agenda はこれらのスライドにリンクします。section は左揃えでアクセント色のレールが付き、section/centered は文字を中央に、section/band はスライド全体をアクセント色にします。",
-        },
-        code: `{
-  "layout": "section",
-  "title": "Results",
-  "subtitle": "Revenue and growth"
-}`,
-        images: [
-          { src: "/screenshots/layout-section.png", alt: { en: "Section slide with a large number and an accent rail", "zh-TW": "有大號編號與強調色側條的 section 投影片", "zh-CN": "有大号编号与强调色侧条的 section 幻灯片", ja: "大きな番号とアクセント色のレールがある section スライド" }, caption: "section" },
-          { src: "/screenshots/layout-section-centered.png", alt: { en: "Section slide with a centered number and title", "zh-TW": "編號與標題置中的 section 投影片", "zh-CN": "编号与标题居中的 section 幻灯片", ja: "番号とタイトルが中央にある section スライド" }, caption: "section/centered" },
-          { src: "/screenshots/layout-section-band.png", alt: { en: "Section slide filled with the accent color", "zh-TW": "填滿強調色的 section 投影片", "zh-CN": "填满强调色的 section 幻灯片", ja: "アクセント色で塗りつぶした section スライド" }, caption: "section/band" },
-        ],
-      },
-      {
-        id: "gallery-closing",
-        title: { en: "Gallery: closing", "zh-TW": "版型一覽：closing", "zh-CN": "版式一览：closing", ja: "ギャラリー：closing" },
-        body: {
-          en: "closing is the last slide: the title and subtitle as the farewell, and up to four contacts, each a label and a value. Its variants match section: the default has an accent rail, closing/centered centers the text, and closing/band fills the slide with the accent color.",
-          "zh-TW": "closing 是最後一張投影片：title 與 subtitle 作為結語，最多四組 contacts，每組是 label 與 value。它的變化與 section 一致：預設有強調色側條，closing/centered 讓文字置中，closing/band 讓整張投影片填滿強調色。",
-          "zh-CN": "closing 是最后一张幻灯片：title 与 subtitle 作为结语，最多四组 contacts，每组是 label 与 value。它的变体与 section 一致：默认有强调色侧条，closing/centered 让文字居中，closing/band 让整张幻灯片填满强调色。",
-          ja: "closing は最後のスライドです。title と subtitle を結びの言葉とし、label と value からなる contacts を最大 4 つ置けます。バリエーションは section と同じで、既定はアクセント色のレール付き、closing/centered は文字を中央に、closing/band はスライド全体をアクセント色にします。",
-        },
-        code: `{
-  "layout": "closing",
-  "title": "Thank you",
-  "subtitle": "Questions welcome",
-  "contacts": [{ "label": "Email", "value": "hello@example.com" }]
-}`,
-        images: [
-          { src: "/screenshots/layout-closing.png", alt: { en: "A thank-you slide beside an accent rail with two contacts", "zh-TW": "強調色側條旁、附兩項聯絡資訊的結尾頁", "zh-CN": "强调色侧条旁、附两项联系信息的结尾页", ja: "アクセント色のレールの横に 2 件の連絡先がある結びのスライド" }, caption: "closing" },
-          { src: "/screenshots/layout-closing-centered.png", alt: { en: "A centered thank-you slide with one contact", "zh-TW": "置中、附一項聯絡資訊的結尾頁", "zh-CN": "居中、附一项联系信息的结尾页", ja: "連絡先が 1 件の中央揃えの結びのスライド" }, caption: "closing/centered" },
-          { src: "/screenshots/layout-closing-band.png", alt: { en: "A thank-you slide in the accent color", "zh-TW": "填滿強調色的結尾頁", "zh-CN": "填满强调色的结尾页", ja: "アクセント色で塗りつぶした結びのスライド" }, caption: "closing/band" },
-        ],
-      },
-      {
-        id: "gallery-blank",
-        title: { en: "Gallery: blank", "zh-TW": "版型一覽：blank", "zh-CN": "版式一览：blank", ja: "ギャラリー：blank" },
-        body: {
-          en: "blank draws only the background: no title, content, footer, or slide number. Give it a background image or a Math Background Studio share link; without one it is an empty slide in the theme color.",
-          "zh-TW": "blank 只繪製背景：沒有標題、內容、頁尾或頁碼。請為它設定背景圖片或 Math Background Studio 分享連結；沒有背景時就是主題底色的空白頁。",
-          "zh-CN": "blank 只绘制背景：没有标题、内容、页脚或页码。请为它设置背景图片或 Math Background Studio 分享链接；没有背景时就是主题底色的空白页。",
-          ja: "blank は背景だけを描きます。タイトル、内容、フッター、ページ番号はありません。背景画像か Math Background Studio の共有リンクを指定してください。背景がなければテーマ色の空のスライドになります。",
-        },
-        code: `{
-  "layout": "blank",
-  "title": "Closing",
-  "background": "https://bg.gordonkit.com/studio#d=…"
-}`,
-        images: [
-          { src: "/screenshots/layout-blank.png", alt: { en: "Blank slide showing only a wave background", "zh-TW": "只顯示波浪背景的空白投影片", "zh-CN": "只显示波浪背景的空白幻灯片", ja: "波の背景だけを表示する blank スライド" }, caption: "blank" },
-        ],
-      },
-    ],
-  },
-  {
-    id: "layouts-content",
-    category: "layouts",
-    title: { en: "Text and media", "zh-TW": "文字與媒體", "zh-CN": "文字与媒体", ja: "テキストとメディア" },
-    summary: {
-      en: "content, two-columns, media, and code: paragraphs, lists, pictures, and listings, with an optional subtitle.",
-      "zh-TW": "content、two-columns、media 與 code：段落、清單、圖片與程式碼，可加副標題。",
-      "zh-CN": "content、two-columns、media 与 code：段落、列表、图片与代码，可加副标题。",
-      ja: "content、two-columns、media、code：段落、リスト、画像、コード。任意でサブタイトルを付けられます。",
-    },
-    sections: [
-      {
-        id: "gallery-content",
-        title: { en: "Gallery: content and two-columns", "zh-TW": "版型一覽：content 與 two-columns", "zh-CN": "版式一览：content 与 two-columns", ja: "ギャラリー：content と two-columns" },
-        body: {
-          en: "content stacks paragraphs, lists, and images; two-columns places two equal stacks side by side.",
-          "zh-TW": "content 依序堆疊段落、清單與圖片；two-columns 則把兩組等寬的內容並排。",
-          "zh-CN": "content 依次堆叠段落、列表与图片；two-columns 则把两组等宽的内容并排。",
-          ja: "content は段落、リスト、画像を縦に積み、two-columns は同じ幅の 2 つの列を横に並べます。",
-        },
-        images: [
-          { src: "/screenshots/layout-content.png", alt: { en: "Content slide with a paragraph, a list, and an image", "zh-TW": "含段落、清單與圖片的內容投影片", "zh-CN": "含段落、列表与图片的内容幻灯片", ja: "段落、リスト、画像のある本文スライド" }, caption: "content" },
-          { src: "/screenshots/layout-two-columns.png", alt: { en: "Two-column slide comparing before and after", "zh-TW": "比較前後差異的雙欄投影片", "zh-CN": "比较前后差异的双栏幻灯片", ja: "前後を比較する 2 列のスライド" }, caption: "two-columns" },
-        ],
-      },
-      {
-        id: "subtitle",
-        title: { en: "Subtitle: the one-line highlight", "zh-TW": "副標題：一句話重點", "zh-CN": "副标题：一句话重点", ja: "サブタイトル：ひとことの要点" },
-        body: {
-          en: "subtitle is an optional slide field for a one-line highlight or slogan under the title, so a reader grasps the point of the page at a glance. The title names the topic; the subtitle states the takeaway. It works on every layout except blank, which rejects it, and on cover it is the larger tagline in the muted color. Elsewhere it is drawn as a highlight: accent colored and semibold, after a short accent bar. Keep it to one line, about 80 characters in English or 45 in Chinese or Japanese: the header has a fixed height, so a longer subtitle wraps and the overflow is clipped. The text exports as its own editable PowerPoint text box and the bar as an editable rectangle, and templates adjust it with the type.subtitle and spacing.subtitle tokens. Use it on the slides whose message a skimming reader should not miss rather than on every slide.",
-          "zh-TW": "subtitle 是選填的投影片欄位，放在標題下方的一句話重點或口號，讓讀者一眼掌握這一頁的主旨。標題說明主題，副標題寫出結論。除了會拒絕它的 blank 之外，所有版型都能使用；在 cover 上則是較大的灰色標語。其他版型則以強調色、半粗體，並在前面加一小段強調色色條呈現，讓它像重點而不是說明文字。請控制在一行內，英文約 80 字元、中日文約 45 字：標題區高度固定，過長的副標題會換行，超出的部分會被裁掉。匯出後文字是標題下方獨立、可編輯的 PowerPoint 文字方塊，色條是可編輯的矩形，範本可用 type.subtitle 與 spacing.subtitle token 調整。建議只用在讀者快速瀏覽時不應錯過重點的投影片，而不是每一頁都加。",
-          "zh-CN": "subtitle 是可选的幻灯片字段，放在标题下方的一句话重点或口号，让读者一眼掌握这一页的主旨。标题说明主题，副标题写出结论。除了会拒绝它的 blank 之外，所有版式都能使用；在 cover 上则是较大的灰色标语。其他版式则以强调色、半粗体，并在前面加一小段强调色色条呈现，让它像重点而不是说明文字。请控制在一行内，英文约 80 字符、中日文约 45 字：标题区高度固定，过长的副标题会换行，超出的部分会被裁掉。导出后文字是标题下方独立、可编辑的 PowerPoint 文本框，色条是可编辑的矩形，模板可用 type.subtitle 与 spacing.subtitle token 调整。建议只用在读者快速浏览时不应错过重点的幻灯片，而不是每一页都加。",
-          ja: "subtitle は、タイトルの下に置くひとことの要点やスローガンを書く任意のフィールドで、読み手がそのページの主旨をひと目でつかめます。タイトルはトピックを示し、サブタイトルは結論を述べます。subtitle を拒否する blank 以外のすべてのレイアウトで使え、cover ではより大きな控えめな色のキャッチコピーになります。それ以外のレイアウトでは、アクセント色の太めの文字で、短いアクセント色のバーを前に付けて、要点として目立たせます。1 行に収め、英語なら約 80 文字、日本語・中国語なら約 45 文字が目安です。ヘッダーの高さは固定なので、長いと折り返して、はみ出した部分は切り取られます。エクスポートすると、文字はタイトルの下に独立した編集可能な PowerPoint テキストボックスに、バーは編集可能な長方形になり、テンプレートでは type.subtitle と spacing.subtitle トークンで調整できます。すべてのスライドではなく、流し読みする人にも見逃してほしくないスライドに使ってください。",
-        },
-        images: [
-          { src: "/screenshots/layout-subtitle.png", alt: { en: "Cards slide with an accent-colored subtitle and bar under the title", "zh-TW": "標題下方有強調色副標題與色條的 cards 投影片", "zh-CN": "标题下方有强调色副标题与色条的 cards 幻灯片", ja: "タイトルの下にアクセント色のサブタイトルとバーがある cards スライド" }, caption: "subtitle" },
-        ],
-      },
-      {
-        id: "gallery-media",
-        title: { en: "Gallery: media", "zh-TW": "版型一覽：media", "zh-CN": "版式一览：media", ja: "ギャラリー：media" },
-        body: {
-          en: "media makes a picture the subject: image with required alt text, an optional caption, and optional blocks of text. The default variant puts the picture on the left, media/right on the right, and media/full across the slide with the text below it. The picture fills its area and is cropped to fit, so choose one with room around its subject.",
-          "zh-TW": "media 讓圖片成為主角：image 加上必填的 alt 文字、選填的 caption，以及選填的文字 blocks。預設變化把圖片放在左邊，media/right 放在右邊，media/full 則橫跨整張投影片，文字在下方。圖片會填滿它的區域並裁切以符合，請選主體周圍有餘裕的圖。",
-          "zh-CN": "media 让图片成为主角：image 加上必填的 alt 文字、可选的 caption，以及可选的文字 blocks。默认变体把图片放在左边，media/right 放在右边，media/full 则横跨整张幻灯片，文字在下方。图片会填满它的区域并裁剪以适应，请选主体周围有余裕的图。",
-          ja: "media は画像を主役にします。image と必須の alt テキスト、任意の caption、任意の文章 blocks を指定します。既定のバリエーションは画像を左に、media/right は右に、media/full はスライド全幅に置いて文章を下に配置します。画像は領域を埋めるようにトリミングされるので、被写体の周りに余白のある画像を選んでください。",
-        },
-        code: `{
-  "layout": "media",
-  "title": "The product",
-  "image": "assets/product.png",
-  "alt": "The product on a desk",
-  "caption": "Figure 1",
-  "blocks": [{ "type": "paragraph", "text": "A short explanation." }]
-}`,
-        images: [
-          { src: "/screenshots/layout-media.png", alt: { en: "A picture on the left with text on the right", "zh-TW": "左邊圖片、右邊文字", "zh-CN": "左边图片、右边文字", ja: "左に画像、右に文章" }, caption: "media" },
-          { src: "/screenshots/layout-media-right.png", alt: { en: "A picture on the right with text on the left", "zh-TW": "右邊圖片、左邊文字", "zh-CN": "右边图片、左边文字", ja: "右に画像、左に文章" }, caption: "media/right" },
-          { src: "/screenshots/layout-media-full.png", alt: { en: "A full-width picture with text below it", "zh-TW": "橫跨整張的圖片，文字在下方", "zh-CN": "横跨整张的图片，文字在下方", ja: "全幅の画像と下の文章" }, caption: "media/full" },
-        ],
-      },
-      {
-        id: "gallery-code",
-        title: { en: "Gallery: code", "zh-TW": "版型一覽：code", "zh-CN": "版式一览：code", ja: "ギャラリー：code" },
-        body: {
-          en: "code shows a listing in a monospaced font, kept as written, with an optional language label above it. It holds up to 18 lines and 3,000 characters. The default variant is a light panel and code/dark a dark one. SlideForge does not color the syntax, and PowerPoint needs the font (Consolas, Cascadia Mono, or Courier New) installed.",
-          "zh-TW": "code 以等寬字型呈現程式碼，保持原樣，上方可加選填的 language 標籤。最多 18 行、3,000 字元。預設變化是淺色面板，code/dark 是深色面板。SlideForge 不會為語法上色，PowerPoint 也需要安裝該字型（Consolas、Cascadia Mono 或 Courier New）。",
-          "zh-CN": "code 以等宽字体呈现代码，保持原样，上方可加可选的 language 标签。最多 18 行、3,000 字符。默认变体是浅色面板，code/dark 是深色面板。SlideForge 不会为语法上色，PowerPoint 也需要安装该字体（Consolas、Cascadia Mono 或 Courier New）。",
-          ja: "code は等幅フォントでコードを書いたままの形で表示し、上に任意の language ラベルを付けられます。最大 18 行・3,000 文字です。既定は明るいパネル、code/dark は暗いパネルです。SlideForge は構文に色を付けません。PowerPoint には対象のフォント（Consolas、Cascadia Mono、Courier New）が必要です。",
-        },
-        code: `{
-  "layout": "code",
-  "title": "Usage",
-  "language": "bash",
-  "code": "npm install slideforge\nslideforge init my-deck"
-}`,
-        images: [
-          { src: "/screenshots/layout-code.png", alt: { en: "A listing on a light panel", "zh-TW": "淺色面板上的程式碼", "zh-CN": "浅色面板上的代码", ja: "明るいパネル上のコード" }, caption: "code" },
-          { src: "/screenshots/layout-code-dark.png", alt: { en: "A listing on a dark panel", "zh-TW": "深色面板上的程式碼", "zh-CN": "深色面板上的代码", ja: "暗いパネル上のコード" }, caption: "code/dark" },
-        ],
-      },
-    ],
-  },
-  {
-    id: "layouts-cards",
-    category: "layouts",
-    title: { en: "Cards and panels", "zh-TW": "卡片與區段", "zh-CN": "卡片与区段", ja: "カードとパネル" },
-    summary: {
-      en: "cards, stats, panels, matrix, compare, and team: parallel ideas as cards, figures, colored panels, grids, and people.",
-      "zh-TW": "cards、stats、panels、matrix、compare 與 team：以卡片、數字、色塊區段、矩陣與成員呈現並列內容。",
-      "zh-CN": "cards、stats、panels、matrix、compare 与 team：以卡片、数字、色块区段、矩阵与成员呈现并列内容。",
-      ja: "cards、stats、panels、matrix、compare、team：並列する内容をカード、数字、色付きパネル、マトリクス、メンバーで見せます。",
-    },
-    sections: [
-      {
-        id: "gallery-cards",
-        title: { en: "Gallery: cards", "zh-TW": "版型一覽：cards", "zh-CN": "版式一览：cards", ja: "ギャラリー：cards" },
-        body: {
-          en: "The grid follows the number of cards, with no extra field: one card spans the width, two sit side by side, three and six use three columns, four form a 2 × 2 grid, and five are three over two, with the lower two keeping the upper cards' width and centered. Five variants change only the card shape: rounded (larger corners and an accent outline), badge (a numbered accent circle above each centered card), and circle, hexagon, and pentagon (accent-filled regular shapes with the number). These shapes keep their proportions, leaving room above and below instead of stretching, so they suit a short title and a line or two. In PowerPoint the circle is a native oval and the polygons are native, editable freeform shapes behind the text.",
-          "zh-TW": "格線依卡片張數自動決定，不需要額外欄位：一張佔滿寬度、兩張並排、三張與六張為三欄、四張為 2 × 2、五張為上三下二（下排兩張維持與上排相同的寬度並置中）。另有五種變化只改變卡片形狀：rounded（較大的圓角與強調色外框）、badge（置中的卡片上方有編號強調色圓形），以及 circle、hexagon 與 pentagon（強調色填滿、附編號的正圓形、正六角形與正五角形）。這些形狀維持固有比例，上下會留白而不會被拉長，適合短標題加一兩行文字。在 PowerPoint 中，圓形是原生橢圓，多邊形是文字後方原生、可編輯的任意多邊形圖案。",
-          "zh-CN": "网格依卡片张数自动决定，不需要额外字段：一张占满宽度、两张并排、三张与六张为三栏、四张为 2 × 2、五张为上三下二（下排两张保持与上排相同的宽度并居中）。另有五种变体只改变卡片形状：rounded（较大的圆角与强调色外框）、badge（居中的卡片上方有编号强调色圆形），以及 circle、hexagon 与 pentagon（强调色填满、附编号的正圆形、正六边形与正五边形）。这些形状保持固有比例，上下会留白而不会被拉长，适合短标题加一两行文字。在 PowerPoint 中，圆形是原生椭圆，多边形是文字后方原生、可编辑的任意多边形图形。",
-          ja: "グリッドはカードの枚数で決まり、追加のフィールドは要りません。1 枚は全幅、2 枚は横並び、3 枚と 6 枚は 3 列、4 枚は 2 × 2、5 枚は上に 3 枚、下に 2 枚（下の 2 枚は上と同じ幅のまま中央に配置）です。ほかに、カードの形だけを変える 5 つのバリアントがあります。rounded（大きめの角丸とアクセント色の枠）、badge（中央揃えのカードの上に番号付きのアクセント色の円）、circle・hexagon・pentagon（アクセント色で塗りつぶした番号付きの正円・正六角形・正五角形）です。これらの形は縦横比を保つため、引き伸ばされずに上下に余白ができ、短いタイトルと 1〜2 行の文に向いています。PowerPoint では、円はネイティブの楕円、多角形は文字の背後にあるネイティブで編集可能なフリーフォーム図形になります。",
-        },
-        images: [...[2, 3, 4, 5, 6].map((count) => ({
-          src: `/screenshots/layout-cards-${count}.png`,
-          alt: { en: `Cards slide with ${count} cards`, "zh-TW": `含 ${count} 張卡片的 cards 投影片`, "zh-CN": `含 ${count} 张卡片的 cards 幻灯片`, ja: `カードが ${count} 枚の cards スライド` },
-          caption: { en: `${count} cards`, "zh-TW": `${count} 張卡片`, "zh-CN": `${count} 张卡片`, ja: `カード ${count} 枚` },
-        })),
-          { src: "/screenshots/layout-cards-rounded.png", alt: { en: "Cards slide with rounded cards and accent outlines", "zh-TW": "圓角卡片與強調色外框的 cards 投影片", "zh-CN": "圆角卡片与强调色外框的 cards 幻灯片", ja: "角丸でアクセント色の枠の cards スライド" }, caption: "cards/rounded" },
-          { src: "/screenshots/layout-cards-badge.png", alt: { en: "Cards slide with a numbered circle above each card", "zh-TW": "每張卡片上方有編號圓形的 cards 投影片", "zh-CN": "每张卡片上方有编号圆形的 cards 幻灯片", ja: "各カードの上に番号付きの円がある cards スライド" }, caption: "cards/badge" },
-          { src: "/screenshots/layout-cards-circle.png", alt: { en: "Cards slide with accent-filled circle cards", "zh-TW": "強調色圓形卡片的 cards 投影片", "zh-CN": "强调色圆形卡片的 cards 幻灯片", ja: "アクセント色の円形カードの cards スライド" }, caption: "cards/circle" },
-          { src: "/screenshots/layout-cards-hexagon.png", alt: { en: "Cards slide with accent-filled hexagon cards", "zh-TW": "強調色六角形卡片的 cards 投影片", "zh-CN": "强调色六边形卡片的 cards 幻灯片", ja: "アクセント色の六角形カードの cards スライド" }, caption: "cards/hexagon" },
-          { src: "/screenshots/layout-cards-pentagon.png", alt: { en: "Cards slide with accent-filled pentagon cards", "zh-TW": "強調色五角形卡片的 cards 投影片", "zh-CN": "强调色五边形卡片的 cards 幻灯片", ja: "アクセント色の五角形カードの cards スライド" }, caption: "cards/pentagon" },
-        ],
-      },
-      {
-        id: "gallery-stats",
-        title: { en: "Gallery: stats", "zh-TW": "版型一覽：stats", "zh-CN": "版式一览：stats", ja: "ギャラリー：stats" },
-        body: {
-          en: "stats shows two to six key figures: a short value such as 98% or $4.2M in a large accent size, a label, and an optional line of text. Up to four sit in one row, five and six use three columns, and the lower two of five stay centered. stats/cards puts each figure on a centered card.",
-          "zh-TW": "stats 呈現二到六個重點數字：像 98% 或 $4.2M 這樣的簡短 value 以大字級強調色呈現，並附 label 與選填的一行說明。四個以內排成一列，五、六個用三欄，五個時下方兩個維持置中。stats/cards 把每個數字放在置中的卡片上。",
-          "zh-CN": "stats 呈现二到六个重点数字：像 98% 或 $4.2M 这样的简短 value 以大字号强调色呈现，并附 label 与可选的一行说明。四个以内排成一行，五、六个用三列，五个时下方两个保持居中。stats/cards 把每个数字放在居中的卡片上。",
-          ja: "stats は 2〜6 個の重要な数値を示します。98% や $4.2M のような短い value を大きなアクセント色で表示し、label と任意の一行の説明を添えます。4 個までは 1 行、5 個と 6 個は 3 列で、5 個のときは下の 2 個が中央に寄ります。stats/cards は各数値を中央揃えのカードに載せます。",
-        },
-        code: `{
-  "layout": "stats",
-  "title": "Results",
-  "stats": [
-    { "value": "98%", "label": "Satisfaction", "text": "Up 6 points" },
-    { "value": "$4.2M", "label": "Revenue" }
-  ]
-}`,
-        images: [
-          { src: "/screenshots/layout-stats.png", alt: { en: "Four large figures over accent rules", "zh-TW": "強調線上方的四個大數字", "zh-CN": "强调线上方的四个大数字", ja: "アクセントの線の上に並ぶ 4 つの大きな数値" }, caption: "stats" },
-          { src: "/screenshots/layout-stats-cards.png", alt: { en: "Five figures on centered cards", "zh-TW": "置中卡片上的五個數字", "zh-CN": "居中卡片上的五个数字", ja: "中央揃えのカード上の 5 つの数値" }, caption: "stats/cards" },
-        ],
-      },
-      {
-        id: "gallery-panels",
-        title: { en: "Gallery: panels", "zh-TW": "版型一覽：panels", "zh-CN": "版式一览：panels", ja: "ギャラリー：panels" },
-        body: {
-          en: "panels splits the slide with thin lines instead of cards: 2–7 sections, each with a number, a title, and content. The default variant places them side by side with vertical lines, and panels/rows stacks them with horizontal lines, the title on the left and the content on the right. Give a panel a color, a six-digit hex color, to fill it; the text switches between white and near-black to stay readable, and the gradient.panel template token turns the fill into a gradient. Five or more columns are narrow, so keep each to a short title and a line or two.",
-          "zh-TW": "panels 以細線而不是卡片分隔投影片：2–7 個區段，每段有編號、標題與內容。預設變化以垂直線並排排列，panels/rows 則以水平線上下堆疊，標題在左、內容在右。給區段一個 color（六位數十六進位色碼）即可填色，文字會在白色與近黑色之間切換以保持易讀；範本 token gradient.panel 可把填色變成漸層。五欄以上每欄很窄，請只放簡短的標題與一兩行文字。",
-          "zh-CN": "panels 以细线而不是卡片分隔幻灯片：2–7 个区段，每段有编号、标题与内容。默认变体以垂直线并排排列，panels/rows 则以水平线上下堆叠，标题在左、内容在右。给区段一个 color（六位十六进制色码）即可填色，文字会在白色与近黑色之间切换以保持易读；模板 token gradient.panel 可把填色变成渐变。五栏以上每栏很窄，请只放简短的标题与一两行文字。",
-          ja: "panels はカードの代わりに細い線でスライドを区切ります。2〜7 個のセクションで、それぞれ番号、タイトル、内容を持ちます。既定のバリエーションは縦線で左右に並べ、panels/rows は横線で上下に積み、左にタイトル、右に内容を置きます。パネルに color（6 桁の 16 進カラー）を指定すると塗りつぶされ、文字は読みやすいように白と黒に近い色から自動で選ばれます。テンプレートトークン gradient.panel で塗りをグラデーションにできます。5 列以上は幅が狭いので、短いタイトルと 1〜2 行の文にとどめてください。",
-        },
-        code: `{
-  "layout": "panels",
-  "title": "Three steps",
-  "panels": [
-    { "title": "Plan", "color": "#2563eb", "blocks": [{ "type": "paragraph", "text": "Define scope." }] },
-    { "title": "Build", "blocks": [{ "type": "paragraph", "text": "Ship the first version." }] }
-  ]
-}`,
-        images: [
-          { src: "/screenshots/layout-panels.png", alt: { en: "Three panels split by vertical lines", "zh-TW": "以垂直線分隔的三個區段", "zh-CN": "以垂直线分隔的三个区段", ja: "縦線で区切られた 3 つのパネル" }, caption: "panels" },
-          { src: "/screenshots/layout-panels-rows.png", alt: { en: "Three panels split by horizontal lines", "zh-TW": "以水平線分隔的三個區段", "zh-CN": "以水平线分隔的三个区段", ja: "横線で区切られた 3 つのパネル" }, caption: "panels/rows" },
-          { src: "/screenshots/layout-panels-colored.png", alt: { en: "Four panels filled with their own colors", "zh-TW": "各自填色的四個區段", "zh-CN": "各自填色的四个区段", ja: "それぞれの色で塗りつぶされた 4 つのパネル" }, caption: "panels + color" },
-        ],
-      },
-      {
-        id: "gallery-matrix",
-        title: { en: "Gallery: matrix, compare, and team", "zh-TW": "版型一覽：matrix、compare 與 team", "zh-CN": "版式一览：matrix、compare 与 team", ja: "ギャラリー：matrix、compare、team" },
-        body: {
-          en: "matrix is a 2 × 2 grid of exactly four quadrants (top left, top right, bottom left, bottom right) with optional xAxis and yAxis names; matrix/lines splits them with a cross instead of cards. compare puts two to four options side by side, each with a title, an optional label such as a price, and a list with check marks; highlight draws one in the accent color. team shows two to six people with a round portrait or the first letter of the name, a role, and a line of text.",
-          "zh-TW": "matrix 是剛好四個象限（左上、右上、左下、右下）的 2 × 2 格，可加 xAxis 與 yAxis 座標軸名稱；matrix/lines 以十字線取代卡片分隔。compare 並排二到四個選項，每個含標題、選填的 label（例如價格）與帶勾號的清單；highlight 會以強調色標示其中一個。team 呈現二到六位成員，附圓形頭像或姓名首字、職稱與一行說明。",
-          "zh-CN": "matrix 是恰好四个象限（左上、右上、左下、右下）的 2 × 2 格，可加 xAxis 与 yAxis 坐标轴名称；matrix/lines 以十字线取代卡片分隔。compare 并排二到四个选项，每个含标题、可选的 label（例如价格）与带勾号的列表；highlight 会以强调色标示其中一个。team 呈现二到六位成员，附圆形头像或姓名首字、职称与一行说明。",
-          ja: "matrix は、ちょうど 4 つの象限（左上、右上、左下、右下）を持つ 2 × 2 のグリッドで、任意の xAxis と yAxis の名前を付けられます。matrix/lines はカードの代わりに十字線で区切ります。compare は 2〜4 個の選択肢を並べ、それぞれにタイトル、価格などの任意の label、チェックマーク付きの一覧を持ちます。highlight で 1 つをアクセント色にできます。team は 2〜6 人を、丸い顔写真または名前の頭文字、役割、一行の説明で示します。",
-        },
-        images: [
-          { src: "/screenshots/layout-matrix.png", alt: { en: "A 2 by 2 matrix of four cards with axis names", "zh-TW": "四張卡片組成、附座標軸名稱的 2 × 2 矩陣", "zh-CN": "四张卡片组成、附坐标轴名称的 2 × 2 矩阵", ja: "軸の名前付きで 4 枚のカードからなる 2 × 2 のマトリクス" }, caption: "matrix" },
-          { src: "/screenshots/layout-matrix-lines.png", alt: { en: "Four quadrants split by a cross", "zh-TW": "以十字線分隔的四個象限", "zh-CN": "以十字线分隔的四个象限", ja: "十字線で区切られた 4 つの象限" }, caption: "matrix/lines" },
-          { src: "/screenshots/layout-compare.png", alt: { en: "Three plans side by side, the middle one highlighted", "zh-TW": "並排的三個方案，中間的被標示", "zh-CN": "并排的三个方案，中间的被标示", ja: "3 つのプランが並び、中央が強調されている" }, caption: "compare" },
-          { src: "/screenshots/layout-team.png", alt: { en: "Four team cards: three with initials and one with a portrait", "zh-TW": "四張成員卡片：三張是首字、一張是頭像", "zh-CN": "四张成员卡片：三张是首字、一张是头像", ja: "4 枚のメンバーカード。3 枚はイニシャル、1 枚は顔写真" }, caption: "team" },
-        ],
-      },
-    ],
-  },
-  {
-    id: "layouts-flow",
-    category: "layouts",
-    title: { en: "Flows and diagrams", "zh-TW": "流程與圖解", "zh-CN": "流程与图解", ja: "フローと図解" },
-    summary: {
-      en: "process, hub, timeline, and gantt: steps in order, a central idea, dates, and a project schedule.",
-      "zh-TW": "process、hub、timeline 與 gantt：依序的步驟、中心概念、時間點與專案進度表。",
-      "zh-CN": "process、hub、timeline 与 gantt：依序的步骤、中心概念、时间点与项目进度表。",
-      ja: "process、hub、timeline、gantt：順序のある手順、中心概念、日付、プロジェクトの予定表。",
-    },
-    sections: [
-      {
-        id: "gallery-process",
-        title: { en: "Gallery: process and hub", "zh-TW": "版型一覽：process and hub", "zh-CN": "版式一览：process and hub", ja: "ギャラリー：process and hub" },
-        body: {
-          en: "process shows two to six numbered steps joined by arrows; process/vertical stacks them with down arrows. Use it for a flow, and timeline when the steps have dates. hub puts a central idea in an accent circle with three to six items around it, the first half on the left and the rest on the right, each joined to the center by a line.",
-          "zh-TW": "process 以箭頭連接二到六個編號步驟；process/vertical 則上下堆疊並用向下箭頭。流程用它，步驟有日期時用 timeline。hub 把中心概念放在強調色圓形裡，周圍有三到六個項目，前半在左、其餘在右，各以一條線連到中心。",
-          "zh-CN": "process 以箭头连接二到六个编号步骤；process/vertical 则上下堆叠并用向下箭头。流程用它，步骤有日期时用 timeline。hub 把中心概念放在强调色圆形里，周围有三到六个项目，前一半在左、其余在右，各以一条线连到中心。",
-          ja: "process は 2〜6 個の番号付きステップを矢印でつなぎます。process/vertical は縦に積み、下向きの矢印でつなぎます。流れにはこれを、日付のあるステップには timeline を使います。hub は中心の考えをアクセント色の円に置き、周りに 3〜6 個の項目を、前半を左に、残りを右に並べて、それぞれ線で中心とつなぎます。",
-        },
-        code: `{
-  "layout": "process",
-  "title": "How it works",
-  "steps": [
-    { "title": "Write", "text": "JSON content" },
-    { "title": "Build", "text": "HTML slides" },
-    { "title": "Export" }
-  ]
-}`,
-        images: [
-          { src: "/screenshots/layout-process.png", alt: { en: "Four steps in a row joined by arrows", "zh-TW": "以箭頭連接、排成一列的四個步驟", "zh-CN": "以箭头连接、排成一行的四个步骤", ja: "矢印でつながった一列の 4 ステップ" }, caption: "process" },
-          { src: "/screenshots/layout-process-vertical.png", alt: { en: "Three steps stacked and joined by down arrows", "zh-TW": "以向下箭頭連接、上下堆疊的三個步驟", "zh-CN": "以向下箭头连接、上下堆叠的三个步骤", ja: "下向きの矢印でつながった縦の 3 ステップ" }, caption: "process/vertical" },
-          { src: "/screenshots/layout-hub.png", alt: { en: "A central circle with five items joined to it by lines", "zh-TW": "中心圓形與以線連接的五個項目", "zh-CN": "中心圆形与以线连接的五个项目", ja: "中央の円と線でつながった 5 つの項目" }, caption: "hub" },
-        ],
-      },
-      {
-        id: "gallery-timeline",
-        title: { en: "Gallery: timeline", "zh-TW": "版型一覽：timeline", "zh-CN": "版式一览：timeline", ja: "ギャラリー：timeline" },
-        body: {
-          en: "timeline draws 2–6 events left to right in equal columns: a date in the accent color, a marker on a shared rail, a title, and optional text. The rail and markers export as editable shapes.",
-          "zh-TW": "timeline 由左到右以等寬欄位繪製 2–6 個事件：強調色的 date、共用軸線上的圓點、title 與選填的 text。軸線與圓點會匯出為可編輯的圖形。",
-          "zh-CN": "timeline 由左到右以等宽栏位绘制 2–6 个事件：强调色的 date、共用轴线上的圆点、title 与可选的 text。轴线与圆点会导出为可编辑的图形。",
-          ja: "timeline は 2〜6 個のイベントを左から右へ同じ幅の列で描きます。強調色の date、共通の線の上のマーカー、title、任意の text です。線とマーカーは編集できる図形として書き出されます。",
-        },
-        code: `{
-  "layout": "timeline",
-  "title": "From idea to deck",
-  "events": [
-    {
-      "date": "Step 1",
-      "title": "Outline",
-      "text": "One idea per slide."
-    },
-    { "date": "Step 2", "title": "Write JSON" },
-    { "date": "Step 3", "title": "Export" }
-  ]
-}`,
-        images: [
-          { src: "/screenshots/layout-timeline.png", alt: { en: "Timeline slide with four steps on a horizontal rail", "zh-TW": "水平軸線上有四個步驟的時間軸投影片", "zh-CN": "水平轴线上有四个步骤的时间轴幻灯片", ja: "横線の上に 4 つのステップがあるタイムラインのスライド" }, caption: "timeline" },
-        ],
-      },
-      {
-        id: "gallery-gantt",
-        title: { en: "Gallery: gantt", "zh-TW": "版型一覽：gantt", "zh-CN": "版式一览：gantt", ja: "ギャラリー：gantt" },
-        body: {
-          en: "gantt is a project schedule. periods label equal columns such as months, weeks, or sprints; each task's bar spans the periods from start to end, counted from 1 and inclusive. With progress, that share of the bar is drawn in the accent color and the percentage appears beside the label. Rows keep the same height, and up to eight tasks fit.",
-          "zh-TW": "gantt 是專案進度表。periods 是等寬時段的名稱，例如月份、週次或 sprint；每個任務的長條從 start 橫跨到 end，從 1 起算且含頭尾。設定 progress 時，長條中對應比例的部分以強調色顯示，百分比會列在任務名稱旁。每列高度固定，最多可放八個任務。",
-          "zh-CN": "gantt 是项目进度表。periods 是等宽时段的名称，例如月份、周次或 sprint；每个任务的长条从 start 横跨到 end，从 1 起算且含首尾。设置 progress 时，长条中对应比例的部分以强调色显示，百分比会列在任务名称旁。每行高度固定，最多可放八个任务。",
-          ja: "gantt はプロジェクトの進捗表です。periods は月、週、スプリントなど同じ幅の期間の名前で、各タスクのバーは start から end までの期間にまたがります（1 から数え、両端を含みます）。progress を指定すると、その割合だけバーが強調色になり、パーセントがタスク名の横に表示されます。行の高さは一定で、タスクは 8 つまで収まります。",
-        },
-        code: `{
-  "layout": "gantt",
-  "title": "Project schedule",
-  "periods": ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
-  "tasks": [
-    { "label": "Research", "start": 1, "end": 2 },
-    { "label": "Design", "start": 2, "end": 4, "progress": 60 },
-    { "label": "Launch", "start": 6, "end": 6 }
-  ]
-}`,
-        images: [
-          { src: "/screenshots/layout-gantt.png", alt: { en: "Gantt slide with five tasks over eight months, four with progress", "zh-TW": "八個月份中五個任務的甘特圖投影片，其中四個標示完成度", "zh-CN": "八个月份中五个任务的甘特图幻灯片，其中四个标示完成度", ja: "8 か月にわたる 5 つのタスクのガントチャートのスライド。うち 4 つに進捗あり" }, caption: "gantt" },
-        ],
-      },
-    ],
-  },
-  {
-    id: "layouts-data",
-    category: "layouts",
-    title: { en: "Tables, charts, and quotes", "zh-TW": "表格、圖表與引言", "zh-CN": "表格、图表与引言", ja: "表・チャート・引用" },
-    summary: {
-      en: "table, chart, and quote: grids of text, bars, columns, and rings, and one short quotation.",
-      "zh-TW": "table、chart 與 quote：文字表格、長條、直條、環形圖與一段簡短引言。",
-      "zh-CN": "table、chart 与 quote：文字表格、条形、竖条、环形图与一段简短引言。",
-      ja: "table、chart、quote：テキストの表、棒・縦棒・リングのグラフ、短い引用。",
-    },
-    sections: [
-      {
-        id: "gallery-data",
-        title: { en: "Gallery: table, chart, and quote", "zh-TW": "版型一覽：table、chart 與 quote", "zh-CN": "版式一览：table、chart 与 quote", ja: "ギャラリー：table、chart、quote" },
-        body: {
-          en: "Tables and bars are editable text and shapes; chart blocks form an explanation column. chart/columns draws vertical columns, and chart/donut a ring of shares with a legend, exported as editable freeform shapes. quote/centered drops the accent bar.",
-          "zh-TW": "表格與長條都是可編輯的文字與圖形；chart 的 blocks 會成為右側說明欄。chart/columns 畫出直條，chart/donut 畫出附圖例的環形比例圖，匯出為可編輯的自由形狀。quote/centered 不顯示強調線。",
-          "zh-CN": "表格与长条都是可编辑的文字与图形；chart 的 blocks 会成为右侧说明栏。chart/columns 画出竖条，chart/donut 画出附图例的环形比例图，导出为可编辑的自由形状。quote/centered 不显示强调线。",
-          ja: "表とバーは編集できるテキストと図形です。chart の blocks は説明列になります。chart/columns は縦の棒、chart/donut は凡例付きのリング状の割合を描き、編集できる自由形状としてエクスポートされます。quote/centered では強調線がなくなります。",
-        },
-        images: [
-          { src: "/screenshots/layout-table.png", alt: { en: "Table slide with three columns", "zh-TW": "三欄的表格投影片", "zh-CN": "三列的表格幻灯片", ja: "3 列の表のスライド" }, caption: "table" },
-          { src: "/screenshots/layout-chart.png", alt: { en: "Chart slide with bars and an explanation column", "zh-TW": "含長條與說明欄的圖表投影片", "zh-CN": "含长条与说明栏的图表幻灯片", ja: "バーと説明列のあるグラフのスライド" }, caption: "chart" },
-          { src: "/screenshots/layout-chart-columns.png", alt: { en: "Four vertical columns with values above and labels below", "zh-TW": "上方標值、下方標籤的四根直條", "zh-CN": "上方标值、下方标签的四根竖条", ja: "上に値、下にラベルのある 4 本の縦棒" }, caption: "chart/columns" },
-          { src: "/screenshots/layout-chart-donut.png", alt: { en: "A ring of four shares with a legend", "zh-TW": "含圖例的四段環形比例圖", "zh-CN": "含图例的四段环形比例图", ja: "凡例付きの 4 区分のリング" }, caption: "chart/donut" },
-          { src: "/screenshots/layout-quote.png", alt: { en: "Quote beside an accent bar", "zh-TW": "旁邊有強調線的引言", "zh-CN": "旁边有强调线的引言", ja: "強調線の横の引用" }, caption: "quote" },
-          { src: "/screenshots/layout-quote-centered.png", alt: { en: "Centered quote without the bar", "zh-TW": "置中、沒有強調線的引言", "zh-CN": "居中、没有强调线的引言", ja: "強調線のない中央揃えの引用" }, caption: "quote/centered" },
-        ],
-      },
-    ],
-  },
-  {
     id: "schema",
     category: "authoring",
     title: { en: "JSON schema", "zh-TW": "JSON Schema", "zh-CN": "JSON Schema", ja: "JSON スキーマ" },
@@ -1137,8 +639,680 @@ docker compose -f docker/compose.yaml --profile cli \\
     ],
   },
   {
-    id: "templates",
+    id: "ai-workflow",
     category: "authoring",
+    title: { en: "AI workflow", "zh-TW": "AI 撰寫流程", "zh-CN": "AI 编写流程", ja: "AI ワークフロー" },
+    heading: { en: "AI authoring workflow", "zh-TW": "AI 撰寫流程", "zh-CN": "AI 编写流程", ja: "AI による作成ワークフロー" },
+    summary: {
+      en: "AI agents produce presentations from the executable schema and shared design system, without changing the rendering engine.",
+      "zh-TW": "AI 代理依可執行的 schema 與共用設計系統產生簡報，不修改排版引擎。",
+      "zh-CN": "AI 代理依可执行的 schema 与共用设计系统生成演示文稿，不修改排版引擎。",
+      ja: "AI エージェントは描画エンジンを変更せず、実行可能なスキーマと共通のデザインシステムからプレゼンテーションを作成します。",
+    },
+    sections: [
+      {
+        id: "brief",
+        title: { en: "1. Establish the brief", "zh-TW": "1. 確認需求", "zh-CN": "1. 确认需求", ja: "1. 要件を確認する" },
+        body: {
+          en: "Determine the audience, language, message, slide count, and source facts. Do not fabricate metrics or sources, and label illustrative data clearly.",
+          "zh-TW": "確認對象、語言、訊息、投影片數與資料來源。不要捏造數據或出處，示意用的資料要清楚標示。",
+          "zh-CN": "确认对象、语言、信息、幻灯片数与数据来源。不要捏造数据或出处，示意用的数据要清楚标示。",
+          ja: "対象者、言語、メッセージ、スライド数、根拠となる事実を確認します。数値や出典を捏造せず、例示用のデータはその旨を明記します。",
+        },
+      },
+      {
+        id: "author",
+        title: { en: "2. Author structured content", "zh-TW": "2. 撰寫結構化內容", "zh-CN": "2. 编写结构化内容", ja: "2. 構造化された内容を書く" },
+        body: {
+          en: "Start from init, keep only schema-supported fields, and pick layouts by purpose. Use plain strings rather than Markdown or HTML.",
+          "zh-TW": "從 init 開始，只保留 schema 支援的欄位，依用途選擇版型。內容用純文字，不要用 Markdown 或 HTML。",
+          "zh-CN": "从 init 开始，只保留 schema 支持的字段，依用途选择版式。内容用纯文本，不要用 Markdown 或 HTML。",
+          ja: "init から始め、スキーマが対応するフィールドだけを残し、目的に合わせてレイアウトを選びます。Markdown や HTML ではなくプレーンな文字列を使います。",
+        },
+        code: "node dist/cli/index.js init draft.json",
+      },
+      {
+        id: "review",
+        title: { en: "3. Preview, export, and validate", "zh-TW": "3. 預覽、匯出與驗證", "zh-CN": "3. 预览、导出与验证", ja: "3. プレビュー、書き出し、検証" },
+        body: {
+          en: "Review the fixed canvas for clipping, contrast, missing images, and density. Fix layout errors and investigate warnings instead of hiding them.",
+          "zh-TW": "在固定畫布上檢查裁切、對比、缺圖與內容密度。修正版面錯誤，並查明警告原因，而不是隱藏它們。",
+          "zh-CN": "在固定画布上检查裁切、对比、缺图与内容密度。修正版面错误，并查明警告原因，而不是隐藏它们。",
+          ja: "固定キャンバス上で、切れ、コントラスト、画像の欠落、情報量を確認します。レイアウトエラーは修正し、警告は隠さずに原因を調べます。",
+        },
+        code: `node dist/cli/index.js preview draft.json
+node dist/cli/index.js export draft.json --output draft.pptx
+node dist/cli/index.js validate draft.pptx`,
+      },
+      {
+        id: "report",
+        title: { en: "4. Report evidence honestly", "zh-TW": "4. 如實回報結果", "zh-CN": "4. 如实报告结果", ja: "4. 結果を正直に報告する" },
+        body: {
+          en: "State which checks ran and what remains unverified. Describe charts as editable bars, and never claim pixel perfection, embedded fonts, or a PowerPoint review that did not happen.",
+          "zh-TW": "說明實際執行了哪些檢查、哪些尚未驗證。圖表要描述為可編輯的長條，不要宣稱像素級一致、字型已嵌入，或宣稱做過其實沒做的 PowerPoint 檢查。",
+          "zh-CN": "说明实际运行了哪些检查、哪些尚未验证。图表要描述为可编辑的长条，不要宣称像素级一致、字体已嵌入，或宣称做过其实没做的 PowerPoint 检查。",
+          ja: "実際に行った検査と未確認の点を明記します。グラフは編集可能なバーとして説明し、ピクセル単位の一致、フォントの埋め込み、実施していない PowerPoint での確認を主張しないでください。",
+        },
+        links: [
+          { label: { en: "AGENTS.md", "zh-TW": "AGENTS.md", "zh-CN": "AGENTS.md", ja: "AGENTS.md" }, href: `${repositoryUrl}/blob/main/AGENTS.md` },
+        ],
+      },
+    ],
+  },
+  {
+    id: "layouts",
+    category: "layouts",
+    title: { en: "Layouts and components", "zh-TW": "版型與元件", "zh-CN": "版式与组件", ja: "レイアウトとコンポーネント" },
+    summary: {
+      en: "How to choose a layout, how the layouts are built from components, and where each group of layouts is shown with screenshots.",
+      "zh-TW": "如何選擇版型、版型如何由元件組成，以及各組版型的截圖分別在哪一頁。",
+      "zh-CN": "如何选择版式、版式如何由组件组成，以及各组版式的截图分别在哪一页。",
+      ja: "レイアウトの選び方、コンポーネントからの構成、グループごとのスクリーンショットの場所。",
+    },
+    sections: [
+      {
+        id: "six-layouts",
+        title: { en: "Choosing a layout", "zh-TW": "選擇版型", "zh-CN": "选择版式", ja: "レイアウトの選び方" },
+        body: {
+          en: "Keep one main idea per slide. Split crowded slides instead of shrinking text.",
+          "zh-TW": "每張投影片只放一個重點。內容太擠時請拆成多張，不要縮小文字。",
+          "zh-CN": "每张幻灯片只放一个重点。内容太挤时请拆成多张，不要缩小文字。",
+          ja: "1 枚のスライドには 1 つの主題だけを置きます。詰め込みすぎた場合は文字を小さくせず、スライドを分けてください。",
+        },
+        table: {
+          caption: { en: "Layouts", "zh-TW": "版型", "zh-CN": "版式", ja: "レイアウト" },
+          headers: [
+            "layout",
+            { en: "Use for", "zh-TW": "適用情境", "zh-CN": "适用场景", ja: "用途" },
+          ],
+          rows: [
+            ["cover", { en: "Opening slide with a large title and optional author; variants centered, split, and band", "zh-TW": "開場，大標題與選填的作者；另有 centered、split、band 變化", "zh-CN": "开场，大标题与可选的作者；另有 centered、split、band 变体", ja: "大きなタイトルと任意の作者を置く表紙。centered、split、band のバリアントあり" }],
+            ["agenda", { en: "A linked table of contents: two to eight numbered topics, each able to jump to a slide; variants chapters (top level only) and outline (with subsections)", "zh-TW": "可跳轉的目錄：二到八個編號主題，每項可連到一張投影片；變化有 chapters（只列大章節）與 outline（含小節）", "zh-CN": "可跳转的目录：二到八个编号主题，每项可链接到一张幻灯片；变体有 chapters（只列大章节）与 outline（含小节）", ja: "リンク付きの目次。番号付きの 2〜8 項目で、各項目からスライドへジャンプできる。バリエーションは chapters（章のみ）と outline（小節付き）" }],
+            ["section", { en: "A chapter divider for long presentations, with an automatic number; variants centered and band", "zh-TW": "長簡報的章節分隔頁，附自動編號；變化有 centered 與 band", "zh-CN": "长演示文稿的章节分隔页，附自动编号；变体有 centered 与 band", ja: "長いプレゼン用の章の区切りスライド。番号は自動で付く。バリエーションは centered と band" }],
+            ["content", { en: "An explanation with paragraphs, lists, and images", "zh-TW": "以段落、清單與圖片說明", "zh-CN": "以段落、列表与图片说明", ja: "段落、リスト、画像による説明" }],
+            ["two-columns", { en: "Comparisons such as before and after", "zh-TW": "比較，例如前後對照", "zh-CN": "比较，例如前后对照", ja: "前後比較などの対比" }],
+            ["cards", { en: "Up to six short parallel ideas, arranged by their count", "zh-TW": "最多六個簡短的並列重點，依張數自動排列", "zh-CN": "最多六个简短的并列重点，依张数自动排列", ja: "最大 6 つの短い並列項目。枚数に応じて自動で並ぶ" }],
+            ["panels", { en: "Two to seven sections split by thin vertical or horizontal lines instead of cards; each can have its own fill color", "zh-TW": "以細線（垂直或水平）而不是卡片分隔的二到七個區段，每個區段可有自己的填色", "zh-CN": "以细线（垂直或水平）而不是卡片分隔的二到七个区段，每个区段可有自己的填色", ja: "カードではなく縦または横の細い線で区切る 2〜7 個のセクション。それぞれに塗りつぶしの色を指定できる" }],
+            ["media", { en: "A picture as the subject, with a caption and text beside or below it; variants right and full", "zh-TW": "以圖片為主角，附圖說與旁邊或下方的文字；變化有 right 與 full", "zh-CN": "以图片为主角，附图说与旁边或下方的文字；变体有 right 与 full", ja: "画像を主役にし、キャプションと横または下の文を添える。バリエーションは right と full" }],
+            ["stats", { en: "Two to six key figures with labels; variant cards", "zh-TW": "二到六個重點數字，附標籤；變化有 cards", "zh-CN": "二到六个重点数字，附标签；变体有 cards", ja: "2〜6 個の重要な数値とラベル。バリエーションは cards" }],
+            ["matrix", { en: "A 2 × 2 matrix with optional axis names; variant lines", "zh-TW": "2 × 2 矩陣，可加座標軸名稱；變化有 lines", "zh-CN": "2 × 2 矩阵，可加坐标轴名称；变体有 lines", ja: "軸の名前を付けられる 2 × 2 のマトリクス。バリエーションは lines" }],
+            ["compare", { en: "Two to four options side by side, one of them highlighted", "zh-TW": "並排比較二到四個選項，可標示其中一個", "zh-CN": "并排比较二到四个选项，可标示其中一个", ja: "2〜4 個の選択肢を並べ、1 つを強調できる" }],
+            ["team", { en: "Two to six people with a portrait or initial, a role, and a line of text", "zh-TW": "二到六位成員，附頭像或姓名首字、職稱與一行說明", "zh-CN": "二到六位成员，附头像或姓名首字、职称与一行说明", ja: "2〜6 人。顔写真またはイニシャル、役割、一行の説明" }],
+            ["process", { en: "Two to six numbered steps joined by arrows; variant vertical", "zh-TW": "以箭頭連接的二到六個編號步驟；變化有 vertical", "zh-CN": "以箭头连接的二到六个编号步骤；变体有 vertical", ja: "矢印でつなぐ 2〜6 個の番号付きステップ。バリエーションは vertical" }],
+            ["hub", { en: "A central idea with three to six items joined to it by lines", "zh-TW": "中心概念，周圍以線連接三到六個項目", "zh-CN": "中心概念，周围以线连接三到六个项目", ja: "中心の考えと、線でつないだ 3〜6 個の項目" }],
+            ["code", { en: "A monospaced code listing of up to 18 lines; variant dark", "zh-TW": "等寬字型的程式碼，最多 18 行；變化有 dark", "zh-CN": "等宽字体的代码，最多 18 行；变体有 dark", ja: "等幅フォントのコード（最大 18 行）。バリエーションは dark" }],
+            ["closing", { en: "The last slide with contact lines; variants centered and band", "zh-TW": "附聯絡資訊的結尾頁；變化有 centered 與 band", "zh-CN": "附联系信息的结尾页；变体有 centered 与 band", ja: "連絡先付きの最後のスライド。バリエーションは centered と band" }],
+            ["timeline", { en: "Two to six steps or dates in order", "zh-TW": "二到六個依序排列的步驟或時間點", "zh-CN": "二到六个依序排列的步骤或时间点", ja: "順に並ぶ 2〜6 個のステップや日付" }],
+            ["gantt", { en: "A project schedule: up to eight tasks as bars over labeled periods, with optional progress", "zh-TW": "專案進度表：最多八個任務，以長條橫跨各時段，可標示完成度", "zh-CN": "项目进度表：最多八个任务，以长条横跨各时段，可标示完成度", ja: "プロジェクトの進捗表。最大 8 つのタスクを期間にまたがるバーで示し、進捗も表示できる" }],
+            ["table", { en: "Compact grids of text", "zh-TW": "精簡的文字表格", "zh-CN": "精简的文字表格", ja: "コンパクトな表" }],
+            ["chart", { en: "Simple nonnegative values, optionally with an explanation column", "zh-TW": "簡單的非負數值，可附說明欄", "zh-CN": "简单的非负数值，可附说明栏", ja: "単純な非負の値。説明列も付けられる" }],
+            ["quote", { en: "One short quotation with an optional attribution; variant centered", "zh-TW": "一段簡短引言與選填的出處；另有 centered 變化", "zh-CN": "一段简短引言与可选的出处；另有 centered 变体", ja: "短い引用 1 つと任意の出典。centered のバリアントあり" }],
+            ["blank", { en: "Only the background, such as a full-bleed image or a Math Background Studio design", "zh-TW": "只有背景，例如滿版圖片或 Math Background Studio 的設計", "zh-CN": "只有背景，例如满版图片或 Math Background Studio 的设计", ja: "背景だけ。全面の画像や Math Background Studio のデザインなど" }],
+          ],
+        },
+      },
+      {
+        id: "components",
+        title: { en: "Components", "zh-TW": "元件", "zh-CN": "组件", ja: "コンポーネント" },
+        body: {
+          en: "Components are exported from the package root. They emit markup only; renderPresentation supplies the stylesheet, theme, font, and fixed canvas.",
+          "zh-TW": "元件從套件根目錄匯出，只產生 HTML 標記；樣式表、主題、字型與固定畫布由 renderPresentation 提供。",
+          "zh-CN": "组件从包根目录导出，只生成 HTML 标记；样式表、主题、字体与固定画布由 renderPresentation 提供。",
+          ja: "コンポーネントはパッケージのルートからエクスポートされ、マークアップだけを出力します。スタイルシート、テーマ、フォント、固定キャンバスは renderPresentation が提供します。",
+        },
+        table: {
+          caption: { en: "Components", "zh-TW": "元件", "zh-CN": "组件", ja: "コンポーネント" },
+          headers: [
+            { en: "Component", "zh-TW": "元件", "zh-CN": "组件", ja: "コンポーネント" },
+            { en: "Output", "zh-TW": "輸出", "zh-CN": "输出", ja: "出力" },
+          ],
+          rows: [
+            ["Slide", { en: "Full slide frame with title, content, footer, and notes", "zh-TW": "完整投影片框架，含標題、內容、頁尾與備忘稿", "zh-CN": "完整幻灯片框架，含标题、内容、页脚与备注", ja: "タイトル、内容、フッター、ノートを含むスライド枠" }],
+            ["SlideTitle · SlideSubtitle", { en: "Header with heading and subtitle", "zh-TW": "含標題與副標題的頁首", "zh-CN": "含标题与副标题的页眉", ja: "見出しとサブタイトルのヘッダー" }],
+            ["SlideContent · SlideColumns", { en: "Content region and equal two-column grid", "zh-TW": "內容區與等寬雙欄", "zh-CN": "内容区与等宽双栏", ja: "コンテンツ領域と等幅 2 列グリッド" }],
+            ["SlideCard", { en: "Titled card", "zh-TW": "含標題的卡片", "zh-CN": "含标题的卡片", ja: "タイトル付きカード" }],
+            ["SlideImage · SlideTable", { en: "Image figure with caption, semantic table", "zh-TW": "含說明的圖片、語意化表格", "zh-CN": "含说明的图片、语义化表格", ja: "キャプション付き画像、セマンティックな表" }],
+            ["SlideChart", { en: "Horizontal HTML/CSS bars with labels and values", "zh-TW": "含標籤與數值的 HTML/CSS 橫條", "zh-CN": "含标签与数值的 HTML/CSS 横条", ja: "ラベルと値付きの HTML/CSS 横棒" }],
+            ["SlideFooter", { en: "Footer text and slide number", "zh-TW": "頁尾文字與頁碼", "zh-CN": "页脚文字与页码", ja: "フッターテキストとページ番号" }],
+          ],
+        },
+      },
+      {
+        id: "custom-html",
+        title: { en: "Custom trusted HTML", "zh-TW": "自訂受信任的 HTML", "zh-CN": "自定义受信任的 HTML", ja: "独自の信頼できる HTML" },
+        body: {
+          en: "Give each slide a fixed 1920 × 1080 box marked with data-pptx=\"slide\". Keep text and simple fills as DOM and CSS when editability matters. Mark intentional decorative overlap so the overlap check skips it.",
+          "zh-TW": "每張投影片給定固定的 1920 × 1080 區塊並標上 data-pptx=\"slide\"。需要可編輯時，文字與簡單填色請保留為 DOM 與 CSS。刻意的裝飾性重疊請加上標記，讓重疊檢查略過。",
+          "zh-CN": "每张幻灯片给定固定的 1920 × 1080 区块并标上 data-pptx=\"slide\"。需要可编辑时，文字与简单填色请保留为 DOM 与 CSS。刻意的装饰性重叠请加上标记，让重叠检查跳过。",
+          ja: "各スライドに data-pptx=\"slide\" を付けた固定 1920 × 1080 のボックスを用意します。編集可能性が重要な場合は、テキストと単純な塗りを DOM と CSS のまま保ってください。意図的な装飾の重なりには印を付けると、重なり検査の対象外になります。",
+        },
+        code: `<section data-pptx="slide" style="width:1920px;height:1080px">
+  <h1>Editable title</h1>
+  <div data-pptx-allow-overlap="true">…decorative layers…</div>
+</section>`,
+      },
+    ],
+  },
+  {
+    id: "layouts-structure",
+    category: "layouts",
+    title: { en: "Opening, structure, and ending", "zh-TW": "開場、結構與結尾", "zh-CN": "开场、结构与结尾", ja: "冒頭・構成・結び" },
+    summary: {
+      en: "cover, agenda, section, closing, and blank: the slides that open a deck, divide it into chapters, and end it.",
+      "zh-TW": "cover、agenda、section、closing 與 blank：開場、分章與結尾的投影片。",
+      "zh-CN": "cover、agenda、section、closing 与 blank：开场、分章与结尾的幻灯片。",
+      ja: "cover、agenda、section、closing、blank：スライドの冒頭、章の区切り、結びを担うレイアウト。",
+    },
+    sections: [
+      {
+        id: "gallery-cover",
+        examples: [
+          { title: "cover", code: `{
+  "layout": "cover",
+  "title": "Ideas into slides",
+  "subtitle": "Structured, editable presentations",
+  "author": "SlideForge",
+  "footer": "Phase 1"
+}` },
+        ],
+        title: { en: "Gallery: cover", "zh-TW": "版型一覽：cover", "zh-CN": "版式一览：cover", ja: "ギャラリー：cover" },
+        body: {
+          en: "Each screenshot uses the light theme and the built-in tokens; a template or the dark theme changes colors and sizes, not the arrangement. The four cover variants share the same fields.",
+          "zh-TW": "以下截圖皆為淺色主題與內建 tokens；範本或深色主題只會改變色彩與尺寸，不會改變排列方式。四種 cover 變化的欄位完全相同。",
+          "zh-CN": "以下截图均为浅色主题与内置 tokens；模板或深色主题只会改变色彩与尺寸，不会改变排列方式。四种 cover 变体的字段完全相同。",
+          ja: "スクリーンショットはすべてライトテーマと組み込みのトークンです。テンプレートやダークテーマで変わるのは色とサイズで、配置は変わりません。cover の 4 つのバリアントはフィールドが同じです。",
+        },
+        images: [
+          { src: "/screenshots/layout-cover.png", alt: { en: "Cover slide with a left-aligned title", "zh-TW": "標題靠左的封面投影片", "zh-CN": "标题靠左的封面幻灯片", ja: "タイトルが左寄せの表紙スライド" }, caption: "cover" },
+          { src: "/screenshots/layout-cover-centered.png", alt: { en: "Cover slide with a centered title", "zh-TW": "標題置中的封面投影片", "zh-CN": "标题居中的封面幻灯片", ja: "タイトルが中央揃えの表紙スライド" }, caption: "cover/centered" },
+          { src: "/screenshots/layout-cover-split.png", alt: { en: "Cover slide with an accent panel on the right third", "zh-TW": "右側三分之一為強調色塊的封面投影片", "zh-CN": "右侧三分之一为强调色块的封面幻灯片", ja: "右側 3 分の 1 に強調色のパネルがある表紙スライド" }, caption: "cover/split" },
+          { src: "/screenshots/layout-cover-band.png", alt: { en: "Cover slide with a full-bleed accent band behind the title", "zh-TW": "標題後方有滿版強調色帶的封面投影片", "zh-CN": "标题后方有满版强调色带的封面幻灯片", ja: "タイトルの背後に全幅の強調色の帯がある表紙スライド" }, caption: "cover/band" },
+        ],
+      },
+      {
+        id: "gallery-agenda",
+        title: { en: "Gallery: agenda", "zh-TW": "版型一覽：agenda", "zh-CN": "版式一览：agenda", ja: "ギャラリー：agenda" },
+        body: {
+          en: "agenda lists 2–8 topics as numbered rows: a number circle, a title, and optional text, in two columns from five items. Give an item slide, the number of another slide, to make it a link: the row ends with an arrow and jumps to that slide. In present mode a click jumps to it. In PowerPoint the row's box, number, text, and arrow are \"go to slide\" buttons that work in slide show, and the text keeps its design instead of turning into an underlined hyperlink. A slide that does not exist is rejected. The link follows the slide's position, so renumber it after reordering slides. For a long deck, agenda/chapters lists only the top level in a large-number index, and agenda/outline draws each chapter as a card with its subsections under it, each of which can link too. Give an item items (up to six subsections) for the outline; the other variants leave them out, so the same content works in all three. current marks the chapter being opened and mutes the others. Without items the agenda lists the section slides, linking to each, so the links survive reordering.",
+          "zh-TW": "agenda 以編號列呈現 2–8 個主題：編號圓形、title 與選填的 text，五項起分為兩欄。給項目一個 slide（另一張投影片的編號），它就成為連結：該列末端有箭頭，點擊會跳到那張投影片。在簡報模式中點一下即可跳轉。在 PowerPoint 中，該列的底框、編號、文字與箭頭都是「移至投影片」按鈕，在投影片放映時有效，文字也維持原本的設計，不會變成有底線的超連結。不存在的投影片會被拒絕。連結依投影片的位置而定，因此調整順序後請重新設定編號。簡報很長時，agenda/chapters 只以大號編號列出大章節，agenda/outline 則把每個章節畫成卡片，小節列在下方，且每個小節也能連結。為項目加上 items（最多六個小節）即可用於 outline；其他變化會略過它們，所以同一份內容三種都能用。current 標示目前的章節，其他章節變淡。省略 items 時，agenda 會列出 section 投影片並連到各頁，因此重新排序後連結仍然正確。",
+          "zh-CN": "agenda 以编号行呈现 2–8 个主题：编号圆形、title 与可选的 text，五项起分为两栏。给项目一个 slide（另一张幻灯片的编号），它就成为链接：该行末端有箭头，点击会跳到那张幻灯片。在演示模式中点一下即可跳转。在 PowerPoint 中，该行的底框、编号、文字与箭头都是“转到幻灯片”按钮，在幻灯片放映时有效，文字也保持原本的设计，不会变成有下划线的超链接。不存在的幻灯片会被拒绝。链接依幻灯片的位置而定，因此调整顺序后请重新设置编号。演示文稿很长时，agenda/chapters 只以大号编号列出大章节，agenda/outline 则把每个章节画成卡片，小节列在下方，且每个小节也能链接。为项目加上 items（最多六个小节）即可用于 outline；其他变体会略过它们，所以同一份内容三种都能用。current 标示当前的章节，其他章节变淡。省略 items 时，agenda 会列出 section 幻灯片并链接到各页，因此重新排序后链接仍然正确。",
+          ja: "agenda は 2〜8 個のトピックを番号付きの行で並べます。番号の円、title、任意の text で構成され、5 項目からは 2 列になります。項目に slide（別のスライドの番号）を指定するとリンクになり、行の右端に矢印が付いて、そのスライドへジャンプします。プレゼンテーションモードではクリックで移動します。PowerPoint では、行の枠、番号、文字、矢印が「スライドへ移動」ボタンになってスライドショーで機能し、文字は下線付きのハイパーリンクにならずデザインのままです。存在しないスライドは拒否されます。リンクはスライドの位置に従うので、並べ替えたあとは番号を付け直してください。長いプレゼンでは、agenda/chapters が大きな番号で最上位の章だけを並べ、agenda/outline が各章をカードにして下に小節を並べます。小節にもリンクを付けられます。項目に items（最大 6 個の小節）を指定すると outline で表示され、他のバリエーションでは省かれるので、同じ内容を 3 つすべてで使えます。current は開こうとしている章を示し、他の章は薄くなります。items を省略すると section スライドを列挙してそれぞれにリンクするので、並べ替えてもリンクは正しいままです。",
+        },
+        code: `{
+  "layout": "agenda",
+  "title": "Agenda",
+  "subtitle": "Four topics, each a click away",
+  "items": [
+    { "title": "Results", "text": "Revenue and growth", "slide": 2 },
+    { "title": "Questions" }
+  ]
+}`,
+        images: [
+          { src: "/screenshots/layout-agenda.png", alt: { en: "Agenda slide with four numbered rows, three of them linked", "zh-TW": "有四個編號列、其中三列為連結的 agenda 投影片", "zh-CN": "有四个编号行、其中三行为链接的 agenda 幻灯片", ja: "番号付きの 4 行のうち 3 行がリンクの agenda スライド" }, caption: "agenda" },
+          { src: "/screenshots/layout-agenda-chapters.png", alt: { en: "Agenda with large chapter numbers and the current chapter marked", "zh-TW": "以大號編號列出章節並標示目前章節的 agenda", "zh-CN": "以大号编号列出章节并标示当前章节的 agenda", ja: "大きな番号で章を並べ、現在の章を示す agenda" }, caption: "agenda/chapters" },
+          { src: "/screenshots/layout-agenda-outline.png", alt: { en: "Agenda with each chapter as a card and its subsections under it", "zh-TW": "每個章節為卡片、小節列在下方的 agenda", "zh-CN": "每个章节为卡片、小节列在下方的 agenda", ja: "各章をカードにして小節を下に並べた agenda" }, caption: "agenda/outline" },
+        ],
+      },
+      {
+        id: "gallery-section",
+        title: { en: "Gallery: section", "zh-TW": "版型一覽：section", "zh-CN": "版式一览：section", ja: "ギャラリー：section" },
+        body: {
+          en: "section is the divider that opens a chapter of a long presentation. It has only the common fields: title is the chapter's name and subtitle its one-line summary. The large number (01, 02, …) is counted over the section slides, so you never write it, and an agenda without items links to these slides. section is left-aligned beside an accent rail, section/centered centers the text, and section/band fills the whole slide with the accent color.",
+          "zh-TW": "section 是長簡報中開啟一個章節的分隔頁。它只有共用欄位：title 是章節名稱，subtitle 是一句話摘要。大號編號（01、02……）依 section 投影片的順序計算，因此不必自己寫；沒有 items 的 agenda 會連到這些投影片。section 為靠左並帶強調色側條，section/centered 讓文字置中，section/band 則讓整張投影片填滿強調色。",
+          "zh-CN": "section 是长演示文稿中开启一个章节的分隔页。它只有通用字段：title 是章节名称，subtitle 是一句话摘要。大号编号（01、02……）按 section 幻灯片的顺序计算，因此不必自己写；没有 items 的 agenda 会链接到这些幻灯片。section 为靠左并带强调色侧条，section/centered 让文字居中，section/band 则让整张幻灯片填满强调色。",
+          ja: "section は、長いプレゼンテーションで章の始まりを示す区切りスライドです。共通フィールドだけを持ち、title が章の名前、subtitle が一言の要約です。大きな番号（01、02、…）は section スライドの順に数えられるので書く必要はなく、items のない agenda はこれらのスライドにリンクします。section は左揃えでアクセント色のレールが付き、section/centered は文字を中央に、section/band はスライド全体をアクセント色にします。",
+        },
+        code: `{
+  "layout": "section",
+  "title": "Results",
+  "subtitle": "Revenue and growth"
+}`,
+        images: [
+          { src: "/screenshots/layout-section.png", alt: { en: "Section slide with a large number and an accent rail", "zh-TW": "有大號編號與強調色側條的 section 投影片", "zh-CN": "有大号编号与强调色侧条的 section 幻灯片", ja: "大きな番号とアクセント色のレールがある section スライド" }, caption: "section" },
+          { src: "/screenshots/layout-section-centered.png", alt: { en: "Section slide with a centered number and title", "zh-TW": "編號與標題置中的 section 投影片", "zh-CN": "编号与标题居中的 section 幻灯片", ja: "番号とタイトルが中央にある section スライド" }, caption: "section/centered" },
+          { src: "/screenshots/layout-section-band.png", alt: { en: "Section slide filled with the accent color", "zh-TW": "填滿強調色的 section 投影片", "zh-CN": "填满强调色的 section 幻灯片", ja: "アクセント色で塗りつぶした section スライド" }, caption: "section/band" },
+        ],
+      },
+      {
+        id: "gallery-closing",
+        title: { en: "Gallery: closing", "zh-TW": "版型一覽：closing", "zh-CN": "版式一览：closing", ja: "ギャラリー：closing" },
+        body: {
+          en: "closing is the last slide: the title and subtitle as the farewell, and up to four contacts, each a label and a value. Its variants match section: the default has an accent rail, closing/centered centers the text, and closing/band fills the slide with the accent color.",
+          "zh-TW": "closing 是最後一張投影片：title 與 subtitle 作為結語，最多四組 contacts，每組是 label 與 value。它的變化與 section 一致：預設有強調色側條，closing/centered 讓文字置中，closing/band 讓整張投影片填滿強調色。",
+          "zh-CN": "closing 是最后一张幻灯片：title 与 subtitle 作为结语，最多四组 contacts，每组是 label 与 value。它的变体与 section 一致：默认有强调色侧条，closing/centered 让文字居中，closing/band 让整张幻灯片填满强调色。",
+          ja: "closing は最後のスライドです。title と subtitle を結びの言葉とし、label と value からなる contacts を最大 4 つ置けます。バリエーションは section と同じで、既定はアクセント色のレール付き、closing/centered は文字を中央に、closing/band はスライド全体をアクセント色にします。",
+        },
+        code: `{
+  "layout": "closing",
+  "title": "Thank you",
+  "subtitle": "Questions welcome",
+  "contacts": [{ "label": "Email", "value": "hello@example.com" }]
+}`,
+        images: [
+          { src: "/screenshots/layout-closing.png", alt: { en: "A thank-you slide beside an accent rail with two contacts", "zh-TW": "強調色側條旁、附兩項聯絡資訊的結尾頁", "zh-CN": "强调色侧条旁、附两项联系信息的结尾页", ja: "アクセント色のレールの横に 2 件の連絡先がある結びのスライド" }, caption: "closing" },
+          { src: "/screenshots/layout-closing-centered.png", alt: { en: "A centered thank-you slide with one contact", "zh-TW": "置中、附一項聯絡資訊的結尾頁", "zh-CN": "居中、附一项联系信息的结尾页", ja: "連絡先が 1 件の中央揃えの結びのスライド" }, caption: "closing/centered" },
+          { src: "/screenshots/layout-closing-band.png", alt: { en: "A thank-you slide in the accent color", "zh-TW": "填滿強調色的結尾頁", "zh-CN": "填满强调色的结尾页", ja: "アクセント色で塗りつぶした結びのスライド" }, caption: "closing/band" },
+        ],
+      },
+      {
+        id: "gallery-blank",
+        title: { en: "Gallery: blank", "zh-TW": "版型一覽：blank", "zh-CN": "版式一览：blank", ja: "ギャラリー：blank" },
+        body: {
+          en: "blank draws only the background: no title, content, footer, or slide number. Give it a background image or a Math Background Studio share link; without one it is an empty slide in the theme color.",
+          "zh-TW": "blank 只繪製背景：沒有標題、內容、頁尾或頁碼。請為它設定背景圖片或 Math Background Studio 分享連結；沒有背景時就是主題底色的空白頁。",
+          "zh-CN": "blank 只绘制背景：没有标题、内容、页脚或页码。请为它设置背景图片或 Math Background Studio 分享链接；没有背景时就是主题底色的空白页。",
+          ja: "blank は背景だけを描きます。タイトル、内容、フッター、ページ番号はありません。背景画像か Math Background Studio の共有リンクを指定してください。背景がなければテーマ色の空のスライドになります。",
+        },
+        code: `{
+  "layout": "blank",
+  "title": "Closing",
+  "background": "https://bg.gordonkit.com/studio#d=…"
+}`,
+        images: [
+          { src: "/screenshots/layout-blank.png", alt: { en: "Blank slide showing only a wave background", "zh-TW": "只顯示波浪背景的空白投影片", "zh-CN": "只显示波浪背景的空白幻灯片", ja: "波の背景だけを表示する blank スライド" }, caption: "blank" },
+        ],
+      },
+    ],
+  },
+  {
+    id: "layouts-content",
+    category: "layouts",
+    title: { en: "Text and media", "zh-TW": "文字與媒體", "zh-CN": "文字与媒体", ja: "テキストとメディア" },
+    summary: {
+      en: "content, two-columns, media, and code: paragraphs, lists, pictures, and listings, with an optional subtitle.",
+      "zh-TW": "content、two-columns、media 與 code：段落、清單、圖片與程式碼，可加副標題。",
+      "zh-CN": "content、two-columns、media 与 code：段落、列表、图片与代码，可加副标题。",
+      ja: "content、two-columns、media、code：段落、リスト、画像、コード。任意でサブタイトルを付けられます。",
+    },
+    sections: [
+      {
+        id: "gallery-content",
+        examples: [
+          { title: "content", code: `{
+  "layout": "content",
+  "title": "This week",
+  "subtitle": "Text, lists, and images",
+  "blocks": [
+    { "type": "paragraph", "text": "The first milestone is complete." },
+    { "type": "bullets", "items": ["Review", "Refine", "Export"] },
+    { "type": "image", "src": "assets/diagram.svg", "alt": "The export flow", "caption": "One source" }
+  ]
+}` },
+          { title: "two-columns", code: `{
+  "layout": "two-columns",
+  "title": "Before and after",
+  "left": [{ "type": "bullets", "items": ["Manual formatting", "Inconsistent results"] }],
+  "right": [{ "type": "bullets", "items": ["Structured content", "Repeatable exports"] }]
+}` },
+        ],
+        title: { en: "Gallery: content and two-columns", "zh-TW": "版型一覽：content 與 two-columns", "zh-CN": "版式一览：content 与 two-columns", ja: "ギャラリー：content と two-columns" },
+        body: {
+          en: "content stacks paragraphs, lists, and images; two-columns places two equal stacks side by side.",
+          "zh-TW": "content 依序堆疊段落、清單與圖片；two-columns 則把兩組等寬的內容並排。",
+          "zh-CN": "content 依次堆叠段落、列表与图片；two-columns 则把两组等宽的内容并排。",
+          ja: "content は段落、リスト、画像を縦に積み、two-columns は同じ幅の 2 つの列を横に並べます。",
+        },
+        images: [
+          { src: "/screenshots/layout-content.png", alt: { en: "Content slide with a paragraph, a list, and an image", "zh-TW": "含段落、清單與圖片的內容投影片", "zh-CN": "含段落、列表与图片的内容幻灯片", ja: "段落、リスト、画像のある本文スライド" }, caption: "content" },
+          { src: "/screenshots/layout-two-columns.png", alt: { en: "Two-column slide comparing before and after", "zh-TW": "比較前後差異的雙欄投影片", "zh-CN": "比较前后差异的双栏幻灯片", ja: "前後を比較する 2 列のスライド" }, caption: "two-columns" },
+        ],
+      },
+      {
+        id: "subtitle",
+        title: { en: "Subtitle: the one-line highlight", "zh-TW": "副標題：一句話重點", "zh-CN": "副标题：一句话重点", ja: "サブタイトル：ひとことの要点" },
+        body: {
+          en: "subtitle is an optional slide field for a one-line highlight or slogan under the title, so a reader grasps the point of the page at a glance. The title names the topic; the subtitle states the takeaway. It works on every layout except blank, which rejects it, and on cover it is the larger tagline in the muted color. Elsewhere it is drawn as a highlight: accent colored and semibold, after a short accent bar. Keep it to one line, about 80 characters in English or 45 in Chinese or Japanese: the header has a fixed height, so a longer subtitle wraps and the overflow is clipped. The text exports as its own editable PowerPoint text box and the bar as an editable rectangle, and templates adjust it with the type.subtitle and spacing.subtitle tokens. Use it on the slides whose message a skimming reader should not miss rather than on every slide.",
+          "zh-TW": "subtitle 是選填的投影片欄位，放在標題下方的一句話重點或口號，讓讀者一眼掌握這一頁的主旨。標題說明主題，副標題寫出結論。除了會拒絕它的 blank 之外，所有版型都能使用；在 cover 上則是較大的灰色標語。其他版型則以強調色、半粗體，並在前面加一小段強調色色條呈現，讓它像重點而不是說明文字。請控制在一行內，英文約 80 字元、中日文約 45 字：標題區高度固定，過長的副標題會換行，超出的部分會被裁掉。匯出後文字是標題下方獨立、可編輯的 PowerPoint 文字方塊，色條是可編輯的矩形，範本可用 type.subtitle 與 spacing.subtitle token 調整。建議只用在讀者快速瀏覽時不應錯過重點的投影片，而不是每一頁都加。",
+          "zh-CN": "subtitle 是可选的幻灯片字段，放在标题下方的一句话重点或口号，让读者一眼掌握这一页的主旨。标题说明主题，副标题写出结论。除了会拒绝它的 blank 之外，所有版式都能使用；在 cover 上则是较大的灰色标语。其他版式则以强调色、半粗体，并在前面加一小段强调色色条呈现，让它像重点而不是说明文字。请控制在一行内，英文约 80 字符、中日文约 45 字：标题区高度固定，过长的副标题会换行，超出的部分会被裁掉。导出后文字是标题下方独立、可编辑的 PowerPoint 文本框，色条是可编辑的矩形，模板可用 type.subtitle 与 spacing.subtitle token 调整。建议只用在读者快速浏览时不应错过重点的幻灯片，而不是每一页都加。",
+          ja: "subtitle は、タイトルの下に置くひとことの要点やスローガンを書く任意のフィールドで、読み手がそのページの主旨をひと目でつかめます。タイトルはトピックを示し、サブタイトルは結論を述べます。subtitle を拒否する blank 以外のすべてのレイアウトで使え、cover ではより大きな控えめな色のキャッチコピーになります。それ以外のレイアウトでは、アクセント色の太めの文字で、短いアクセント色のバーを前に付けて、要点として目立たせます。1 行に収め、英語なら約 80 文字、日本語・中国語なら約 45 文字が目安です。ヘッダーの高さは固定なので、長いと折り返して、はみ出した部分は切り取られます。エクスポートすると、文字はタイトルの下に独立した編集可能な PowerPoint テキストボックスに、バーは編集可能な長方形になり、テンプレートでは type.subtitle と spacing.subtitle トークンで調整できます。すべてのスライドではなく、流し読みする人にも見逃してほしくないスライドに使ってください。",
+        },
+        images: [
+          { src: "/screenshots/layout-subtitle.png", alt: { en: "Cards slide with an accent-colored subtitle and bar under the title", "zh-TW": "標題下方有強調色副標題與色條的 cards 投影片", "zh-CN": "标题下方有强调色副标题与色条的 cards 幻灯片", ja: "タイトルの下にアクセント色のサブタイトルとバーがある cards スライド" }, caption: "subtitle" },
+        ],
+      },
+      {
+        id: "gallery-media",
+        title: { en: "Gallery: media", "zh-TW": "版型一覽：media", "zh-CN": "版式一览：media", ja: "ギャラリー：media" },
+        body: {
+          en: "media makes a picture the subject: image with required alt text, an optional caption, and optional blocks of text. The default variant puts the picture on the left, media/right on the right, and media/full across the slide with the text below it. The picture fills its area and is cropped to fit, so choose one with room around its subject.",
+          "zh-TW": "media 讓圖片成為主角：image 加上必填的 alt 文字、選填的 caption，以及選填的文字 blocks。預設變化把圖片放在左邊，media/right 放在右邊，media/full 則橫跨整張投影片，文字在下方。圖片會填滿它的區域並裁切以符合，請選主體周圍有餘裕的圖。",
+          "zh-CN": "media 让图片成为主角：image 加上必填的 alt 文字、可选的 caption，以及可选的文字 blocks。默认变体把图片放在左边，media/right 放在右边，media/full 则横跨整张幻灯片，文字在下方。图片会填满它的区域并裁剪以适应，请选主体周围有余裕的图。",
+          ja: "media は画像を主役にします。image と必須の alt テキスト、任意の caption、任意の文章 blocks を指定します。既定のバリエーションは画像を左に、media/right は右に、media/full はスライド全幅に置いて文章を下に配置します。画像は領域を埋めるようにトリミングされるので、被写体の周りに余白のある画像を選んでください。",
+        },
+        code: `{
+  "layout": "media",
+  "title": "The product",
+  "image": "assets/product.png",
+  "alt": "The product on a desk",
+  "caption": "Figure 1",
+  "blocks": [{ "type": "paragraph", "text": "A short explanation." }]
+}`,
+        images: [
+          { src: "/screenshots/layout-media.png", alt: { en: "A picture on the left with text on the right", "zh-TW": "左邊圖片、右邊文字", "zh-CN": "左边图片、右边文字", ja: "左に画像、右に文章" }, caption: "media" },
+          { src: "/screenshots/layout-media-right.png", alt: { en: "A picture on the right with text on the left", "zh-TW": "右邊圖片、左邊文字", "zh-CN": "右边图片、左边文字", ja: "右に画像、左に文章" }, caption: "media/right" },
+          { src: "/screenshots/layout-media-full.png", alt: { en: "A full-width picture with text below it", "zh-TW": "橫跨整張的圖片，文字在下方", "zh-CN": "横跨整张的图片，文字在下方", ja: "全幅の画像と下の文章" }, caption: "media/full" },
+        ],
+      },
+      {
+        id: "gallery-code",
+        title: { en: "Gallery: code", "zh-TW": "版型一覽：code", "zh-CN": "版式一览：code", ja: "ギャラリー：code" },
+        body: {
+          en: "code shows a listing in a monospaced font, kept as written, with an optional language label above it. It holds up to 18 lines and 3,000 characters. The default variant is a light panel and code/dark a dark one. SlideForge does not color the syntax, and PowerPoint needs the font (Consolas, Cascadia Mono, or Courier New) installed.",
+          "zh-TW": "code 以等寬字型呈現程式碼，保持原樣，上方可加選填的 language 標籤。最多 18 行、3,000 字元。預設變化是淺色面板，code/dark 是深色面板。SlideForge 不會為語法上色，PowerPoint 也需要安裝該字型（Consolas、Cascadia Mono 或 Courier New）。",
+          "zh-CN": "code 以等宽字体呈现代码，保持原样，上方可加可选的 language 标签。最多 18 行、3,000 字符。默认变体是浅色面板，code/dark 是深色面板。SlideForge 不会为语法上色，PowerPoint 也需要安装该字体（Consolas、Cascadia Mono 或 Courier New）。",
+          ja: "code は等幅フォントでコードを書いたままの形で表示し、上に任意の language ラベルを付けられます。最大 18 行・3,000 文字です。既定は明るいパネル、code/dark は暗いパネルです。SlideForge は構文に色を付けません。PowerPoint には対象のフォント（Consolas、Cascadia Mono、Courier New）が必要です。",
+        },
+        code: `{
+  "layout": "code",
+  "title": "Usage",
+  "language": "bash",
+  "code": "npm install slideforge\nslideforge init my-deck"
+}`,
+        images: [
+          { src: "/screenshots/layout-code.png", alt: { en: "A listing on a light panel", "zh-TW": "淺色面板上的程式碼", "zh-CN": "浅色面板上的代码", ja: "明るいパネル上のコード" }, caption: "code" },
+          { src: "/screenshots/layout-code-dark.png", alt: { en: "A listing on a dark panel", "zh-TW": "深色面板上的程式碼", "zh-CN": "深色面板上的代码", ja: "暗いパネル上のコード" }, caption: "code/dark" },
+        ],
+      },
+    ],
+  },
+  {
+    id: "layouts-cards",
+    category: "layouts",
+    title: { en: "Cards and panels", "zh-TW": "卡片與區段", "zh-CN": "卡片与区段", ja: "カードとパネル" },
+    summary: {
+      en: "cards, stats, panels, matrix, compare, and team: parallel ideas as cards, figures, colored panels, grids, and people.",
+      "zh-TW": "cards、stats、panels、matrix、compare 與 team：以卡片、數字、色塊區段、矩陣與成員呈現並列內容。",
+      "zh-CN": "cards、stats、panels、matrix、compare 与 team：以卡片、数字、色块区段、矩阵与成员呈现并列内容。",
+      ja: "cards、stats、panels、matrix、compare、team：並列する内容をカード、数字、色付きパネル、マトリクス、メンバーで見せます。",
+    },
+    sections: [
+      {
+        id: "gallery-cards",
+        examples: [
+          { title: "cards", code: `{
+  "layout": "cards/badge",
+  "title": "Three principles",
+  "cards": [
+    { "title": "Clarity", "blocks": [{ "type": "paragraph", "text": "One idea at a time." }] },
+    { "title": "Consistency", "blocks": [{ "type": "paragraph", "text": "Shared layouts and tokens." }] },
+    { "title": "Editability", "blocks": [{ "type": "paragraph", "text": "Text stays editable." }] }
+  ]
+}` },
+        ],
+        title: { en: "Gallery: cards", "zh-TW": "版型一覽：cards", "zh-CN": "版式一览：cards", ja: "ギャラリー：cards" },
+        body: {
+          en: "The grid follows the number of cards, with no extra field: one card spans the width, two sit side by side, three and six use three columns, four form a 2 × 2 grid, and five are three over two, with the lower two keeping the upper cards' width and centered. Five variants change only the card shape: rounded (larger corners and an accent outline), badge (a numbered accent circle above each centered card), and circle, hexagon, and pentagon (accent-filled regular shapes with the number). These shapes keep their proportions, leaving room above and below instead of stretching, so they suit a short title and a line or two. In PowerPoint the circle is a native oval and the polygons are native, editable freeform shapes behind the text.",
+          "zh-TW": "格線依卡片張數自動決定，不需要額外欄位：一張佔滿寬度、兩張並排、三張與六張為三欄、四張為 2 × 2、五張為上三下二（下排兩張維持與上排相同的寬度並置中）。另有五種變化只改變卡片形狀：rounded（較大的圓角與強調色外框）、badge（置中的卡片上方有編號強調色圓形），以及 circle、hexagon 與 pentagon（強調色填滿、附編號的正圓形、正六角形與正五角形）。這些形狀維持固有比例，上下會留白而不會被拉長，適合短標題加一兩行文字。在 PowerPoint 中，圓形是原生橢圓，多邊形是文字後方原生、可編輯的任意多邊形圖案。",
+          "zh-CN": "网格依卡片张数自动决定，不需要额外字段：一张占满宽度、两张并排、三张与六张为三栏、四张为 2 × 2、五张为上三下二（下排两张保持与上排相同的宽度并居中）。另有五种变体只改变卡片形状：rounded（较大的圆角与强调色外框）、badge（居中的卡片上方有编号强调色圆形），以及 circle、hexagon 与 pentagon（强调色填满、附编号的正圆形、正六边形与正五边形）。这些形状保持固有比例，上下会留白而不会被拉长，适合短标题加一两行文字。在 PowerPoint 中，圆形是原生椭圆，多边形是文字后方原生、可编辑的任意多边形图形。",
+          ja: "グリッドはカードの枚数で決まり、追加のフィールドは要りません。1 枚は全幅、2 枚は横並び、3 枚と 6 枚は 3 列、4 枚は 2 × 2、5 枚は上に 3 枚、下に 2 枚（下の 2 枚は上と同じ幅のまま中央に配置）です。ほかに、カードの形だけを変える 5 つのバリアントがあります。rounded（大きめの角丸とアクセント色の枠）、badge（中央揃えのカードの上に番号付きのアクセント色の円）、circle・hexagon・pentagon（アクセント色で塗りつぶした番号付きの正円・正六角形・正五角形）です。これらの形は縦横比を保つため、引き伸ばされずに上下に余白ができ、短いタイトルと 1〜2 行の文に向いています。PowerPoint では、円はネイティブの楕円、多角形は文字の背後にあるネイティブで編集可能なフリーフォーム図形になります。",
+        },
+        images: [...[2, 3, 4, 5, 6].map((count) => ({
+          src: `/screenshots/layout-cards-${count}.png`,
+          alt: { en: `Cards slide with ${count} cards`, "zh-TW": `含 ${count} 張卡片的 cards 投影片`, "zh-CN": `含 ${count} 张卡片的 cards 幻灯片`, ja: `カードが ${count} 枚の cards スライド` },
+          caption: { en: `${count} cards`, "zh-TW": `${count} 張卡片`, "zh-CN": `${count} 张卡片`, ja: `カード ${count} 枚` },
+        })),
+          { src: "/screenshots/layout-cards-rounded.png", alt: { en: "Cards slide with rounded cards and accent outlines", "zh-TW": "圓角卡片與強調色外框的 cards 投影片", "zh-CN": "圆角卡片与强调色外框的 cards 幻灯片", ja: "角丸でアクセント色の枠の cards スライド" }, caption: "cards/rounded" },
+          { src: "/screenshots/layout-cards-badge.png", alt: { en: "Cards slide with a numbered circle above each card", "zh-TW": "每張卡片上方有編號圓形的 cards 投影片", "zh-CN": "每张卡片上方有编号圆形的 cards 幻灯片", ja: "各カードの上に番号付きの円がある cards スライド" }, caption: "cards/badge" },
+          { src: "/screenshots/layout-cards-circle.png", alt: { en: "Cards slide with accent-filled circle cards", "zh-TW": "強調色圓形卡片的 cards 投影片", "zh-CN": "强调色圆形卡片的 cards 幻灯片", ja: "アクセント色の円形カードの cards スライド" }, caption: "cards/circle" },
+          { src: "/screenshots/layout-cards-hexagon.png", alt: { en: "Cards slide with accent-filled hexagon cards", "zh-TW": "強調色六角形卡片的 cards 投影片", "zh-CN": "强调色六边形卡片的 cards 幻灯片", ja: "アクセント色の六角形カードの cards スライド" }, caption: "cards/hexagon" },
+          { src: "/screenshots/layout-cards-pentagon.png", alt: { en: "Cards slide with accent-filled pentagon cards", "zh-TW": "強調色五角形卡片的 cards 投影片", "zh-CN": "强调色五边形卡片的 cards 幻灯片", ja: "アクセント色の五角形カードの cards スライド" }, caption: "cards/pentagon" },
+        ],
+      },
+      {
+        id: "gallery-stats",
+        title: { en: "Gallery: stats", "zh-TW": "版型一覽：stats", "zh-CN": "版式一览：stats", ja: "ギャラリー：stats" },
+        body: {
+          en: "stats shows two to six key figures: a short value such as 98% or $4.2M in a large accent size, a label, and an optional line of text. Up to four sit in one row, five and six use three columns, and the lower two of five stay centered. stats/cards puts each figure on a centered card.",
+          "zh-TW": "stats 呈現二到六個重點數字：像 98% 或 $4.2M 這樣的簡短 value 以大字級強調色呈現，並附 label 與選填的一行說明。四個以內排成一列，五、六個用三欄，五個時下方兩個維持置中。stats/cards 把每個數字放在置中的卡片上。",
+          "zh-CN": "stats 呈现二到六个重点数字：像 98% 或 $4.2M 这样的简短 value 以大字号强调色呈现，并附 label 与可选的一行说明。四个以内排成一行，五、六个用三列，五个时下方两个保持居中。stats/cards 把每个数字放在居中的卡片上。",
+          ja: "stats は 2〜6 個の重要な数値を示します。98% や $4.2M のような短い value を大きなアクセント色で表示し、label と任意の一行の説明を添えます。4 個までは 1 行、5 個と 6 個は 3 列で、5 個のときは下の 2 個が中央に寄ります。stats/cards は各数値を中央揃えのカードに載せます。",
+        },
+        code: `{
+  "layout": "stats",
+  "title": "Results",
+  "stats": [
+    { "value": "98%", "label": "Satisfaction", "text": "Up 6 points" },
+    { "value": "$4.2M", "label": "Revenue" }
+  ]
+}`,
+        images: [
+          { src: "/screenshots/layout-stats.png", alt: { en: "Four large figures over accent rules", "zh-TW": "強調線上方的四個大數字", "zh-CN": "强调线上方的四个大数字", ja: "アクセントの線の上に並ぶ 4 つの大きな数値" }, caption: "stats" },
+          { src: "/screenshots/layout-stats-cards.png", alt: { en: "Five figures on centered cards", "zh-TW": "置中卡片上的五個數字", "zh-CN": "居中卡片上的五个数字", ja: "中央揃えのカード上の 5 つの数値" }, caption: "stats/cards" },
+        ],
+      },
+      {
+        id: "gallery-panels",
+        title: { en: "Gallery: panels", "zh-TW": "版型一覽：panels", "zh-CN": "版式一览：panels", ja: "ギャラリー：panels" },
+        body: {
+          en: "panels splits the slide with thin lines instead of cards: 2–7 sections, each with a number, a title, and content. The default variant places them side by side with vertical lines, and panels/rows stacks them with horizontal lines, the title on the left and the content on the right. Give a panel a color, a six-digit hex color, to fill it; the text switches between white and near-black to stay readable, and the gradient.panel template token turns the fill into a gradient. Five or more columns are narrow, so keep each to a short title and a line or two.",
+          "zh-TW": "panels 以細線而不是卡片分隔投影片：2–7 個區段，每段有編號、標題與內容。預設變化以垂直線並排排列，panels/rows 則以水平線上下堆疊，標題在左、內容在右。給區段一個 color（六位數十六進位色碼）即可填色，文字會在白色與近黑色之間切換以保持易讀；範本 token gradient.panel 可把填色變成漸層。五欄以上每欄很窄，請只放簡短的標題與一兩行文字。",
+          "zh-CN": "panels 以细线而不是卡片分隔幻灯片：2–7 个区段，每段有编号、标题与内容。默认变体以垂直线并排排列，panels/rows 则以水平线上下堆叠，标题在左、内容在右。给区段一个 color（六位十六进制色码）即可填色，文字会在白色与近黑色之间切换以保持易读；模板 token gradient.panel 可把填色变成渐变。五栏以上每栏很窄，请只放简短的标题与一两行文字。",
+          ja: "panels はカードの代わりに細い線でスライドを区切ります。2〜7 個のセクションで、それぞれ番号、タイトル、内容を持ちます。既定のバリエーションは縦線で左右に並べ、panels/rows は横線で上下に積み、左にタイトル、右に内容を置きます。パネルに color（6 桁の 16 進カラー）を指定すると塗りつぶされ、文字は読みやすいように白と黒に近い色から自動で選ばれます。テンプレートトークン gradient.panel で塗りをグラデーションにできます。5 列以上は幅が狭いので、短いタイトルと 1〜2 行の文にとどめてください。",
+        },
+        code: `{
+  "layout": "panels",
+  "title": "Three steps",
+  "panels": [
+    { "title": "Plan", "color": "#2563eb", "blocks": [{ "type": "paragraph", "text": "Define scope." }] },
+    { "title": "Build", "blocks": [{ "type": "paragraph", "text": "Ship the first version." }] }
+  ]
+}`,
+        images: [
+          { src: "/screenshots/layout-panels.png", alt: { en: "Three panels split by vertical lines", "zh-TW": "以垂直線分隔的三個區段", "zh-CN": "以垂直线分隔的三个区段", ja: "縦線で区切られた 3 つのパネル" }, caption: "panels" },
+          { src: "/screenshots/layout-panels-rows.png", alt: { en: "Three panels split by horizontal lines", "zh-TW": "以水平線分隔的三個區段", "zh-CN": "以水平线分隔的三个区段", ja: "横線で区切られた 3 つのパネル" }, caption: "panels/rows" },
+          { src: "/screenshots/layout-panels-colored.png", alt: { en: "Four panels filled with their own colors", "zh-TW": "各自填色的四個區段", "zh-CN": "各自填色的四个区段", ja: "それぞれの色で塗りつぶされた 4 つのパネル" }, caption: "panels + color" },
+        ],
+      },
+      {
+        id: "gallery-matrix",
+        examples: [
+          { title: "matrix", code: `{
+  "layout": "matrix/lines",
+  "title": "Where to start",
+  "xAxis": "Impact",
+  "yAxis": "Effort",
+  "quadrants": [
+    { "title": "Quick wins", "blocks": [{ "type": "paragraph", "text": "Small effort, clear gain." }] },
+    { "title": "Big bets", "blocks": [{ "type": "paragraph", "text": "Large effort, large gain." }] },
+    { "title": "Fill-ins", "blocks": [{ "type": "paragraph", "text": "Do when there is time." }] },
+    { "title": "Avoid", "blocks": [{ "type": "paragraph", "text": "Large effort, small gain." }] }
+  ]
+}` },
+          { title: "compare", code: `{
+  "layout": "compare",
+  "title": "Choose a plan",
+  "options": [
+    { "title": "Basic", "label": "$9", "items": ["One user", "Email support"] },
+    { "title": "Pro", "label": "$29", "highlight": true, "items": ["Five users", "Priority support", "Exports"] },
+    { "title": "Team", "label": "$79", "items": ["Unlimited users", "SSO"] }
+  ]
+}` },
+          { title: "team", code: `{
+  "layout": "team",
+  "title": "The team",
+  "members": [
+    { "name": "Ada Lin", "role": "Design", "text": "Systems and layout.", "image": "assets/ada.png" },
+    { "name": "Sam Roe", "role": "Engineering" },
+    { "name": "Mia Cho", "role": "Product" }
+  ]
+}` },
+        ],
+        title: { en: "Gallery: matrix, compare, and team", "zh-TW": "版型一覽：matrix、compare 與 team", "zh-CN": "版式一览：matrix、compare 与 team", ja: "ギャラリー：matrix、compare、team" },
+        body: {
+          en: "matrix is a 2 × 2 grid of exactly four quadrants (top left, top right, bottom left, bottom right) with optional xAxis and yAxis names; matrix/lines splits them with a cross instead of cards. compare puts two to four options side by side, each with a title, an optional label such as a price, and a list with check marks; highlight draws one in the accent color. team shows two to six people with a round portrait or the first letter of the name, a role, and a line of text.",
+          "zh-TW": "matrix 是剛好四個象限（左上、右上、左下、右下）的 2 × 2 格，可加 xAxis 與 yAxis 座標軸名稱；matrix/lines 以十字線取代卡片分隔。compare 並排二到四個選項，每個含標題、選填的 label（例如價格）與帶勾號的清單；highlight 會以強調色標示其中一個。team 呈現二到六位成員，附圓形頭像或姓名首字、職稱與一行說明。",
+          "zh-CN": "matrix 是恰好四个象限（左上、右上、左下、右下）的 2 × 2 格，可加 xAxis 与 yAxis 坐标轴名称；matrix/lines 以十字线取代卡片分隔。compare 并排二到四个选项，每个含标题、可选的 label（例如价格）与带勾号的列表；highlight 会以强调色标示其中一个。team 呈现二到六位成员，附圆形头像或姓名首字、职称与一行说明。",
+          ja: "matrix は、ちょうど 4 つの象限（左上、右上、左下、右下）を持つ 2 × 2 のグリッドで、任意の xAxis と yAxis の名前を付けられます。matrix/lines はカードの代わりに十字線で区切ります。compare は 2〜4 個の選択肢を並べ、それぞれにタイトル、価格などの任意の label、チェックマーク付きの一覧を持ちます。highlight で 1 つをアクセント色にできます。team は 2〜6 人を、丸い顔写真または名前の頭文字、役割、一行の説明で示します。",
+        },
+        images: [
+          { src: "/screenshots/layout-matrix.png", alt: { en: "A 2 by 2 matrix of four cards with axis names", "zh-TW": "四張卡片組成、附座標軸名稱的 2 × 2 矩陣", "zh-CN": "四张卡片组成、附坐标轴名称的 2 × 2 矩阵", ja: "軸の名前付きで 4 枚のカードからなる 2 × 2 のマトリクス" }, caption: "matrix" },
+          { src: "/screenshots/layout-matrix-lines.png", alt: { en: "Four quadrants split by a cross", "zh-TW": "以十字線分隔的四個象限", "zh-CN": "以十字线分隔的四个象限", ja: "十字線で区切られた 4 つの象限" }, caption: "matrix/lines" },
+          { src: "/screenshots/layout-compare.png", alt: { en: "Three plans side by side, the middle one highlighted", "zh-TW": "並排的三個方案，中間的被標示", "zh-CN": "并排的三个方案，中间的被标示", ja: "3 つのプランが並び、中央が強調されている" }, caption: "compare" },
+          { src: "/screenshots/layout-team.png", alt: { en: "Four team cards: three with initials and one with a portrait", "zh-TW": "四張成員卡片：三張是首字、一張是頭像", "zh-CN": "四张成员卡片：三张是首字、一张是头像", ja: "4 枚のメンバーカード。3 枚はイニシャル、1 枚は顔写真" }, caption: "team" },
+        ],
+      },
+    ],
+  },
+  {
+    id: "layouts-flow",
+    category: "layouts",
+    title: { en: "Flows and diagrams", "zh-TW": "流程與圖解", "zh-CN": "流程与图解", ja: "フローと図解" },
+    summary: {
+      en: "process, hub, timeline, and gantt: steps in order, a central idea, dates, and a project schedule.",
+      "zh-TW": "process、hub、timeline 與 gantt：依序的步驟、中心概念、時間點與專案進度表。",
+      "zh-CN": "process、hub、timeline 与 gantt：依序的步骤、中心概念、时间点与项目进度表。",
+      ja: "process、hub、timeline、gantt：順序のある手順、中心概念、日付、プロジェクトの予定表。",
+    },
+    sections: [
+      {
+        id: "gallery-process",
+        examples: [
+          { title: "hub", code: `{
+  "layout": "hub",
+  "title": "The platform",
+  "center": "SlideForge",
+  "items": [
+    { "title": "Layouts", "text": "Families and variants" },
+    { "title": "Templates", "text": "Data only" },
+    { "title": "Export", "text": "Editable PPTX" }
+  ]
+}` },
+        ],
+        title: { en: "Gallery: process and hub", "zh-TW": "版型一覽：process and hub", "zh-CN": "版式一览：process and hub", ja: "ギャラリー：process and hub" },
+        body: {
+          en: "process shows two to six numbered steps joined by arrows; process/vertical stacks them with down arrows. Use it for a flow, and timeline when the steps have dates. hub puts a central idea in an accent circle with three to six items around it, the first half on the left and the rest on the right, each joined to the center by a line.",
+          "zh-TW": "process 以箭頭連接二到六個編號步驟；process/vertical 則上下堆疊並用向下箭頭。流程用它，步驟有日期時用 timeline。hub 把中心概念放在強調色圓形裡，周圍有三到六個項目，前半在左、其餘在右，各以一條線連到中心。",
+          "zh-CN": "process 以箭头连接二到六个编号步骤；process/vertical 则上下堆叠并用向下箭头。流程用它，步骤有日期时用 timeline。hub 把中心概念放在强调色圆形里，周围有三到六个项目，前一半在左、其余在右，各以一条线连到中心。",
+          ja: "process は 2〜6 個の番号付きステップを矢印でつなぎます。process/vertical は縦に積み、下向きの矢印でつなぎます。流れにはこれを、日付のあるステップには timeline を使います。hub は中心の考えをアクセント色の円に置き、周りに 3〜6 個の項目を、前半を左に、残りを右に並べて、それぞれ線で中心とつなぎます。",
+        },
+        code: `{
+  "layout": "process",
+  "title": "How it works",
+  "steps": [
+    { "title": "Write", "text": "JSON content" },
+    { "title": "Build", "text": "HTML slides" },
+    { "title": "Export" }
+  ]
+}`,
+        images: [
+          { src: "/screenshots/layout-process.png", alt: { en: "Four steps in a row joined by arrows", "zh-TW": "以箭頭連接、排成一列的四個步驟", "zh-CN": "以箭头连接、排成一行的四个步骤", ja: "矢印でつながった一列の 4 ステップ" }, caption: "process" },
+          { src: "/screenshots/layout-process-vertical.png", alt: { en: "Three steps stacked and joined by down arrows", "zh-TW": "以向下箭頭連接、上下堆疊的三個步驟", "zh-CN": "以向下箭头连接、上下堆叠的三个步骤", ja: "下向きの矢印でつながった縦の 3 ステップ" }, caption: "process/vertical" },
+          { src: "/screenshots/layout-hub.png", alt: { en: "A central circle with five items joined to it by lines", "zh-TW": "中心圓形與以線連接的五個項目", "zh-CN": "中心圆形与以线连接的五个项目", ja: "中央の円と線でつながった 5 つの項目" }, caption: "hub" },
+        ],
+      },
+      {
+        id: "gallery-timeline",
+        title: { en: "Gallery: timeline", "zh-TW": "版型一覽：timeline", "zh-CN": "版式一览：timeline", ja: "ギャラリー：timeline" },
+        body: {
+          en: "timeline draws 2–6 events left to right in equal columns: a date in the accent color, a marker on a shared rail, a title, and optional text. The rail and markers export as editable shapes.",
+          "zh-TW": "timeline 由左到右以等寬欄位繪製 2–6 個事件：強調色的 date、共用軸線上的圓點、title 與選填的 text。軸線與圓點會匯出為可編輯的圖形。",
+          "zh-CN": "timeline 由左到右以等宽栏位绘制 2–6 个事件：强调色的 date、共用轴线上的圆点、title 与可选的 text。轴线与圆点会导出为可编辑的图形。",
+          ja: "timeline は 2〜6 個のイベントを左から右へ同じ幅の列で描きます。強調色の date、共通の線の上のマーカー、title、任意の text です。線とマーカーは編集できる図形として書き出されます。",
+        },
+        code: `{
+  "layout": "timeline",
+  "title": "From idea to deck",
+  "events": [
+    {
+      "date": "Step 1",
+      "title": "Outline",
+      "text": "One idea per slide."
+    },
+    { "date": "Step 2", "title": "Write JSON" },
+    { "date": "Step 3", "title": "Export" }
+  ]
+}`,
+        images: [
+          { src: "/screenshots/layout-timeline.png", alt: { en: "Timeline slide with four steps on a horizontal rail", "zh-TW": "水平軸線上有四個步驟的時間軸投影片", "zh-CN": "水平轴线上有四个步骤的时间轴幻灯片", ja: "横線の上に 4 つのステップがあるタイムラインのスライド" }, caption: "timeline" },
+        ],
+      },
+      {
+        id: "gallery-gantt",
+        title: { en: "Gallery: gantt", "zh-TW": "版型一覽：gantt", "zh-CN": "版式一览：gantt", ja: "ギャラリー：gantt" },
+        body: {
+          en: "gantt is a project schedule. periods label equal columns such as months, weeks, or sprints; each task's bar spans the periods from start to end, counted from 1 and inclusive. With progress, that share of the bar is drawn in the accent color and the percentage appears beside the label. Rows keep the same height, and up to eight tasks fit.",
+          "zh-TW": "gantt 是專案進度表。periods 是等寬時段的名稱，例如月份、週次或 sprint；每個任務的長條從 start 橫跨到 end，從 1 起算且含頭尾。設定 progress 時，長條中對應比例的部分以強調色顯示，百分比會列在任務名稱旁。每列高度固定，最多可放八個任務。",
+          "zh-CN": "gantt 是项目进度表。periods 是等宽时段的名称，例如月份、周次或 sprint；每个任务的长条从 start 横跨到 end，从 1 起算且含首尾。设置 progress 时，长条中对应比例的部分以强调色显示，百分比会列在任务名称旁。每行高度固定，最多可放八个任务。",
+          ja: "gantt はプロジェクトの進捗表です。periods は月、週、スプリントなど同じ幅の期間の名前で、各タスクのバーは start から end までの期間にまたがります（1 から数え、両端を含みます）。progress を指定すると、その割合だけバーが強調色になり、パーセントがタスク名の横に表示されます。行の高さは一定で、タスクは 8 つまで収まります。",
+        },
+        code: `{
+  "layout": "gantt",
+  "title": "Project schedule",
+  "periods": ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
+  "tasks": [
+    { "label": "Research", "start": 1, "end": 2 },
+    { "label": "Design", "start": 2, "end": 4, "progress": 60 },
+    { "label": "Launch", "start": 6, "end": 6 }
+  ]
+}`,
+        images: [
+          { src: "/screenshots/layout-gantt.png", alt: { en: "Gantt slide with five tasks over eight months, four with progress", "zh-TW": "八個月份中五個任務的甘特圖投影片，其中四個標示完成度", "zh-CN": "八个月份中五个任务的甘特图幻灯片，其中四个标示完成度", ja: "8 か月にわたる 5 つのタスクのガントチャートのスライド。うち 4 つに進捗あり" }, caption: "gantt" },
+        ],
+      },
+    ],
+  },
+  {
+    id: "layouts-data",
+    category: "layouts",
+    title: { en: "Tables, charts, and quotes", "zh-TW": "表格、圖表與引言", "zh-CN": "表格、图表与引言", ja: "表・チャート・引用" },
+    summary: {
+      en: "table, chart, and quote: grids of text, bars, columns, and rings, and one short quotation.",
+      "zh-TW": "table、chart 與 quote：文字表格、長條、直條、環形圖與一段簡短引言。",
+      "zh-CN": "table、chart 与 quote：文字表格、条形、竖条、环形图与一段简短引言。",
+      ja: "table、chart、quote：テキストの表、棒・縦棒・リングのグラフ、短い引用。",
+    },
+    sections: [
+      {
+        id: "gallery-data",
+        examples: [
+          { title: "table", code: `{
+  "layout": "table",
+  "title": "Delivery plan",
+  "columns": ["Milestone", "Scope", "Status"],
+  "rows": [
+    ["Foundation", "Data model and themes", "Ready"],
+    ["Export", "PowerPoint", "Ready"]
+  ]
+}` },
+          { title: "chart", code: `{
+  "layout": "chart/donut",
+  "title": "Share of effort",
+  "unit": "%",
+  "data": [
+    { "label": "Plan", "value": 40 },
+    { "label": "Build", "value": 35 },
+    { "label": "Review", "value": 25 }
+  ],
+  "blocks": [{ "type": "paragraph", "text": "Optional text beside the chart." }]
+}` },
+          { title: "quote", code: `{
+  "layout": "quote/centered",
+  "title": "One more thing",
+  "quote": "Keep content and design apart, and both stay easy to change.",
+  "attribution": "SlideForge design principle"
+}` },
+        ],
+        title: { en: "Gallery: table, chart, and quote", "zh-TW": "版型一覽：table、chart 與 quote", "zh-CN": "版式一览：table、chart 与 quote", ja: "ギャラリー：table、chart、quote" },
+        body: {
+          en: "Tables and bars are editable text and shapes; chart blocks form an explanation column. chart/columns draws vertical columns, and chart/donut a ring of shares with a legend, exported as editable freeform shapes. quote/centered drops the accent bar.",
+          "zh-TW": "表格與長條都是可編輯的文字與圖形；chart 的 blocks 會成為右側說明欄。chart/columns 畫出直條，chart/donut 畫出附圖例的環形比例圖，匯出為可編輯的自由形狀。quote/centered 不顯示強調線。",
+          "zh-CN": "表格与长条都是可编辑的文字与图形；chart 的 blocks 会成为右侧说明栏。chart/columns 画出竖条，chart/donut 画出附图例的环形比例图，导出为可编辑的自由形状。quote/centered 不显示强调线。",
+          ja: "表とバーは編集できるテキストと図形です。chart の blocks は説明列になります。chart/columns は縦の棒、chart/donut は凡例付きのリング状の割合を描き、編集できる自由形状としてエクスポートされます。quote/centered では強調線がなくなります。",
+        },
+        images: [
+          { src: "/screenshots/layout-table.png", alt: { en: "Table slide with three columns", "zh-TW": "三欄的表格投影片", "zh-CN": "三列的表格幻灯片", ja: "3 列の表のスライド" }, caption: "table" },
+          { src: "/screenshots/layout-chart.png", alt: { en: "Chart slide with bars and an explanation column", "zh-TW": "含長條與說明欄的圖表投影片", "zh-CN": "含长条与说明栏的图表幻灯片", ja: "バーと説明列のあるグラフのスライド" }, caption: "chart" },
+          { src: "/screenshots/layout-chart-columns.png", alt: { en: "Four vertical columns with values above and labels below", "zh-TW": "上方標值、下方標籤的四根直條", "zh-CN": "上方标值、下方标签的四根竖条", ja: "上に値、下にラベルのある 4 本の縦棒" }, caption: "chart/columns" },
+          { src: "/screenshots/layout-chart-donut.png", alt: { en: "A ring of four shares with a legend", "zh-TW": "含圖例的四段環形比例圖", "zh-CN": "含图例的四段环形比例图", ja: "凡例付きの 4 区分のリング" }, caption: "chart/donut" },
+          { src: "/screenshots/layout-quote.png", alt: { en: "Quote beside an accent bar", "zh-TW": "旁邊有強調線的引言", "zh-CN": "旁边有强调线的引言", ja: "強調線の横の引用" }, caption: "quote" },
+          { src: "/screenshots/layout-quote-centered.png", alt: { en: "Centered quote without the bar", "zh-TW": "置中、沒有強調線的引言", "zh-CN": "居中、没有强调线的引言", ja: "強調線のない中央揃えの引用" }, caption: "quote/centered" },
+        ],
+      },
+    ],
+  },
+  {
+    id: "templates",
+    category: "design",
     title: { en: "Templates", "zh-TW": "範本", "zh-CN": "模板", ja: "テンプレート" },
     summary: {
       en: "A template is data only: it restyles a deck through design tokens, shadows, and gradients without changing layouts or content.",
@@ -1292,8 +1466,95 @@ docker compose -f docker/compose.yaml --profile cli \\
     ],
   },
   {
+    id: "design-tokens",
+    category: "design",
+    title: { en: "Design tokens", "zh-TW": "Design Tokens", "zh-CN": "Design Tokens", ja: "デザイントークン" },
+    summary: {
+      en: "One set of tokens defines the canvas, palettes, spacing, and type for both HTML rendering and PPTX export.",
+      "zh-TW": "同一組 tokens 定義畫布、色票、間距與字級，HTML 排版與 PPTX 匯出共用。",
+      "zh-CN": "同一组 tokens 定义画布、色板、间距与字号，HTML 排版与 PPTX 导出共用。",
+      ja: "1 組のトークンでキャンバス、パレット、余白、文字を定義し、HTML の描画と PPTX の書き出しで共有します。",
+    },
+    sections: [
+      {
+        id: "canvas",
+        title: { en: "Canvas", "zh-TW": "畫布", "zh-CN": "画布", ja: "キャンバス" },
+        body: {
+          en: "Slides are 1920 × 1080 CSS pixels, exported as 13.333 × 7.5 inch 16:9 PowerPoint slides, so 1 CSS pixel becomes 0.5 pt. Tokens live in src/themes/tokens.ts and are exposed to CSS as --sf-* custom properties.",
+          "zh-TW": "投影片為 1920 × 1080 CSS 像素，匯出為 13.333 × 7.5 吋的 16:9 PowerPoint 投影片，因此 1 CSS 像素等於 0.5 pt。tokens 定義在 src/themes/tokens.ts，並以 --sf-* CSS 自訂屬性提供給樣式表。",
+          "zh-CN": "幻灯片为 1920 × 1080 CSS 像素，导出为 13.333 × 7.5 英寸的 16:9 PowerPoint 幻灯片，因此 1 CSS 像素等于 0.5 pt。tokens 定义在 src/themes/tokens.ts，并以 --sf-* CSS 自定义属性提供给样式表。",
+          ja: "スライドは 1920 × 1080 CSS ピクセルで、13.333 × 7.5 インチの 16:9 PowerPoint スライドとして書き出されるため、1 CSS ピクセルは 0.5 pt になります。トークンは src/themes/tokens.ts にあり、--sf-* の CSS カスタムプロパティとして公開されます。",
+        },
+      },
+      {
+        id: "themes",
+        title: { en: "Themes", "zh-TW": "主題", "zh-CN": "主题", ja: "テーマ" },
+        body: {
+          en: "Choose light or dark per presentation with the theme field. A template can override any of these colors for either theme; the built-in values are:",
+          "zh-TW": "以 theme 欄位為每份簡報選擇 light 或 dark。範本可以覆寫任一主題的這些色彩；內建值如下：",
+          "zh-CN": "以 theme 字段为每份演示文稿选择 light 或 dark。模板可以覆盖任一主题的这些色彩；内置值如下：",
+          ja: "theme フィールドでプレゼンテーションごとに light か dark を選びます。テンプレートはどちらのテーマのこれらの色も上書きできます。組み込みの値は次のとおりです。",
+        },
+        table: {
+          caption: { en: "Theme colors", "zh-TW": "主題色彩", "zh-CN": "主题色彩", ja: "テーマの色" },
+          headers: ["Token", "light", "dark"],
+          rows: [
+            ["background", "#ffffff", "#101827"],
+            ["foreground", "#172033", "#f8fafc"],
+            ["muted", "#526078", "#b5c2d6"],
+            ["accent", "#2563eb", "#60a5fa"],
+            ["surface", "#f1f5f9", "#1e293b"],
+            ["border", "#cbd5e1", "#475569"],
+          ],
+        },
+      },
+      {
+        id: "typography",
+        title: { en: "Typography", "zh-TW": "字級", "zh-CN": "字号", ja: "タイポグラフィ" },
+        body: {
+          en: "Sizes are CSS pixels on the fixed canvas, followed by the exported PowerPoint size.",
+          "zh-TW": "尺寸以固定畫布上的 CSS 像素計，後面是匯出到 PowerPoint 的字級。",
+          "zh-CN": "尺寸以固定画布上的 CSS 像素计，后面是导出到 PowerPoint 的字号。",
+          ja: "サイズは固定キャンバス上の CSS ピクセルで、続けて PowerPoint に書き出されるサイズを示します。",
+        },
+        table: {
+          caption: { en: "Type sizes", "zh-TW": "字級", "zh-CN": "字号", ja: "文字サイズ" },
+          headers: [
+            { en: "Element", "zh-TW": "元素", "zh-CN": "元素", ja: "要素" },
+            { en: "Size", "zh-TW": "尺寸", "zh-CN": "尺寸", ja: "サイズ" },
+          ],
+          rows: [
+            [{ en: "Cover title", "zh-TW": "封面標題", "zh-CN": "封面标题", ja: "表紙のタイトル" }, "90px · 45 pt"],
+            [{ en: "Slide title", "zh-TW": "投影片標題", "zh-CN": "幻灯片标题", ja: "スライドのタイトル" }, "60px · 30 pt"],
+            [{ en: "Body text", "zh-TW": "內文", "zh-CN": "正文", ja: "本文" }, "36px · 18 pt"],
+            [{ en: "Subtitle", "zh-TW": "副標題", "zh-CN": "副标题", ja: "サブタイトル" }, "33px · 16.5 pt"],
+            [{ en: "Table and chart", "zh-TW": "表格與圖表", "zh-CN": "表格与图表", ja: "表とグラフ" }, "31.5px · 15.75 pt"],
+            [{ en: "Caption", "zh-TW": "圖說", "zh-CN": "图注", ja: "キャプション" }, "25.5px · 12.75 pt"],
+            [{ en: "Footer", "zh-TW": "頁尾", "zh-CN": "页脚", ja: "フッター" }, "24px · 12 pt"],
+          ],
+        },
+      },
+      {
+        id: "fonts",
+        title: { en: "Fonts", "zh-TW": "字型", "zh-CN": "字体", ja: "フォント" },
+        body: {
+          en: "The default stack is Arial, Microsoft JhengHei, Noto Sans CJK TC, Noto Sans TC, sans-serif. Export sets Microsoft JhengHei as the PowerPoint East Asian font, so Chinese text on Windows uses the same font in HTML and PowerPoint.",
+          "zh-TW": "預設字型順序為 Arial、Microsoft JhengHei、Noto Sans CJK TC、Noto Sans TC、sans-serif。匯出時會把 PowerPoint 的東亞字型設為微軟正黑體，所以在 Windows 上中文在 HTML 與 PowerPoint 會使用同一套字型。",
+          "zh-CN": "默认字体顺序为 Arial、Microsoft JhengHei、Noto Sans CJK TC、Noto Sans TC、sans-serif。导出时会把 PowerPoint 的东亚字体设为 Microsoft JhengHei，所以在 Windows 上中文在 HTML 与 PowerPoint 会使用同一套字体。",
+          ja: "既定のフォント順は Arial、Microsoft JhengHei、Noto Sans CJK TC、Noto Sans TC、sans-serif です。書き出し時に PowerPoint の東アジア言語フォントを Microsoft JhengHei に設定するため、Windows では中国語のテキストが HTML と PowerPoint で同じフォントになります。",
+        },
+        note: {
+          en: "A fallback list does not install fonts, and system fonts are not guaranteed to be embedded. Install the same fonts on the machine that opens the deck.",
+          "zh-TW": "字型清單不會安裝字型，系統字型也不保證會嵌入檔案。請在開啟簡報的電腦上安裝相同字型。",
+          "zh-CN": "字体列表不会安装字体，系统字体也不保证会嵌入文件。请在打开演示文稿的电脑上安装相同字体。",
+          ja: "フォントの代替リストはフォントをインストールせず、システムフォントの埋め込みも保証されません。デッキを開く端末にも同じフォントをインストールしてください。",
+        },
+      },
+    ],
+  },
+  {
     id: "backgrounds",
-    category: "authoring",
+    category: "design",
     title: { en: "Math Background Studio", "zh-TW": "Math Background Studio", "zh-CN": "Math Background Studio", ja: "Math Background Studio" },
     heading: { en: "Backgrounds with Math Background Studio", "zh-TW": "以 Math Background Studio 製作背景", "zh-CN": "以 Math Background Studio 制作背景", ja: "Math Background Studio で背景を作る" },
     summary: {
@@ -1453,154 +1714,6 @@ docker compose -f docker/compose.yaml --profile cli \\
           "zh-CN": "本站的截图由仓库中的 npm run docs:screenshots 生成：以 SlideForge 绘制幻灯片，并打开线上的英文版 studio。",
           ja: "このサイトのスクリーンショットはリポジトリの npm run docs:screenshots で生成しています。SlideForge でスライドを描画し、公開中の studio を英語で開いて撮影します。",
         },
-      },
-    ],
-  },
-  {
-    id: "design-tokens",
-    category: "authoring",
-    title: { en: "Design tokens", "zh-TW": "Design Tokens", "zh-CN": "Design Tokens", ja: "デザイントークン" },
-    summary: {
-      en: "One set of tokens defines the canvas, palettes, spacing, and type for both HTML rendering and PPTX export.",
-      "zh-TW": "同一組 tokens 定義畫布、色票、間距與字級，HTML 排版與 PPTX 匯出共用。",
-      "zh-CN": "同一组 tokens 定义画布、色板、间距与字号，HTML 排版与 PPTX 导出共用。",
-      ja: "1 組のトークンでキャンバス、パレット、余白、文字を定義し、HTML の描画と PPTX の書き出しで共有します。",
-    },
-    sections: [
-      {
-        id: "canvas",
-        title: { en: "Canvas", "zh-TW": "畫布", "zh-CN": "画布", ja: "キャンバス" },
-        body: {
-          en: "Slides are 1920 × 1080 CSS pixels, exported as 13.333 × 7.5 inch 16:9 PowerPoint slides, so 1 CSS pixel becomes 0.5 pt. Tokens live in src/themes/tokens.ts and are exposed to CSS as --sf-* custom properties.",
-          "zh-TW": "投影片為 1920 × 1080 CSS 像素，匯出為 13.333 × 7.5 吋的 16:9 PowerPoint 投影片，因此 1 CSS 像素等於 0.5 pt。tokens 定義在 src/themes/tokens.ts，並以 --sf-* CSS 自訂屬性提供給樣式表。",
-          "zh-CN": "幻灯片为 1920 × 1080 CSS 像素，导出为 13.333 × 7.5 英寸的 16:9 PowerPoint 幻灯片，因此 1 CSS 像素等于 0.5 pt。tokens 定义在 src/themes/tokens.ts，并以 --sf-* CSS 自定义属性提供给样式表。",
-          ja: "スライドは 1920 × 1080 CSS ピクセルで、13.333 × 7.5 インチの 16:9 PowerPoint スライドとして書き出されるため、1 CSS ピクセルは 0.5 pt になります。トークンは src/themes/tokens.ts にあり、--sf-* の CSS カスタムプロパティとして公開されます。",
-        },
-      },
-      {
-        id: "themes",
-        title: { en: "Themes", "zh-TW": "主題", "zh-CN": "主题", ja: "テーマ" },
-        body: {
-          en: "Choose light or dark per presentation with the theme field. A template can override any of these colors for either theme; the built-in values are:",
-          "zh-TW": "以 theme 欄位為每份簡報選擇 light 或 dark。範本可以覆寫任一主題的這些色彩；內建值如下：",
-          "zh-CN": "以 theme 字段为每份演示文稿选择 light 或 dark。模板可以覆盖任一主题的这些色彩；内置值如下：",
-          ja: "theme フィールドでプレゼンテーションごとに light か dark を選びます。テンプレートはどちらのテーマのこれらの色も上書きできます。組み込みの値は次のとおりです。",
-        },
-        table: {
-          caption: { en: "Theme colors", "zh-TW": "主題色彩", "zh-CN": "主题色彩", ja: "テーマの色" },
-          headers: ["Token", "light", "dark"],
-          rows: [
-            ["background", "#ffffff", "#101827"],
-            ["foreground", "#172033", "#f8fafc"],
-            ["muted", "#526078", "#b5c2d6"],
-            ["accent", "#2563eb", "#60a5fa"],
-            ["surface", "#f1f5f9", "#1e293b"],
-            ["border", "#cbd5e1", "#475569"],
-          ],
-        },
-      },
-      {
-        id: "typography",
-        title: { en: "Typography", "zh-TW": "字級", "zh-CN": "字号", ja: "タイポグラフィ" },
-        body: {
-          en: "Sizes are CSS pixels on the fixed canvas, followed by the exported PowerPoint size.",
-          "zh-TW": "尺寸以固定畫布上的 CSS 像素計，後面是匯出到 PowerPoint 的字級。",
-          "zh-CN": "尺寸以固定画布上的 CSS 像素计，后面是导出到 PowerPoint 的字号。",
-          ja: "サイズは固定キャンバス上の CSS ピクセルで、続けて PowerPoint に書き出されるサイズを示します。",
-        },
-        table: {
-          caption: { en: "Type sizes", "zh-TW": "字級", "zh-CN": "字号", ja: "文字サイズ" },
-          headers: [
-            { en: "Element", "zh-TW": "元素", "zh-CN": "元素", ja: "要素" },
-            { en: "Size", "zh-TW": "尺寸", "zh-CN": "尺寸", ja: "サイズ" },
-          ],
-          rows: [
-            [{ en: "Cover title", "zh-TW": "封面標題", "zh-CN": "封面标题", ja: "表紙のタイトル" }, "90px · 45 pt"],
-            [{ en: "Slide title", "zh-TW": "投影片標題", "zh-CN": "幻灯片标题", ja: "スライドのタイトル" }, "60px · 30 pt"],
-            [{ en: "Body text", "zh-TW": "內文", "zh-CN": "正文", ja: "本文" }, "36px · 18 pt"],
-            [{ en: "Subtitle", "zh-TW": "副標題", "zh-CN": "副标题", ja: "サブタイトル" }, "33px · 16.5 pt"],
-            [{ en: "Table and chart", "zh-TW": "表格與圖表", "zh-CN": "表格与图表", ja: "表とグラフ" }, "31.5px · 15.75 pt"],
-            [{ en: "Caption", "zh-TW": "圖說", "zh-CN": "图注", ja: "キャプション" }, "25.5px · 12.75 pt"],
-            [{ en: "Footer", "zh-TW": "頁尾", "zh-CN": "页脚", ja: "フッター" }, "24px · 12 pt"],
-          ],
-        },
-      },
-      {
-        id: "fonts",
-        title: { en: "Fonts", "zh-TW": "字型", "zh-CN": "字体", ja: "フォント" },
-        body: {
-          en: "The default stack is Arial, Microsoft JhengHei, Noto Sans CJK TC, Noto Sans TC, sans-serif. Export sets Microsoft JhengHei as the PowerPoint East Asian font, so Chinese text on Windows uses the same font in HTML and PowerPoint.",
-          "zh-TW": "預設字型順序為 Arial、Microsoft JhengHei、Noto Sans CJK TC、Noto Sans TC、sans-serif。匯出時會把 PowerPoint 的東亞字型設為微軟正黑體，所以在 Windows 上中文在 HTML 與 PowerPoint 會使用同一套字型。",
-          "zh-CN": "默认字体顺序为 Arial、Microsoft JhengHei、Noto Sans CJK TC、Noto Sans TC、sans-serif。导出时会把 PowerPoint 的东亚字体设为 Microsoft JhengHei，所以在 Windows 上中文在 HTML 与 PowerPoint 会使用同一套字体。",
-          ja: "既定のフォント順は Arial、Microsoft JhengHei、Noto Sans CJK TC、Noto Sans TC、sans-serif です。書き出し時に PowerPoint の東アジア言語フォントを Microsoft JhengHei に設定するため、Windows では中国語のテキストが HTML と PowerPoint で同じフォントになります。",
-        },
-        note: {
-          en: "A fallback list does not install fonts, and system fonts are not guaranteed to be embedded. Install the same fonts on the machine that opens the deck.",
-          "zh-TW": "字型清單不會安裝字型，系統字型也不保證會嵌入檔案。請在開啟簡報的電腦上安裝相同字型。",
-          "zh-CN": "字体列表不会安装字体，系统字体也不保证会嵌入文件。请在打开演示文稿的电脑上安装相同字体。",
-          ja: "フォントの代替リストはフォントをインストールせず、システムフォントの埋め込みも保証されません。デッキを開く端末にも同じフォントをインストールしてください。",
-        },
-      },
-    ],
-  },
-  {
-    id: "ai-workflow",
-    category: "authoring",
-    title: { en: "AI workflow", "zh-TW": "AI 撰寫流程", "zh-CN": "AI 编写流程", ja: "AI ワークフロー" },
-    heading: { en: "AI authoring workflow", "zh-TW": "AI 撰寫流程", "zh-CN": "AI 编写流程", ja: "AI による作成ワークフロー" },
-    summary: {
-      en: "AI agents produce presentations from the executable schema and shared design system, without changing the rendering engine.",
-      "zh-TW": "AI 代理依可執行的 schema 與共用設計系統產生簡報，不修改排版引擎。",
-      "zh-CN": "AI 代理依可执行的 schema 与共用设计系统生成演示文稿，不修改排版引擎。",
-      ja: "AI エージェントは描画エンジンを変更せず、実行可能なスキーマと共通のデザインシステムからプレゼンテーションを作成します。",
-    },
-    sections: [
-      {
-        id: "brief",
-        title: { en: "1. Establish the brief", "zh-TW": "1. 確認需求", "zh-CN": "1. 确认需求", ja: "1. 要件を確認する" },
-        body: {
-          en: "Determine the audience, language, message, slide count, and source facts. Do not fabricate metrics or sources, and label illustrative data clearly.",
-          "zh-TW": "確認對象、語言、訊息、投影片數與資料來源。不要捏造數據或出處，示意用的資料要清楚標示。",
-          "zh-CN": "确认对象、语言、信息、幻灯片数与数据来源。不要捏造数据或出处，示意用的数据要清楚标示。",
-          ja: "対象者、言語、メッセージ、スライド数、根拠となる事実を確認します。数値や出典を捏造せず、例示用のデータはその旨を明記します。",
-        },
-      },
-      {
-        id: "author",
-        title: { en: "2. Author structured content", "zh-TW": "2. 撰寫結構化內容", "zh-CN": "2. 编写结构化内容", ja: "2. 構造化された内容を書く" },
-        body: {
-          en: "Start from init, keep only schema-supported fields, and pick layouts by purpose. Use plain strings rather than Markdown or HTML.",
-          "zh-TW": "從 init 開始，只保留 schema 支援的欄位，依用途選擇版型。內容用純文字，不要用 Markdown 或 HTML。",
-          "zh-CN": "从 init 开始，只保留 schema 支持的字段，依用途选择版式。内容用纯文本，不要用 Markdown 或 HTML。",
-          ja: "init から始め、スキーマが対応するフィールドだけを残し、目的に合わせてレイアウトを選びます。Markdown や HTML ではなくプレーンな文字列を使います。",
-        },
-        code: "node dist/cli/index.js init draft.json",
-      },
-      {
-        id: "review",
-        title: { en: "3. Preview, export, and validate", "zh-TW": "3. 預覽、匯出與驗證", "zh-CN": "3. 预览、导出与验证", ja: "3. プレビュー、書き出し、検証" },
-        body: {
-          en: "Review the fixed canvas for clipping, contrast, missing images, and density. Fix layout errors and investigate warnings instead of hiding them.",
-          "zh-TW": "在固定畫布上檢查裁切、對比、缺圖與內容密度。修正版面錯誤，並查明警告原因，而不是隱藏它們。",
-          "zh-CN": "在固定画布上检查裁切、对比、缺图与内容密度。修正版面错误，并查明警告原因，而不是隐藏它们。",
-          ja: "固定キャンバス上で、切れ、コントラスト、画像の欠落、情報量を確認します。レイアウトエラーは修正し、警告は隠さずに原因を調べます。",
-        },
-        code: `node dist/cli/index.js preview draft.json
-node dist/cli/index.js export draft.json --output draft.pptx
-node dist/cli/index.js validate draft.pptx`,
-      },
-      {
-        id: "report",
-        title: { en: "4. Report evidence honestly", "zh-TW": "4. 如實回報結果", "zh-CN": "4. 如实报告结果", ja: "4. 結果を正直に報告する" },
-        body: {
-          en: "State which checks ran and what remains unverified. Describe charts as editable bars, and never claim pixel perfection, embedded fonts, or a PowerPoint review that did not happen.",
-          "zh-TW": "說明實際執行了哪些檢查、哪些尚未驗證。圖表要描述為可編輯的長條，不要宣稱像素級一致、字型已嵌入，或宣稱做過其實沒做的 PowerPoint 檢查。",
-          "zh-CN": "说明实际运行了哪些检查、哪些尚未验证。图表要描述为可编辑的长条，不要宣称像素级一致、字体已嵌入，或宣称做过其实没做的 PowerPoint 检查。",
-          ja: "実際に行った検査と未確認の点を明記します。グラフは編集可能なバーとして説明し、ピクセル単位の一致、フォントの埋め込み、実施していない PowerPoint での確認を主張しないでください。",
-        },
-        links: [
-          { label: { en: "AGENTS.md", "zh-TW": "AGENTS.md", "zh-CN": "AGENTS.md", ja: "AGENTS.md" }, href: `${repositoryUrl}/blob/main/AGENTS.md` },
-        ],
       },
     ],
   },

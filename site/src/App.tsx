@@ -210,6 +210,12 @@ function App() {
                   </ul>
                 )}
                 {section.code && <CodeBlock code={section.code} copyLabel={t.copy} copiedLabel={t.copied} />}
+                {section.examples?.map((example) => (
+                  <div key={example.title} className="mt-6">
+                    <p className="font-mono text-sm font-semibold text-slate-600 dark:text-slate-400">{example.title}</p>
+                    <CodeBlock code={example.code} copyLabel={t.copy} copiedLabel={t.copied} />
+                  </div>
+                ))}
                 {section.links && <ResourceLinks links={section.links} locale={locale} />}
                 {section.note && <div className="mt-5 border-l-4 border-leaf bg-blue-50 px-5 py-4 text-sm leading-6 text-blue-950 dark:bg-blue-950/30 dark:text-blue-100">{section.note[locale]}</div>}
               </section>

@@ -14,6 +14,20 @@ a procedure; use [timeline](#timeline) when the steps have dates.
 - **Variants:** `default` places the steps in a row, and `vertical` stacks them with the title and text on one line. Five or six
   steps in a row are narrow, so keep their text short.
 
+The slide in JSON:
+
+```json
+{
+  "layout": "process",
+  "title": "How it works",
+  "steps": [
+    { "title": "Write", "text": "JSON content" },
+    { "title": "Build", "text": "HTML slides" },
+    { "title": "Export" }
+  ]
+}
+```
+
 ### `hub`
 
 A central idea with three to six items around it. The `center` is an accent circle; the `items` are cards, the first half
@@ -34,8 +48,41 @@ on the left and the rest on the right, each joined to the center by a line.
 
 ![Timeline slide with four steps on a horizontal rail](../site/public/screenshots/layout-timeline.png)
 
+The slide in JSON:
+
+```json
+{
+  "layout": "timeline",
+  "title": "From idea to deck",
+  "events": [
+    {
+      "date": "Step 1",
+      "title": "Outline",
+      "text": "One idea per slide."
+    },
+    { "date": "Step 2", "title": "Write JSON" },
+    { "date": "Step 3", "title": "Export" }
+  ]
+}
+```
+
 ### `gantt`
 
 A project schedule: tasks as bars over labeled periods, with optional progress.
 
 ![Gantt slide with five tasks over eight months, four with progress](../site/public/screenshots/layout-gantt.png)
+
+The slide in JSON:
+
+```json
+{
+  "layout": "gantt",
+  "title": "Project schedule",
+  "periods": ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
+  "tasks": [
+    { "label": "Research", "start": 1, "end": 2 },
+    { "label": "Design", "start": 2, "end": 4, "progress": 60 },
+    { "label": "Launch", "start": 6, "end": 6 }
+  ]
+}
+```

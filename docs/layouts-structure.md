@@ -10,6 +10,18 @@ Slides that open a presentation, divide it, link its parts, and close it. See th
 | **`cover/split`** | **`cover/band`** |
 | ![Cover slide with an accent panel on the right third](../site/public/screenshots/layout-cover-split.png) | ![Cover slide with a full-bleed accent band behind the title](../site/public/screenshots/layout-cover-band.png) |
 
+The slide in JSON:
+
+```json
+{
+  "layout": "cover",
+  "title": "Ideas into slides",
+  "subtitle": "Structured, editable presentations",
+  "author": "SlideForge",
+  "footer": "Phase 1"
+}
+```
+
 ### `agenda`
 
 An agenda lists two to eight topics as numbered rows: a number circle, a title, and optional text. Give an
@@ -83,6 +95,17 @@ The last slide: the `title` and `subtitle` as the farewell, and up to four `cont
 The variants match [section](layouts-structure.md#section): `default` has an accent rail, `centered` centers the text, and `band` fills the slide
 with the accent color.
 
+The slide in JSON:
+
+```json
+{
+  "layout": "closing",
+  "title": "Thank you",
+  "subtitle": "Questions welcome",
+  "contacts": [{ "label": "Email", "value": "hello@example.com" }]
+}
+```
+
 ### `blank`
 
 A blank slide shows only its background, here a
@@ -90,3 +113,13 @@ A blank slide shows only its background, here a
 slide in the theme's color.
 
 ![Blank slide showing only a wave background](../site/public/screenshots/layout-blank.png)
+
+The slide in JSON:
+
+```json
+{
+  "layout": "blank",
+  "title": "Closing",
+  "background": "https://bg.gordonkit.com/studio#d=…"
+}
+```

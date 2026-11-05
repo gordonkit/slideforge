@@ -33,6 +33,20 @@ lines.
 In PowerPoint the cards and circles are native shapes, and the polygons are native too: the hexagon and pentagon are
 editable freeform shapes behind the text, and the text and number stay editable.
 
+The slide in JSON:
+
+```json
+{
+  "layout": "cards/badge",
+  "title": "Three principles",
+  "cards": [
+    { "title": "Clarity", "blocks": [{ "type": "paragraph", "text": "One idea at a time." }] },
+    { "title": "Consistency", "blocks": [{ "type": "paragraph", "text": "Shared layouts and tokens." }] },
+    { "title": "Editability", "blocks": [{ "type": "paragraph", "text": "Text stays editable." }] }
+  ]
+}
+```
+
 ### `stats`
 
 Key figures: two to six large numbers, each with a label and an optional line of text. Keep each `value` short
@@ -101,6 +115,23 @@ the grid with an up arrow, and the horizontal one below it with a right arrow.
   lines.
 - **Export:** the cards or lines and the text are separate editable shapes.
 
+The slide in JSON:
+
+```json
+{
+  "layout": "matrix/lines",
+  "title": "Where to start",
+  "xAxis": "Impact",
+  "yAxis": "Effort",
+  "quadrants": [
+    { "title": "Quick wins", "blocks": [{ "type": "paragraph", "text": "Small effort, clear gain." }] },
+    { "title": "Big bets", "blocks": [{ "type": "paragraph", "text": "Large effort, large gain." }] },
+    { "title": "Fill-ins", "blocks": [{ "type": "paragraph", "text": "Do when there is time." }] },
+    { "title": "Avoid", "blocks": [{ "type": "paragraph", "text": "Large effort, small gain." }] }
+  ]
+}
+```
+
 ### `compare`
 
 Two to four options side by side, such as plans or alternatives. Each has a `title`, an optional `label` (a price or
@@ -129,3 +160,17 @@ portrait is drawn as a circle; without one, the first letter of the name is draw
 
 - **Arrangement:** like [cards](#cards): up to three in a row, four in one row, and the lower two of five centered.
 - **Export:** a portrait is a picture, and an initial is an editable circle with text.
+
+The slide in JSON:
+
+```json
+{
+  "layout": "team",
+  "title": "The team",
+  "members": [
+    { "name": "Ada Lin", "role": "Design", "text": "Systems and layout.", "image": "assets/ada.png" },
+    { "name": "Sam Roe", "role": "Engineering" },
+    { "name": "Mia Cho", "role": "Product" }
+  ]
+}
+```

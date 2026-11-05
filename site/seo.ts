@@ -45,11 +45,12 @@ function renderSections(page: Page, locale: Locale): string {
         <tbody>${section.table.rows.map((row) => `<tr>${row.map((cell) => `<td>${escapeHtml(cellText(cell, locale))}</td>`).join("")}</tr>`).join("")}</tbody>
       </table>` : "";
     const bullets = section.bullets ? `<ul>${section.bullets[locale].map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>` : "";
+    const examples = section.examples?.map((example) => `<h3>${escapeHtml(example.title)}</h3><pre><code>${escapeHtml(example.code)}</code></pre>`).join("") ?? "";
     const links = section.links?.map((link) => `<a href="${escapeHtml(link.href)}">${escapeHtml(link.label[locale])}</a>`).join(" ") ?? "";
     return `<section id="${escapeHtml(section.id)}">
       <h2>${escapeHtml(section.title[locale])}</h2>
       <p>${escapeHtml(section.body[locale])}</p>
-      ${interfaces}${table}${bullets}${section.code ? `<pre><code>${escapeHtml(section.code)}</code></pre>` : ""}${links}${section.note ? `<aside>${escapeHtml(section.note[locale])}</aside>` : ""}
+      ${interfaces}${table}${bullets}${examples}${section.code ? `<pre><code>${escapeHtml(section.code)}</code></pre>` : ""}${links}${section.note ? `<aside>${escapeHtml(section.note[locale])}</aside>` : ""}
     </section>`;
   }).join("");
 }
