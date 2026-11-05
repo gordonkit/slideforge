@@ -4,7 +4,9 @@ type Item = LayoutProps<"hub">["slide"]["items"][number];
 
 function HubItem({ item, side }: { item: Item; side: "left" | "right" }) {
   const body = <div className="sf-hub-item"><span className="sf-hub-title">{item.title}</span>{item.text && <span className="sf-hub-text">{item.text}</span>}</div>;
-  const line = <span className="sf-hub-line" aria-hidden="true" />;
+  const stub = <span className="sf-hub-stub" />;
+  const spine = <span className="sf-hub-spine" />;
+  const line = <span className="sf-hub-line" aria-hidden="true">{side === "left" ? <>{stub}{spine}</> : <>{spine}{stub}</>}</span>;
   return <li className={`sf-hub-row sf-hub-${side}`}>{side === "left" ? <>{body}{line}</> : <>{line}{body}</>}</li>;
 }
 
