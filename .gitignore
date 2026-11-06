@@ -7,3 +7,4 @@ test-results/
 .slideforge/
 slideforge.code-workspace
 .plan/
+site/.claude/
