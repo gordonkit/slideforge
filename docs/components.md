@@ -82,7 +82,7 @@ schema, renderer, and stylesheet, and is listed in `src/layouts/registry.ts`:
 | `code` | `figure.sf-code` with an optional `figcaption` language label and `pre.sf-code-body > code` |
 | `closing` | Enlarged title and subtitle like `section`, `ul.sf-contacts` of label and value lines, and an `aria-hidden` `.sf-closing-rail` for `default` |
 | `timeline` | `ol.sf-timeline` with one column per event: date, an `aria-hidden` marker on a rail, title, and optional text |
-| `gantt` | `.sf-gantt` rows on one grid: a period header, then per task a label (and progress) and a `role="img"` track holding its bar |
+| `gantt` | `.sf-gantt` rows on one grid: a period header, then per task a label (and progress) and a `role="img"` track holding its bar; optional `barRadius` sets local `--sf-gantt-radius` with fallback to `--sf-border-radius` |
 | `table` | `SlideTable` |
 | `chart` | `SlideChart`, optionally beside explanatory `ContentBlocks` |
 | `quote` | `figure.sf-quote` with the quote in a `blockquote` and the attribution in a `figcaption` |

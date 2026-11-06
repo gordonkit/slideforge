@@ -7,6 +7,9 @@ All notable changes to this project will be documented in this file. The format 
 
 ### Added
 
+- Gantt slides accept optional `barRadius` (0–120 CSS px) to override bar and track
+  corners locally. Omitted values retain the template radius; explicit zero keeps
+  square corners. Other layouts and progress behavior remain unchanged.
 - All authored display-text fields accept strings or strict `{ text, fontSize? }` objects.
   Absolute CSS-pixel sizes and role/template-relative `{ delta }` adjustments preserve
   existing string rendering; resolved sizes are limited to 8–240px.

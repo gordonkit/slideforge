@@ -275,6 +275,20 @@ describe("family/variant layout names", () => {
     expect(issues({ tasks: [] })?.[0]).toMatch(/^slides\.0\.tasks: /);
   });
 
+  it.each([0, 8, 12.5, 120])("overrides only the gantt radius with %s CSS pixels", barRadius => {
+    const slide = { layout: "gantt", periods: ["Jan", "Feb"], tasks: [{ label: "Design", start: 1, end: 2 }], barRadius };
+    const html = renderPresentation(deck(slide), { template: { name: "square", tokens: { border: { radius: 0 } } } });
+    expect(html).toContain(`<div class="sf-gantt" style="--sf-gantt-periods:2;--sf-gantt-radius:${barRadius}px">`);
+    expect(html).toContain("--sf-border-radius:0px");
+    expect(layoutStylesheet).toContain("border-radius: var(--sf-gantt-radius, var(--sf-border-radius))");
+  });
+
+  it.each([-1, 121, NaN, Infinity, "12px", null])("rejects invalid gantt barRadius %s", barRadius => {
+    const result = presentationSchema.safeParse(deck({ layout: "gantt", periods: ["Jan", "Feb"], tasks: [{ label: "Design", start: 1, end: 2 }], barRadius }));
+    expect(result.success).toBe(false);
+    expect(result.error?.issues[0]?.path).toEqual(["slides", 0, "barRadius"]);
+  });
+
   it("draws only the background of a blank slide and rejects the fields it does not draw", () => {
     const html = renderPresentation(deck({ layout: "blank", background: "bg.png", notes: "Pause here" }));
     expect(html).toContain('<section id="slide-1" class="sf-slide sf-layout-blank sf-variant-default" data-pptx="slide" data-layout="blank" data-variant="default" aria-label="1. x"><div class="sf-background" data-pptx-background="" aria-hidden="true"><img src="bg.png" alt=""/></div><aside data-pptx-notes="" hidden="">Pause here</aside></section>');

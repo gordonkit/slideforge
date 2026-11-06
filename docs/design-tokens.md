@@ -43,6 +43,10 @@ padding) add up to the 1080px height.
 `outline` is the title outline color; it is only visible when the `title-outline`
 border token is above 0.
 
+The shared `border.radius` remains the default for gantt bars and tracks. A
+gantt slide's optional `barRadius` (0–120 CSS px) locally overrides those corners
+without changing template tokens or other components; see [schema](schema.md).
+
 The HTML body has `data-theme="light"` or `"dark"`. The preview page surround is
 `#d8dee8`, outside the slide. Table header text is white in light mode and
 `#101827` in dark mode.

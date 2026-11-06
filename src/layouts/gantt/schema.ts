@@ -8,6 +8,7 @@ export const gantt = {
   family: "gantt",
   variants,
   slide: slideObject("gantt", variants, {
+    barRadius: z.number().finite().min(0).max(120).optional(),
     periods: z.array(displayText(text.max(40))).min(2).max(12),
     tasks: z.array(z.object({
       label: displayText(text.max(100)),

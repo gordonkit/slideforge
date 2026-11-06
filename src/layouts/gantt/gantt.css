@@ -8,8 +8,8 @@
 .sf-gantt-periods span { min-width: 0; overflow: hidden; text-align: center; color: var(--sf-muted); font-size: var(--sf-type-caption); white-space: nowrap; }
 .sf-gantt-label { margin: 0; display: flex; justify-content: space-between; gap: var(--sf-spacing-item); min-width: 0; line-height: var(--sf-type-title-leading); }
 .sf-gantt-percent { flex: none; color: var(--sf-muted); }
-.sf-gantt-track { height: var(--sf-chart-height); background: var(--sf-surface); border-radius: var(--sf-border-radius); overflow: hidden; }
+.sf-gantt-track { height: var(--sf-chart-height); background: var(--sf-surface); border-radius: var(--sf-gantt-radius, var(--sf-border-radius)); overflow: hidden; }
 /* Without progress the bar is solid; with it, the done part is the accent over the border color. */
-.sf-gantt-bar { position: relative; height: 100%; background: var(--sf-accent); border-radius: var(--sf-border-radius); overflow: hidden; }
+.sf-gantt-bar { position: relative; height: 100%; background: var(--sf-accent); border-radius: var(--sf-gantt-radius, var(--sf-border-radius)); overflow: hidden; }
 .sf-gantt-bar:has(.sf-gantt-progress) { background: var(--sf-border); }
 .sf-gantt-progress { position: absolute; top: 0; bottom: 0; left: 0; background: var(--sf-accent); }

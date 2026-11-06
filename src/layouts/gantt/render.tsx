@@ -5,7 +5,10 @@ import { textValue } from "../../schemas/fields.js";
 
 export function GanttLayout({ slide }: LayoutProps<"gantt">) {
   // The period count sizes every row's grid, the way a chart bar's width is set from its value.
-  const style = { "--sf-gantt-periods": slide.periods.length } as CSSProperties;
+  const style = {
+    "--sf-gantt-periods": slide.periods.length,
+    ...(slide.barRadius === undefined ? {} : { "--sf-gantt-radius": `${slide.barRadius}px` }),
+  } as CSSProperties;
   return <div className="sf-gantt" style={style}>
     <div className="sf-gantt-row sf-gantt-header" aria-hidden="true">
       <span />

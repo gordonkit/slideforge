@@ -78,6 +78,7 @@ The slide in JSON:
 {
   "layout": "gantt",
   "title": "Project schedule",
+  "barRadius": 12,
   "periods": ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
   "tasks": [
     { "label": "Research", "start": 1, "end": 2 },
@@ -86,3 +87,9 @@ The slide in JSON:
   ]
 }
 ```
+
+Optional `barRadius` sets this slide's bar and track corner radius in CSS pixels
+(finite 0–120, decimals accepted). Omit it to keep the template's shared
+`tokens.border.radius`; `0` explicitly restores square corners. It does not
+change the template or other layouts. Progress fill is clipped inside the bar,
+so 0%, partial, and 100% progress keep their existing behavior.

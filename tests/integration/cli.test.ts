@@ -20,6 +20,55 @@ beforeAll(async () => { directory = await mkdtemp(join(tmpdir(), 'slideforge-tes
 afterAll(async () => { await rm(directory, { recursive: true, force: true }); });
 
 describe('built CLI', () => {
+  it('overrides Gantt radii without changing template defaults or other layouts', async () => {
+    const input = join(directory, 'gantt-radius.json');
+    const html = join(directory, 'gantt-radius.html');
+    const output = join(directory, 'gantt-radius.pptx');
+    await writeFile(join(directory, 'rounded-template.json'), JSON.stringify({ name: 'rounded-test', tokens: { border: { radius: 18 } } }));
+    const gantt = {
+      layout: 'gantt', title: 'Schedule', periods: ['M1', 'M2'],
+      tasks: [
+        { label: 'Design', start: 1, end: 2, progress: 50 },
+        { label: 'Start', start: 1, end: 1, progress: 0 },
+        { label: 'Done', start: 2, end: 2, progress: 100 },
+        { label: 'Launch', start: 2, end: 2 },
+      ],
+    };
+    const slides = [gantt, { ...gantt, barRadius: 12 }, { ...gantt, barRadius: 0 }, { layout: 'cards', title: 'Unchanged', cards: [{ title: 'Card', blocks: [{ type: 'paragraph', text: 'Template radius' }] }] }];
+    const browser = await chromium.launch();
+    try {
+      const page = await browser.newPage({ viewport: { width: 1920, height: 1080 } });
+      for (const [template, defaultRadius] of [['corporate', '0px'], ['./rounded-template.json', '18px']]) {
+        await writeFile(input, JSON.stringify({ metadata: { title: 'Gantt radius' }, template, slides }));
+        await exec(process.execPath, [cli, 'build', input, '--output', html]);
+        await page.goto(pathToFileURL(html).href);
+        const metrics = await page.locator('.sf-gantt').evaluateAll(charts => charts.map(chart => ({
+          tracks: [...chart.querySelectorAll('.sf-gantt-track')].map(element => getComputedStyle(element).borderRadius),
+          bars: [...chart.querySelectorAll('.sf-gantt-bar')].map(element => getComputedStyle(element).borderRadius),
+          progress: [...chart.querySelectorAll('.sf-gantt-progress')].map(element => element.getBoundingClientRect().width / element.parentElement!.getBoundingClientRect().width),
+          clipping: [...chart.querySelectorAll('.sf-gantt-bar')].every(element => getComputedStyle(element).overflow === 'hidden'),
+        })));
+        for (const [index, expected] of [defaultRadius, '12px', '0px'].entries()) {
+          expect(metrics[index]!.tracks).toEqual(Array(4).fill(expected));
+          expect(metrics[index]!.bars).toEqual(Array(4).fill(expected));
+          expect(metrics[index]!.progress).toEqual([0.5, 0, 1]);
+          expect(metrics[index]!.clipping).toBe(true);
+        }
+        expect(await page.locator('.sf-card').evaluate(element => getComputedStyle(element).borderRadius)).toBe(defaultRadius);
+      }
+    } finally { await browser.close(); }
+    const issues = await exportPresentation(input, { output });
+    expect(issues.filter(issue => issue.severity === 'error')).toEqual([]);
+    const report = validatePptx(await readFile(output));
+    expect(report.valid, JSON.stringify(report.issues)).toBe(true);
+    expect(report.slideCount).toBe(4);
+    expect(report.editableTextCount).toBeGreaterThanOrEqual(12);
+    const files = unzipSync(await readFile(output));
+    const rounded = strFromU8(files['ppt/slides/slide2.xml']!);
+    expect(rounded).toContain('<a:t>Design</a:t>');
+    expect(rounded).toContain('<a:t>Launch</a:t>');
+  }, 120_000);
+
   it('renders font sizes and stat highlights across themes and exports editable sized text', async () => {
     const input = join(directory, 'display-text.json');
     const html = join(directory, 'display-text.html');

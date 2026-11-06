@@ -169,7 +169,7 @@ is reported with that family's valid names, such as
 | `"process"` | Required `steps`: 2–6 objects, each with `title` (max 100) and optional `text` |
 | `"hub"` | Required `center` (max 100) and `items`: 3–6 objects, each with `title` (max 100) and optional `text` |
 | `"timeline"` | Required `events`: 2–6 objects, each with trimmed nonempty `date` (max 100) and `title` (max 200), and optional `text` string, max 10,000 |
-| `"gantt"` | Required `periods` (2–12 trimmed nonempty strings, max 40 each) and `tasks` (1–8 objects, each with trimmed nonempty `label` (max 100), integer `start` and `end`, and optional `progress` from 0 to 100) |
+| `"gantt"` | Required `periods` (2–12 trimmed nonempty strings, max 40 each) and `tasks` (1–8 objects, each with trimmed nonempty `label` (max 100), integer `start` and `end`, and optional `progress` from 0 to 100); optional finite numeric `barRadius`, 0–120 CSS px |
 | `"table"` | Required `columns` (1–8 trimmed nonempty strings, max 200 each) and `rows` (1–14 arrays of 1–8 string cells, max 2,000 each); optional `columnWidths`: one numeric percentage per column, each greater than 0 and at most 100, summing to 100 |
 | `"chart"` | Required `data` (1–10 `{ "label", "value" }` objects); optional `unit` string, max 40; optional `blocks` (0–4 content blocks, default `[]`) |
 | `"quote"` | Required `quote`: trimmed nonempty string, max 1,000; optional `attribution` string, max 10,000 |
@@ -205,6 +205,14 @@ one-based and inclusive, so `end` must not exceed the number of periods and `sta
 must not be after `end`. With `progress`, the bar's first part (that percentage of
 its length) is drawn in the accent color, the rest in the border color, and the
 percentage is shown beside the label; without it the bar is solid accent.
+
+Gantt `barRadius` overrides the corner radius of that slide's task bars and
+background tracks only. For example, `"barRadius": 12` gives 12px corners;
+`0` explicitly selects square corners. Omitted values continue using the
+template's `tokens.border.radius`. Decimals are accepted, but strings such as
+`"12px"` are rejected. Other slides and the template are unchanged. Progress
+fills retain their proportions and are clipped by the rounded outer bar.
+CSS limits oversized radii to the available dimensions.
 
 A blank slide draws only its background: no title, content, footer, or slide number.
 Its required `title` names the slide (its accessible label) but is not drawn, and
