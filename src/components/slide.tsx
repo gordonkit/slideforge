@@ -2,13 +2,15 @@ import type { ReactNode } from "react";
 import type { Slide as PresentationSlide } from "../schemas/presentation.js";
 import { studioRenderUrl } from "../schemas/background.js";
 import { layoutFamily, slideVariant } from "../layouts/registry.js";
+import { type DisplayText, textValue } from "../schemas/fields.js";
+import { DisplayTextContent } from "./text.js";
 
 export function SlideSubtitle({ children }: { children: ReactNode }) {
   return <p className="sf-subtitle"><span className="sf-subtitle-mark" aria-hidden="true" /><span className="sf-subtitle-text">{children}</span></p>;
 }
 
-export function SlideTitle({ title, subtitle }: { title: string; subtitle?: string }) {
-  return <header className="sf-header"><h1>{title}</h1>{subtitle && <SlideSubtitle>{subtitle}</SlideSubtitle>}</header>;
+export function SlideTitle({ title, subtitle, large = false }: { title: DisplayText; subtitle?: DisplayText; large?: boolean }) {
+  return <header className="sf-header"><h1><DisplayTextContent value={title} size={large ? "cover-title" : "title"} /></h1>{textValue(subtitle) && <SlideSubtitle><DisplayTextContent value={subtitle} size={large ? "cover-subtitle" : "subtitle"} /></SlideSubtitle>}</header>;
 }
 
 export function SlideContent({ children }: { children: ReactNode }) {
@@ -22,8 +24,8 @@ export const cardShapes = {
 } as const;
 export type CardShape = keyof typeof cardShapes | "circle";
 
-export function SlideCard({ title, badge, shape, children }: { title: string; badge?: number | undefined; shape?: CardShape | undefined; children: ReactNode }) {
-  const content = <>{badge !== undefined && <span className="sf-card-badge" aria-hidden="true">{badge}</span>}<h2>{title}</h2>{children}</>;
+export function SlideCard({ title, badge, shape, children }: { title: DisplayText; badge?: number | undefined; shape?: CardShape | undefined; children: ReactNode }) {
+  const content = <>{badge !== undefined && <span className="sf-card-badge" aria-hidden="true">{badge}</span>}<h2><DisplayTextContent value={title} size="card-title" /></h2>{children}</>;
   if (shape === undefined) return <article className="sf-card">{content}</article>;
   if (shape === "circle") return <article className="sf-card"><div className="sf-card-inner">{content}</div></article>;
   const { viewBox, points } = cardShapes[shape];
@@ -34,8 +36,8 @@ export function SlideColumns({ children }: { children: ReactNode }) {
   return <div className="sf-columns">{children}</div>;
 }
 
-export function SlideFooter({ text, number, total }: { text?: string; number: number; total: number }) {
-  return <footer className="sf-footer"><span>{text}</span><span>{number} / {total}</span></footer>;
+export function SlideFooter({ text, number, total }: { text?: DisplayText | undefined; number: number; total: number }) {
+  return <footer className="sf-footer"><span><DisplayTextContent value={text} size="footer" /></span><span>{number} / {total}</span></footer>;
 }
 
 /**
@@ -55,9 +57,10 @@ export function Slide({ slide, variant = slideVariant(slide), number, total, bac
   const family = layoutFamily(slide.layout);
   // A blank slide shows only its background; its title labels the slide but is not drawn.
   const drawn = family !== "blank";
-  return <section id={`slide-${number}`} className={`sf-slide sf-layout-${family} sf-variant-${variant}`} data-pptx="slide" data-layout={family} data-variant={variant} aria-label={`${number}. ${slide.title}`}>
+  const large = family === "cover" || family === "section" || family === "closing";
+  return <section id={`slide-${number}`} className={`sf-slide sf-layout-${family} sf-variant-${variant}`} data-pptx="slide" data-layout={family} data-variant={variant} aria-label={`${number}. ${textValue(slide.title)}`}>
     {background !== undefined && <SlideBackground source={background} />}
-    {drawn && <SlideTitle title={slide.title} {...(slide.subtitle === undefined ? {} : { subtitle: slide.subtitle })} />}
+    {drawn && <SlideTitle title={slide.title} large={large} {...(slide.subtitle === undefined ? {} : { subtitle: slide.subtitle })} />}
     {drawn && <SlideContent>{children}</SlideContent>}
     {drawn && <SlideFooter text={slide.footer} number={number} total={total} />}
     {slide.notes !== undefined && <aside data-pptx-notes="" hidden>{slide.notes}</aside>}

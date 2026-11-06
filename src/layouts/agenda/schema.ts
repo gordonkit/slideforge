@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { optionalText, slideObject, text } from "../../schemas/fields.js";
+import { displayText, optionalDisplayText as optionalText, slideObject, text } from "../../schemas/fields.js";
 
 // default: numbered cards; chapters: a large-number index of the top level only; outline: each
 // chapter with its subsections listed under it (the other variants leave the subsections out).
@@ -14,11 +14,11 @@ export const agenda = {
   slide: slideObject("agenda", variants, {
     /** Omit it to list the presentation's `section` slides, each linking to its slide. */
     items: z.array(z.object({
-      title: text.max(200),
+      title: displayText(text.max(200)),
       text: optionalText,
       slide: target,
       /** Subsections, drawn by `agenda/outline`. */
-      items: z.array(z.object({ title: text.max(200), slide: target }).strict()).min(1).max(6).optional(),
+      items: z.array(z.object({ title: displayText(text.max(200)), slide: target }).strict()).min(1).max(6).optional(),
     }).strict()).min(2).max(8).optional(),
     /** The 1-based item to mark as the current chapter; the others are muted. */
     current: z.number().int().min(1).max(8).optional(),

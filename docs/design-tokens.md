@@ -53,6 +53,13 @@ The HTML body has `data-theme="light"` or `"dark"`. The preview page surround is
 `fontFamily` overrides it. Install fonts locally; a fallback list is not a font
 installer, and system fonts are not guaranteed embedded into PPTX.
 
+Display text can override its local size with `fontSize: 28`, or apply a
+template-relative `fontSize: { delta: -4 }`. The latter uses the role token
+after layout scaling, not the parent's adjusted size. Absolute sizes and resolved
+relative sizes must be 8–240 CSS px. Unstyled strings retain existing CSS.
+This does not automatically adjust line height or make long content fit;
+see [display text](schema.md#display-text-and-font-sizes).
+
 | Element | CSS value |
 | --- | --- |
 | Slide padding | Top 72px, horizontal 96px, bottom 84px |

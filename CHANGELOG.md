@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file. The format 
 
 ## [Unreleased]
 
+### Added
+
+- All authored display-text fields accept strings or strict `{ text, fontSize? }` objects.
+  Absolute CSS-pixel sizes and role/template-relative `{ delta }` adjustments preserve
+  existing string rendering; resolved sizes are limited to 8–240px.
+- Stats accept `labelDetail` for a separate smaller label line and boolean `highlight`
+  for an accent fill with on-accent text in both variants and themes.
+- Public `DisplayText`, `displayText`, `fontSizeSchema`, `textValue`, `DisplayTextContent`,
+  and `TextTokens` support typed custom component use.
+- Tables accept optional `columnWidths` percentages, one positive number per column summing to 100.
+  `SlideTable` / `DataTable` render these through a `colgroup`; omitted widths retain equal columns.
+
 ## [0.5.0] - 2026-11-05
 
 ### Added

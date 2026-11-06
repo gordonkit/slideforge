@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { blocks, hexColor, slideObject, text } from "../../schemas/fields.js";
+import { blocks, displayText, hexColor, slideObject, text } from "../../schemas/fields.js";
 
 // default: side-by-side columns split by vertical lines; rows: stacked rows split by horizontal lines.
 const variants = ["default", "rows"] as const;
@@ -9,7 +9,7 @@ export const panels = {
   variants,
   slide: slideObject("panels", variants, {
     panels: z.array(z.object({
-      title: text.max(200),
+      title: displayText(text.max(200)),
       blocks,
       /** Fills the panel with this color (a gradient with the `gradient.panel` token); the text color follows it. */
       color: hexColor.optional(),

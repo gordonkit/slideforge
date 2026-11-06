@@ -7,6 +7,7 @@ export { layoutFamilies, layoutNames, layoutFamily, layoutVariant, slideVariant,
 export { describePresentationError, readPresentationFile } from './schemas/input.js';
 export * from './themes/tokens.js';
 export * from './components/index.js';
+export { displayText, fontSizeSchema, textValue, type DisplayText } from './schemas/fields.js';
 export * from './renderers/html.js';
 export * from './renderers/preview.js';
 export * from './exporters/pptx.js';

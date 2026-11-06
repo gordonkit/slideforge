@@ -5,5 +5,5 @@ import type { LayoutProps } from "../types.js";
 export function CardsLayout({ slide, variant }: LayoutProps<"cards">) {
   const shape = variant === "circle" || variant === "hexagon" || variant === "pentagon" ? variant : undefined;
   const numbered = variant === "badge" || shape !== undefined;
-  return <div className="sf-cards" data-count={slide.cards.length}>{slide.cards.map((card, index) => <SlideCard title={card.title} badge={numbered ? index + 1 : undefined} shape={shape} key={index}><ContentBlocks blocks={card.blocks} /></SlideCard>)}</div>;
+  return <div className="sf-cards" data-count={slide.cards.length}>{slide.cards.map((card, index) => <SlideCard title={card.title} badge={numbered ? index + 1 : undefined} shape={shape} key={index}><ContentBlocks blocks={card.blocks} size="card-body" scale={shape === "hexagon" || shape === "pentagon" ? 0.8 : 1} /></SlideCard>)}</div>;
 }

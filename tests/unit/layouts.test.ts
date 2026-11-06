@@ -89,7 +89,7 @@ describe("family/variant layout names", () => {
     expect(renderPresentation(deck({ ...slide, layout: "quote/centered" }))).toContain("sf-variant-centered");
     expect(renderPresentation(deck({ layout: "quote", quote: "No attribution" }))).not.toContain("<figcaption>");
     const issues = (input: object) => presentationSchema.safeParse(deck(input)).error?.issues.map((issue) => `${issue.path.join(".")}: ${issue.message}`);
-    expect(issues({ layout: "quote" })).toEqual(["slides.0.quote: Invalid input: expected string, received undefined"]);
+    expect(issues({ layout: "quote" })).toEqual(["slides.0.quote: Use a text string or a { text, fontSize? } object"]);
     expect(issues({ layout: "quote", quote: "  " })?.[0]).toMatch(/^slides\.0\.quote: /);
     expect(issues({ layout: "quote", quote: "x".repeat(1001) })?.[0]).toMatch(/^slides\.0\.quote: /);
     expect(issues({ layout: "quote", quote: "x", blocks: [] })).toEqual(['slides.0: Unrecognized key: "blocks"']);

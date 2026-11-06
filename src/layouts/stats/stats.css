@@ -10,6 +10,9 @@
 .sf-stat-value { color: var(--sf-accent); font-size: 120px; line-height: 1.05; font-weight: var(--sf-type-bold); overflow-wrap: anywhere; }
 .sf-stats[data-count="4"] .sf-stat-value, .sf-stats[data-count="5"] .sf-stat-value, .sf-stats[data-count="6"] .sf-stat-value { font-size: 84px; }
 .sf-stat-label { font-size: var(--sf-type-card-title); font-weight: var(--sf-type-bold); line-height: var(--sf-type-title-leading); }
+.sf-stat-label-detail { color: var(--sf-muted); font-size: var(--sf-type-card-body); line-height: var(--sf-type-subtitle-leading); }
 .sf-stat-text { color: var(--sf-muted); font-size: var(--sf-type-card-body); line-height: var(--sf-type-subtitle-leading); }
 /* cards: centered figures on surface cards. */
 .sf-variant-cards .sf-stat { align-items: center; text-align: center; justify-content: center; padding: var(--sf-spacing-card-padding); border: var(--sf-border-width) solid var(--sf-border); border-radius: var(--sf-border-radius); background: var(--sf-card-fill); }
+.sf-stat[data-highlight="true"] { background: var(--sf-accent); color: var(--sf-on-accent); border-color: var(--sf-accent); padding: var(--sf-spacing-table-x); }
+.sf-stat[data-highlight="true"] .sf-stat-value, .sf-stat[data-highlight="true"] .sf-stat-label-detail, .sf-stat[data-highlight="true"] .sf-stat-text { color: var(--sf-on-accent); }

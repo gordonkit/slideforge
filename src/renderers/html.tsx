@@ -9,6 +9,7 @@ import { mergeTokens, parseTemplate, type Template } from "../templates/schema.j
 import { gradientFill } from "../themes/color.js";
 import { cssVariables, defaultFontFamily, SLIDE_SIZE, themeTokens } from "../themes/tokens.js";
 import { injectBeforeBodyEnd, notesScript, presentationScript } from "./present.js";
+import { TextTokens } from "../components/text.js";
 
 const stylesheet = readFileSync(new URL("../themes/slides.css", import.meta.url), "utf8") + layoutStylesheet;
 
@@ -86,11 +87,11 @@ export function renderPresentation(input: unknown, options: RenderOptions = {}):
         <style>{stylesheet}</style>
       </head>
       <body style={style} data-theme={presentation.theme} data-card-shadow={tokens.shadow.card > 0 ? "" : undefined} data-text-shadow={tokens.shadow.text > 0 ? "" : undefined}>
-        <main className="sf-presentation">
+        <TextTokens value={tokens}><main className="sf-presentation">
           {slides.map((slide, index) => <SlideLayout key={index} slide={slide} sectionNumber={sections.get(index)} panelGradient={tokens.gradient.panel}
             variant={slideVariant(slide, template?.variants)} number={index + 1} total={presentation.slides.length}
             background={slideBackground(presentation, slide, template)} />)}
-        </main>
+        </main></TextTokens>
       </body>
     </html>,
   );

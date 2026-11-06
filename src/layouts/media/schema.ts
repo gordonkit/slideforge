@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { contentBlockSchema, imageSourceSchema, optionalText, slideObject, xmlText } from "../../schemas/fields.js";
+import { contentBlockSchema, imageSourceSchema, optionalDisplayText as optionalText, slideObject, xmlText } from "../../schemas/fields.js";
 
 // default: the image on the left, the text on the right; right: the reverse; full: the image across the slide, the text below it.
 const variants = ["default", "right", "full"] as const;

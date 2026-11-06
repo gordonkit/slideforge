@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { slideObject, text } from "../../schemas/fields.js";
+import { displayText, slideObject, text } from "../../schemas/fields.js";
 
 const variants = ["default"] as const;
 
@@ -8,9 +8,9 @@ export const gantt = {
   family: "gantt",
   variants,
   slide: slideObject("gantt", variants, {
-    periods: z.array(text.max(40)).min(2).max(12),
+    periods: z.array(displayText(text.max(40))).min(2).max(12),
     tasks: z.array(z.object({
-      label: text.max(100),
+      label: displayText(text.max(100)),
       start: z.number().int().min(1),
       end: z.number().int().min(1),
       progress: z.number().finite().min(0).max(100).optional(),

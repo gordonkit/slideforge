@@ -70,6 +70,19 @@ Key figures: two to six large numbers, each with a label and an optional line of
 - **Arrangement:** up to four figures sit in one row, five and six use three columns, and the lower two of five stay
   centered, as for [cards](#cards). Figures shrink from four up.
 - **Variants:** `default` puts a rule above each figure, and `cards` centers each on a card.
+- **Detail:** optional `labelDetail` adds a separate second label line at card-body size
+  (default 30px versus the label's 39px). Both lines accept [display text](schema.md#display-text-and-font-sizes).
+- **Highlight:** `highlight: true` fills that figure with the accent color and uses on-accent text,
+  in both variants and themes. Omitted/false preserves its usual styling.
+
+```json
+{
+  "value": "96–128",
+  "label": { "text": "New or changed", "fontSize": { "delta": -3 } },
+  "labelDetail": { "text": "Estimated files", "fontSize": { "delta": -4 } },
+  "highlight": true
+}
+```
 
 ### `panels`
 

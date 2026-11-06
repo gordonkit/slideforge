@@ -6,6 +6,7 @@ import { join, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { promisify } from 'node:util';
 import { strFromU8, unzipSync } from 'fflate';
+import { XMLParser } from 'fast-xml-parser';
 import { chromium } from 'playwright';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { validatePptx } from '../../src/validators/pptx.js';
@@ -19,6 +20,111 @@ beforeAll(async () => { directory = await mkdtemp(join(tmpdir(), 'slideforge-tes
 afterAll(async () => { await rm(directory, { recursive: true, force: true }); });
 
 describe('built CLI', () => {
+  it('renders font sizes and stat highlights across themes and exports editable sized text', async () => {
+    const input = join(directory, 'display-text.json');
+    const html = join(directory, 'display-text.html');
+    const output = join(directory, 'display-text.pptx');
+    const adjusted = { text: '檔案估量', fontSize: { delta: -4 } };
+    const slide = {
+      title: { text: 'Scope', fontSize: { delta: -4 } },
+      footer: { text: 'Review', fontSize: 22 },
+      stats: [
+        { value: '717', label: 'Functions' }, { value: '602', label: 'Batches' }, { value: '41005', label: 'Existing files' },
+        { value: { text: '96–128', fontSize: { delta: -4 } }, label: { text: '本案新增/調整', fontSize: 36 }, labelDetail: adjusted, highlight: true },
+      ],
+    };
+    const browser = await chromium.launch();
+    try {
+      const page = await browser.newPage({ viewport: { width: 1920, height: 1080 } });
+      for (const theme of ['light', 'dark']) {
+        await writeFile(input, JSON.stringify({ metadata: { title: 'Display text' }, theme, slides: ['stats', 'stats/cards'].map(layout => ({ ...slide, layout })) }));
+        await exec(process.execPath, [cli, 'build', input, '--output', html]);
+        await page.goto(pathToFileURL(html).href);
+        await page.evaluate(() => document.fonts.ready);
+        expect(await page.locator('.sf-stat[data-highlight="true"]').count()).toBe(2);
+        const metrics = await page.locator('.sf-slide').evaluateAll(slides => slides.map(slide => {
+          const stat = slide.querySelector('.sf-stat[data-highlight="true"]')!;
+          const fontSize = (selector: string) => getComputedStyle(slide.querySelector(selector)!).fontSize;
+          return {
+            title: fontSize('h1 span'), value: fontSize('.sf-stat[data-highlight="true"] .sf-stat-value span'),
+            label: fontSize('.sf-stat-label span'), detail: fontSize('.sf-stat-label-detail span'), footer: fontSize('.sf-footer span span'),
+            background: getComputedStyle(stat).backgroundColor, color: getComputedStyle(stat).color,
+            detailColor: getComputedStyle(stat.querySelector('.sf-stat-label-detail')!).color,
+            overflow: [...stat.querySelectorAll('span')].some(text => {
+              const range = document.createRange();
+              range.selectNodeContents(text);
+              const bounds = range.getBoundingClientRect();
+              const parent = stat.getBoundingClientRect();
+              return bounds.left < parent.left - 1 || bounds.right > parent.right + 1 || bounds.top < parent.top - 1 || bounds.bottom > parent.bottom + 1;
+            }),
+          };
+        }));
+        for (const metric of metrics) {
+          expect(metric).toMatchObject({ title: '56px', value: '80px', label: '36px', detail: '26px', footer: '22px', overflow: false });
+          expect(metric.background).not.toBe(metric.color);
+          expect(metric.detailColor).toBe(metric.color);
+        }
+      }
+    } finally { await browser.close(); }
+    const issues = await exportPresentation(input, { output });
+    expect(issues.filter(issue => issue.severity === 'error')).toEqual([]);
+    const report = validatePptx(await readFile(output));
+    expect(report.valid, JSON.stringify(report.issues)).toBe(true);
+    expect(report.slideCount).toBe(2);
+    expect(report.editableTextCount).toBeGreaterThanOrEqual(12);
+    const files = unzipSync(await readFile(output));
+    for (const number of [1, 2]) {
+      const parsed: unknown = new XMLParser({ ignoreAttributes: false }).parse(strFromU8(files[`ppt/slides/slide${number}.xml`]!));
+      const runs: Array<{ text: unknown; size: unknown }> = [];
+      function collect(node: unknown): void {
+        if (!node || typeof node !== 'object') return;
+        if (Array.isArray(node)) { node.forEach(collect); return; }
+        const object = node as Record<string, unknown>;
+        if ('a:t' in object) runs.push({ text: object['a:t'], size: (object['a:rPr'] as Record<string, unknown> | undefined)?.['@_sz'] });
+        Object.values(object).forEach(collect);
+      }
+      collect(parsed);
+      expect(runs).toContainEqual({ text: '檔案估量', size: '1300' });
+      expect(runs).toContainEqual({ text: '本案新增/調整', size: '1800' });
+    }
+  }, 120_000);
+
+  it('builds percentage table columns, preserves equal-width defaults, and exports editable text', async () => {
+    const input = join(directory, 'table-widths.json');
+    const html = join(directory, 'table-widths.html');
+    const output = join(directory, 'table-widths.pptx');
+    const slide = { layout: 'table', title: 'Table widths', columns: ['Work', 'Days', 'Output'], rows: [['Design', '100', 'Architecture']] };
+    await writeFile(input, JSON.stringify({ metadata: { title: 'Table widths' }, slides: [{ ...slide, columnWidths: [35, 10, 55] }, slide] }));
+    await exec(process.execPath, [cli, 'build', input, '--output', html]);
+    const browser = await chromium.launch();
+    try {
+      const page = await browser.newPage({ viewport: { width: 1920, height: 1080 } });
+      await page.goto(pathToFileURL(html).href);
+      const percentages = await page.locator('.sf-table').evaluateAll(tables => tables.map(table => {
+        const widths = [...table.querySelectorAll('th')].map(cell => cell.getBoundingClientRect().width);
+        const total = widths.reduce((sum, width) => sum + width, 0);
+        return widths.map(width => width / total * 100);
+      }));
+      for (const [index, expected] of [35, 10, 55].entries()) expect(percentages[0]![index]).toBeCloseTo(expected, 1);
+      for (const width of percentages[1]!) expect(width).toBeCloseTo(100 / 3, 1);
+    } finally {
+      await browser.close();
+    }
+    const issues = await exportPresentation(input, { output });
+    expect(issues.filter(issue => issue.severity === 'error')).toEqual([]);
+    const report = validatePptx(await readFile(output));
+    expect(report.valid, JSON.stringify(report.issues)).toBe(true);
+    expect(report.slideCount).toBe(2);
+    expect(report.editableTextCount).toBeGreaterThanOrEqual(4);
+    const files = unzipSync(await readFile(output));
+    for (const number of [1, 2]) {
+      const xml = strFromU8(files[`ppt/slides/slide${number}.xml`]!);
+      expect(xml).toContain('<a:tbl>');
+      expect(xml).toContain('<a:t>Design</a:t>');
+      expect(xml).toContain('<a:t>Architecture</a:t>');
+    }
+  }, 120_000);
+
   it('initializes without overwriting existing content, builds and exports an editable slide per family', async () => {
     const input = join(directory, 'presentation.json');
     const html = join(directory, 'presentation.html');

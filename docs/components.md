@@ -11,17 +11,27 @@ CSS/theme context. Components themselves do not perform schema validation.
 | --- | --- | --- |
 | `Slide` | `{ slide: PresentationSlide; variant?: string; number: number; total: number; background?: string; children: ReactNode }` | Full slide frame, background layer, title/content/footer/notes |
 | `SlideBackground` | `{ source: string }` | `.sf-background[data-pptx-background]` layer: an `<img>`, or a studio `/render` `<iframe>` for a share link |
-| `SlideTitle` | `{ title: string; subtitle?: string }` | `.sf-header`, `h1`, optional `.sf-subtitle` |
+| `SlideTitle` | `{ title: DisplayText; subtitle?: DisplayText; large?: boolean }` | `.sf-header`, `h1`, optional `.sf-subtitle`; `large` selects cover typography |
 | `SlideSubtitle` | `{ children: ReactNode }` | `.sf-subtitle` paragraph |
 | `SlideContent` | `{ children: ReactNode }` | `.sf-content` content region |
-| `SlideCard` | `{ title: string; children: ReactNode }` | `.sf-card` article with `h2` |
+| `SlideCard` | `{ title: DisplayText; children: ReactNode }` | `.sf-card` article with `h2` |
 | `SlideColumns` | `{ children: ReactNode }` | Equal two-column `.sf-columns` grid |
-| `SlideFooter` | `{ text?: string; number: number; total: number }` | `.sf-footer`, optional text and `number / total` |
+| `SlideFooter` | `{ text?: DisplayText; number: number; total: number }` | `.sf-footer`, optional text and `number / total` |
 | `SlideFrame` | Same as `Slide` | Alias of `Slide` |
-| `ContentBlocks` | `{ blocks: ContentBlock[] }` | `.sf-blocks`, paragraphs, ordered/unordered lists, image figures/captions |
-| `SlideImage` | `{ src: string; alt: string; caption?: string }` | Image figure and optional caption |
-| `SlideTable` / `DataTable` | `{ columns: string[]; rows: string[][] }` | Semantic HTML table with column headers; `DataTable` is an alias |
-| `SlideChart` / `BarChart` | `{ data: { label: string; value: number }[]; unit?: string }` | HTML/CSS horizontal bars, text labels/values, accessible chart summary; `BarChart` is an alias |
+| `ContentBlocks` | `{ blocks: ContentBlock[]; size?: keyof DesignTokens["type"]; scale?: number }` | `.sf-blocks`, paragraphs, ordered/unordered lists, image figures/captions; default body role/scale 1 |
+| `SlideImage` | `{ src: string; alt: string; caption?: DisplayText }` | Image figure and optional caption |
+| `SlideTable` / `DataTable` | `{ columns: DisplayText[]; rows: DisplayText[][]; columnWidths?: number[] }` | Semantic HTML table with column headers and optional percentage `colgroup`; `DataTable` is an alias |
+| `SlideChart` / `BarChart` | `{ data: { label: DisplayText; value: number }[]; unit?: DisplayText }` | HTML/CSS horizontal bars, text labels/values, accessible chart summary; `BarChart` is an alias |
+| `DisplayTextContent` | `{ value: DisplayText | undefined; size?: keyof DesignTokens["type"] | number; scale?: number }` | Escaped text, or a locally sized span; use numeric-size roles, default body/scale 1 |
+
+`DisplayText` is `string | { text: string; fontSize?: number | { delta: number } }`.
+The package exports the type, `displayText()`, `fontSizeSchema`, and `textValue()`
+(extracts plain text for accessibility or string processing).
+`renderPresentation` supplies merged template tokens through the exported
+React `TextTokens` context. Direct custom component use should wrap components
+in `<TextTokens value={tokens}>` with tokens matching its CSS; absent a provider,
+relative sizes use default design tokens. The role and scale props resolve
+explicit sizes only, not the component's inherited CSS. See [display text](schema.md#display-text-and-font-sizes).
 
 `number` is one-based. `Slide` / `SlideFrame` emits
 `.sf-slide.sf-layout-<family>.sf-variant-<variant>`, `data-pptx="slide"`,
@@ -36,7 +46,10 @@ when present, `SlideBackground` is the slide's first child, behind the content.
 `ContentBlocks` renders plain text through React escaping, not Markdown or raw
 HTML. Images use `object-fit: contain` and require `alt` in structured input.
 Ordered lists default to off. `DataTable` expects matching row/column lengths;
-the JSON schema enforces this before the normal rendering path.
+the JSON schema enforces this before the normal rendering path. Optional
+`columnWidths` must have one positive numeric percentage per column, summing to
+100 (for example `[35, 10, 55]`); otherwise columns remain equal-width. Direct
+component callers must provide valid widths themselves.
 
 `BarChart` scales widths against `max(largest value, 1)`; all-zero data produces
 zero-width bars. Values are displayed directly with the unit appended. These
@@ -60,7 +73,7 @@ schema, renderer, and stylesheet, and is listed in `src/layouts/registry.ts`:
 | `cards` | `.sf-cards[data-count]` grid of 1–6 titled cards, arranged by their count |
 | `panels` | `.sf-panels[data-count]` of 2–7 `.sf-panel` sections (number, title, blocks) with an `aria-hidden` `.sf-panel-line` between them; a panel with a color is `.sf-panel-filled` |
 | `media` | `figure.sf-media-figure` with an `img` and an optional caption, beside (or above) the text blocks |
-| `stats` | `ul.sf-stats[data-count]` of `li.sf-stat`: a value, a label, and optional text |
+| `stats` | `ul.sf-stats[data-count]` of `li.sf-stat`: a value, a label, optional `.sf-stat-label-detail` and text; `data-highlight="true"` applies accent fill with on-accent text |
 | `matrix` | `.sf-matrix` with optional axis names around a 2 × 2 `.sf-matrix-grid` of four `.sf-matrix-cell` sections; `lines` adds two `.sf-matrix-line` rules |
 | `compare` | `.sf-compare[data-count]` of `.sf-option` sections: a header, an optional label, and a list; `.sf-option-highlight` marks one |
 | `team` | `ul.sf-team[data-count]` of `li.sf-member`: an `.sf-avatar` (an `img`, or a circle with the first letter), a name, a role, and text |

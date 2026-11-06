@@ -3,14 +3,109 @@ import { describe, expect, it } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
 import { imageSourceSchema, parsePresentation, presentationSchema } from "../../src/schemas/presentation.js";
 import { renderPresentation } from "../../src/renderers/html.js";
-import { layoutFamilies } from "../../src/layouts/registry.js";
+import { layoutFamilies, layoutFamily, layoutNames } from "../../src/layouts/registry.js";
 import { SLIDE_SIZE, defaultFontFamily, designTokens, themeTokens } from "../../src/themes/tokens.js";
 import { Slide, SlideSubtitle, SlideContent, SlideCard, SlideColumns, SlideImage, SlideTable, SlideChart } from "../../src/components/index.js";
+import { displayText } from "../../src/schemas/fields.js";
+import { DisplayTextContent, TextTokens } from "../../src/components/text.js";
 
 const basic: unknown = JSON.parse(readFileSync(new URL("../../examples/basic/presentation.json", import.meta.url), "utf8"));
 const minimal = { metadata: { title: "Demo" }, slides: [{ layout: "cover", title: "Hello" }] };
 
+describe("shared display text", () => {
+  const fields = new Set(["title", "subtitle", "footer", "author", "text", "label", "labelDetail", "name", "role", "date", "center", "xAxis", "yAxis", "quote", "attribution", "caption", "code", "language", "unit", "value", "items", "periods", "columns", "rows"]);
+  function rich(value: unknown, field = ""): unknown {
+    if (typeof value === "string") return fields.has(field) ? { text: value, fontSize: { delta: 0 } } : value;
+    if (Array.isArray(value)) return value.map(item => rich(item, field));
+    if (value && typeof value === "object") return Object.fromEntries(Object.entries(value).map(([key, item]) => [key, rich(item, key)]));
+    return value;
+  }
+
+  it.each(layoutNames)("renders every authored text field as an object in %s", layout => {
+    const input = parsePresentation(basic);
+    const index = input.slides.findIndex(slide => layoutFamily(slide.layout) === layoutFamily(layout));
+    const slides = input.slides.map((slide, position) => position === index ? { ...slide, layout } : slide);
+    const styled = renderPresentation({ ...input, slides: rich(slides) });
+    expect(styled).not.toContain("[object Object]");
+    expect(styled).toContain('aria-label="1. Ideas into slides"');
+    expect(styled.replace(/<span style="font-size:[^"]+">([^<]*)<\/span>/g, "$1")).toBe(renderPresentation({ ...input, slides }));
+  });
+
+  it("keeps metadata, notes, image sources and alt text as plain strings", () => {
+    const object = { text: "x", fontSize: 20 };
+    for (const input of [
+      { ...minimal, metadata: { title: object } },
+      { ...minimal, slides: [{ layout: "cover", title: "x", notes: object }] },
+      { ...minimal, slides: [{ layout: "media", title: "x", image: object, alt: "x" }] },
+      { ...minimal, slides: [{ layout: "media", title: "x", image: "image.png", alt: object }] },
+      { ...minimal, slides: [{ layout: "cover", title: { text: "\u0000", fontSize: 20 } }] },
+    ]) expect(presentationSchema.safeParse(input).success).toBe(false);
+  });
+
+  it("uses the role after layout scaling, without accumulating parent adjustments", () => {
+    const adjusted = { text: "Child", fontSize: { delta: -4 } };
+    const cards = { layout: "cards/hexagon", title: { text: "Parent", fontSize: { delta: 10 } }, cards: [{ title: adjusted, blocks: [{ type: "paragraph", text: adjusted }] }] };
+    const draw = (type: object) => renderPresentation({ ...minimal, slides: [cards] }, { template: { name: "custom", tokens: { type } } });
+    expect(draw({})).toContain('<span style="font-size:20px">Child</span>');
+    expect(draw({ "card-body": 40 })).toContain('<span style="font-size:28px">Child</span>');
+    expect(draw({})).toContain('<span style="font-size:35px">Child</span>');
+    expect(draw({})).toContain('<span style="font-size:70px">Parent</span>');
+    const steps = Array.from({ length: 5 }, () => ({ title: adjusted, text: adjusted }));
+    expect(renderPresentation({ ...minimal, slides: [{ layout: "process", title: "x", steps }] })).toContain('font-size:29.15px');
+    const panels = Array.from({ length: 5 }, () => ({ title: "x", blocks: [{ type: "paragraph", text: adjusted }] }));
+    expect(renderPresentation({ ...minimal, slides: [{ layout: "panels/rows", title: "x", panels }] })).toContain('font-size:17px');
+  });
+
+  it("accepts strings, fixed sizes and signed deltas, without allowing arbitrary CSS", () => {
+    for (const value of ["Text", { text: "Text" }, { text: "Text", fontSize: 28 }, { text: "Text", fontSize: { delta: -4 } }, { text: "Text", fontSize: { delta: 4 } }]) {
+      expect(displayText().safeParse(value).success).toBe(true);
+    }
+    for (const value of [{ text: " " }, { text: "x", fontSize: 7 }, { text: "x", fontSize: 241 }, { text: "x", fontSize: "+4" }, { text: "x", fontSize: { delta: Infinity } }, { text: "x", style: "color:red" }]) {
+      expect(displayText().safeParse(value).success).toBe(false);
+    }
+  });
+
+  it("resolves deltas from the supplied role token and rejects out-of-bounds results", () => {
+    const value = { text: "Detail", fontSize: { delta: -4 } };
+    expect(renderToStaticMarkup(<DisplayTextContent value={value} size="card-body" />)).toBe('<span style="font-size:26px">Detail</span>');
+    const tokens = { ...designTokens, type: { ...designTokens.type, "card-body": 36 } };
+    expect(renderToStaticMarkup(<TextTokens value={tokens}><DisplayTextContent value={value} size="card-body" /></TextTokens>)).toBe('<span style="font-size:32px">Detail</span>');
+    expect(renderToStaticMarkup(<DisplayTextContent value={{ text: "Fixed", fontSize: 28 }} />)).toBe('<span style="font-size:28px">Fixed</span>');
+    expect(renderToStaticMarkup(<DisplayTextContent value="Unchanged" />)).toBe("Unchanged");
+    expect(() => renderToStaticMarkup(<DisplayTextContent value={{ text: "Too small", fontSize: { delta: -40 } }} />)).toThrow("between 8 and 240px");
+  });
+});
+
 describe("presentation content", () => {
+  it("accepts optional stat label details and highlights and rejects invalid values", () => {
+    const stat = { value: "96–128", label: "Scope", labelDetail: "Files", highlight: true };
+    const input = (extra: object) => ({ ...minimal, slides: [{ layout: "stats", title: "Stats", stats: [{ ...stat, ...extra }, { value: "717", label: "Existing" }] }] });
+    expect(presentationSchema.safeParse(input({})).success).toBe(true);
+    expect(presentationSchema.safeParse(input({ highlight: false })).success).toBe(true);
+    for (const extra of [{ highlight: "yes" }, { highlight: 1 }, { labelDetail: " " }, { labelDetail: "x".repeat(101) }, { labelDetail: "\u0000" }]) {
+      expect(presentationSchema.safeParse(input(extra)).success).toBe(false);
+    }
+  });
+
+  it.each([[35, 10, 55], [33.33, 33.33, 33.34], [0.1, 0.2, 99.7]])("accepts percentage column widths %j", (...columnWidths) => {
+    const input = { ...minimal, slides: [{ layout: "table", title: "Widths", columns: ["A", "B", "C"], rows: [["1", "2", "3"]], columnWidths }] };
+    const slide = parsePresentation(input).slides[0]!;
+    expect(slide.layout === "table" && slide.columnWidths).toEqual(columnWidths);
+  });
+
+  it.each([
+    [], [50, 50], [35, 10, 54], [35, 10, 56], [0, 50, 50], [-10, 50, 60],
+    [101, 1, 1], [NaN, 10, 90], [Infinity, 10, 90], ["35%", 10, 55],
+  ])("rejects invalid percentage column widths %j", (...columnWidths) => {
+    const input = { ...minimal, slides: [{ layout: "table", title: "Widths", columns: ["A", "B", "C"], rows: [["1", "2", "3"]], columnWidths }] };
+    expect(presentationSchema.safeParse(input).success).toBe(false);
+  });
+
+  it("reports table width errors at columnWidths", () => {
+    const input = { ...minimal, slides: [{ layout: "table", title: "Widths", columns: ["A", "B"], rows: [["1", "2"]], columnWidths: [100] }] };
+    expect(presentationSchema.safeParse(input).error?.issues.map(issue => issue.path)).toContainEqual(["slides", 0, "columnWidths"]);
+  });
+
   it("validates one slide per layout family and supplies defaults", () => {
     const presentation = parsePresentation(basic);
     expect(presentation.slides.map((slide) => slide.layout)).toEqual(layoutFamilies);
@@ -70,6 +165,32 @@ describe("presentation content", () => {
 });
 
 describe("HTML renderer", () => {
+  it("renders secondary stat labels and highlights only selected items in both variants", () => {
+    for (const layout of ["stats", "stats/cards"]) {
+      const html = renderPresentation({ ...minimal, slides: [{ layout, title: "Scope", stats: [
+        { value: "717", label: "Existing" },
+        { value: "602", label: "Batch", highlight: false },
+        { value: "96–128", label: "Scope", labelDetail: "Files <planned>", highlight: true, text: "Details" },
+      ] }] });
+      expect(html.match(/<li class="sf-stat" data-highlight="true">/g)).toHaveLength(1);
+      expect(html).toContain('<li class="sf-stat" data-highlight="true"><span class="sf-stat-value">96–128</span>');
+      expect(html).toContain('<span class="sf-stat-label-detail">Files &lt;planned&gt;</span>');
+      expect(html).toContain('<li class="sf-stat"><span class="sf-stat-value">717</span>');
+      expect(html).toContain('<li class="sf-stat"><span class="sf-stat-value">602</span>');
+    }
+  });
+
+  it("renders percentage colgroups for tables and leaves unspecified widths unchanged", () => {
+    const slide = { layout: "table", title: "Widths", columns: ["Work", "Days", "Output"], rows: [["Design", "100", "Architecture"]] };
+    const input = { ...minimal, slides: [slide] };
+    expect(renderPresentation(input)).not.toContain("<colgroup>");
+    const expected = '<colgroup><col style="width:35%"/><col style="width:10%"/><col style="width:55%"/></colgroup>';
+    for (const layout of ["table", "table/default"]) {
+      expect(renderPresentation({ ...input, slides: [{ ...slide, layout, columnWidths: [35, 10, 55] }] })).toContain(expected);
+    }
+    expect(renderToStaticMarkup(<SlideTable columns={slide.columns} rows={slide.rows} columnWidths={[35, 10, 55]} />)).toContain(expected);
+  });
+
   it("renders a fixed-size slide per family, metadata, local images, notes, and editable chart bars", () => {
     const html = renderPresentation(basic);
     expect(html.match(/data-pptx="slide"/g)).toHaveLength(layoutFamilies.length);

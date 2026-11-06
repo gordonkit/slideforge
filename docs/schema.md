@@ -55,6 +55,46 @@ Optional strings may be empty and are not trimmed. Required text fields are
 trimmed and must remain nonempty. Schema maxima are data limits, **not promises
 that content will fit a slide**; check rendered layout separately.
 
+## Display text and font sizes
+
+All authored display-text fields accept either the existing string or a strict
+`{ "text": "...", "fontSize": ... }` object. `fontSize` is optional; without it,
+the object renders exactly like the string. Each field's existing text length,
+trimming, whitespace, and XML-character constraints also apply to `text`.
+
+```json
+{
+  "layout": "content",
+  "title": { "text": "Delivery", "fontSize": 56 },
+  "subtitle": { "text": "A focused first phase", "fontSize": { "delta": -3 } },
+  "blocks": [{ "type": "paragraph", "text": { "text": "Scope first.", "fontSize": { "delta": 4 } } }]
+}
+```
+
+- A finite numeric `fontSize` is an absolute size in **CSS pixels**, 8–240,
+  independent of the template. Decimals are accepted; 1 CSS pixel exports as 0.5 pt.
+- `{ "delta": -4 }` or `{ "delta": 4 }` subtracts/adds CSS pixels from the
+  field's normal size: template role token, then any variant/count scaling,
+  then delta. It does not accumulate parent adjustments. Deltas must be finite
+  and between -232 and 232; rendering rejects a resolved size outside 8–240.
+- For example, default card body 30px with delta -4 is 26px; a hexagon's
+  0.8 scale makes it 20px. A template changing card body to 40px makes those
+  36px and 28px. Fixed-size roles (such as stat values) retain their layout base.
+- Supported fields include slide title/subtitle/footer/author, paragraphs and
+  bullet items, card/panel/quadrant titles, stats value/label/labelDetail/text,
+  agenda titles/text/subsections, comparison labels/items, team name/role/text,
+  process/hub/timeline/gantt labels, table columns/cells, chart labels/unit,
+  image captions, quote/attribution, code/language, and contact label/value.
+- Metadata, notes, layout names, URLs/paths, alt text, colors, numeric data,
+  and generated slide/section numbers stay in their original formats.
+  Numeric strings such as `"28px"` or `"+4"`, arbitrary CSS, and extra keys
+  are rejected. Text remains escaped plain text, not Markdown/HTML or rich runs.
+
+The field tables below describe the underlying text constraints. This shared
+format applies to display-text fields even where their type is listed as string.
+Changing font size does not resize the fixed canvas, line spacing, or containers;
+review layout before export. See [design tokens](design-tokens.md).
+
 ## Subtitle
 
 `subtitle` is the slide's one-line highlight or slogan: a sentence under the title that tells the
@@ -122,7 +162,7 @@ is reported with that family's valid names, such as
 | `"cards"` | Required `cards`: 1–6 objects, each with trimmed nonempty `title` (max 200) and `blocks` (1–12) |
 | `"panels"` | Required `panels`: 2–7 objects, each with trimmed nonempty `title` (max 200), `blocks` (1–12), and an optional `color`, a six-digit hex color such as `"#2563eb"` that fills the panel |
 | `"media"` | Required `image` (an image source) and `alt` (max 1,000, may be empty); optional `caption` and `blocks` (up to 6 content blocks, default none) |
-| `"stats"` | Required `stats`: 2–6 objects, each with trimmed nonempty `value` (max 30), `label` (max 100), and optional `text` |
+| `"stats"` | Required `stats`: 2–6 objects, each with trimmed nonempty `value` (max 30), `label` (max 100), optional trimmed nonempty `labelDetail` (max 100), optional `text`, and optional boolean `highlight` |
 | `"matrix"` | Required `quadrants`: exactly 4 objects (top left, top right, bottom left, bottom right), each with `title` (max 200) and `blocks` (1–12); optional `xAxis` and `yAxis` names (max 80) |
 | `"compare"` | Required `options`: 2–4 objects, each with `title` (max 100), `items` (1–8 strings, max 200), optional `label` and optional boolean `highlight` |
 | `"team"` | Required `members`: 2–6 objects, each with `name` (max 100) and optional `role`, `text`, and `image` (an image source) |
@@ -130,7 +170,7 @@ is reported with that family's valid names, such as
 | `"hub"` | Required `center` (max 100) and `items`: 3–6 objects, each with `title` (max 100) and optional `text` |
 | `"timeline"` | Required `events`: 2–6 objects, each with trimmed nonempty `date` (max 100) and `title` (max 200), and optional `text` string, max 10,000 |
 | `"gantt"` | Required `periods` (2–12 trimmed nonempty strings, max 40 each) and `tasks` (1–8 objects, each with trimmed nonempty `label` (max 100), integer `start` and `end`, and optional `progress` from 0 to 100) |
-| `"table"` | Required `columns` (1–8 trimmed nonempty strings, max 200 each) and `rows` (1–14 arrays of 1–8 string cells, max 2,000 each) |
+| `"table"` | Required `columns` (1–8 trimmed nonempty strings, max 200 each) and `rows` (1–14 arrays of 1–8 string cells, max 2,000 each); optional `columnWidths`: one numeric percentage per column, each greater than 0 and at most 100, summing to 100 |
 | `"chart"` | Required `data` (1–10 `{ "label", "value" }` objects); optional `unit` string, max 40; optional `blocks` (0–4 content blocks, default `[]`) |
 | `"quote"` | Required `quote`: trimmed nonempty string, max 1,000; optional `attribution` string, max 10,000 |
 | `"code"` | Required `code` (1–3,000 characters, at most 18 lines, kept as written); optional `language` label (max 60) |
@@ -138,7 +178,12 @@ is reported with that family's valid names, such as
 | `"blank"` | None; `subtitle` and `footer` are rejected |
 
 Every table row must contain exactly one cell per column. Empty table cell
-strings are allowed. Chart labels are trimmed, nonempty, max 100 characters;
+strings are allowed. Tables have equal-width columns unless `columnWidths` is
+set, for example `"columnWidths": [35, 10, 55]`. Percentages are numbers, not
+strings such as `"35%"`; decimals are accepted, with a sum tolerance of 0.000001
+percentage points for floating-point arithmetic. The HTML uses a `colgroup`;
+narrow columns can wrap more text, so review the table height as well as widths.
+Chart labels are trimmed, nonempty, max 100 characters;
 values must be finite, nonnegative numbers. Zero is valid. Chart units are
 appended directly to values; include a leading space for a separated suffix.
 Charts are single-series HTML/CSS bars, not native Office charts.

@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { imageSourceSchema, optionalText, slideObject, text } from "../../schemas/fields.js";
+import { displayText, imageSourceSchema, optionalDisplayText as optionalText, slideObject, text } from "../../schemas/fields.js";
 
 const variants = ["default"] as const;
 
@@ -8,7 +8,7 @@ export const team = {
   variants,
   slide: slideObject("team", variants, {
     members: z.array(z.object({
-      name: text.max(100),
+      name: displayText(text.max(100)),
       role: optionalText,
       text: optionalText,
       /** A portrait, drawn as a circle. Without one, the name's first letter is drawn in the circle. */

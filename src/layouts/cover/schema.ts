@@ -1,4 +1,4 @@
-import { optionalText, slideObject } from "../../schemas/fields.js";
+import { optionalDisplayText as optionalText, slideObject } from "../../schemas/fields.js";
 
 // default: left-aligned title; centered: centered text; split: accent panel on the right third;
 // band: full-bleed accent block behind the title.

@@ -8,6 +8,22 @@ export const xmlText = z.string().regex(
 );
 export const text = xmlText.trim().min(1);
 export const optionalText = xmlText.max(10000).optional();
+export const fontSizeSchema = z.union([
+  z.number().finite().min(8).max(240),
+  z.object({ delta: z.number().finite().min(-232).max(232) }).strict(),
+]);
+
+export function displayText(schema: z.ZodString = text) {
+  return z.union([schema, z.object({ text: schema, fontSize: fontSizeSchema.optional() }).strict()], {
+    error: 'Use a text string or a { text, fontSize? } object',
+  });
+}
+
+export type DisplayText = z.infer<ReturnType<typeof displayText>>;
+export const optionalDisplayText = displayText(xmlText.max(10000)).optional();
+export function textValue(value: DisplayText | undefined): string {
+  return typeof value === "string" ? value : value?.text ?? "";
+}
 /** A six-digit hex color such as "#2563eb". */
 export const hexColor = z.string().regex(/^#[0-9a-f]{6}$/i, 'Use a six-digit hex color such as "#2563eb"');
 
@@ -32,26 +48,26 @@ export const backgroundSourceSchema = imageSourceSchema.refine(
 );
 
 export const contentBlockSchema = z.discriminatedUnion("type", [
-  z.object({ type: z.literal("paragraph"), text }).strict(),
+  z.object({ type: z.literal("paragraph"), text: displayText() }).strict(),
   z.object({
     type: z.literal("bullets"),
-    items: z.array(text).min(1).max(12),
+    items: z.array(displayText()).min(1).max(12),
     ordered: z.boolean().default(false),
   }).strict(),
   z.object({
     type: z.literal("image"),
     src: imageSourceSchema,
     alt: xmlText.max(1000),
-    caption: optionalText,
+    caption: optionalDisplayText,
   }).strict(),
 ], { error: 'Unknown block type. Use "paragraph", "bullets", or "image"' });
 
 export const blocks = z.array(contentBlockSchema).min(1).max(12);
 
 const commonSlideFields = {
-  title: text.max(300),
-  subtitle: optionalText,
-  footer: optionalText,
+  title: displayText(text.max(300)),
+  subtitle: optionalDisplayText,
+  footer: optionalDisplayText,
   notes: optionalText,
   background: z.union([z.literal("none"), backgroundSourceSchema]).optional(),
 };
