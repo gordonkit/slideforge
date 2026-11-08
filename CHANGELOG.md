@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file. The format 
 
 ## [Unreleased]
 
+## [0.6.0] - 2026-11-08
+
 ### Fixed
 
 - `panels/rows` with six or seven panels keeps the number, title, and content
