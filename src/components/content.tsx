@@ -22,11 +22,11 @@ export function SlideImage({ src, alt, caption }: { src: string; alt: string; ca
   return <figure><img src={src} alt={alt} />{textValue(caption) && <figcaption><DisplayTextContent value={caption} size="caption" /></figcaption>}</figure>;
 }
 
-export function SlideTable({ columns, rows, columnWidths }: { columns: DisplayText[]; rows: DisplayText[][]; columnWidths?: number[] | undefined }) {
+export function SlideTable({ columns, rows, columnWidths, columnAlignments }: { columns: DisplayText[]; rows: DisplayText[][]; columnWidths?: number[] | undefined; columnAlignments?: ("left" | "center" | "right")[] | undefined }) {
   return <table className="sf-table">
     {columnWidths && <colgroup>{columnWidths.map((width, index) => <col key={index} style={{ width: `${width}%` }} />)}</colgroup>}
-    <thead><tr>{columns.map((column, index) => <th key={index} scope="col"><DisplayTextContent value={column} size="table" /></th>)}</tr></thead>
-    <tbody>{rows.map((row, index) => <tr key={index}>{row.map((cell, cellIndex) => <td key={cellIndex}><DisplayTextContent value={cell} size="table" /></td>)}</tr>)}</tbody>
+    <thead><tr>{columns.map((column, index) => <th key={index} scope="col" style={columnAlignments ? { textAlign: columnAlignments[index] } : undefined}><DisplayTextContent value={column} size="table" /></th>)}</tr></thead>
+    <tbody>{rows.map((row, index) => <tr key={index}>{row.map((cell, cellIndex) => <td key={cellIndex} style={columnAlignments ? { textAlign: columnAlignments[cellIndex] } : undefined}><DisplayTextContent value={cell} size="table" /></td>)}</tr>)}</tbody>
   </table>;
 }
 

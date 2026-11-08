@@ -8,6 +8,7 @@ export const panels = {
   family: "panels",
   variants,
   slide: slideObject("panels", variants, {
+    numbered: z.boolean().optional(),
     panels: z.array(z.object({
       title: displayText(text.max(200)),
       blocks,

@@ -9,8 +9,16 @@ export const table = {
   slide: slideObject("table", variants, {
     columns: z.array(displayText(text.max(200))).min(1).max(8),
     columnWidths: z.array(z.number().positive().max(100)).min(1).max(8).optional(),
+    columnAlignments: z.array(z.enum(["left", "center", "right"])).min(1).max(8).optional(),
     rows: z.array(z.array(displayText(xmlText.max(2000))).min(1).max(8)).min(1).max(14),
   }).superRefine((slide, context) => {
+    if (slide.columnAlignments !== undefined && slide.columnAlignments.length !== slide.columns.length) {
+      context.addIssue({
+        code: "custom",
+        path: ["columnAlignments"],
+        message: "Column alignments must have one value per column",
+      });
+    }
     if (slide.columnWidths !== undefined) {
       if (slide.columnWidths.length !== slide.columns.length) {
         context.addIssue({

@@ -5,8 +5,19 @@ All notable changes to this project will be documented in this file. The format 
 
 ## [Unreleased]
 
+### Fixed
+
+- `panels/rows` with six or seven panels keeps the number, title, and content
+  columns aligned across every row, including filled panels. Narrow-column
+  padding now applies only to the default column variant.
+
 ### Added
 
+- Tables and `SlideTable` / `DataTable` accept `columnAlignments` (`left`,
+  `center`, or `right` per column) for headers and body cells, including PPTX export.
+  Omitted values preserve left alignment.
+- Panels accept optional slide-level `numbered`: `false` removes number labels and
+  reclaims their space in both columns and rows. Omitted/`true` preserves numbered layouts.
 - Gantt slides accept optional `barRadius` (0–120 CSS px) to override bar and track
   corners locally. Omitted values retain the template radius; explicit zero keeps
   square corners. Other layouts and progress behavior remain unchanged.

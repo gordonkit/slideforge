@@ -86,8 +86,8 @@ Key figures: two to six large numbers, each with a label and an optional line of
 
 ### `panels`
 
-Panels split the slide with thin lines instead of cards: two to seven sections, each with a number, a
-title, and content. Give a panel a `color` (a six-digit hex color) to fill it with that color; the text
+Panels split the slide with thin lines instead of cards: two to seven sections, each with an optional
+number, a title, and content. Give a panel a `color` (a six-digit hex color) to fill it with that color; the text
 color switches between white and near-black to stay readable.
 
 | `panels` (`default`) | `panels/rows` |
@@ -109,6 +109,9 @@ color switches between white and near-black to stay readable.
 - **Columns and rows:** `panels` places the panels side by side, split by vertical lines. `panels/rows`
   stacks them, split by horizontal lines, with the title on the left and the content on the right. The same
   content works in both.
+- **Numbering:** use slide-level `"numbered": false` for parallel topics or document summaries.
+  Panels start directly with their titles; rows reclaim the number column for content.
+  Omit `numbered` or set it to `true` to keep the existing numbered layout for ordered steps.
 - **Many panels:** five or more columns are narrow, so the text is smaller. With six or seven panels, keep
   each to a short title and a line or two. Rows are shorter still.
 - **Color:** a panel without `color` has no fill, only the lines. Colored panels sit flush against each other.

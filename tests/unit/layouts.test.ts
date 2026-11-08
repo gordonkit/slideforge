@@ -202,6 +202,28 @@ describe("family/variant layout names", () => {
     expect(issues({ layout: "panels/rows", panels: [panel("A"), panel("B")] })).toBeUndefined();
   });
 
+  it("makes panel numbering optional without changing existing numbered rendering", () => {
+    const panels = ["Background", "Scope"].map(title => ({ title, blocks: [{ type: "paragraph", text: "Summary" }] }));
+    for (const layout of ["panels", "panels/default", "panels/rows"]) {
+      const draw = (options: object) => renderPresentation({
+        metadata: { title: "Deck" }, slides: [{ title: "P", layout, panels, ...options }],
+      });
+      expect(draw({ numbered: true })).toBe(draw({}));
+      expect(draw({}).match(/class="sf-panel-number"/g)).toHaveLength(2);
+      const html = draw({ numbered: false });
+      expect(html).toContain('data-numbered="false"');
+      expect(html).not.toContain('<span class="sf-panel-number"');
+      expect(html).toContain("<h2>Background</h2>");
+      expect(html).toContain("<h2>Scope</h2>");
+      expect(html).toContain('<div class="sf-panel-line"');
+      const parsed = parsePresentation({ metadata: { title: "Deck" }, slides: [{ title: "P", layout, panels, numbered: false }] });
+      expect(parsePresentation(parsed)).toEqual(parsed);
+      for (const numbered of ["false", 0, null]) {
+        expect(presentationSchema.safeParse({ metadata: { title: "Deck" }, slides: [{ title: "P", layout, panels, numbered }] }).success).toBe(false);
+      }
+    }
+  });
+
   it("validates and draws the stats, matrix, compare, team, process, hub, code, media, and closing layouts", () => {
     const para = [{ type: "paragraph", text: "x" }];
     const draw = (slide: object) => renderPresentation({ metadata: { title: "Deck" }, slides: [{ title: "T", ...slide }] });

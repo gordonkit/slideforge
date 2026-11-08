@@ -36,6 +36,10 @@ The slide in JSON:
 
 `chart`:
 
+Tables support `columnAlignments`, with one `"left"`, `"center"`, or `"right"`
+per column. Use `["left", "right", "left"]` to right-align a numeric second
+column, including its header. Omit it to retain left-aligned cells.
+
 ```json
 {
   "layout": "chart/donut",

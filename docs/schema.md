@@ -160,7 +160,7 @@ is reported with that family's valid names, such as
 | `"content"` | Required `blocks`: 1–12 content blocks |
 | `"two-columns"` | Required `left` and `right`: each 1–12 content blocks |
 | `"cards"` | Required `cards`: 1–6 objects, each with trimmed nonempty `title` (max 200) and `blocks` (1–12) |
-| `"panels"` | Required `panels`: 2–7 objects, each with trimmed nonempty `title` (max 200), `blocks` (1–12), and an optional `color`, a six-digit hex color such as `"#2563eb"` that fills the panel |
+| `"panels"` | Required `panels`: 2–7 objects, each with trimmed nonempty `title` (max 200), `blocks` (1–12), and an optional `color`, a six-digit hex color such as `"#2563eb"` that fills the panel. Optional slide-level `numbered`: boolean; omitted/`true` shows numbers, `false` starts each panel with its title and removes the number column in `panels/rows` |
 | `"media"` | Required `image` (an image source) and `alt` (max 1,000, may be empty); optional `caption` and `blocks` (up to 6 content blocks, default none) |
 | `"stats"` | Required `stats`: 2–6 objects, each with trimmed nonempty `value` (max 30), `label` (max 100), optional trimmed nonempty `labelDetail` (max 100), optional `text`, and optional boolean `highlight` |
 | `"matrix"` | Required `quadrants`: exactly 4 objects (top left, top right, bottom left, bottom right), each with `title` (max 200) and `blocks` (1–12); optional `xAxis` and `yAxis` names (max 80) |
@@ -170,7 +170,7 @@ is reported with that family's valid names, such as
 | `"hub"` | Required `center` (max 100) and `items`: 3–6 objects, each with `title` (max 100) and optional `text` |
 | `"timeline"` | Required `events`: 2–6 objects, each with trimmed nonempty `date` (max 100) and `title` (max 200), and optional `text` string, max 10,000 |
 | `"gantt"` | Required `periods` (2–12 trimmed nonempty strings, max 40 each) and `tasks` (1–8 objects, each with trimmed nonempty `label` (max 100), integer `start` and `end`, and optional `progress` from 0 to 100); optional finite numeric `barRadius`, 0–120 CSS px |
-| `"table"` | Required `columns` (1–8 trimmed nonempty strings, max 200 each) and `rows` (1–14 arrays of 1–8 string cells, max 2,000 each); optional `columnWidths`: one numeric percentage per column, each greater than 0 and at most 100, summing to 100 |
+| `"table"` | Required `columns` (1–8 trimmed nonempty strings, max 200 each) and `rows` (1–14 arrays of 1–8 string cells, max 2,000 each); optional `columnWidths`: one numeric percentage per column, each greater than 0 and at most 100, summing to 100; optional `columnAlignments`: one `"left"`, `"center"`, or `"right"` per column |
 | `"chart"` | Required `data` (1–10 `{ "label", "value" }` objects); optional `unit` string, max 40; optional `blocks` (0–4 content blocks, default `[]`) |
 | `"quote"` | Required `quote`: trimmed nonempty string, max 1,000; optional `attribution` string, max 10,000 |
 | `"code"` | Required `code` (1–3,000 characters, at most 18 lines, kept as written); optional `language` label (max 60) |
@@ -183,6 +183,10 @@ set, for example `"columnWidths": [35, 10, 55]`. Percentages are numbers, not
 strings such as `"35%"`; decimals are accepted, with a sum tolerance of 0.000001
 percentage points for floating-point arithmetic. The HTML uses a `colgroup`;
 narrow columns can wrap more text, so review the table height as well as widths.
+`columnAlignments` applies to both headers and body cells, for example
+`["left", "right", "left"]` for a numeric second column. Omitted alignments
+preserve left alignment. This option also works in `SlideTable` / `DataTable`
+and exports to PowerPoint paragraph alignment.
 Chart labels are trimmed, nonempty, max 100 characters;
 values must be finite, nonnegative numbers. Zero is valid. Chart units are
 appended directly to values; include a leading space for a separated suffix.
