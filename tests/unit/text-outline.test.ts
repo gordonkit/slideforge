@@ -42,6 +42,14 @@ describe('PowerPoint text outlines', () => {
     expect(apply(run('slideforge-outline-0'), [shade])).not.toContain('<a:ln');
   });
 
+  it('restores exact text fill opacity without changing an existing outline', () => {
+    const line = '<a:ln w="9525"><a:solidFill><a:srgbClr val="000000"/></a:solidFill></a:ln>';
+    const marked = { ...shade, shadow: undefined, fill: { color: '172033', alpha: 0.9375 } };
+    const result = apply(run('slideforge-outline-0', line), [marked]);
+    expect(result).toContain(line);
+    expect(result).toContain('<a:srgbClr val="172033"><a:alpha val="93750"/></a:srgbClr>');
+  });
+
   it('keeps an outline the converter wrote when only a shadow is marked, and writes both when asked', () => {
     const line = '<a:ln w="9525"><a:solidFill><a:srgbClr val="000000"/></a:solidFill></a:ln>';
     expect(apply(run('slideforge-outline-0', line), [shade])).toContain(line);

@@ -58,6 +58,20 @@ describe("template schema", () => {
     expect(templateSchema.safeParse({ name: "x", tokens: { layout: { header: 200, content: 724 } } }).success).toBe(true);
   });
 
+  it("bounds the header-to-content gap within the content region", () => {
+    const result = (gap: number, layout: object = {}) => templateSchema.safeParse({
+      name: "x", tokens: { spacing: { "header-content": gap }, layout },
+    });
+    expect(designTokens.spacing["header-content"]).toBe(24);
+    expect(result(0).success).toBe(true);
+    expect(result(48).success).toBe(true);
+    expect(result(-1).success).toBe(false);
+    expect(result(481).success).toBe(false);
+    expect(result(24, { header: 900, content: 24 }).success).toBe(true);
+    expect(describePresentationError(result(25, { header: 900, content: 24 }).error))
+      .toContain("tokens.spacing.header-content: header-content must not exceed layout.content");
+  });
+
   it("limits the title outline width", () => {
     const result = (outline: number) => templateSchema.safeParse({ name: "x", tokens: { border: { "title-outline": outline } } });
     expect(result(4).success).toBe(true);
@@ -106,9 +120,10 @@ describe("rendering with a template", () => {
   });
 
   it("writes token overrides as CSS variables", () => {
-    const html = render(deck(), { name: "x", tokens: { type: { title: 64 }, layout: { header: 200, content: 724 } } });
+    const html = render(deck(), { name: "x", tokens: { type: { title: 64 }, layout: { header: 200, content: 724 }, spacing: { "header-content": 48 } } });
     expect(html).toContain("--sf-type-title:64px");
     expect(html).toContain("--sf-layout-header:200px");
+    expect(html).toContain("--sf-spacing-header-content:48px");
     expect(html).toContain(`--sf-type-body:${designTokens.type.body}px`);
   });
 

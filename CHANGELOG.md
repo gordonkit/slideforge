@@ -5,6 +5,28 @@ All notable changes to this project will be documented in this file. The format 
 
 ## [Unreleased]
 
+## [0.7.0] - 2026-11-09
+
+### Added
+
+- Display-text objects accept optional `opacity` from 0 to 1. Browser rendering
+  and editable PowerPoint text preserve the requested transparency, including
+  fully transparent text and text outline / shadow effects.
+- Templates accept `tokens.spacing["header-content"]` to configure the gap
+  between slide headers and content. Omitted values retain the 24 CSS-pixel default.
+- Documentation and all four site locales describe text opacity and header spacing.
+
+### Fixed
+
+- PPTX text-box width slack stays within the browser's clipping regions, avoiding
+  text crossing panel boundaries.
+- Standard native lists no longer duplicate left padding and hanging indentation;
+  wrapped lines retain their alignment.
+- Top-aligned native lists can use the available height before the next block or
+  clipping boundary to accommodate Office font metrics.
+- Adjusted text-box geometry uses integer EMU coordinates so PowerPoint can open
+  the exported presentation reliably.
+
 ## [0.6.0] - 2026-11-08
 
 ### Fixed

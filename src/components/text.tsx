@@ -10,11 +10,12 @@ export function DisplayTextContent({ value, size = "body", scale = 1 }: {
   scale?: number;
 }) {
   const tokens = useContext(TextTokens);
-  if (typeof value !== "object" || value.fontSize === undefined) return textValue(value);
+  if (typeof value !== "object" || (value.fontSize === undefined && value.opacity === undefined)) return textValue(value);
   const base = typeof size === "number" ? size : tokens.type[size];
-  const fontSize = typeof value.fontSize === "number" ? value.fontSize : Number(base) * scale + value.fontSize.delta;
-  if (!Number.isFinite(fontSize) || fontSize < 8 || fontSize > 240) {
+  const fontSize = value.fontSize === undefined ? undefined
+    : typeof value.fontSize === "number" ? value.fontSize : Number(base) * scale + value.fontSize.delta;
+  if (fontSize !== undefined && (!Number.isFinite(fontSize) || fontSize < 8 || fontSize > 240)) {
     throw new Error(`Resolved fontSize for "${value.text}" must be between 8 and 240px (got ${fontSize})`);
   }
-  return <span style={{ fontSize }}>{value.text}</span>;
+  return <span style={{ fontSize, opacity: value.opacity }} data-sf-text-opacity={value.opacity}>{value.text}</span>;
 }

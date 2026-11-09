@@ -69,6 +69,7 @@ After merging, the layout tokens must keep the canvas geometry:
 
 - `padding-top + header + content + padding-bottom` equals 1080, so changing
   `header` means changing `content` by the opposite amount;
+- `spacing.header-content` must not exceed `layout.content`;
 - `padding-top + cover-header + cover-content + padding-bottom` is at most 1080;
 - `cover-top` is at most `cover-header`;
 - `footer-bottom + footer` is at most `padding-bottom`;
@@ -77,6 +78,25 @@ After merging, the layout tokens must keep the canvas geometry:
 These checks keep the regions on the slide; they do not prove content fits. A
 smaller content region or larger type clips sooner, so review layout issues
 after export as usual.
+
+### Header-to-content gap
+
+`tokens.spacing["header-content"]` sets the gap between the header region and
+content in regular layouts, in CSS pixels. The default is 24; set it to `0`
+to restore the previous layout or increase it to add space. The gap is taken
+from `layout.content`, keeping the content region's bottom edge fixed. Cover,
+section, closing, and blank slides use their own layouts and are unaffected.
+This is separate from `spacing.subtitle`, the margin between title and subtitle.
+
+```json
+{
+  "name": "roomy",
+  "tokens": { "spacing": { "header-content": 48 } }
+}
+```
+
+Changing the gap leaves less room for content. Check each slide for clipping
+and wrapping. Token overrides belong in a template, not the presentation JSON.
 
 ### Title outline
 

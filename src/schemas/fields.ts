@@ -14,8 +14,12 @@ export const fontSizeSchema = z.union([
 ]);
 
 export function displayText(schema: z.ZodString = text) {
-  return z.union([schema, z.object({ text: schema, fontSize: fontSizeSchema.optional() }).strict()], {
-    error: 'Use a text string or a { text, fontSize? } object',
+  return z.union([schema, z.object({
+    text: schema,
+    fontSize: fontSizeSchema.optional(),
+    opacity: z.number().finite().min(0).max(1).optional(),
+  }).strict()], {
+    error: 'Use a text string or a { text, fontSize?, opacity? } object',
   });
 }
 

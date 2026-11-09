@@ -11,6 +11,7 @@ body { margin: 0; background: var(--sf-canvas); color: var(--sf-foreground); }
 .sf-subtitle-mark { flex: none; width: 8px; height: 1.1em; border-radius: 4px; background: var(--sf-accent); }
 .sf-subtitle-text { min-width: 0; }
 .sf-content { height: var(--sf-layout-content); overflow: hidden; font-size: var(--sf-type-body); line-height: var(--sf-type-body-leading); }
+.sf-slide:not(.sf-layout-cover):not(.sf-layout-section):not(.sf-layout-closing) > .sf-content { margin-top: var(--sf-spacing-header-content); height: calc(var(--sf-layout-content) - var(--sf-spacing-header-content)); }
 .sf-blocks { display: flex; flex-direction: column; gap: var(--sf-spacing-block); min-width: 0; height: 100%; overflow: hidden; }
 .sf-blocks p, .sf-blocks ul, .sf-blocks ol { margin: 0; }
 .sf-blocks ul, .sf-blocks ol { padding-left: var(--sf-spacing-list); }
