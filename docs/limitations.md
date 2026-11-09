@@ -98,9 +98,16 @@ measures and substitutes fonts slightly differently, so tight boxes can wrap a
 last word or punctuation mark. Export therefore widens unfilled text boxes by 6%
 of their width, at least 0.1 in and at most 0.5 in, growing away from the
 paragraph alignment and staying inside the slide. Filled or outlined shapes are
-unchanged. The extra width can let multi-line paragraphs wrap slightly later than
-in HTML. Pass `textSlack: false` to `exportPresentation` to keep converter sizes,
+unchanged. Browser clipping regions also bound the extra width, so text in a
+column cannot grow across its separator. The extra width can let multi-line paragraphs wrap slightly later than
+in HTML. Pass `textSlack: false` to `exportPresentation` to disable extra width,
 or `{ ratio, min, max }` (EMU) to tune it.
+
+For ordinary outside-marker lists, export removes the converter's duplicate
+left padding while keeping native bullets and hanging indents, so wrapped lines
+align with the text. Top-aligned list frames may use the remaining vertical space
+up to their next block or clipping edge to accommodate Office line metrics;
+font size and text are unchanged. Custom and nested indentation is left alone.
 
 The converter writes the first CSS family (Arial) as the PowerPoint East Asian
 font too, so PowerPoint would pick its own CJK substitute. Export sets that slot

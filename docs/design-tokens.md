@@ -67,7 +67,8 @@ see [display text](schema.md#display-text-and-font-sizes).
 | Element | CSS value |
 | --- | --- |
 | Slide padding | Top 72px, horizontal 96px, bottom 84px |
-| Header / content heights | 186px / 738px |
+| Header / content region heights | 186px / 738px; the content region includes the header-to-content gap |
+| Header-to-content gap | 24px, leaving 714px for content in regular layouts |
 | Title | 60px, 700 weight, 1.2 line height; no outline (`title-outline: 0`) |
 | Subtitle | 33px, 1.35 line height, 18px top margin |
 | Content | 36px, 1.45 line height |
@@ -113,7 +114,7 @@ strings unchanged. For example, `spacingTokens.column` becomes
 | Export / group | Keys and values |
 | --- | --- |
 | `layoutTokens` / `layout` | `padding-x: 96`, `padding-top: 72`, `padding-bottom: 84`, `header: 186`, `content: 738`, `footer-bottom: 33`, `footer: 36`, `cover-header: 525`, `cover-top: 198`, `cover-content: 375`, `cover-panel: 640`, `image-max-height: 630`, `timeline-marker: 36`, `gantt-label: 420`, `gantt-row: 84` |
-| `spacingTokens` / `spacing` | `page: 36`, `block: 27`, `column: 60`, `card: 30`, `card-padding: 36`, `subtitle: 18`, `cover-subtitle: 36`, `card-title: 24`, `list: 48`, `item: 15`, `caption: 12`, `table-x: 24`, `table-y: 15`, `chart: 30`, `chart-explanation: 24` |
+| `spacingTokens` / `spacing` | `page: 36`, `block: 27`, `column: 60`, `card: 30`, `card-padding: 36`, `subtitle: 18`, `cover-subtitle: 36`, `header-content: 24`, `card-title: 24`, `list: 48`, `item: 15`, `caption: 12`, `table-x: 24`, `table-y: 15`, `chart: 30`, `chart-explanation: 24` |
 | `typographyTokens` / `type` | `title: 60`, `subtitle: 33`, `body: 36`, `caption: 25.5`, `card-title: 39`, `card-body: 30`, `table: 31.5`, `chart: 31.5`, `footer: 24`, `cover-title: 90`, `cover-subtitle: 45`, `author: 39`, `quote: 54`, `title-leading: "1.2"`, `subtitle-leading: "1.35"`, `body-leading: "1.45"`, `bold: "700"` |
 | `borderTokens` / `border` | `width: 2`, `radius: 18`, `accent: 6` (the quote's accent bar and the timeline rail), `title-outline: 0` (slide and cover title `-webkit-text-stroke` width in the `outline` color) |
 | `shadowTokens` / `shadow` | `card: 0` (blur radius in px of the soft shadow under cards and hexagon and pentagon cards; 0 draws none), `text: 0` (the same under slide, cover, and card titles; at most 20) |

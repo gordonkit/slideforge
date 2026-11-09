@@ -29,6 +29,7 @@ export interface TextOutline {
   /** Opacity from 0 to 1. */
   alpha: number;
   shadow?: TextShadow;
+  fill?: { color: string; alpha: number };
 }
 
 /** Prefix of the placeholder font family that carries an outline through the converter. */
@@ -43,7 +44,7 @@ function xml(value: string): string {
 }
 
 /**
- * The converter ignores `-webkit-text-stroke` but copies the first font family of every text
+ * The converter ignores `-webkit-text-stroke` and rounds text opacity, but copies the first font family of every text
  * run into the PowerPoint XML. Prefix stroked and shadowed elements' fonts with a placeholder family naming
  * their effects; the browser skips the unknown family, so rendering and measurement stay the
  * same. Returns the outlines by placeholder index for `applyTextOutlines`.
@@ -51,7 +52,11 @@ function xml(value: string): string {
 export async function markTextOutlines(page: Page, selector: string): Promise<TextOutline[]> {
   return page.locator(selector).evaluateAll((slides, prefix) => {
     const context = document.createElement('canvas').getContext('2d')!;
-    const outlines: Array<{ family: string; width: number; color: string; alpha: number; shadow?: { x: number; y: number; blur: number; color: string; alpha: number } }> = [];
+    const outlines: Array<{
+      family: string; width: number; color: string; alpha: number;
+      shadow?: { x: number; y: number; blur: number; color: string; alpha: number };
+      fill?: { color: string; alpha: number };
+    }> = [];
     const indexes = new Map<string, number>();
     const elements = (slides as HTMLElement[]).flatMap(slide => [slide, ...slide.querySelectorAll<HTMLElement>('*')]);
     // The canvas normalizes any CSS color to `#rrggbb`, or `rgba(...)` when translucent.
@@ -70,6 +75,13 @@ export async function markTextOutlines(page: Page, selector: string): Promise<Te
     const styles = elements.map(element => {
       const style = getComputedStyle(element);
       const family = style.fontFamily;
+      const authoredOpacity = element.dataset.sfTextOpacity;
+      let effectiveOpacity = 1;
+      if (authoredOpacity !== undefined) {
+        for (let ancestor: HTMLElement | null = element; ancestor; ancestor = ancestor.parentElement) {
+          effectiveOpacity *= ancestor.dataset.sfTextOpacity === '0' ? 0 : Number(getComputedStyle(ancestor).opacity);
+        }
+      }
       const width = parseFloat(style.webkitTextStrokeWidth) || 0;
       const stroke = width > 0 ? colorOf(style.webkitTextStrokeColor) : undefined;
       // The first shadow only: `rgba(0, 0, 0, 0.45) 0px 10px 30px`.
@@ -79,13 +91,15 @@ export async function markTextOutlines(page: Page, selector: string): Promise<Te
         ? { x: Number(parts[2]), y: Number(parts[3]), blur: Number(parts[4] ?? 0), ...shade }
         : undefined;
       const stroked = stroke !== undefined && stroke.alpha > 0;
-      if (!stroked && !shadow) return { family };
+      if (!stroked && !shadow && authoredOpacity === undefined) return { family };
+      const fill = authoredOpacity === undefined ? undefined : colorOf(style.color);
       return {
         family,
         outline: {
           family: family.split(',')[0]!.trim().replace(/['"]/g, ''),
-          width: stroked ? width : 0, color: stroked ? stroke.color : '000000', alpha: stroked ? stroke.alpha : 1,
-          ...(shadow ? { shadow } : {}),
+          width: stroked ? width : 0, color: stroked ? stroke.color : '000000', alpha: stroked ? stroke.alpha * effectiveOpacity : 1,
+          ...(shadow ? { shadow: { ...shadow, alpha: shadow.alpha * effectiveOpacity } } : {}),
+          ...(fill ? { fill: { ...fill, alpha: fill.alpha * effectiveOpacity } } : {}),
         },
       };
     });
@@ -127,6 +141,17 @@ function outlineXml({ width, color, alpha }: TextOutline): string {
   return `<a:ln w="${Math.round(width * EMU_PER_PX)}"><a:solidFill>${fill}</a:solidFill></a:ln>`;
 }
 
+function applyFill(children: string, fill: NonNullable<TextOutline['fill']>): string {
+  const opacity = fill.alpha < 1 ? `<a:alpha val="${Math.round(fill.alpha * 100000)}"/>` : '';
+  const color = opacity ? `<a:srgbClr val="${fill.color}">${opacity}</a:srgbClr>` : `<a:srgbClr val="${fill.color}"/>`;
+  const replacement = `<a:solidFill>${color}</a:solidFill>`;
+  const line = children.match(/^<a:ln\b(?:[^>]*\/>|[\s\S]*?<\/a:ln>)/)?.[0] ?? '';
+  const rest = children.slice(line.length);
+  const existing = /<a:solidFill>[\s\S]*?<\/a:solidFill>/;
+  if (existing.test(rest)) return line + rest.replace(existing, replacement);
+  return line + replacement + rest;
+}
+
 /**
  * Give runs that carry an outline placeholder a PowerPoint text outline (`<a:ln>`, the first
  * child of the run properties) and/or text shadow (`<a:effectLst>`, after the fill) and restore their
@@ -147,7 +172,8 @@ export function applyTextOutlines(data: Uint8Array, outlines: readonly TextOutli
         if (!outline) throw new Error(`Unknown text outline placeholder ${OUTLINE_FONT_PREFIX}${index}`);
         const named = children
           .replace(marker, (_, other: string) => `typeface="${xml(outlines[Number(other)]?.family ?? '')}"`);
-        const restored = outline.width > 0 ? named.replace(/<a:ln\b[\s\S]*?(?:\/>|<\/a:ln>)/, '') : named;
+        const withoutLine = outline.width > 0 ? named.replace(/<a:ln\b[\s\S]*?(?:\/>|<\/a:ln>)/, '') : named;
+        const restored = outline.fill ? applyFill(withoutLine, outline.fill) : withoutLine;
         const effect = outline.shadow ? shadowXml(outline.shadow) : '';
         const anchor = restored.search(AFTER_EFFECTS);
         const body = anchor < 0 ? restored + effect : restored.slice(0, anchor) + effect + restored.slice(anchor);

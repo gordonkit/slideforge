@@ -6,7 +6,7 @@ import { chromium, type ElementHandle, type Page } from 'playwright';
 import { renderPresentation } from '../renderers/html.js';
 import { fileRenderOptions, loadPresentation } from '../templates/load.js';
 import { applyMetadata, type PresentationMetadata } from './metadata.js';
-import { widenTextBoxes, type TextSlack } from './text-fit.js';
+import { measureTextLayout, widenTextBoxes, type TextSlack } from './text-fit.js';
 import { applyEastAsianFont } from './fonts.js';
 import { applyLinks, markLinks } from './links.js';
 import { applyPolygonShapes, markPolygonShadows } from './shapes.js';
@@ -250,7 +250,12 @@ export async function exportPresentation(input: string, options: ExportOptions):
       return { title: document.title, author: meta('author'), subject: meta('subject'), lang: document.documentElement.lang };
     });
     metadata = { ...documentMetadata, ...metadata };
+    const textLayout = await measureTextLayout(page, selector);
     const backgrounds = await captureBackgrounds(page, selector, options.timeout ?? 60_000);
+    // The converter skips zero-opacity elements; retain invisible text as editable runs.
+    await page.locator(selector).locator('[data-sf-text-opacity="0"]').evaluateAll(elements => {
+      for (const element of elements) (element as HTMLElement).style.opacity = '0.000001';
+    });
     // After layout validation, which would report the placeholder fonts as unavailable.
     const outlines = await markTextOutlines(page, selector);
     await markPolygonShadows(page, selector);
@@ -263,7 +268,7 @@ export async function exportPresentation(input: string, options: ExportOptions):
       return engine.convert(selector, size.widthInches, size.heightInches);
     }, { selector, size: SLIDE_SIZE });
     const converted = applyLinks(applyPolygonShapes(applyTextOutlines(Buffer.from(base64, 'base64'), outlines)), links);
-    const fitted = options.textSlack === false ? converted : widenTextBoxes(converted, options.textSlack);
+    const fitted = widenTextBoxes(converted, options.textSlack === false ? { ratio: 0, min: 0, max: 0 } : options.textSlack, textLayout);
     const data = applyMetadata(applyBackgrounds(applyEastAsianFont(fitted, options.eastAsianFont), backgrounds), metadata);
     const report = validatePptx(data);
     if (!report.valid) throw new Error(`Invalid generated PPTX: ${report.issues.map(issue => issue.message).join('; ')}`);

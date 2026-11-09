@@ -29,7 +29,7 @@ export const layoutTokens = Object.freeze({
 
 export const spacingTokens = Object.freeze({
   page: 36, block: 27, column: 60, card: 30, "card-padding": 36,
-  subtitle: 18, "cover-subtitle": 36, "card-title": 24, list: 48, item: 15, caption: 12,
+  subtitle: 18, "cover-subtitle": 36, "header-content": 24, "card-title": 24, list: 48, item: 15, caption: 12,
   "table-x": 24, "table-y": 15, chart: 30, "chart-explanation": 24,
 });
 

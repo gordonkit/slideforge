@@ -48,13 +48,16 @@ export const templateSchema = z.object({
   backgrounds: backgroundsSchema.optional(),
   variants: variantsSchema.optional(),
 }).strict().superRefine((template, context) => {
-  const { layout, border, shadow } = mergeTokens(template.tokens);
+  const { layout, spacing, border, shadow } = mergeTokens(template.tokens);
   const check = (ok: boolean, message: string) => {
     if (!ok) context.addIssue({ code: "custom", path: ["tokens", "layout"], message });
   };
   const height = SLIDE_SIZE.heightPx;
   const vertical = layout["padding-top"] + layout.header + layout.content + layout["padding-bottom"];
   check(vertical === height, `padding-top + header + content + padding-bottom must equal ${height} (got ${vertical})`);
+  if (spacing["header-content"] > layout.content) {
+    context.addIssue({ code: "custom", path: ["tokens", "spacing", "header-content"], message: "header-content must not exceed layout.content" });
+  }
   const cover = layout["padding-top"] + layout["cover-header"] + layout["cover-content"] + layout["padding-bottom"];
   check(cover <= height, `padding-top + cover-header + cover-content + padding-bottom must not exceed ${height} (got ${cover})`);
   check(layout["cover-top"] <= layout["cover-header"], "cover-top must not exceed cover-header");

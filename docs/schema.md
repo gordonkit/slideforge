@@ -58,8 +58,8 @@ that content will fit a slide**; check rendered layout separately.
 ## Display text and font sizes
 
 All authored display-text fields accept either the existing string or a strict
-`{ "text": "...", "fontSize": ... }` object. `fontSize` is optional; without it,
-the object renders exactly like the string. Each field's existing text length,
+`{ "text": "...", "fontSize": ..., "opacity": ... }` object. Both style fields
+are optional; without them, the object renders exactly like the string. Each field's existing text length,
 trimming, whitespace, and XML-character constraints also apply to `text`.
 
 ```json
@@ -67,7 +67,7 @@ trimming, whitespace, and XML-character constraints also apply to `text`.
   "layout": "content",
   "title": { "text": "Delivery", "fontSize": 56 },
   "subtitle": { "text": "A focused first phase", "fontSize": { "delta": -3 } },
-  "blocks": [{ "type": "paragraph", "text": { "text": "Scope first.", "fontSize": { "delta": 4 } } }]
+  "blocks": [{ "type": "paragraph", "text": { "text": "Scope first.", "fontSize": { "delta": 4 }, "opacity": 0.93 } }]
 }
 ```
 
@@ -80,6 +80,11 @@ trimming, whitespace, and XML-character constraints also apply to `text`.
 - For example, default card body 30px with delta -4 is 26px; a hexagon's
   0.8 scale makes it 20px. A template changing card body to 40px makes those
   36px and 28px. Fixed-size roles (such as stat values) retain their layout base.
+- `opacity` is a finite number from 0 to 1: 0 is invisible, 1 is fully opaque,
+  and omission leaves the existing styling unchanged. It affects the text,
+  including its outline and shadow, but not a list marker or its container.
+  PowerPoint exports editable text with opacity rounded to 0.001 percentage
+  points. Check contrast against the actual background.
 - Supported fields include slide title/subtitle/footer/author, paragraphs and
   bullet items, card/panel/quadrant titles, stats value/label/labelDetail/text,
   agenda titles/text/subsections, comparison labels/items, team name/role/text,
