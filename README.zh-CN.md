@@ -149,5 +149,6 @@ PowerPoint 兼容性测试，也不宣称像素级一致。
 SlideForge 是 [GordonKit](https://gordonkit.com/zh-CN/) 的一部分，GordonKit 提供免费的在线工具与开源项目：
 
 - [gordon-doc-converter](https://docs.gordonkit.com/zh-CN/overview/)：将 DOCX 等文档转换为 PDF、HTML、Markdown 与图片，提供 Python 包、CLI 与 HTTP API。
+- [DocForge](https://docforge.gordonkit.com/)：以经过验证的 JSON 与模板制作 Word 文档，并导出具备真正标题、列表与目录的可编辑 DOCX。
 - [GordonKit Math](https://math.gordonkit.com/)：面向五到九年级的交互式数学学习，以可视化、循序渐进的单元带你理解概念。
 - [Math Background Studio](https://bg.gordonkit.com/)：用数学图案生成壁纸与演示文稿背景，并导出为 PNG 或 SVG。

@@ -177,6 +177,8 @@ open-source projects:
 
 - [gordon-doc-converter](https://docs.gordonkit.com/) converts DOCX and other documents to PDF, HTML,
   Markdown and images, via a Python library, CLI or HTTP API.
+- [DocForge](https://docforge.gordonkit.com/) builds Word documents from validated JSON and templates,
+  then exports editable DOCX with real headings, lists and a table of contents.
 - [GordonKit Math](https://math.gordonkit.com/) offers interactive mathematics learning for grades 5–9,
   with visual, step-by-step topics.
 - [Math Background Studio](https://bg.gordonkit.com/) generates wallpapers and slide backgrounds from
