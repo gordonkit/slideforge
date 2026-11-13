@@ -7,12 +7,13 @@ import { parentOrganization, parentSiteLabel, parentSiteUrl } from "./src/parent
 const siteUrl = "https://slideforge.gordonkit.com";
 /** The same `@id` gordonkit.com uses for this site in its own JSON-LD. */
 const websiteId = `${siteUrl}/#website`;
-const locales: Locale[] = ["en", "zh-TW", "zh-CN", "ja"];
-const hreflang: Record<Locale, string> = { en: "en", "zh-TW": "zh-Hant-TW", "zh-CN": "zh-Hans-CN", ja: "ja" };
-const openGraphLocale: Record<Locale, string> = { en: "en_US", "zh-TW": "zh_TW", "zh-CN": "zh_CN", ja: "ja_JP" };
+const locales: Locale[] = ["en", "en-AU", "zh-TW", "zh-CN", "ja"];
+const hreflang: Record<Locale, string> = { en: "en", "en-AU": "en-AU", "zh-TW": "zh-Hant-TW", "zh-CN": "zh-Hans-CN", ja: "ja" };
+const openGraphLocale: Record<Locale, string> = { en: "en_US", "en-AU": "en_AU", "zh-TW": "zh_TW", "zh-CN": "zh_CN", ja: "ja_JP" };
 const socialImage = { url: `${siteUrl}/screenshots/layout-cover.png`, width: 960, height: 540, alt: "SlideForge cover slide: Ideas into slides" };
 const notFound: Record<Locale, { title: string; body: string; link: string }> = {
   en: { title: "Page not found", body: "This page does not exist or has moved.", link: "Go to the SlideForge documentation" },
+  "en-AU": { title: "Page not found", body: "This page does not exist or has moved.", link: "Go to the SlideForge documentation" },
   "zh-TW": { title: "找不到頁面", body: "這個頁面不存在或已經移動。", link: "前往 SlideForge 文件" },
   "zh-CN": { title: "找不到页面", body: "此页面不存在或已移动。", link: "前往 SlideForge 文档" },
   ja: { title: "ページが見つかりません", body: "このページは存在しないか、移動しました。", link: "SlideForge ドキュメントへ" },
@@ -164,6 +165,7 @@ function renderNotFound(template: string): string {
 
 const localeNames: Record<Locale, { native: string; english: string }> = {
   en: { native: "English", english: "English" },
+  "en-AU": { native: "English (Australia)", english: "Australian English" },
   "zh-TW": { native: "繁體中文", english: "Traditional Chinese" },
   "zh-CN": { native: "简体中文", english: "Simplified Chinese" },
   ja: { native: "日本語", english: "Japanese" },
