@@ -40,7 +40,7 @@ try {
   // The cards variants that change the card shape, three cards each.
   const card = (title, text) => ({ title, blocks: [{ type: 'paragraph', text }] });
   const cards = [card('Clarity', 'One idea at a time.'), card('Consistency', 'Shared layouts and tokens.'), card('Editability', 'Text stays editable.')];
-  for (const variant of ['rounded', 'badge', 'circle', 'hexagon', 'pentagon']) {
+  for (const variant of ['rounded', 'badge', 'circle', 'hexagon', 'pentagon', 'honeycomb']) {
     const html = renderPresentation({ metadata: { title: variant }, theme: 'light', slides: [{ layout: `cards/${variant}`, title: 'Three principles', footer: `cards/${variant}`, cards }] });
     const file = join(work, `cards-${variant}.html`);
     await writeFile(file, html);
@@ -131,7 +131,7 @@ try {
       console.log('Saved layout-' + name + '.png');
     }
   }
-  // The layouts added for stats, media, matrices, comparisons, teams, flows, code, charts, and endings.
+  // The layouts added for stats, media, matrices, comparisons, teams, flows, cycles, code, charts, and endings.
   {
     // A sample picture, drawn here so no image file is needed.
     await page.setViewportSize({ width: 1200, height: 800 });
@@ -158,6 +158,8 @@ try {
       ['process', { layout: 'process', title: 'How it works', steps }],
       ['process-vertical', { layout: 'process/vertical', title: 'How it works', steps: steps.slice(0, 3) }],
       ['hub', { layout: 'hub', title: 'The platform', center: 'SlideForge', items: [{ title: 'Layouts', text: 'Many families' }, { title: 'Templates', text: 'Data only' }, { title: 'Export', text: 'Editable PPTX' }, { title: 'Present', text: 'Browser mode' }, { title: 'Docs' }] }],
+      ['cycle', { layout: 'cycle', title: 'Iterate', center: 'Deck', steps: [{ title: 'Plan', text: 'One idea per slide' }, { title: 'Write', text: 'JSON content' }, { title: 'Preview', text: 'Live reload' }, { title: 'Export', text: 'Editable PPTX' }, { title: 'Review', text: 'Layout report' }, { title: 'Present', text: 'Browser mode' }] }],
+      ['cycle-ring', { layout: 'cycle/ring', title: 'Iterate', center: 'Deck', steps: [{ title: 'Plan', text: 'One idea per slide' }, { title: 'Write', text: 'JSON content' }, { title: 'Preview', text: 'Live reload' }, { title: 'Export', text: 'Editable PPTX' }, { title: 'Review', text: 'Layout report' }, { title: 'Present', text: 'Browser mode' }] }],
       ['code', { layout: 'code', title: 'Usage', language: 'bash', code: 'npm install slideforge\nslideforge init my-deck\nslideforge build my-deck/presentation.json\nslideforge export my-deck/presentation.json' }],
       ['code-dark', { layout: 'code/dark', title: 'Usage', language: 'TypeScript', code: 'import { renderPresentation } from "slideforge";\n\nconst html = renderPresentation(deck);\nconsole.log(html.length);' }],
       ['chart-columns', { layout: 'chart/columns', title: 'Progress', unit: '%', data: progress }],

@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import type { ContentBlock } from "../schemas/presentation.js";
 import { type DisplayText, textValue } from "../schemas/fields.js";
 import { DisplayTextContent } from "./text.js";
@@ -22,8 +23,9 @@ export function SlideImage({ src, alt, caption }: { src: string; alt: string; ca
   return <figure><img src={src} alt={alt} />{textValue(caption) && <figcaption><DisplayTextContent value={caption} size="caption" /></figcaption>}</figure>;
 }
 
-export function SlideTable({ columns, rows, columnWidths, columnAlignments }: { columns: DisplayText[]; rows: DisplayText[][]; columnWidths?: number[] | undefined; columnAlignments?: ("left" | "center" | "right")[] | undefined }) {
-  return <table className="sf-table">
+export function SlideTable({ columns, rows, columnWidths, columnAlignments, fillOpacity }: { columns: DisplayText[]; rows: DisplayText[][]; columnWidths?: number[] | undefined; columnAlignments?: ("left" | "center" | "right")[] | undefined; fillOpacity?: number | undefined }) {
+  const filled = fillOpacity === undefined ? undefined : { "--sf-fill-opacity": fillOpacity } as CSSProperties;
+  return <table className={filled ? "sf-table sf-table-filled" : "sf-table"} style={filled}>
     {columnWidths && <colgroup>{columnWidths.map((width, index) => <col key={index} style={{ width: `${width}%` }} />)}</colgroup>}
     <thead><tr>{columns.map((column, index) => <th key={index} scope="col" style={columnAlignments ? { textAlign: columnAlignments[index] } : undefined}><DisplayTextContent value={column} size="table" /></th>)}</tr></thead>
     <tbody>{rows.map((row, index) => <tr key={index}>{row.map((cell, cellIndex) => <td key={cellIndex} style={columnAlignments ? { textAlign: columnAlignments[cellIndex] } : undefined}><DisplayTextContent value={cell} size="table" /></td>)}</tr>)}</tbody>

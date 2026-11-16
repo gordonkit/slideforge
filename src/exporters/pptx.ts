@@ -10,6 +10,7 @@ import { measureTextLayout, widenTextBoxes, type TextSlack } from './text-fit.js
 import { applyEastAsianFont } from './fonts.js';
 import { applyLinks, markLinks } from './links.js';
 import { applyPolygonShapes, markPolygonShadows } from './shapes.js';
+import { applyTableFills, markTableFills } from './table-fill.js';
 import { applyTextOutlines, markTextOutlines } from './text-outline.js';
 import { applyBackgrounds } from './backgrounds.js';
 import { validateLayout, type ValidationIssue } from '../validators/layout.js';
@@ -259,6 +260,7 @@ export async function exportPresentation(input: string, options: ExportOptions):
     // After layout validation, which would report the placeholder fonts as unavailable.
     const outlines = await markTextOutlines(page, selector);
     await markPolygonShadows(page, selector);
+    const tableFills = await markTableFills(page, selector);
     const links = await markLinks(page, selector);
     await page.addScriptTag({ path: fileURLToPath(new URL('./engine.js', import.meta.url)) });
     const base64 = await page.evaluate(async ({ selector, size }) => {
@@ -267,7 +269,7 @@ export async function exportPresentation(input: string, options: ExportOptions):
       }).SlideForgeEngine;
       return engine.convert(selector, size.widthInches, size.heightInches);
     }, { selector, size: SLIDE_SIZE });
-    const converted = applyLinks(applyPolygonShapes(applyTextOutlines(Buffer.from(base64, 'base64'), outlines)), links);
+    const converted = applyLinks(applyTableFills(applyPolygonShapes(applyTextOutlines(Buffer.from(base64, 'base64'), outlines)), tableFills), links);
     const fitted = widenTextBoxes(converted, options.textSlack === false ? { ratio: 0, min: 0, max: 0 } : options.textSlack, textLayout);
     const data = applyMetadata(applyBackgrounds(applyEastAsianFont(fitted, options.eastAsianFont), backgrounds), metadata);
     const report = validatePptx(data);

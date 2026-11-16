@@ -7,6 +7,20 @@ All notable changes to this project will be documented in this file. The format 
 
 ### Added
 
+- A `cycle` layout family draws three to eight steps around a ring, each joined to the next by a
+  curved arrow, with an optional `center` circle, for repeating processes such as a development life
+  cycle. Steps are spaced along the ring by card size so the arrows stay clear of the cards.
+- `table`, `cards`, `agenda`, and `process` slides accept `fillOpacity` (0–1) for patterned backgrounds. A table fills its
+  header and every body row at that opacity, rows alternating light and dark; cards make their fill
+  (or shape) translucent. Exported PowerPoint tables and shapes keep the transparency.
+- A `cards/honeycomb` variant draws numbered hexagons in alternating columns that nest like a
+  honeycomb, and a card's `blocks` can be left out to show only its title.
+- A `cycle/ring` variant draws the steps as segments of one ring, each nesting into the next with a
+  triangular tip, with each step's description outside the ring.
+
+### Fixed
+
+- The `hub` lines no longer leave a notch where the first and last stubs meet the vertical line.
 - The documentation site is also available in Australian English (`/en-AU/`), matching
   gordonkit.com. It is the English text with a few Australian spellings, derived when the site
   is built, so there is no second copy of the content to keep in step.

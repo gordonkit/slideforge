@@ -77,7 +77,7 @@ A sensible mapping from the series to layout families:
 | --- | --- |
 | Cover | `cover` |
 | Section | `section` |
-| Content | `agenda`, `content`, `two-columns`, `media`, `cards`, `stats`, `panels`, `matrix`, `compare`, `team`, `process`, `hub`, `timeline`, `gantt`, `table`, `chart`, `code` |
+| Content | `agenda`, `content`, `two-columns`, `media`, `cards`, `stats`, `panels`, `matrix`, `compare`, `team`, `process`, `hub`, `cycle`, `timeline`, `gantt`, `table`, `chart`, `code` |
 | Quote | `quote` |
 | Closing | `closing`, `blank` |
 

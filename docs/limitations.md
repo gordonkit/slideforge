@@ -20,7 +20,7 @@
   HTML/CSS bars, not Office chart objects. Images remain images; table conversion
   behavior depends on the converter.
 - The export ignores CSS `clip-path`, so a non-rectangular shape has to be an inline SVG.
-  `cards/hexagon` and `cards/pentagon` draw their polygons that way, and export rewrites each
+  `cards/hexagon`, `cards/pentagon`, and `cards/honeycomb` draw their polygons that way, and export rewrites each
   as a native freeform shape with its soft shadow; other inline SVGs stay pictures.
 - Links go from an `agenda` item to another slide of the same presentation, and nothing else: there are
   no external URLs or text hyperlinks. Export makes the shapes over the row "go to slide" buttons, which

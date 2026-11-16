@@ -9,5 +9,7 @@ export const processLayout = {
   variants,
   slide: slideObject("process", variants, {
     steps: z.array(z.object({ title: displayText(text.max(100)), text: optionalText }).strict()).min(2).max(6),
+    /** The opacity of each card's fill, so a patterned background shows through evenly. */
+    fillOpacity: z.number().min(0).max(1).optional(),
   }),
 } as const;

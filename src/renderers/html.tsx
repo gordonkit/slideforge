@@ -6,7 +6,7 @@ import { layoutStylesheet, SlideLayout } from "../layouts/index.js";
 import { resolveAgendas, sectionNumbers } from "../layouts/agenda/resolve.js";
 import { slideVariant } from "../layouts/registry.js";
 import { mergeTokens, parseTemplate, type Template } from "../templates/schema.js";
-import { gradientFill } from "../themes/color.js";
+import { gradientFill, rgbChannels } from "../themes/color.js";
 import { cssVariables, defaultFontFamily, SLIDE_SIZE, themeTokens } from "../themes/tokens.js";
 import { injectBeforeBodyEnd, notesScript, presentationScript } from "./present.js";
 import { TextTokens } from "../components/text.js";
@@ -69,6 +69,10 @@ export function renderPresentation(input: unknown, options: RenderOptions = {}):
     "--sf-surface": palette.surface,
     "--sf-card-fill": gradientFill(palette.surface, palette.accent, tokens.gradient.card),
     "--sf-border": palette.border,
+    // Channels for translucent fills: `rgb(var(--sf-surface-rgb) / 0.8)`.
+    "--sf-accent-rgb": rgbChannels(palette.accent),
+    "--sf-surface-rgb": rgbChannels(palette.surface),
+    "--sf-background-rgb": rgbChannels(palette.background),
     "--sf-outline": palette.outline,
     fontFamily: presentation.fontFamily ?? template?.fontFamily ?? defaultFontFamily,
   } as CSSProperties;

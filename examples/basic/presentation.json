@@ -140,6 +140,17 @@
       ]
     },
     {
+      "layout": "cycle",
+      "title": "Iterate / 反覆改進",
+      "center": "Deck",
+      "steps": [
+        { "title": "Write / 撰寫", "text": "JSON content" },
+        { "title": "Preview / 預覽", "text": "Live reload" },
+        { "title": "Export / 匯出", "text": "Editable PPTX" },
+        { "title": "Review / 檢查", "text": "Layout report" }
+      ]
+    },
+    {
       "layout": "timeline",
       "title": "From idea to deck / 從想法到簡報",
       "events": [

@@ -88,7 +88,7 @@ trimming, whitespace, and XML-character constraints also apply to `text`.
 - Supported fields include slide title/subtitle/footer/author, paragraphs and
   bullet items, card/panel/quadrant titles, stats value/label/labelDetail/text,
   agenda titles/text/subsections, comparison labels/items, team name/role/text,
-  process/hub/timeline/gantt labels, table columns/cells, chart labels/unit,
+  process/hub/cycle/timeline/gantt labels, table columns/cells, chart labels/unit,
   image captions, quote/attribution, code/language, and contact label/value.
 - Metadata, notes, layout names, URLs/paths, alt text, colors, numeric data,
   and generated slide/section numbers stay in their original formats.
@@ -134,7 +134,7 @@ variant, so `"<family>"` and `"<family>/default"` render the same.
 | --- | --- |
 | `cover` | `default` (left-aligned), `centered` (centered title, subtitle, and author), `split` (accent panel on the right third; text and footer stay left of it), `band` (full-bleed accent block behind the title and subtitle, which use the on-accent color) |
 | `quote` | `default` (left-aligned beside an accent bar), `centered` (centered, without the bar) |
-| `cards` | `default` (rectangular cards), `rounded` (larger corners and an accent outline), `badge` (a numbered accent circle above each centered card), `circle` (accent-filled round cards with a number), `hexagon` and `pentagon` (accent-filled regular polygons with a numbered circle; the card keeps the polygon's proportions and the shape is an editable freeform shape behind the text) |
+| `cards` | `default` (rectangular cards), `rounded` (larger corners and an accent outline), `badge` (a numbered accent circle above each centered card), `circle` (accent-filled round cards with a number), `hexagon` and `pentagon` (accent-filled regular polygons with a numbered circle; the card keeps the polygon's proportions and the shape is an editable freeform shape behind the text), `honeycomb` (the hexagons in one row of columns, every other column half a hexagon lower, nesting like a honeycomb) |
 | `panels` | `default` (side-by-side columns split by vertical lines), `rows` (stacked rows split by horizontal lines) |
 | `agenda` | `default` (numbered cards), `chapters` (a large-number index of the top level only), `outline` (each chapter as a card with its subsections listed under it) |
 | `section` | `default` (left-aligned beside an accent rail), `centered` (centered text), `band` (the whole slide in the accent color) |
@@ -142,6 +142,7 @@ variant, so `"<family>"` and `"<family>/default"` render the same.
 | `stats` | `default` (large figures over accent rules), `cards` (centered figures on cards) |
 | `matrix` | `default` (four cards), `lines` (four open quadrants split by a cross) |
 | `process` | `default` (steps in a row joined by arrows), `vertical` (steps stacked, joined by down arrows) |
+| `cycle` | `default` (step cards around a ring, joined by curved arrows), `ring` (the steps as segments of one ring, each nesting into the next with a triangular tip; descriptions outside the ring) |
 | `code` | `default` (a light panel), `dark` (a dark panel) |
 | `chart` | `default` (horizontal bars), `columns` (vertical columns), `donut` (a ring of shares with a legend) |
 | `closing` | `default` (left-aligned beside an accent rail), `centered` (centered text), `band` (the whole slide in the accent color) |
@@ -160,22 +161,23 @@ is reported with that family's valid names, such as
 | Family | Additional fields |
 | --- | --- |
 | `"cover"` | Optional `author` string, max 10,000; independent of metadata author |
-| `"agenda"` | Optional `items`: 2–8 objects, each with trimmed nonempty `title` (max 200), optional `text` string, max 10,000, optional integer `slide` (1–200): the number of the slide the item links to, which must exist in the presentation, and optional `items`: 1–6 subsections, each with `title` (max 200) and optional `slide` (drawn by `agenda/outline`). Without `items` the agenda lists the `section` slides (2–8 needed). Optional integer `current` (1–8): the item to mark as the current chapter |
+| `"agenda"` | Optional `items`: 2–8 objects, each with trimmed nonempty `title` (max 200), optional `text` string, max 10,000, optional integer `slide` (1–200): the number of the slide the item links to, which must exist in the presentation, and optional `items`: 1–6 subsections, each with `title` (max 200) and optional `slide` (drawn by `agenda/outline`). Without `items` the agenda lists the `section` slides (2–8 needed). Optional integer `current` (1–8): the item to mark as the current chapter. Optional `fillOpacity` (0–1): the opacity of each card's fill (`default` and `outline`) |
 | `"section"` | No additional fields: `title` is the chapter's name and `subtitle` its one-line summary. Sections are numbered `01`, `02`, … in slide order |
 | `"content"` | Required `blocks`: 1–12 content blocks |
 | `"two-columns"` | Required `left` and `right`: each 1–12 content blocks |
-| `"cards"` | Required `cards`: 1–6 objects, each with trimmed nonempty `title` (max 200) and `blocks` (1–12) |
+| `"cards"` | Required `cards`: 1–6 objects, each with trimmed nonempty `title` (max 200) and optional `blocks` (1–12; a card without them shows only its title); optional `fillOpacity` (0–1): the opacity of each card's fill, or of the shape in `cards/circle`, `cards/hexagon`, `cards/pentagon`, and `cards/honeycomb` |
 | `"panels"` | Required `panels`: 2–7 objects, each with trimmed nonempty `title` (max 200), `blocks` (1–12), and an optional `color`, a six-digit hex color such as `"#2563eb"` that fills the panel. Optional slide-level `numbered`: boolean; omitted/`true` shows numbers, `false` starts each panel with its title and removes the number column in `panels/rows` |
 | `"media"` | Required `image` (an image source) and `alt` (max 1,000, may be empty); optional `caption` and `blocks` (up to 6 content blocks, default none) |
 | `"stats"` | Required `stats`: 2–6 objects, each with trimmed nonempty `value` (max 30), `label` (max 100), optional trimmed nonempty `labelDetail` (max 100), optional `text`, and optional boolean `highlight` |
 | `"matrix"` | Required `quadrants`: exactly 4 objects (top left, top right, bottom left, bottom right), each with `title` (max 200) and `blocks` (1–12); optional `xAxis` and `yAxis` names (max 80) |
 | `"compare"` | Required `options`: 2–4 objects, each with `title` (max 100), `items` (1–8 strings, max 200), optional `label` and optional boolean `highlight` |
 | `"team"` | Required `members`: 2–6 objects, each with `name` (max 100) and optional `role`, `text`, and `image` (an image source) |
-| `"process"` | Required `steps`: 2–6 objects, each with `title` (max 100) and optional `text` |
+| `"process"` | Required `steps`: 2–6 objects, each with `title` (max 100) and optional `text`; optional `fillOpacity` (0–1): the opacity of each step card's fill |
 | `"hub"` | Required `center` (max 100) and `items`: 3–6 objects, each with `title` (max 100) and optional `text` |
+| `"cycle"` | Required `steps`: 3–8 objects, each with `title` (max 100) and optional `text`, placed clockwise from the top; optional `center` (max 100) |
 | `"timeline"` | Required `events`: 2–6 objects, each with trimmed nonempty `date` (max 100) and `title` (max 200), and optional `text` string, max 10,000 |
 | `"gantt"` | Required `periods` (2–12 trimmed nonempty strings, max 40 each) and `tasks` (1–8 objects, each with trimmed nonempty `label` (max 100), integer `start` and `end`, and optional `progress` from 0 to 100); optional finite numeric `barRadius`, 0–120 CSS px |
-| `"table"` | Required `columns` (1–8 trimmed nonempty strings, max 200 each) and `rows` (1–14 arrays of 1–8 string cells, max 2,000 each); optional `columnWidths`: one numeric percentage per column, each greater than 0 and at most 100, summing to 100; optional `columnAlignments`: one `"left"`, `"center"`, or `"right"` per column |
+| `"table"` | Required `columns` (1–8 trimmed nonempty strings, max 200 each) and `rows` (1–14 arrays of 1–8 string cells, max 2,000 each); optional `columnWidths`: one numeric percentage per column, each greater than 0 and at most 100, summing to 100; optional `columnAlignments`: one `"left"`, `"center"`, or `"right"` per column; optional `fillOpacity` (0–1): fills the header and every body row at that opacity, rows alternating light and dark |
 | `"chart"` | Required `data` (1–10 `{ "label", "value" }` objects); optional `unit` string, max 40; optional `blocks` (0–4 content blocks, default `[]`) |
 | `"quote"` | Required `quote`: trimmed nonempty string, max 1,000; optional `attribution` string, max 10,000 |
 | `"code"` | Required `code` (1–3,000 characters, at most 18 lines, kept as written); optional `language` label (max 60) |
@@ -192,6 +194,11 @@ narrow columns can wrap more text, so review the table height as well as widths.
 `["left", "right", "left"]` for a numeric second column. Omitted alignments
 preserve left alignment. This option also works in `SlideTable` / `DataTable`
 and exports to PowerPoint paragraph alignment.
+`fillOpacity` suits a patterned slide background: by default the header is solid and every
+other body row is transparent, so the pattern shows through unevenly. With it, the header
+is the accent color and body rows alternate between the surface and background colors, all
+at that opacity (for example `0.8`). The fills are on the cells, so the PowerPoint table
+keeps them, with the same transparency.
 Chart labels are trimmed, nonempty, max 100 characters;
 values must be finite, nonnegative numbers. Zero is valid. Chart units are
 appended directly to values; include a leading space for a separated suffix.

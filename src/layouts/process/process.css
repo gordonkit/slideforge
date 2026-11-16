@@ -16,3 +16,5 @@
 .sf-variant-vertical .sf-step-number { width: 60px; height: 60px; }
 .sf-variant-vertical .sf-step-body { flex-direction: row; align-items: baseline; gap: 24px; flex-wrap: wrap; }
 .sf-variant-vertical .sf-process-arrow { align-self: flex-start; padding-left: 48px; font-size: 40px; line-height: 1; }
+/* fillOpacity: each step card's fill at that opacity. */
+.sf-process-filled .sf-step { background: rgb(var(--sf-surface-rgb) / var(--sf-fill-opacity)); }

@@ -38,3 +38,6 @@
 .sf-agenda-sub { display: flex; align-items: center; gap: 12px; color: inherit; text-decoration: none; font-size: 30px; line-height: 1.3; padding-left: 14px; border-left: 4px solid var(--sf-accent); }
 .sf-agenda-sub-title { flex: 1; min-width: 0; }
 .sf-agenda-sub .sf-agenda-go { font-size: 30px; }
+/* fillOpacity: the cards' fill at that opacity; the chapters variant has no cards and stays clear. */
+.sf-agenda-filled .sf-agenda-item, .sf-variant-outline .sf-agenda-filled .sf-agenda-chapter { background: rgb(var(--sf-surface-rgb) / var(--sf-fill-opacity)); }
+.sf-variant-chapters .sf-agenda-filled .sf-agenda-item { background: transparent; }

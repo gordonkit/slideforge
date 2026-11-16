@@ -6,6 +6,7 @@ import { AgendaLayout } from "./agenda/render.js";
 import { ClosingLayout } from "./closing/render.js";
 import { CodeLayout } from "./code/render.js";
 import { CompareLayout } from "./compare/render.js";
+import { CycleLayout } from "./cycle/render.js";
 import { HubLayout } from "./hub/render.js";
 import { MatrixLayout } from "./matrix/render.js";
 import { MediaLayout } from "./media/render.js";
@@ -40,6 +41,7 @@ const renderers: { [F in LayoutFamily]: (props: LayoutProps<F>) => ReactNode } =
   code: CodeLayout,
   compare: CompareLayout,
   hub: HubLayout,
+  cycle: CycleLayout,
   matrix: MatrixLayout,
   media: MediaLayout,
   process: ProcessLayout,

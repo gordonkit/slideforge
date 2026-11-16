@@ -40,6 +40,10 @@ Tables support `columnAlignments`, with one `"left"`, `"center"`, or `"right"`
 per column. Use `["left", "right", "left"]` to right-align a numeric second
 column, including its header. Omit it to retain left-aligned cells.
 
+On a patterned background, set `"fillOpacity": 0.8` (any number from 0 to 1): the header and
+every body row are then filled at that opacity, rows alternating light and dark, so the pattern
+shows through evenly instead of only through every other row. PowerPoint keeps the transparency.
+
 ```json
 {
   "layout": "chart/donut",

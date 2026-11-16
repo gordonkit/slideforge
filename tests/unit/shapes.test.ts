@@ -41,6 +41,11 @@ describe('native card polygons', () => {
     expect(Object.keys(out).filter(path => path.startsWith('ppt/media/'))).toEqual([]);
   });
 
+  it('keeps a translucent polygon fill as the shape fill alpha', () => {
+    const out = apply(base(hexagon().replace('rgb(37, 99, 235)', 'rgba(37, 99, 235, 0.8)')));
+    expect(out['ppt/slides/slide1.xml']).toContain('<a:solidFill><a:srgbClr val="2563EB"><a:alpha val="80000"/></a:srgbClr></a:solidFill>');
+  });
+
   it('leaves other pictures, and files without pictures, untouched', () => {
     const data = zipSync({ 'ppt/slides/slide1.xml': strToU8('<p:spTree/>') });
     expect(applyPolygonShapes(data)).toBe(data);

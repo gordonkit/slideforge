@@ -22,5 +22,7 @@ export const agenda = {
     }).strict()).min(2).max(8).optional(),
     /** The 1-based item to mark as the current chapter; the others are muted. */
     current: z.number().int().min(1).max(8).optional(),
+    /** The opacity of each card's fill, so a patterned background shows through evenly. */
+    fillOpacity: z.number().min(0).max(1).optional(),
   }),
 } as const;

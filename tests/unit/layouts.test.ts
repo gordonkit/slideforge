@@ -7,7 +7,7 @@ import { parsePresentation, presentationSchema, slideBackground } from "../../sr
 
 describe("layout registry", () => {
   it("lists the families in documentation order", () => {
-    expect(layoutFamilies).toEqual(["cover", "agenda", "section", "content", "two-columns", "media", "cards", "stats", "panels", "matrix", "compare", "team", "process", "hub", "timeline", "gantt", "table", "chart", "code", "quote", "closing", "blank"]);
+    expect(layoutFamilies).toEqual(["cover", "agenda", "section", "content", "two-columns", "media", "cards", "stats", "panels", "matrix", "compare", "team", "process", "hub", "cycle", "timeline", "gantt", "table", "chart", "code", "quote", "closing", "blank"]);
   });
 
   it("gives every family a default variant, a schema keyed by its name, a renderer, and a stylesheet", () => {
@@ -67,7 +67,7 @@ describe("family/variant layout names", () => {
     expect(issues({ layout: "cover/fancy" })).toEqual([cover]);
     expect(issues({ layout: "cover/" })).toEqual([cover]);
     expect(issues({ layout: "table/fancy", columns: ["A"], rows: [["1"]] })).toEqual(['Unknown table variant. Use "table" or "table/default"']);
-    const families = 'Unknown layout. Use "cover", "agenda", "section", "content", "two-columns", "media", "cards", "stats", "panels", "matrix", "compare", "team", "process", "hub", "timeline", "gantt", "table", "chart", "code", "quote", "closing", or "blank"';
+    const families = 'Unknown layout. Use "cover", "agenda", "section", "content", "two-columns", "media", "cards", "stats", "panels", "matrix", "compare", "team", "process", "hub", "cycle", "timeline", "gantt", "table", "chart", "code", "quote", "closing", or "blank"';
     expect(issues({ layout: "gallery" })).toEqual([families]);
     expect(issues({})).toEqual([families]);
   });
@@ -110,6 +110,14 @@ describe("family/variant layout names", () => {
     expect(html("cards/hexagon").match(/class="sf-card-badge"/g)).toHaveLength(3);
     expect(html("cards/pentagon").match(/class="sf-card-shape"/g)).toHaveLength(3);
     expect(html("cards/pentagon")).toContain('points="50,95.1 100,58.8 80.9,0 19.1,0 0,58.8"');
+    // A card without blocks shows only its title.
+    const titled = renderPresentation(deck({ layout: "cards/hexagon", cards: [{ title: "Only a title" }] }));
+    expect(titled).toContain("<h2>Only a title</h2></div></article>");
+    expect(titled).not.toContain('class="sf-blocks"');
+    const honeycomb = html("cards/honeycomb");
+    expect(honeycomb.match(/class="sf-card-shape"/g)).toHaveLength(3);
+    expect(honeycomb).toContain('style="--sf-cards-count:3" data-count="3" data-pptx-allow-overlap="true"');
+    expect(html("cards/hexagon")).toContain('<div class="sf-cards" data-count="3">');
   });
 
   it("arranges cards by their count", () => {
@@ -224,7 +232,7 @@ describe("family/variant layout names", () => {
     }
   });
 
-  it("validates and draws the stats, matrix, compare, team, process, hub, code, media, and closing layouts", () => {
+  it("validates and draws the stats, matrix, compare, team, process, hub, cycle, code, media, and closing layouts", () => {
     const para = [{ type: "paragraph", text: "x" }];
     const draw = (slide: object) => renderPresentation({ metadata: { title: "Deck" }, slides: [{ title: "T", ...slide }] });
     const issues = (slide: object) => presentationSchema.safeParse({ metadata: { title: "Deck" }, slides: [{ title: "T", ...slide }] }).error?.issues.map((issue) => `${issue.path.join(".")}: ${issue.message}`);
@@ -255,6 +263,41 @@ describe("family/variant layout names", () => {
     expect(hub.match(/class="sf-hub-row sf-hub-right"/g)).toHaveLength(1);
     expect(hub).toContain('<div class="sf-hub-center"><span>Core</span></div>');
     expect(issues({ layout: "hub", center: "Core", items: [{ title: "a" }, { title: "b" }] })).toEqual(["slides.0.items: Too small: expected array to have >=3 items"]);
+    const cycleSteps = (count: number) => Array.from({ length: count }, (_, index) => ({ title: `S${index + 1}`, text: "t" }));
+    for (const count of [3, 4, 5, 6, 7, 8]) {
+      const cycle = draw({ layout: "cycle", steps: cycleSteps(count) });
+      // Every step leads to the next, the last back to the first, by an arrow clear of the cards.
+      expect(cycle.match(/class="sf-cycle-step"/g)).toHaveLength(count);
+      expect(cycle.match(/<path d="M /g)).toHaveLength(count);
+    }
+    const cycle = draw({ layout: "cycle", center: "SDLC", steps: cycleSteps(4) });
+    expect(cycle).toContain('<div class="sf-cycle-center"><span>SDLC</span></div>');
+    expect(cycle).toContain('aria-label="S1 → S2 → S3 → S4"');
+    expect(cycle).toContain('style="left:50.000%;top:14.286%"');
+    expect(draw({ layout: "cycle", steps: cycleSteps(3) })).not.toContain('class="sf-cycle-center"');
+    expect(issues({ layout: "cycle", steps: cycleSteps(2) })).toEqual(["slides.0.steps: Too small: expected array to have >=3 items"]);
+    expect(issues({ layout: "cycle", steps: cycleSteps(9) })).toEqual(["slides.0.steps: Too big: expected array to have <=8 items"]);
+    const ring = draw({ layout: "cycle/ring", center: "SDLC", steps: cycleSteps(7) });
+    // One ring segment per step, each with its number and title on it and its text beside the ring.
+    expect(ring.match(/<path d="M /g)).toHaveLength(7);
+    expect(ring.match(/class="sf-cycle-ring-number"/g)).toHaveLength(7);
+    expect(ring.match(/class="sf-cycle-ring-label" data-side="(left|right|top|bottom)"/g)).toHaveLength(7);
+    expect(ring).toContain('class="sf-cycle-ring-label" data-side="top"');
+    expect(ring).toContain('<div class="sf-cycle-ring-center"><span>SDLC</span></div>');
+    expect(draw({ layout: "cycle/ring", steps: [{ title: "A" }, { title: "B" }, { title: "C" }] })).not.toContain('class="sf-cycle-ring-label"');
+    // Neighboring segments keep the same gap from the outer edge, through the tip, to the inner edge.
+    // Each path is M outer-start, A ... outer-end, L tip-end, L inner-end, A ... inner-start, L tip-start, Z.
+    const corners = (path: string) => path.split(/(?=[MALZ])/).filter((part) => !part.startsWith("Z")).map((part) => part.trim().split(/\s+/).slice(-2).map(Number) as [number, number]);
+    const segments = [...ring.matchAll(/<path d="([^"]+)"/g)].map((match) => corners(match[1]!));
+    // The perpendicular distance from a point to the line through a and b.
+    const away = ([px, py]: [number, number], [ax, ay]: [number, number], [bx, by]: [number, number]) => Math.abs((bx - ax) * (ay - py) - (ax - px) * (by - ay)) / Math.hypot(bx - ax, by - ay);
+    for (let index = 0; index < segments.length; index++) {
+      const [, outerEnd, tipEnd, innerEnd] = segments[index]!;
+      const [outerStart, , , , innerStart, tipStart] = segments[(index + 1) % segments.length]!;
+      // Each edge of the next segment's notch runs parallel to the matching edge of this segment's tip.
+      const gaps = [away(outerStart!, outerEnd!, tipEnd!), away(tipStart!, outerEnd!, tipEnd!), away(tipStart!, tipEnd!, innerEnd!), away(innerStart!, tipEnd!, innerEnd!)];
+      for (const gap of gaps) expect(gap).toBeCloseTo(8, 0);
+    }
     expect(draw({ layout: "code/dark", language: "bash", code: "a\n  b" })).toContain('<pre class="sf-code-body"><code>a\n  b</code></pre>');
     expect(issues({ layout: "code", code: Array.from({ length: 19 }, () => "x").join("\n") })).toEqual(["slides.0.code: Code has 19 lines; the slide fits 18"]);
     const media = draw({ layout: "media/right", image: "a.png", alt: "Alt", caption: "Cap", blocks: para });

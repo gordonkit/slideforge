@@ -2,6 +2,7 @@ import { agenda } from "./agenda/schema.js";
 import { closing } from "./closing/schema.js";
 import { code } from "./code/schema.js";
 import { compare } from "./compare/schema.js";
+import { cycle } from "./cycle/schema.js";
 import { hub } from "./hub/schema.js";
 import { matrix } from "./matrix/schema.js";
 import { media } from "./media/schema.js";
@@ -26,7 +27,7 @@ import { twoColumns } from "./two-columns/schema.js";
  * its folder also holds `render.tsx` and `<family>.css`. Adding a family means adding a folder
  * and listing it here and in the renderer table in `index.tsx`.
  */
-export const layouts = [cover, agenda, section, content, twoColumns, media, cards, stats, panels, matrix, compare, team, processLayout, hub, timeline, gantt, table, chart, code, quote, closing, blank] as const;
+export const layouts = [cover, agenda, section, content, twoColumns, media, cards, stats, panels, matrix, compare, team, processLayout, hub, cycle, timeline, gantt, table, chart, code, quote, closing, blank] as const;
 
 export type LayoutFamily = (typeof layouts)[number]["family"];
 

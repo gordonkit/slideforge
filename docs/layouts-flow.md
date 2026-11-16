@@ -1,6 +1,6 @@
 # Layouts: flows and diagrams
 
-Slides that show order, dependence, or a central idea. See the [layout gallery](layouts.md) for every layout.
+Slides that show order, dependence, a central idea, or a repeating cycle. See the [layout gallery](layouts.md) for every layout.
 
 ### `process`
 
@@ -41,6 +41,39 @@ on the left and the rest on the right, each joined to the center by a line.
   "title": "The platform",
   "center": "SlideForge",
   "items": [{ "title": "Layouts" }, { "title": "Templates" }, { "title": "Export" }]
+}
+```
+
+### `cycle`
+
+Three to eight steps around a ring that repeats, such as a development life cycle. The `steps` are cards placed clockwise
+from the top, each joined to the next by a curved arrow, and the last one leads back to the first. An optional `center` is an
+accent circle in the middle of the ring.
+
+- The steps are spaced evenly along the ring, measured in card sizes, so cards do not crowd at its narrow ends. More steps
+  get smaller cards: seven or eight steps leave room for a short title and one or two short lines of text.
+- The arrows are one inline SVG drawn under the cards; each stops short of the next card. Export writes them as one SVG
+  picture, while the cards, numbers, center circle, and text stay editable shapes and text.
+- **Variants:** `ring` draws the steps as segments of one ring instead of cards: each segment ends in a triangular tip
+  that nests into a notch at the start of the next one. The number and `title` sit on the segment, so keep titles to
+  about five CJK characters or one or two short words; the `text` goes outside the ring, beside it on the left and right
+  and on one line above or below it at the top and bottom. The ring is one SVG picture in PowerPoint; the text stays editable.
+
+| `cycle` (`default`) | `cycle/ring` |
+| --- | --- |
+| ![Six step cards around a ring joined by curved arrows](../site/public/screenshots/layout-cycle.png) | ![Six ring segments nested by triangular tips, with descriptions around the ring](../site/public/screenshots/layout-cycle-ring.png) |
+
+```json
+{
+  "layout": "cycle",
+  "title": "Iterate",
+  "center": "Deck",
+  "steps": [
+    { "title": "Write", "text": "JSON content" },
+    { "title": "Preview", "text": "Live reload" },
+    { "title": "Export", "text": "Editable PPTX" },
+    { "title": "Review" }
+  ]
 }
 ```
 

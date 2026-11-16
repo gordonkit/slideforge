@@ -2,6 +2,11 @@
 const channels = (hex: string): [number, number, number] => [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16)) as [number, number, number];
 const toHex = (values: readonly number[]) => `#${values.map((v) => Math.round(v).toString(16).padStart(2, "0")).join("")}`;
 
+/** The red, green, and blue channels as `"r g b"`, for `rgb(var(--x-rgb) / alpha)` in CSS. */
+export function rgbChannels(hex: string): string {
+  return channels(hex).join(" ");
+}
+
 /** `from` moved `percent` of the way toward `to`. */
 export function mixColors(from: string, to: string, percent: number): string {
   const a = channels(from);

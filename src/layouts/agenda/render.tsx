@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import type { LayoutProps } from "../types.js";
 import { DisplayTextContent } from "../../components/text.js";
 
@@ -15,7 +15,8 @@ function Row({ item, className, children }: { item: Target; className: string; c
 export function AgendaLayout({ slide, variant }: LayoutProps<"agenda">) {
   const items = slide.items ?? [];
   const outline = variant === "outline";
-  return <ol className="sf-agenda" data-count={items.length} data-current={slide.current}>{items.map((item, index) => {
+  const filled = slide.fillOpacity === undefined ? undefined : { "--sf-fill-opacity": slide.fillOpacity } as CSSProperties;
+  return <ol className={filled ? "sf-agenda sf-agenda-filled" : "sf-agenda"} style={filled} data-count={items.length} data-current={slide.current}>{items.map((item, index) => {
     const number = <span className="sf-agenda-number" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>;
     const body = <span className="sf-agenda-body"><span className="sf-agenda-title"><DisplayTextContent value={item.title} size={outline ? 34 : variant === "chapters" ? 42 : "card-title"} /></span>{item.text && !outline && <span className="sf-agenda-text"><DisplayTextContent value={item.text} size="card-body" /></span>}</span>;
     const go = item.slide === undefined ? null : <span className="sf-agenda-go" aria-hidden="true">→</span>;

@@ -10,6 +10,8 @@ export const table = {
     columns: z.array(displayText(text.max(200))).min(1).max(8),
     columnWidths: z.array(z.number().positive().max(100)).min(1).max(8).optional(),
     columnAlignments: z.array(z.enum(["left", "center", "right"])).min(1).max(8).optional(),
+    /** Fill the header and every row at this opacity, rows alternating light and dark, so a patterned background stays calm. */
+    fillOpacity: z.number().min(0).max(1).optional(),
     rows: z.array(z.array(displayText(xmlText.max(2000))).min(1).max(8)).min(1).max(14),
   }).superRefine((slide, context) => {
     if (slide.columnAlignments !== undefined && slide.columnAlignments.length !== slide.columns.length) {

@@ -20,7 +20,7 @@ CSS/theme context. Components themselves do not perform schema validation.
 | `SlideFrame` | Same as `Slide` | Alias of `Slide` |
 | `ContentBlocks` | `{ blocks: ContentBlock[]; size?: keyof DesignTokens["type"]; scale?: number }` | `.sf-blocks`, paragraphs, ordered/unordered lists, image figures/captions; default body role/scale 1 |
 | `SlideImage` | `{ src: string; alt: string; caption?: DisplayText }` | Image figure and optional caption |
-| `SlideTable` / `DataTable` | `{ columns: DisplayText[]; rows: DisplayText[][]; columnWidths?: number[] }` | Semantic HTML table with column headers and optional percentage `colgroup`; `DataTable` is an alias |
+| `SlideTable` / `DataTable` | `{ columns: DisplayText[]; rows: DisplayText[][]; columnWidths?: number[]; columnAlignments?: ("left" \| "center" \| "right")[]; fillOpacity?: number }` | Semantic HTML table with column headers and optional percentage `colgroup`; `DataTable` is an alias |
 | `SlideChart` / `BarChart` | `{ data: { label: DisplayText; value: number }[]; unit?: DisplayText }` | HTML/CSS horizontal bars, text labels/values, accessible chart summary; `BarChart` is an alias |
 | `DisplayTextContent` | `{ value: DisplayText | undefined; size?: keyof DesignTokens["type"] | number; scale?: number }` | Escaped text, or a locally sized span; use numeric-size roles, default body/scale 1 |
 
@@ -79,6 +79,7 @@ schema, renderer, and stylesheet, and is listed in `src/layouts/registry.ts`:
 | `team` | `ul.sf-team[data-count]` of `li.sf-member`: an `.sf-avatar` (an `img`, or a circle with the first letter), a name, a role, and text |
 | `process` | `ol.sf-process[data-count]` of `li.sf-step` (a number, a title, text) with an `aria-hidden` `li.sf-process-arrow` between them |
 | `hub` | `.sf-hub` of two `ul.sf-hub-side` lists around the `.sf-hub-center` circle; each `li.sf-hub-row` has an item and an `aria-hidden` `.sf-hub-line` |
+| `cycle` | `.sf-cycle[data-count]` (`role="list"`) holding an `aria-hidden` `svg.sf-cycle-arrows` of one `path` per arrow, an optional `.sf-cycle-center` circle, and absolutely placed `.sf-cycle-step` cards (a number, a title, text); local `--sf-cycle-*` properties size the cards |
 | `code` | `figure.sf-code` with an optional `figcaption` language label and `pre.sf-code-body > code` |
 | `closing` | Enlarged title and subtitle like `section`, `ul.sf-contacts` of label and value lines, and an `aria-hidden` `.sf-closing-rail` for `default` |
 | `timeline` | `ol.sf-timeline` with one column per event: date, an `aria-hidden` marker on a rail, title, and optional text |

@@ -2,3 +2,9 @@
 .sf-table th, .sf-table td { padding: var(--sf-spacing-table-y) var(--sf-spacing-table-x); text-align: left; border: var(--sf-border-width) solid var(--sf-border); overflow-wrap: anywhere; }
 .sf-table th { background: var(--sf-accent); color: var(--sf-on-accent); font-weight: var(--sf-type-bold); }
 .sf-table tbody tr:nth-child(even) { background: var(--sf-surface); }
+/* fillOpacity: every cell is filled at the same opacity, rows alternating light and dark, so a patterned
+   background shows through evenly. The fills sit on the cells, which the PowerPoint table keeps. */
+.sf-table-filled th { background: rgb(var(--sf-accent-rgb) / var(--sf-fill-opacity)); }
+.sf-table-filled tbody tr:nth-child(even) { background: none; }
+.sf-table-filled tbody tr:nth-child(odd) td { background: rgb(var(--sf-surface-rgb) / var(--sf-fill-opacity)); }
+.sf-table-filled tbody tr:nth-child(even) td { background: rgb(var(--sf-background-rgb) / var(--sf-fill-opacity)); }

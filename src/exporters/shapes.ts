@@ -48,9 +48,12 @@ function polygonShape(svg: string, id: string, name: string, transform: string):
   if (!svg.includes('sf-card-shape')) return undefined;
   const points = svg.match(/<polygon\b[^>]*\bpoints="([^"]+)"/)?.[1];
   const viewBox = svg.match(/viewBox="([\d.\s-]+)"/)?.[1]?.trim().split(/\s+/).map(Number);
-  const fill = svg.match(/<polygon\b[^>]*fill:\s*rgb\((\d+),\s*(\d+),\s*(\d+)\)/);
+  const fill = svg.match(/<polygon\b[^>]*fill:\s*rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/);
   if (!points || viewBox?.length !== 4 || !fill) return undefined;
   const color = fill.slice(1, 4).map(channel => Number(channel).toString(16).padStart(2, '0')).join('').toUpperCase();
+  // A `fillOpacity` card's shape is translucent.
+  const alpha = fill[4] === undefined ? 1 : Number(fill[4]);
+  const solid = alpha < 1 ? `<a:srgbClr val="${color}"><a:alpha val="${Math.round(alpha * 100000)}"/></a:srgbClr>` : `<a:srgbClr val="${color}"/>`;
   const [, , width, height] = viewBox as [number, number, number, number];
   const scale = 1000;
   const path = points.trim().split(/\s+/).map((point, index) => {
@@ -60,7 +63,7 @@ function polygonShape(svg: string, id: string, name: string, transform: string):
   const shadow = svg.match(new RegExp(`${SHADOW_ATTRIBUTE}="([^"]*)"`))?.[1];
   return `<p:sp><p:nvSpPr><p:cNvPr id="${id}" name="${name}"/><p:cNvSpPr/><p:nvPr/></p:nvSpPr><p:spPr>${transform}`
     + `<a:custGeom><a:avLst/><a:gdLst/><a:ahLst/><a:cxnLst/><a:rect l="0" t="0" r="r" b="b"/><a:pathLst><a:path w="${Math.round(width * scale)}" h="${Math.round(height * scale)}">${path}<a:close/></a:path></a:pathLst></a:custGeom>`
-    + `<a:solidFill><a:srgbClr val="${color}"/></a:solidFill><a:ln><a:noFill/></a:ln>${shadow ? shadowXml(shadow) : ''}</p:spPr></p:sp>`;
+    + `<a:solidFill>${solid}</a:solidFill><a:ln><a:noFill/></a:ln>${shadow ? shadowXml(shadow) : ''}</p:spPr></p:sp>`;
 }
 
 /**

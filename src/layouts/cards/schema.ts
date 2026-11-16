@@ -1,12 +1,15 @@
 import { z } from "zod";
 import { blocks, displayText, slideObject, text } from "../../schemas/fields.js";
 
-const variants = ["default", "rounded", "badge", "circle", "hexagon", "pentagon"] as const;
+const variants = ["default", "rounded", "badge", "circle", "hexagon", "pentagon", "honeycomb"] as const;
 
 export const cards = {
   family: "cards",
   variants,
   slide: slideObject("cards", variants, {
-    cards: z.array(z.object({ title: displayText(text.max(200)), blocks }).strict()).min(1).max(6),
+    /** A card without `blocks` shows only its title, for example a list of topic names. */
+    cards: z.array(z.object({ title: displayText(text.max(200)), blocks: blocks.optional() }).strict()).min(1).max(6),
+    /** The opacity of each card's fill (or shape), so a patterned background shows through evenly. */
+    fillOpacity: z.number().min(0).max(1).optional(),
   }),
 } as const;

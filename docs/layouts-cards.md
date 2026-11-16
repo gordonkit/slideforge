@@ -20,13 +20,22 @@ rectangular card and puts a numbered accent circle above its centered text. `cir
 `pentagon` fill the whole card with an accent-colored regular shape, number the cards 1 to 6, and
 center their text. These shapes keep their proportions, so they leave room above and below (or at the
 sides) instead of stretching, and their text area is small: they suit a title and one or two short
-lines.
+lines. A card's `blocks` can be left out, so it shows only its title, for example a list of topic names.
+
+`honeycomb` draws the same numbered hexagons in one row of columns, every other column half a hexagon
+lower, so their slanted sides nest like a honeycomb. The hexagons take the largest size that fits the
+content area, so six are smaller than three; keep their titles short.
+
+On a patterned background, `"fillOpacity": 0.8` (any number from 0 to 1) makes each card's fill, or
+its shape in `circle`, `hexagon`, `pentagon`, and `honeycomb`, translucent, so the background shows through evenly;
+the text stays opaque. The fill is the flat surface color, replacing a template's card gradient.
+PowerPoint keeps the transparency.
 
 | `cards/rounded` | `cards/badge` |
 | --- | --- |
 | ![Rounded cards with accent outlines](../site/public/screenshots/layout-cards-rounded.png) | ![A numbered circle above each card](../site/public/screenshots/layout-cards-badge.png) |
-| **`cards/circle`** | |
-| ![Accent-filled circle cards](../site/public/screenshots/layout-cards-circle.png) | |
+| **`cards/circle`** | **`cards/honeycomb`** |
+| ![Accent-filled circle cards](../site/public/screenshots/layout-cards-circle.png) | ![Numbered hexagons nested in alternating columns](../site/public/screenshots/layout-cards-honeycomb.png) |
 | **`cards/hexagon`** | **`cards/pentagon`** |
 | ![Accent-filled hexagon cards](../site/public/screenshots/layout-cards-hexagon.png) | ![Accent-filled pentagon cards](../site/public/screenshots/layout-cards-pentagon.png) |
 
