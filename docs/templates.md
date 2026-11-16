@@ -203,6 +203,7 @@ palettes; choose the look with `template` and the palette with `theme`:
 | --- | --- | --- | --- |
 | `indigo-midnight` | `#4f46e5` | `#60a5fa` | Professional and tech-leaning: product and engineering decks |
 | `forest-emerald` | `#15803d` | `#34d399` | Calm and natural: sustainability, education, health |
+| `sapphire-sky` | `#2563eb` | `#4cc3ff` | `indigo-midnight`'s calm, slightly brighter: sapphire navy and sky blue |
 | `ocean-violet` | `#0e7490` | `#a78bfa` | Clean data reports (light, teal) and a creative dark mode (violet) |
 | `corporate` | `#b45309` | `#f5a524` | Navy and amber, square corners, banded cover |
 | `terracotta-graphite` | `#c2410c` | `#fbbf24` | Warm brand stories (light) and polished keynotes (graphite and amber, dark) |
@@ -222,6 +223,11 @@ Each screenshot is the same chart slide, so only the colors differ. Regenerate t
 
 ![indigo-midnight template, light theme](../site/public/screenshots/template-indigo-midnight-light.png)
 ![indigo-midnight template, dark theme](../site/public/screenshots/template-indigo-midnight-dark.png)
+
+**`sapphire-sky`**
+
+![sapphire-sky template, light theme](../site/public/screenshots/template-sapphire-sky-light.png)
+![sapphire-sky template, dark theme](../site/public/screenshots/template-sapphire-sky-dark.png)
 
 **`forest-emerald`**
 

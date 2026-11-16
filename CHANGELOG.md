@@ -15,6 +15,10 @@ All notable changes to this project will be documented in this file. The format 
   (or shape) translucent. Exported PowerPoint tables and shapes keep the transparency.
 - A `cards/honeycomb` variant draws numbered hexagons in alternating columns that nest like a
   honeycomb, and a card's `blocks` can be left out to show only its title.
+- A built-in `sapphire-sky` template: the navy and blue of `indigo-midnight`, slightly brighter
+  (sky-blue accent on a sapphire navy in the dark theme).
+- `table/lines` and `table/accent` variants: an open table with an accent-colored header over a thick
+  rule, and an accent header with no column rules and an accent first column. PowerPoint keeps both.
 - A `cycle/ring` variant draws the steps as segments of one ring, each nesting into the next with a
   triangular tip, with each step's description outside the ring.
 

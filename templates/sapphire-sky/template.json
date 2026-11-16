@@ -1,0 +1,28 @@
+{
+  "name": "sapphire-sky",
+  "description": "Sapphire navy and sky blue: indigo-midnight's calm, slightly brighter and livelier.",
+  "palette": {
+    "light": {
+      "background": "#ffffff",
+      "foreground": "#13235c",
+      "muted": "#4b5d8a",
+      "accent": "#2563eb",
+      "onAccent": "#ffffff",
+      "surface": "#eaf2ff",
+      "border": "#bfd3ff",
+      "canvas": "#dde5f3",
+      "outline": "#ffffff"
+    },
+    "dark": {
+      "background": "#0c1430",
+      "foreground": "#f5f8ff",
+      "muted": "#a8bde0",
+      "accent": "#4cc3ff",
+      "onAccent": "#0c1430",
+      "surface": "#18234a",
+      "border": "#33467a",
+      "canvas": "#d8dee8",
+      "outline": "#0c1430"
+    }
+  }
+}

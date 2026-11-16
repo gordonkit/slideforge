@@ -1,7 +1,9 @@
 import { z } from "zod";
 import { displayText, slideObject, text, xmlText } from "../../schemas/fields.js";
 
-const variants = ["default"] as const;
+// default: a full grid with an accent header; lines: open rows, an accent-colored header over a thick accent rule;
+// accent: an accent header, no column rules, and the first column in the accent color.
+const variants = ["default", "lines", "accent"] as const;
 
 export const table = {
   family: "table",

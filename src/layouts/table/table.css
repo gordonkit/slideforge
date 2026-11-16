@@ -8,3 +8,15 @@
 .sf-table-filled tbody tr:nth-child(even) { background: none; }
 .sf-table-filled tbody tr:nth-child(odd) td { background: rgb(var(--sf-surface-rgb) / var(--sf-fill-opacity)); }
 .sf-table-filled tbody tr:nth-child(even) td { background: rgb(var(--sf-background-rgb) / var(--sf-fill-opacity)); }
+/* lines: no grid; the header is accent text over a thick accent rule, and thin rules separate the rows.
+   The fills and rules sit on the cells, so PowerPoint keeps them. */
+.sf-layout-table.sf-variant-lines .sf-table th, .sf-layout-table.sf-variant-lines .sf-table td { border: 0; border-bottom: var(--sf-border-width) solid var(--sf-border); }
+.sf-layout-table.sf-variant-lines .sf-table th { background: transparent; color: var(--sf-accent); border-bottom: var(--sf-border-accent) solid var(--sf-accent); }
+.sf-layout-table.sf-variant-lines .sf-table tbody tr:nth-child(even) { background: none; }
+.sf-layout-table.sf-variant-lines .sf-table-filled th { background: rgb(var(--sf-background-rgb) / var(--sf-fill-opacity)); }
+/* accent: an accent header, rows separated by horizontal rules only, and the first column as an accent-colored label. */
+.sf-layout-table.sf-variant-accent .sf-table th, .sf-layout-table.sf-variant-accent .sf-table td { border-left: 0; border-right: 0; }
+.sf-layout-table.sf-variant-accent .sf-table tbody tr:nth-child(even) { background: none; }
+.sf-layout-table.sf-variant-accent .sf-table tbody tr:nth-child(even) td { background: var(--sf-surface); }
+.sf-layout-table.sf-variant-accent .sf-table-filled tbody tr:nth-child(even) td { background: rgb(var(--sf-background-rgb) / var(--sf-fill-opacity)); }
+.sf-layout-table.sf-variant-accent .sf-table td:first-child { color: var(--sf-accent); font-weight: var(--sf-type-bold); }

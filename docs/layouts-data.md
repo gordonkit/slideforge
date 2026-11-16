@@ -14,6 +14,15 @@ The chart has three variants over the same `data`:
 | --- | --- | --- |
 | ![Chart slide with bars and an explanation column](../site/public/screenshots/layout-chart.png) | ![Four vertical columns with values above and labels below](../site/public/screenshots/layout-chart-columns.png) | ![A ring of four shares with a legend](../site/public/screenshots/layout-chart-donut.png) |
 
+The table has three variants over the same `columns` and `rows`: `default` draws a full grid under an accent
+header; `lines` drops the grid for an accent-colored header over a thick accent rule and thin rules between the rows;
+`accent` keeps the accent header, drops the column rules, and sets the first column in bold accent color as row labels.
+The rules, fills, and text colors are on the cells, so the PowerPoint table keeps them.
+
+| `table` (`default`) | `table/lines` | `table/accent` |
+| --- | --- | --- |
+| ![Table with a full grid and an accent header](../site/public/screenshots/layout-table.png) | ![Table with an accent-colored header over a thick rule and thin row rules](../site/public/screenshots/layout-table-lines.png) | ![Table with an accent header, no column rules, and an accent first column](../site/public/screenshots/layout-table-accent.png) |
+
 - **`columns`** draws vertical columns with the value above and the label below.
 - **`donut`** draws a ring of shares with a legend of each label and its percentage of the total. The ring is exported as
   editable freeform shapes; the legend text stays editable.

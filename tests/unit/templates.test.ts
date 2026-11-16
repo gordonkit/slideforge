@@ -209,7 +209,7 @@ describe("loading templates", () => {
     const names = await builtInTemplates();
     expect(names).toEqual([
       "coffee-brown", "corporate", "crimson-red", "default", "forest-emerald", "indigo-midnight",
-      "magenta-pink", "ocean-violet", "sunset-orange", "terracotta-graphite",
+      "magenta-pink", "ocean-violet", "sapphire-sky", "sunset-orange", "terracotta-graphite",
     ]);
     for (const name of names) {
       const loaded = await loadTemplate(name, directory);
@@ -237,7 +237,7 @@ describe("loading templates", () => {
 
   it("explains missing, unknown, malformed, and invalid templates", async () => {
     await expect(loadTemplate("./missing", directory)).rejects.toThrow(`Template "./missing" not found: ${join(directory, "missing", "template.json")} does not exist`);
-    await expect(loadTemplate("nope", directory)).rejects.toThrow('Unknown template "nope". Use "coffee-brown", "corporate", "crimson-red", "default", "forest-emerald", "indigo-midnight", "magenta-pink", "ocean-violet", "sunset-orange", or "terracotta-graphite", or a path starting with "./" or "../"');
+    await expect(loadTemplate("nope", directory)).rejects.toThrow('Unknown template "nope". Use "coffee-brown", "corporate", "crimson-red", "default", "forest-emerald", "indigo-midnight", "magenta-pink", "ocean-violet", "sapphire-sky", "sunset-orange", or "terracotta-graphite", or a path starting with "./" or "../"');
     await writeFile(join(directory, "broken.json"), "{");
     await expect(loadTemplate("./broken.json", directory)).rejects.toThrow(`Invalid JSON in ${join(directory, "broken.json")}`);
     await writeFile(join(directory, "invalid.json"), JSON.stringify({ name: "x", tokens: { layout: { header: 200 } } }));

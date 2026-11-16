@@ -66,7 +66,8 @@ describe("family/variant layout names", () => {
     const cover = 'Unknown cover variant. Use "cover", "cover/default", "cover/centered", "cover/split", or "cover/band"';
     expect(issues({ layout: "cover/fancy" })).toEqual([cover]);
     expect(issues({ layout: "cover/" })).toEqual([cover]);
-    expect(issues({ layout: "table/fancy", columns: ["A"], rows: [["1"]] })).toEqual(['Unknown table variant. Use "table" or "table/default"']);
+    expect(issues({ layout: "team/fancy", members: [{ name: "A" }, { name: "B" }] })).toEqual(['Unknown team variant. Use "team" or "team/default"']);
+    expect(issues({ layout: "table/fancy", columns: ["A"], rows: [["1"]] })).toEqual(['Unknown table variant. Use "table", "table/default", "table/lines", or "table/accent"']);
     const families = 'Unknown layout. Use "cover", "agenda", "section", "content", "two-columns", "media", "cards", "stats", "panels", "matrix", "compare", "team", "process", "hub", "cycle", "timeline", "gantt", "table", "chart", "code", "quote", "closing", or "blank"';
     expect(issues({ layout: "gallery" })).toEqual([families]);
     expect(issues({})).toEqual([families]);

@@ -146,7 +146,8 @@ variant, so `"<family>"` and `"<family>/default"` render the same.
 | `code` | `default` (a light panel), `dark` (a dark panel) |
 | `chart` | `default` (horizontal bars), `columns` (vertical columns), `donut` (a ring of shares with a legend) |
 | `closing` | `default` (left-aligned beside an accent rail), `centered` (centered text), `band` (the whole slide in the accent color) |
-| `content`, `two-columns`, `compare`, `team`, `hub`, `timeline`, `gantt`, `table`, `blank` | `default` |
+| `table` | `default` (a full grid with an accent header), `lines` (no grid: an accent-colored header over a thick accent rule, thin rules between rows), `accent` (an accent header, no column rules, and the first column bold in the accent color) |
+| `content`, `two-columns`, `compare`, `team`, `hub`, `timeline`, `gantt`, `blank` | `default` |
 
 [`examples/variants/presentation.json`](../examples/variants/presentation.json)
 shows each cover variant. The `split` panel and `band` block are decorative
