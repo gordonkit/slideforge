@@ -11,6 +11,12 @@ const divider = z.object({
   style: z.enum(["solid", "dashed", "dotted"]).optional(),
 }).strict();
 
+const opacity = z.number().finite().min(0).max(1);
+const fillOpacity = z.union([
+  opacity,
+  z.object({ from: opacity, to: opacity }).strict(),
+]);
+
 export const panels = {
   family: "panels",
   variants,
@@ -22,8 +28,12 @@ export const panels = {
       blocks,
       /** Fills the panel with this color (a gradient with the `gradient.panel` token); the text color follows it. */
       color: hexColor.optional(),
+      fillOpacity: fillOpacity.optional(),
       divider: divider.optional(),
-    }).strict()).min(2).max(7),
+    }).strict().refine(panel => panel.fillOpacity === undefined || panel.color !== undefined, {
+      path: ["fillOpacity"],
+      message: "fillOpacity requires a panel color",
+    })).min(2).max(7),
   }).superRefine((slide, context) => {
     if (slide.panels[0]?.divider !== undefined) {
       context.addIssue({ code: "custom", path: ["panels", 0, "divider"], message: "The first panel has no preceding divider" });

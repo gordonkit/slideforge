@@ -17,8 +17,10 @@ function dividerStyle(divider: LayoutProps<"panels">["slide"]["divider"]): CSSPr
 /** Panels split the slide with thin lines instead of cards; a panel with a `color` is filled with it. */
 export function PanelsLayout({ slide, variant, panelGradient = 0, panelDivider = { color: themeTokens.light.border, width: borderTokens.width } }: LayoutProps<"panels">) {
   return <div className="sf-panels" style={dividerStyle(slide.divider)} data-count={slide.panels.length} data-numbered={slide.numbered === false ? "false" : undefined}>{slide.panels.flatMap((panel, index) => {
+    const fromOpacity = typeof panel.fillOpacity === "number" ? panel.fillOpacity : panel.fillOpacity?.from;
+    const toOpacity = typeof panel.fillOpacity === "number" ? panel.fillOpacity : panel.fillOpacity?.to;
     const style = panel.color === undefined ? undefined : {
-      "--sf-panel-fill": gradientFill(panel.color, "#000000", panelGradient),
+      "--sf-panel-fill": gradientFill(panel.color, "#000000", panelGradient, fromOpacity, toOpacity),
       // Judge the text color on the middle of the gradient, so it reads across the whole fill.
       "--sf-panel-text": readableOn(mixColors(panel.color, "#000000", panelGradient / 2)),
     } as CSSProperties;

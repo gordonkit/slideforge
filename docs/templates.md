@@ -167,6 +167,12 @@ gradient. The text color of a panel is chosen for the middle of its gradient. Th
 cards and the number badges keep their solid accent. Export draws a gradient fill as a picture behind the
 text, which stays editable; the gradient itself is not an editable PowerPoint fill.
 
+On colored panels, per-panel `fillOpacity` combines with this color gradient: use a number
+from 0 to 1 for uniform opacity or `{ "from": 0.8, "to": 0.6 }` for independent top/bottom
+opacity. Different endpoints also produce an opacity gradient with `gradient.panel: 0`.
+The default remains opaque. Transparency is retained in the exported gradient picture,
+not applied to the text or divider. See [panels](layouts-cards.md#panels) for contrast guidance.
+
 | Cards | Colored panels |
 | --- | --- |
 | ![Cards with a gradient](../site/public/screenshots/layout-cards-gradient.png) | ![Panels with a gradient](../site/public/screenshots/layout-panels-gradient.png) |

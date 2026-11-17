@@ -125,6 +125,23 @@ color switches between white and near-black to stay readable.
   each to a short title and a line or two. Rows are shorter still.
 - **Color:** a panel without `color` has no fill, only the lines. Colored panels sit flush against each other.
   The `gradient.panel` template token turns each fill into a gradient (see [templates](templates.md#gradients)).
+- **Fill opacity:** a colored panel accepts `fillOpacity`: a number from 0 to 1 for uniform
+  transparency, or `{ "from": 0.8, "to": 0.6 }` for 80% opacity at the top and 60% at the
+  bottom. Both endpoints are required and range from 0 to 1. This combines with the
+  template's color gradient; different opacities also draw a gradient when `gradient.panel`
+  is zero. Omit it to preserve the opaque fill. Only the fill changes: text and dividers
+  retain their opacity. PowerPoint preserves gradient transparency in a picture behind
+  editable text. Text color is still selected from the panel color; check contrast against
+  the actual background, especially with very transparent fills.
+
+```json
+{
+  "title": "Scope",
+  "color": "#18234a",
+  "fillOpacity": { "from": 0.8, "to": 0.6 },
+  "blocks": [{ "type": "paragraph", "text": "Reusable core architecture." }]
+}
+```
 
 ### `matrix`
 

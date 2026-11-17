@@ -211,6 +211,34 @@ describe("family/variant layout names", () => {
     expect(issues({ layout: "panels/rows", panels: [panel("A"), panel("B")] })).toBeUndefined();
   });
 
+  it("combines panel gradient colors and opacity without fading the content", () => {
+    const draw = (fillOpacity: unknown, gradient = 30) => renderPresentation({
+      metadata: { title: "Deck" },
+      slides: [{
+        layout: "panels", title: "P",
+        panels: [
+          { title: "A", color: "#18234a", fillOpacity, blocks: [{ type: "paragraph", text: "Summary" }] },
+          { title: "B", blocks: [{ type: "paragraph", text: "Summary" }] },
+        ],
+      }],
+    }, { template: { name: "g", tokens: { gradient: { panel: gradient } } } });
+    expect(draw({ from: 0.8, to: 0.6 })).toContain("--sf-panel-fill:linear-gradient(180deg, rgb(24 35 74 / 0.8), rgb(17 25 52 / 0.6));--sf-panel-text:#ffffff");
+    expect(draw(0.5)).toContain("--sf-panel-fill:linear-gradient(180deg, rgb(24 35 74 / 0.5), rgb(17 25 52 / 0.5))");
+    expect(draw(0, 0)).toContain("--sf-panel-fill:rgb(24 35 74 / 0)");
+    expect(draw(1, 0)).toContain("--sf-panel-fill:#18234a;");
+    expect(draw({ from: 0, to: 1 }, 0)).toContain("--sf-panel-fill:linear-gradient(180deg, rgb(24 35 74 / 0), #18234a)");
+    for (const value of [-0.1, 1.1, Infinity, "0.8", { from: 0.8 }, { from: 0.8, to: -1 }, { from: 0, to: 1, extra: true }]) {
+      expect(() => draw(value)).toThrow();
+    }
+    expect(() => renderPresentation({
+      metadata: { title: "Deck" },
+      slides: [{
+        layout: "panels", title: "P",
+        panels: ["A", "B"].map(title => ({ title, fillOpacity: 0.8, blocks: [{ type: "paragraph", text: "Summary" }] })),
+      }],
+    })).toThrow("fillOpacity requires a panel color");
+  });
+
   it("validates partial panel divider overrides without changing inherited defaults", () => {
     const panel = (title: string) => ({ title, blocks: [{ type: "paragraph", text: "Summary" }] });
     const slide = { title: "P", layout: "panels", panels: [panel("A"), panel("B"), panel("C")] };

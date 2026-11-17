@@ -28,7 +28,10 @@ export function readableOn(hex: string): string {
   return luminance(hex) > 0.4 ? "#111827" : "#ffffff";
 }
 
-/** A solid color, or a top-to-bottom gradient from it toward `target` by `percent`; 0 is solid. */
-export function gradientFill(base: string, target: string, percent: number): string {
-  return percent > 0 ? `linear-gradient(180deg, ${base}, ${mixColors(base, target, percent)})` : base;
+/** A top-to-bottom color/opacity gradient, or a solid fill when both endpoints match. */
+export function gradientFill(base: string, target: string, percent: number, fromOpacity = 1, toOpacity = fromOpacity): string {
+  const color = (hex: string, opacity: number) => opacity === 1 ? hex : `rgb(${rgbChannels(hex)} / ${opacity})`;
+  const from = color(base, fromOpacity);
+  const to = color(percent > 0 ? mixColors(base, target, percent) : base, toOpacity);
+  return percent > 0 || fromOpacity !== toOpacity ? `linear-gradient(180deg, ${from}, ${to})` : from;
 }

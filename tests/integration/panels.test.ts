@@ -10,6 +10,72 @@ let browser: Browser;
 beforeAll(async () => { browser = await chromium.launch(); });
 afterAll(async () => { await browser?.close(); });
 
+describe('panel fill transparency', () => {
+  it('keeps gradient endpoint alpha in exported pictures and leaves text editable', async () => {
+    const directory = await mkdtemp(join(tmpdir(), 'slideforge-panel-alpha-'));
+    const page = await browser.newPage({ viewport: { width: 1920, height: 1080 } });
+    try {
+      const deck = {
+        metadata: { title: 'Transparent panels' },
+        slides: ['panels', 'panels/rows'].map(layout => ({
+          layout, title: 'Fills', numbered: false,
+          panels: [ { from: 0.8, to: 0.6 }, 0.5, { from: 0, to: 1 } ].map((fillOpacity, index) => ({
+            title: `Panel ${index + 1}`, color: '#18234a', fillOpacity,
+            blocks: [{ type: 'paragraph', text: 'Editable summary' }],
+          })),
+        })),
+      };
+      const template = { name: 'alpha', tokens: { gradient: { panel: 30 } } };
+      await page.setContent(renderPresentation(deck, { template }));
+      const styles = await page.locator('.sf-panel').evaluateAll(panels => panels.map(panel => ({
+        fill: getComputedStyle(panel).backgroundImage,
+        opacity: getComputedStyle(panel).opacity,
+        textOpacity: getComputedStyle(panel.querySelector('.sf-blocks')!).opacity,
+      })));
+      for (const offset of [0, 3]) {
+        expect(styles[offset]!.fill).toBe('linear-gradient(rgba(24, 35, 74, 0.8), rgba(17, 25, 52, 0.6))');
+        expect(styles[offset + 1]!.fill).toBe('linear-gradient(rgba(24, 35, 74, 0.5), rgba(17, 25, 52, 0.5))');
+      }
+      expect(styles.every(style => style.opacity === '1' && style.textOpacity === '1')).toBe(true);
+
+      const input = join(directory, 'panels.json');
+      const output = join(directory, 'panels.pptx');
+      await writeFile(join(directory, 'template.json'), JSON.stringify(template));
+      await writeFile(input, JSON.stringify({ ...deck, template: './template.json' }));
+      await exportPresentation(input, { output });
+      const files = unzipSync(await readFile(output));
+      for (const index of [1, 2]) {
+        const xml = strFromU8(files[`ppt/slides/slide${index}.xml`]!);
+        expect(xml).toContain('<a:t>Panel 1</a:t>');
+        expect(xml).toContain('<a:t>Editable summary</a:t>');
+      }
+      const alphas: number[][] = [];
+      for (const [name, bytes] of Object.entries(files)) {
+        if (!name.startsWith('ppt/media/') || !name.endsWith('.png')) continue;
+        const alpha = await page.evaluate(async source => {
+          const image = new Image();
+          image.src = source;
+          await image.decode();
+          const canvas = document.createElement('canvas');
+          canvas.width = image.width;
+          canvas.height = image.height;
+          const context = canvas.getContext('2d')!;
+          context.drawImage(image, 0, 0);
+          const x = Math.floor(image.width / 2);
+          return [0, image.height - 1].map(y => context.getImageData(x, y, 1, 1).data[3]!);
+        }, `data:image/png;base64,${Buffer.from(bytes).toString('base64')}`);
+        alphas.push(alpha);
+      }
+      for (const [top, bottom] of [[204, 153], [128, 128], [0, 255]]) {
+        expect(alphas.some(alpha => Math.abs(alpha[0]! - top!) <= 1 && Math.abs(alpha[1]! - bottom!) <= 1)).toBe(true);
+      }
+    } finally {
+      await page.close();
+      await rm(directory, { recursive: true, force: true });
+    }
+  }, 60_000);
+});
+
 describe('panel divider styles', () => {
   it('exports solid divider fills and preserves patterned divider pixels', async () => {
     const directory = await mkdtemp(join(tmpdir(), 'slideforge-panel-dividers-'));
