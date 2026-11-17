@@ -33,15 +33,23 @@ export async function markTableFills(page: Page, selector: string): Promise<Tabl
   });
 }
 
-/** The cell's own fill follows its border lines, so look after the last of them. */
-function withAlpha(properties: string, alpha: number): string {
+function withAlpha(cell: string, alpha: number): string {
+  const properties = cell.match(/<a:tcPr\b[^>]*>[\s\S]*?<\/a:tcPr>/)?.[0];
+  if (!properties) return cell;
+  // The cell's own fill follows its border lines.
   const lines = [...properties.matchAll(/<a:ln\w*\b[^>]*\/>|<\/a:ln\w*>/g)];
   const start = lines.length ? lines.at(-1)!.index! + lines.at(-1)![0].length : 0;
-  const tail = properties.slice(start).replace(
-    /<a:solidFill><a:srgbClr val="([0-9A-Fa-f]{6})"\s*\/><\/a:solidFill>/,
-    (_, color: string) => `<a:solidFill><a:srgbClr val="${color}"><a:alpha val="${Math.round(alpha * 100000)}"/></a:srgbClr></a:solidFill>`,
+  const tail = properties.slice(start);
+  const fill = tail.match(/<a:solidFill><a:srgbClr val="([0-9A-Fa-f]{6})"\s*\/><\/a:solidFill>/);
+  if (!fill) return cell;
+  const color = fill[1]!;
+  const restored = tail.replace(fill[0], `<a:solidFill><a:srgbClr val="${color}"><a:alpha val="${Math.round(alpha * 100000)}"/></a:srgbClr></a:solidFill>`);
+  const result = cell.replace(properties, properties.slice(0, start) + restored);
+  // The converter also copies a table-cell background into an opaque text highlight.
+  return result.replace(
+    /<a:highlight><a:srgbClr val="([0-9A-Fa-f]{6})"\s*\/><\/a:highlight>/g,
+    (highlight: string, background: string) => background.toLowerCase() === color.toLowerCase() ? '' : highlight,
   );
-  return properties.slice(0, start) + tail;
 }
 
 /**
@@ -63,7 +71,7 @@ export function applyTableFills(data: Uint8Array, fills: TableFills): Uint8Array
       return table.replace(/<a:tc\b[\s\S]*?<\/a:tc>/g, (content: string) => {
         const alpha = alphas[cell++];
         if (alpha === null || alpha === undefined || alpha >= 1) return content;
-        return content.replace(/<a:tcPr\b[^>]*>[\s\S]*?<\/a:tcPr>/, (properties: string) => withAlpha(properties, alpha));
+        return withAlpha(content, alpha);
       });
     });
     files[path] = strToU8(slide);

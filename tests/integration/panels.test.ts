@@ -2,13 +2,28 @@ import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { strFromU8, unzipSync } from 'fflate';
-import { chromium, type Browser } from 'playwright';
+import { chromium, type Browser, type Page } from 'playwright';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
-import { exportPresentation, loadTemplate, renderPresentation } from '../../dist/index.js';
+import { exportPresentation, loadTemplate, renderPresentation, validateLayout } from '../../dist/index.js';
 
 let browser: Browser;
 beforeAll(async () => { browser = await chromium.launch(); });
 afterAll(async () => { await browser?.close(); });
+
+async function imageAlphaEndpoints(page: Page, bytes: Uint8Array): Promise<number[]> {
+  return page.evaluate(async source => {
+    const image = new Image();
+    image.src = source;
+    await image.decode();
+    const canvas = document.createElement('canvas');
+    canvas.width = image.width;
+    canvas.height = image.height;
+    const context = canvas.getContext('2d')!;
+    context.drawImage(image, 0, 0);
+    const x = Math.floor(image.width / 2);
+    return [0, image.height - 1].map(y => context.getImageData(x, y, 1, 1).data[3]!);
+  }, `data:image/png;base64,${Buffer.from(bytes).toString('base64')}`);
+}
 
 describe('panel fill transparency', () => {
   it('keeps gradient endpoint alpha in exported pictures and leaves text editable', async () => {
@@ -52,23 +67,77 @@ describe('panel fill transparency', () => {
       const alphas: number[][] = [];
       for (const [name, bytes] of Object.entries(files)) {
         if (!name.startsWith('ppt/media/') || !name.endsWith('.png')) continue;
-        const alpha = await page.evaluate(async source => {
-          const image = new Image();
-          image.src = source;
-          await image.decode();
-          const canvas = document.createElement('canvas');
-          canvas.width = image.width;
-          canvas.height = image.height;
-          const context = canvas.getContext('2d')!;
-          context.drawImage(image, 0, 0);
-          const x = Math.floor(image.width / 2);
-          return [0, image.height - 1].map(y => context.getImageData(x, y, 1, 1).data[3]!);
-        }, `data:image/png;base64,${Buffer.from(bytes).toString('base64')}`);
-        alphas.push(alpha);
+        alphas.push(await imageAlphaEndpoints(page, bytes));
       }
       for (const [top, bottom] of [[204, 153], [128, 128], [0, 255]]) {
         expect(alphas.some(alpha => Math.abs(alpha[0]! - top!) <= 1 && Math.abs(alpha[1]! - bottom!) <= 1)).toBe(true);
       }
+    } finally {
+      await page.close();
+      await rm(directory, { recursive: true, force: true });
+    }
+  }, 60_000);
+
+  it('uses a built-in template with presentation properties instead of a separate custom template file', async () => {
+    const directory = await mkdtemp(join(tmpdir(), 'slideforge-presentation-styles-'));
+    const page = await browser.newPage({ viewport: { width: 1920, height: 1080 } });
+    try {
+      const gradient = { panel: 30 };
+      const colorSchemes = { harmony: ['#4cc3ff', '#63c9b8', '#d6b77c'] };
+      const steps = ['Alpha', 'Beta', 'Gamma'].map(title => ({ title }));
+      const deck = {
+        metadata: { title: 'Native style properties' }, template: 'sapphire-sky', theme: 'dark',
+        gradient, colorSchemes,
+        slides: [
+          {
+            layout: 'panels', title: 'Transparent panels', numbered: false,
+            panels: ['Left', 'Right'].map(title => ({
+              title, color: '#18234a', fillOpacity: { from: 0.9, to: 0.2 },
+              blocks: [{ type: 'paragraph', text: 'Editable summary' }],
+            })),
+          },
+          { layout: 'cards/honeycomb', title: 'Colored cards', colorScheme: 'harmony', fillOpacity: 0.8, cards: steps },
+          { layout: 'cycle/ring', title: 'Colored cycle', colorScheme: 'harmony', center: 'SDLC', steps },
+        ],
+      };
+      const { template } = await loadTemplate('sapphire-sky', directory);
+      const html = renderPresentation(deck, { template });
+      const { gradient: _gradient, colorSchemes: _colorSchemes, ...legacy } = deck;
+      const legacyHtml = renderPresentation(legacy, {
+        template: { ...template, tokens: { ...template.tokens, gradient }, colorSchemes },
+      });
+      expect(html).toBe(legacyHtml);
+      await page.setContent(html);
+      await page.evaluate(() => document.fonts.ready);
+      const slides = page.locator('.sf-slide');
+      const currentPixels = await slides.nth(0).screenshot();
+      expect(await page.locator('.sf-panel').first().evaluate(panel => getComputedStyle(panel).backgroundImage))
+        .toBe('linear-gradient(rgba(24, 35, 74, 0.9), rgba(17, 25, 52, 0.2))');
+      expect(await page.locator('#slide-2 polygon').evaluateAll(elements => elements.map(element => getComputedStyle(element).fill)))
+        .toEqual(['rgba(76, 195, 255, 0.8)', 'rgba(99, 201, 184, 0.8)', 'rgba(214, 183, 124, 0.8)']);
+      expect(await page.locator('#slide-3 .sf-cycle-arrows path').evaluateAll(elements => elements.map(element => getComputedStyle(element).fill)))
+        .toEqual(['rgb(76, 195, 255)', 'rgb(99, 201, 184)', 'rgb(214, 183, 124)']);
+      expect((await validateLayout(page)).filter(issue => issue.severity === 'error')).toEqual([]);
+      await page.setContent(legacyHtml);
+      await page.evaluate(() => document.fonts.ready);
+      expect(await page.locator('.sf-slide').first().screenshot()).toEqual(currentPixels);
+
+      const input = join(directory, 'presentation.json');
+      const output = join(directory, 'presentation.pptx');
+      await writeFile(input, JSON.stringify(deck));
+      await exportPresentation(input, { output });
+      const files = unzipSync(await readFile(output));
+      expect(strFromU8(files['ppt/slides/slide1.xml']!)).toContain('<a:t>Editable summary</a:t>');
+      const cards = strFromU8(files['ppt/slides/slide2.xml']!);
+      for (const color of ['4CC3FF', '63C9B8', 'D6B77C']) expect(cards).toContain(`<a:srgbClr val="${color}">`);
+      expect(cards).toContain('<a:alpha val="80000"/>');
+      const cycle = strFromU8(files['ppt/slides/slide3.xml']!);
+      for (const title of ['Alpha', 'Beta', 'Gamma', 'SDLC']) expect(cycle).toContain(`<a:t>${title}</a:t>`);
+      const alphas: number[][] = [];
+      for (const [name, bytes] of Object.entries(files)) {
+        if (name.startsWith('ppt/media/') && name.endsWith('.png')) alphas.push(await imageAlphaEndpoints(page, bytes));
+      }
+      expect(alphas.some(([top, bottom]) => Math.abs(top! - 230) <= 1 && Math.abs(bottom! - 51) <= 1)).toBe(true);
     } finally {
       await page.close();
       await rm(directory, { recursive: true, force: true });

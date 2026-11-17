@@ -40,6 +40,7 @@ it('fills table cells and cards translucently in Chromium and exported PowerPoin
     await writeFile(source, JSON.stringify(deck));
     await exportPresentation(source, { output });
     const files = unzipSync(await readFile(output));
+    expect(strFromU8(files['ppt/slides/slide1.xml']!)).not.toContain('<a:highlight>');
     const fills = (strFromU8(files['ppt/slides/slide1.xml']!).match(/<a:tcPr\b[\s\S]*?<\/a:tcPr>/g) ?? [])
       .map(properties => properties.slice(properties.lastIndexOf('</a:lnB>')));
     expect(fills).toHaveLength(8);

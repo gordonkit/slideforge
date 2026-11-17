@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { layouts } from "../layouts/registry.js";
-import { colorList, colorSchemeName, hexColor, optionalText } from "../schemas/fields.js";
+import { colorSchemesSchema, gradientSchema, hexColor, optionalText } from "../schemas/fields.js";
 import { backgroundsSchema, fontFamilySchema } from "../schemas/presentation.js";
 import { designTokens, SLIDE_SIZE, themeTokens, type DesignTokens } from "../themes/tokens.js";
 
@@ -21,7 +21,7 @@ const MAX_TEXT_SHADOW = 20;
 const tokensSchema =z.object(Object.fromEntries(Object.entries(designTokens).map(([group, tokens]) => {
   const [min, max] = tokenBounds[group as keyof typeof designTokens];
   const numeric = Object.entries(tokens).filter(([, value]) => typeof value === "number");
-  return [group, z.object(Object.fromEntries(numeric.map(([name]) => [name, z.number().finite().min(min).max(max).optional()]))).strict().optional()];
+  return [group, (group === "gradient" ? gradientSchema : z.object(Object.fromEntries(numeric.map(([name]) => [name, z.number().finite().min(min).max(max).optional()]))).strict()).optional()];
 })) as unknown as { [G in keyof typeof designTokens]: z.ZodOptional<z.ZodType<Partial<Record<string, number>>>> }).strict();
 
 const variantsSchema = z.object(Object.fromEntries(layouts.map((layout) => [
@@ -43,7 +43,7 @@ export const templateSchema = z.object({
   name: z.string().regex(/^[a-z][a-z0-9-]{0,63}$/, "Use a lowercase name such as \"corporate\""),
   description: optionalText,
   palette: z.object({ light: paletteSchema.optional(), dark: paletteSchema.optional() }).strict().optional(),
-  colorSchemes: z.record(colorSchemeName, colorList).optional(),
+  colorSchemes: colorSchemesSchema.optional(),
   fontFamily: fontFamilySchema.optional(),
   tokens: tokensSchema.optional(),
   backgrounds: backgroundsSchema.optional(),

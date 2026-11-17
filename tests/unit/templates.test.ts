@@ -15,6 +15,45 @@ const deck = (extra: object = {}, slides: object[] = [{ layout: "cover", title: 
 });
 const render = (input: object, template?: object) => renderPresentation(input, template ? { template } : {});
 
+describe("presentation gradient properties", () => {
+  it("uses the same validation for presentation and template gradients", () => {
+    for (const gradient of [{}, { card: 0, panel: 60 }, { panel: 30.5 }]) {
+      expect(() => parsePresentation(deck({ gradient }))).not.toThrow();
+      expect(() => parseTemplate({ name: "brand", tokens: { gradient } })).not.toThrow();
+    }
+    for (const gradient of [{ panel: -1 }, { card: 61 }, { panel: "30" }, { panel: Infinity }, { card: NaN }, { panel: null }, { unknown: 10 }]) {
+      expect(() => parsePresentation(deck({ gradient }))).toThrow();
+      expect(() => parseTemplate({ name: "brand", tokens: { gradient } })).toThrow();
+    }
+    expect(() => parsePresentation(deck({ gradient: 30 }))).toThrow();
+  });
+
+  it("renders a root gradient identically to the legacy template setting without needing a template", () => {
+    const slides = [{
+      layout: "panels", title: "Panels",
+      panels: ["One", "Two"].map(title => ({
+        title, color: "#18234a", fillOpacity: { from: 0.9, to: 0.2 },
+        blocks: [{ type: "paragraph", text: "Editable" }],
+      })),
+    }];
+    const gradient = { card: 20, panel: 30 };
+    expect(render(deck({ gradient }, slides))).toBe(render(deck({}, slides), { name: "legacy", tokens: { gradient } }));
+  });
+
+  it("overrides individual gradient entries, honors zero, and retains unrelated template tokens", () => {
+    const template = { name: "brand", tokens: { gradient: { card: 20, panel: 30 }, type: { title: 64 } } };
+    const input = deck({ gradient: { panel: 0 } });
+    expect(render(input, template)).toBe(render(deck(), {
+      name: "brand", tokens: { gradient: { card: 20, panel: 0 }, type: { title: 64 } },
+    }));
+    expect(render(deck({ gradient: { card: 0 } }), template)).toBe(render(deck(), {
+      name: "brand", tokens: { gradient: { card: 0, panel: 30 }, type: { title: 64 } },
+    }));
+    expect(render(deck({ gradient: {}, colorSchemes: {} }), template)).toBe(render(deck(), template));
+    expect(template.tokens.gradient).toEqual({ card: 20, panel: 30 });
+  });
+});
+
 describe("template schema", () => {
   it("accepts a name alone and every optional field", () => {
     expect(parseTemplate({ name: "plain" })).toEqual({ name: "plain" });

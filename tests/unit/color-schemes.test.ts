@@ -13,6 +13,30 @@ const slide = (layout: string, colorScheme?: unknown) => ({
 const deck = (slides: object[]) => ({ metadata: { title: "Colors" }, slides });
 
 describe("coordinated item colors", () => {
+  it("resolves presentation schemes without a template and preserves item overrides", () => {
+    const slides = ["cards/honeycomb", "cycle/ring", "process"].map(layout => slide(layout, "calm"));
+    const colorSchemes = { calm: ["#2563eb", "#d6b77c"] };
+    expect(renderPresentation({ ...deck(slides), colorSchemes }))
+      .toBe(renderPresentation(deck(slides), { template: { name: "brand", colorSchemes } }));
+    for (const invalid of [{ calm: [] }, { calm: ["red"] }, { calm: Array(13).fill("#123456") }, { "Bad Name": ["#123456"] }]) {
+      expect(() => parsePresentation({ ...deck(slides), colorSchemes: invalid })).toThrow();
+    }
+    expect(() => renderPresentation({ ...deck([slide("cards", "missing")]), colorSchemes }))
+      .toThrow('Unknown color scheme "missing"');
+  });
+
+  it("replaces a matching template scheme but inherits other schemes and leaves both inputs untouched", () => {
+    const template = { name: "brand", colorSchemes: { calm: ["#123456", "#abcdef"], inherited: ["#ff0000"] } };
+    const colorSchemes = { calm: ["#2563eb"], local: ["#d6b77c"] };
+    const slides = [slide("cards", "calm"), slide("process", "inherited"), slide("cycle/ring", "local")];
+    expect(renderPresentation({ ...deck(slides), colorSchemes }, { template }))
+      .toBe(renderPresentation(deck(slides), { template: {
+        name: "brand", colorSchemes: { calm: ["#2563eb"], inherited: ["#ff0000"], local: ["#d6b77c"] },
+      } }));
+    expect(template.colorSchemes.calm).toEqual(["#123456", "#abcdef"]);
+    expect(colorSchemes.calm).toEqual(["#2563eb"]);
+  });
+
   for (const layout of ["cards/honeycomb", "cycle/ring", "process"]) {
     it(`resolves template colors, repeats them, and gives individual colors precedence in ${layout}`, () => {
       const input = deck([slide(layout, "calm")]);

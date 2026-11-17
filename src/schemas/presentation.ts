@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { sectionItems } from "../layouts/agenda/resolve.js";
 import { layoutFamily, layoutNames, layoutSlideSchemas, slideVariant, unknownLayoutMessage } from "../layouts/registry.js";
-import { backgroundSourceSchema, contentBlockSchema, optionalText, text, xmlText } from "./fields.js";
+import { backgroundSourceSchema, colorSchemesSchema, contentBlockSchema, gradientSchema, optionalText, text, xmlText } from "./fields.js";
 
 export { backgroundSourceSchema, contentBlockSchema, imageSourceSchema } from "./fields.js";
 
@@ -38,6 +38,8 @@ export const presentationSchema = z.object({
   theme: z.enum(["light", "dark"]).default("light"),
   fontFamily: fontFamilySchema.optional(),
   backgrounds: backgroundsSchema.optional(),
+  gradient: gradientSchema.optional(),
+  colorSchemes: colorSchemesSchema.optional(),
   slides: z.array(slideSchema).min(1).max(200),
 }).strict().superRefine((presentation, context) => {
   // An agenda item links to a slide by its 1-based number, so the slide must exist.

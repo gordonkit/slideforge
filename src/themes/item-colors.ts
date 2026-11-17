@@ -5,7 +5,7 @@ import { luminance, rgbChannels } from "./color.js";
 export function resolveColorScheme(scheme: ColorScheme | undefined, schemes?: Readonly<Record<string, readonly string[]>>): readonly string[] | undefined {
   if (scheme === undefined || Array.isArray(scheme)) return scheme;
   if (schemes === undefined || !Object.hasOwn(schemes, scheme)) {
-    throw new Error(`Unknown color scheme "${scheme}": define it in template.colorSchemes or supply an array of hex colors`);
+    throw new Error(`Unknown color scheme "${scheme}": define it in presentation.colorSchemes or template.colorSchemes, or supply an array of hex colors`);
   }
   return schemes[scheme];
 }

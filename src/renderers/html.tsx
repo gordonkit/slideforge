@@ -56,7 +56,11 @@ export function renderPresentation(input: unknown, options: RenderOptions = {}):
   const template = parsed && { ...parsed, backgrounds: rebaseBackgrounds(parsed.backgrounds, options.templateBaseUrl) };
   const { metadata } = presentation;
   const palette = { ...themeTokens[presentation.theme], ...template?.palette?.[presentation.theme] };
-  const tokens = mergeTokens(template?.tokens);
+  const tokens = mergeTokens({
+    ...template?.tokens,
+    gradient: { ...template?.tokens?.gradient, ...presentation.gradient },
+  });
+  const colorSchemes = { ...template?.colorSchemes, ...presentation.colorSchemes };
   const style = {
     ...cssVariables(tokens),
     "--slide-width": `${SLIDE_SIZE.widthPx}px`,
@@ -95,7 +99,7 @@ export function renderPresentation(input: unknown, options: RenderOptions = {}):
       <body style={style} data-theme={presentation.theme} data-card-shadow={tokens.shadow.card > 0 ? "" : undefined} data-text-shadow={tokens.shadow.text > 0 ? "" : undefined}>
         <TextTokens value={tokens}><main className="sf-presentation">
           {slides.map((slide, index) => <SlideLayout key={index} slide={slide} sectionNumber={sections.get(index)} panelGradient={tokens.gradient.panel} panelDivider={{ color: palette.border, width: tokens.border.width }}
-            itemColors={resolveColorScheme("colorScheme" in slide ? slide.colorScheme : undefined, template?.colorSchemes)}
+            itemColors={resolveColorScheme("colorScheme" in slide ? slide.colorScheme : undefined, colorSchemes)}
             variant={slideVariant(slide, template?.variants)} number={index + 1} total={presentation.slides.length}
             background={slideBackground(presentation, slide, template)} />)}
         </main></TextTokens>

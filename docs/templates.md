@@ -70,6 +70,10 @@ Opt a `cards`, `process`, or `cycle` slide (any variant) into the sequence with
 repeat by item index; an override does not shift later entries. A missing named
 scheme is an error. Merely defining schemes does not change any slides.
 
+The presentation can also define root-level `colorSchemes`. These replace
+same-name template arrays in full and retain other template schemes, so a deck
+can add its own sequences without copying the template.
+
 Selected fills are solid, replacing any card gradient; cards and process steps
 still honor `fillOpacity`. Text and numbered badges receive contrasting colors
 (at least 4.5:1 on the opaque fill). Page titles, connecting arrows, and outside
@@ -79,7 +83,7 @@ See [slide examples](schema.md#coordinated-item-colors).
 
 ### Tokens
 
-`tokens` has optional `layout`, `spacing`, `type`, `border`, and `chart` groups.
+`tokens` has optional `layout`, `spacing`, `type`, `border`, `chart`, `shadow`, and `gradient` groups.
 Each group accepts only that group's numeric tokens from
 [the token reference](design-tokens.md#exported-token-groups-and-css-names), in
 CSS pixels at the 1920 × 1080 canvas. String tokens (line heights and the bold
@@ -91,6 +95,7 @@ weight) are fixed.
 | `spacing` | 0–480 |
 | `type` | 8–240 |
 | `border` | 0–120 |
+| `shadow`, `gradient` | 0–60; `shadow.text` is limited to 20 |
 
 After merging, the layout tokens must keep the canvas geometry:
 
@@ -123,7 +128,8 @@ This is separate from `spacing.subtitle`, the margin between title and subtitle.
 ```
 
 Changing the gap leaves less room for content. Check each slide for clipping
-and wrapping. Token overrides belong in a template, not the presentation JSON.
+and wrapping. This spacing token belongs in a template; the presentation only
+exposes gradient overrides, not a general `tokens` field.
 
 ### Title outline
 
@@ -194,6 +200,13 @@ gradient. The text color of a panel is chosen for the middle of its gradient. Th
 cards and the number badges keep their solid accent. Export draws a gradient fill as a picture behind the
 text, which stays editable; the gradient itself is not an editable PowerPoint fill.
 
+Alternatively, set `gradient` directly at the presentation root, for example
+`"gradient": { "panel": 30 }`. Each entry overrides the matching
+`tokens.gradient` value independently, while omitted entries inherit from the
+template, then default to 0. Explicit 0 disables that color gradient.
+This works with built-in templates or without a template and needs no custom
+template file. See [presentation style overrides](schema.md#presentation-style-overrides).
+
 On colored panels, per-panel `fillOpacity` combines with this color gradient: use a number
 from 0 to 1 for uniform opacity or `{ "from": 0.8, "to": 0.6 }` for independent top/bottom
 opacity. Different endpoints also produce an opacity gradient with `gradient.panel: 0`.
@@ -217,6 +230,8 @@ variant; a slide that names one (`"cover/default"`) keeps it.
 | Palette | template `palette[theme]` entries, then the built-in palette for `theme` |
 | Font family | presentation `fontFamily`, template `fontFamily`, built-in default |
 | Tokens | template `tokens`, built-in tokens |
+| Gradient entries | presentation `gradient`, template `tokens.gradient`, built-in 0; merged per entry |
+| Named item schemes | presentation `colorSchemes`, template `colorSchemes`; merged by name, not by array index |
 | Variant | variant named in the slide's `layout`, template `variants[family]`, `default` |
 | Background | slide `background`; then `family/variant`, family, and `default` keys, where each presentation `backgrounds` entry replaces the template's entry with the same key |
 

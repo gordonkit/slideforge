@@ -16,7 +16,9 @@
 - Schema bounds do not ensure content fits. Fixed-height areas may clip long
   text, large tables, captions, or many cards. Split slides and review layout.
 - Card, process, and cycle `colorScheme` sequences are explicitly authored,
-  not automatically sampled from a background image. Automatic item text
+  in presentation or template `colorSchemes`, not automatically sampled from
+  a background image. Presentation schemes replace same-name template arrays;
+  they do not activate unless selected by a slide. Automatic item text
   contrast is at least 4.5:1 against the opaque selected fill only; transparency
   can reduce actual contrast, so review the composed slide. Schemes do not
   change the export model: `cycle/ring` artwork stays a picture with editable labels.
@@ -24,6 +26,9 @@
   that every browser feature becomes a native Office object. Charts are
   HTML/CSS bars, not Office chart objects. Images remain images; table conversion
   behavior depends on the converter.
+- Table `fillOpacity` is preserved on native cell fills. For translucent framework
+  cells, export removes opaque text highlights duplicated from the cell background,
+  while retaining text formatting, borders, and explicitly different highlight colors.
 - The export ignores CSS `clip-path`, so a non-rectangular shape has to be an inline SVG.
   `cards/hexagon`, `cards/pentagon`, and `cards/honeycomb` draw their polygons that way, and export rewrites each
   as a native freeform shape with its soft shadow; other inline SVGs stay pictures.
@@ -31,7 +36,7 @@
   no external URLs or text hyperlinks. Export makes the shapes over the row "go to slide" buttons, which
   work in slide show (Ctrl+click while editing); they follow the slide's position, so renumber `slide`
   after reordering (an agenda without `items` follows the `section` slides instead).
-- A gradient fill (the `gradient` tokens) is exported as a picture behind the text, so the gradient is not an
+- A gradient fill (presentation `gradient` or template `tokens.gradient`) is exported as a picture behind the text, so the gradient is not an
   editable PowerPoint fill; the text on it stays editable. Gradients run from top to bottom.
   A colored panel's `fillOpacity` (uniform or `{ from, to }`) preserves alpha in that picture.
   Transparent fills require a visual contrast check against the actual background; panel text

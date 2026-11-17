@@ -43,8 +43,9 @@ padding) add up to the 1080px height.
 `outline` is the title outline color; it is only visible when the `title-outline`
 border token is above 0.
 
-For multiple coordinated item colors, templates can define named
-[`colorSchemes`](templates.md#coordinated-item-colors). Cards, process steps, and
+For multiple coordinated item colors, presentations and templates can define named
+[`colorSchemes`](schema.md#presentation-style-overrides). Presentation definitions
+replace same-name template arrays while retaining other names. Cards, process steps, and
 cycles opt in per slide using `colorScheme`, with optional per-item `color`.
 These sequences are separate from numeric tokens and the page palette; they do
 not recolor unrelated slides or connecting arrows.
@@ -132,7 +133,9 @@ strings unchanged. For example, `spacingTokens.column` becomes
 
 For custom HTML you may reuse these maps and CSS conventions, but arbitrary
 overrides can affect export fidelity and invalidate geometry checks. Presentation
-JSON has no token-override field; a [template](templates.md#tokens) can override
-numeric tokens within bounds that keep the canvas geometry. `mergeTokens(overrides)`
+JSON has no general `tokens` field; its root `gradient` property can override
+`card` and `panel` gradient values independently of the template. Other numeric
+token overrides belong in a [template](templates.md#tokens), within bounds that
+keep the canvas geometry. `mergeTokens(overrides)`
 returns the merged groups and `cssVariables(tokens)` flattens any token groups the
 same way as `designCssVariables`.

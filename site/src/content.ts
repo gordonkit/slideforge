@@ -1418,15 +1418,45 @@ node dist/cli/index.js validate draft.pptx`,
         },
       },
       {
+        id: "presentation-styles",
+        title: { en: "Presentation style properties", "zh-TW": "簡報層級樣式屬性", "zh-CN": "演示文稿级样式属性", ja: "プレゼンテーションのスタイル設定" },
+        body: {
+          en: "Use root gradient and colorSchemes with a built-in template or without a template, instead of creating a custom template file. gradient accepts card and panel percentages from 0 to 60, overriding template tokens.gradient per entry. Omitted entries inherit; explicit 0 disables the color gradient. Root colorSchemes replace whole same-name template arrays while retaining other names. Select a scheme on each slide with colorScheme; definitions alone do not change slides.",
+          "zh-TW": "可在簡報根層級設定 gradient 與 colorSchemes，搭配內建範本或不指定範本使用，不必另建自訂範本檔。gradient 的 card 與 panel 接受 0–60 的百分比，逐項覆寫範本的 tokens.gradient；未指定者沿用，明確設為 0 則停用該項色彩漸層。根層級 colorSchemes 會整組取代範本的同名色票，並保留其他名稱。各頁須以 colorScheme 選用色票，僅定義不會改變投影片。",
+          "zh-CN": "可在演示文稿根级设置 gradient 与 colorSchemes，搭配内置模板或不指定模板使用，无需另建自定义模板文件。gradient 的 card 与 panel 接受 0–60 的百分比，逐项覆盖模板的 tokens.gradient；未指定项沿用，显式设为 0 则停用该项颜色渐变。根级 colorSchemes 会整组替换模板的同名色板，并保留其他名称。各页须用 colorScheme 选择色板，仅定义不会改变幻灯片。",
+          ja: "ルートの gradient と colorSchemes は、組み込みテンプレートと併用しても、テンプレートなしでも使えます。独自のテンプレートファイルは不要です。gradient の card と panel は 0～60 の割合で、テンプレートの tokens.gradient を項目ごとに上書きします。省略した項目は継承し、0 はその色のグラデーションを無効にします。ルートの colorSchemes は同名の配列全体を置き換え、他の名前は維持します。各スライドで colorScheme を選ばなければ、定義だけでは表示は変わりません。",
+        },
+        code: `{
+  "metadata": { "title": "Delivery overview" },
+  "template": "sapphire-sky",
+  "gradient": { "panel": 30 },
+  "colorSchemes": {
+    "ocean-harmony": ["#4cc3ff", "#63c9b8", "#d6b77c"]
+  },
+  "slides": [{
+    "layout": "process",
+    "title": "Delivery",
+    "colorScheme": "ocean-harmony",
+    "steps": [{ "title": "Plan" }, { "title": "Build" }, { "title": "Verify" }]
+  }]
+}`,
+        note: {
+          en: "Gradient percentages control color change, not opacity. Panel fillOpacity still controls transparency independently. Existing template settings remain valid; other numeric tokens still belong in templates. Selected item colors remain solid and override card gradients. Review wrapping, clipping, and contrast after changes.",
+          "zh-TW": "漸層百分比控制色彩變化，不是透明度；面板透明度仍由 fillOpacity 獨立設定。既有範本設定繼續有效，其他數值 token 仍在範本中設定。選用的項目填色維持實色並優先於卡片漸層。調整後請檢查換行、裁切與對比。",
+          "zh-CN": "渐变百分比控制颜色变化，而非透明度；面板透明度仍由 fillOpacity 独立设置。现有模板设置继续有效，其他数值 token 仍在模板中设置。选用的单项填色保持纯色并优先于卡片渐变。调整后请检查换行、裁切和对比度。",
+          ja: "グラデーションの割合は色の変化を指定し、不透明度ではありません。パネルの透明度は引き続き fillOpacity で別に設定します。既存のテンプレート設定は有効で、他の数値トークンはテンプレートで指定します。選択した項目の塗りは単色で、カードのグラデーションに優先します。変更後は改行、はみ出し、コントラストを確認してください。",
+        },
+      },
+      {
         id: "color-schemes",
         title: { en: "Coordinated item colors", "zh-TW": "協調的多色色票", "zh-CN": "协调的多色色板", ja: "調和する複数色の配色" },
         body: {
-          en: "Define colorSchemes in a template as named sequences of 1–12 six-digit hex colors. Names follow the template name rules. Set colorScheme on a cards, process, or cycle slide (all variants) to a scheme name or an inline color array. Colors repeat by item index; an individual card or step color overrides its entry without shifting later colors. Missing names are errors. Defining schemes alone does not change existing slides, and individual colors work without a scheme.",
-          "zh-TW": "在範本的 colorSchemes 定義具名色票，每組含 1–12 個六位十六進位色碼，名稱規則與範本相同。於 cards、process 或 cycle 投影片設定 colorScheme，可指定色票名稱或直接提供色碼陣列，所有變化皆適用。顏色依項目索引循環；個別卡片或步驟的 color 優先，且不影響後續順序。找不到名稱時會明確報錯。僅定義色票不會改變現有投影片，個別填色也不必搭配色票。",
-          "zh-CN": "在模板的 colorSchemes 定义具名色板，每组含 1–12 个六位十六进制色码，名称规则与模板相同。在 cards、process 或 cycle 幻灯片设置 colorScheme，可指定色板名称或直接提供色码数组，所有变体均适用。颜色按项目索引循环；单个卡片或步骤的 color 优先，且不影响后续顺序。找不到名称时会明确报错。仅定义色板不会改变现有幻灯片，单项填色也不必搭配色板。",
-          ja: "テンプレートの colorSchemes に、6 桁の 16 進カラーを 1～12 色並べた名前付き配色を定義します。名前の規則はテンプレート名と同じです。cards、process、cycle の全バリアントで、スライドの colorScheme に配色名か色配列を指定できます。色は項目の位置順に繰り返され、個別の color がその位置の色に優先します。後続の順序は変わりません。存在しない名前はエラーです。定義だけでは既存のスライドは変わらず、個別の色は配色なしでも使えます。",
+          en: "Define colorSchemes in a presentation or template as named sequences of 1–12 six-digit hex colors. Names follow the template name rules. Set colorScheme on a cards, process, or cycle slide (all variants) to a scheme name or an inline color array. Colors repeat by item index; an individual card or step color overrides its entry without shifting later colors. Missing names are errors. Defining schemes alone does not change existing slides, and individual colors work without a scheme.",
+          "zh-TW": "在簡報或範本的 colorSchemes 定義具名色票，每組含 1–12 個六位十六進位色碼，名稱規則與範本相同。於 cards、process 或 cycle 投影片設定 colorScheme，可指定色票名稱或直接提供色碼陣列，所有變化皆適用。顏色依項目索引循環；個別卡片或步驟的 color 優先，且不影響後續順序。找不到名稱時會明確報錯。僅定義色票不會改變現有投影片，個別填色也不必搭配色票。",
+          "zh-CN": "在演示文稿或模板的 colorSchemes 定义具名色板，每组含 1–12 个六位十六进制色码，名称规则与模板相同。在 cards、process 或 cycle 幻灯片设置 colorScheme，可指定色板名称或直接提供色码数组，所有变体均适用。颜色按项目索引循环；单个卡片或步骤的 color 优先，且不影响后续顺序。找不到名称时会明确报错。仅定义色板不会改变现有幻灯片，单项填色也不必搭配色板。",
+          ja: "プレゼンテーションまたはテンプレートの colorSchemes に、6 桁の 16 進カラーを 1～12 色並べた名前付き配色を定義します。名前の規則はテンプレート名と同じです。cards、process、cycle の全バリアントで、スライドの colorScheme に配色名か色配列を指定できます。色は項目の位置順に繰り返され、個別の color がその位置の色に優先します。後続の順序は変わりません。存在しない名前はエラーです。定義だけでは既存のスライドは変わらず、個別の色は配色なしでも使えます。",
         },
-        code: `// template.json
+        code: `// presentation root or template.json
 "colorSchemes": {
   "ocean-harmony": ["#4cc3ff", "#63c9b8", "#a99ad7", "#d6b77c"]
 }

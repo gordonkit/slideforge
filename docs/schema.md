@@ -21,10 +21,48 @@ and unpaired surrogates are rejected before PPTX generation.
 | `theme` | No | `"light"` or `"dark"`; default `"light"` |
 | `fontFamily` | No | Trimmed nonempty string, max 200 characters; local font names with Unicode letters/numbers, spaces, commas, quotes, hyphens only |
 | `backgrounds` | No | Object described under [Backgrounds](#backgrounds) |
+| `gradient` | No | Strict `{ card?, panel? }`; each a finite percentage from 0 to 60; overrides template gradient entries independently |
+| `colorSchemes` | No | Named sequences of 1–12 six-digit hex colors; merged over template schemes by name |
 | `slides` | Yes | Array of 1–200 slides |
 
 `fontFamily` is a family/fallback list, not a CSS declaration or font URL.
 Example: `"Noto Sans TC, Arial, sans-serif"`. It does not install or embed fonts.
+
+### Presentation style overrides
+
+Use `gradient` and `colorSchemes` at the presentation root to customize a built-in
+template without creating a separate template file. Both properties also work
+without a template:
+
+```json
+{
+  "metadata": { "title": "Delivery overview" },
+  "template": "sapphire-sky",
+  "gradient": { "panel": 30 },
+  "colorSchemes": {
+    "ocean-harmony": ["#4cc3ff", "#63c9b8", "#d6b77c"]
+  },
+  "slides": [{
+    "layout": "process",
+    "title": "Delivery",
+    "colorScheme": "ocean-harmony",
+    "steps": [{ "title": "Plan" }, { "title": "Build" }, { "title": "Verify" }]
+  }]
+}
+```
+
+Each `gradient` entry overrides the matching template `tokens.gradient` entry;
+omitted entries inherit from the template, then default to 0. An explicit 0
+disables the color gradient for that entry. These values control color change,
+not opacity; panel `fillOpacity` still controls transparency independently.
+See [gradient behavior and export](templates.md#gradients).
+
+Presentation `colorSchemes` replace same-name template arrays in full, retaining
+other template names. Names start with a lowercase letter, contain only lowercase
+letters, digits, or hyphens, and are at most 64 characters. A definition alone
+does not recolor anything: select it with the slide's `colorScheme`. Inline
+slide arrays bypass named schemes; individual item `color` remains highest
+priority. See [coordinated item colors](#coordinated-item-colors).
 
 ### Metadata
 
@@ -240,7 +278,7 @@ empty slide in the theme's color. See [Backgrounds](#backgrounds) and the
 ### Coordinated item colors
 
 All variants of `cards`, `process`, and `cycle` accept `colorScheme`: a
-[template scheme name](templates.md#coordinated-item-colors) or an inline array
+[scheme name from presentation or template `colorSchemes`](#presentation-style-overrides) or an inline array
 of 1–12 six-digit hex colors. Names use lowercase letters, digits, and hyphens,
 start with a letter, and are at most 64 characters. Unknown names throw an
 error. Each card or step also accepts an optional six-digit hex `color`, even
