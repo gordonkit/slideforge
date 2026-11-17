@@ -5,6 +5,8 @@ import type { LayoutFamily } from "./registry.js";
 export interface LayoutProps<F extends LayoutFamily> {
   slide: Extract<Slide, { layout: F | `${F}/${string}` }>;
   variant: string;
+  /** Resolved opt-in colors, repeated in item order; per-item colors take precedence. */
+  itemColors?: readonly string[] | undefined;
   /** For a `section` slide: its 1-based number among the presentation's sections. */
   sectionNumber?: number | undefined;
   /** The `gradient.panel` token: how far a colored panel's gradient moves toward black, in percent. */

@@ -43,6 +43,12 @@ padding) add up to the 1080px height.
 `outline` is the title outline color; it is only visible when the `title-outline`
 border token is above 0.
 
+For multiple coordinated item colors, templates can define named
+[`colorSchemes`](templates.md#coordinated-item-colors). Cards, process steps, and
+cycles opt in per slide using `colorScheme`, with optional per-item `color`.
+These sequences are separate from numeric tokens and the page palette; they do
+not recolor unrelated slides or connecting arrows.
+
 The shared `border.radius` remains the default for gantt bars and tracks. A
 gantt slide's optional `barRadius` (0–120 CSS px) locally overrides those corners
 without changing template tokens or other components; see [schema](schema.md).

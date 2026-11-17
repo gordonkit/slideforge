@@ -48,3 +48,4 @@
 .sf-variant-honeycomb .sf-card + .sf-card { margin-left: calc(var(--sf-honey-width) * -0.25 + var(--sf-honey-gap)); }
 .sf-variant-honeycomb .sf-card:nth-child(even) { top: calc(var(--sf-honey-width) * 0.2165 + var(--sf-honey-gap) / 4); }
 .sf-variant-honeycomb .sf-card:only-child { top: 0; }
+.sf-card-colored .sf-card-badge { background: var(--sf-on-accent); color: var(--sf-accent); }

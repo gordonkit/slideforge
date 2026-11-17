@@ -166,16 +166,16 @@ is reported with that family's valid names, such as
 | `"section"` | No additional fields: `title` is the chapter's name and `subtitle` its one-line summary. Sections are numbered `01`, `02`, … in slide order |
 | `"content"` | Required `blocks`: 1–12 content blocks |
 | `"two-columns"` | Required `left` and `right`: each 1–12 content blocks |
-| `"cards"` | Required `cards`: 1–6 objects, each with trimmed nonempty `title` (max 200) and optional `blocks` (1–12; a card without them shows only its title); optional `fillOpacity` (0–1): the opacity of each card's fill, or of the shape in `cards/circle`, `cards/hexagon`, `cards/pentagon`, and `cards/honeycomb` |
+| `"cards"` | Required `cards`: 1–6 objects, each with trimmed nonempty `title` (max 200), optional `blocks` (1–12; a card without them shows only its title), and optional hex `color`; optional `colorScheme` (name or color array, below); optional `fillOpacity` (0–1): the opacity of each card's fill, or of the shape in `cards/circle`, `cards/hexagon`, `cards/pentagon`, and `cards/honeycomb` |
 | `"panels"` | Required `panels`: 2–7 objects, each with trimmed nonempty `title` (max 200), `blocks` (1–12), and an optional `color`, a six-digit hex color such as `"#2563eb"` that fills the panel. Optional per-panel `fillOpacity` requires `color`: a number (0–1) for uniform opacity, or `{ "from": 0.8, "to": 0.6 }` (both 0–1) for top-to-bottom opacity; omitted means opaque. It combines with `gradient.panel` without fading text. Optional slide-level `numbered`: boolean; omitted/`true` shows numbers, `false` starts each panel with its title and removes the number column in `panels/rows`. Optional `divider` on the slide or individual panels; see [Panel dividers](#panel-dividers) |
 | `"media"` | Required `image` (an image source) and `alt` (max 1,000, may be empty); optional `caption` and `blocks` (up to 6 content blocks, default none) |
 | `"stats"` | Required `stats`: 2–6 objects, each with trimmed nonempty `value` (max 30), `label` (max 100), optional trimmed nonempty `labelDetail` (max 100), optional `text`, and optional boolean `highlight` |
 | `"matrix"` | Required `quadrants`: exactly 4 objects (top left, top right, bottom left, bottom right), each with `title` (max 200) and `blocks` (1–12); optional `xAxis` and `yAxis` names (max 80) |
 | `"compare"` | Required `options`: 2–4 objects, each with `title` (max 100), `items` (1–8 strings, max 200), optional `label` and optional boolean `highlight` |
 | `"team"` | Required `members`: 2–6 objects, each with `name` (max 100) and optional `role`, `text`, and `image` (an image source) |
-| `"process"` | Required `steps`: 2–6 objects, each with `title` (max 100) and optional `text`; optional `fillOpacity` (0–1): the opacity of each step card's fill |
+| `"process"` | Required `steps`: 2–6 objects, each with `title` (max 100), optional `text`, and optional hex `color`; optional `colorScheme` (name or color array, below); optional `fillOpacity` (0–1): the opacity of each step card's fill |
 | `"hub"` | Required `center` (max 100) and `items`: 3–6 objects, each with `title` (max 100) and optional `text` |
-| `"cycle"` | Required `steps`: 3–8 objects, each with `title` (max 100) and optional `text`, placed clockwise from the top; optional `center` (max 100) |
+| `"cycle"` | Required `steps`: 3–8 objects, each with `title` (max 100), optional `text`, and optional hex `color`, placed clockwise from the top; optional `center` (max 100); optional `colorScheme` (name or color array, below) |
 | `"timeline"` | Required `events`: 2–6 objects, each with trimmed nonempty `date` (max 100) and `title` (max 200), and optional `text` string, max 10,000 |
 | `"gantt"` | Required `periods` (2–12 trimmed nonempty strings, max 40 each) and `tasks` (1–8 objects, each with trimmed nonempty `label` (max 100), integer `start` and `end`, and optional `progress` from 0 to 100); optional finite numeric `barRadius`, 0–120 CSS px |
 | `"table"` | Required `columns` (1–8 trimmed nonempty strings, max 200 each) and `rows` (1–14 arrays of 1–8 string cells, max 2,000 each); optional `columnWidths`: one numeric percentage per column, each greater than 0 and at most 100, summing to 100; optional `columnAlignments`: one `"left"`, `"center"`, or `"right"` per column; optional `fillOpacity` (0–1): fills the header and every body row at that opacity, rows alternating light and dark |
@@ -236,6 +236,37 @@ Its required `title` names the slide (its accessible label) but is not drawn, an
 `notes` still become speaker notes. Without a background it is an
 empty slide in the theme's color. See [Backgrounds](#backgrounds) and the
 [Math Background Studio guide](backgrounds.md).
+
+### Coordinated item colors
+
+All variants of `cards`, `process`, and `cycle` accept `colorScheme`: a
+[template scheme name](templates.md#coordinated-item-colors) or an inline array
+of 1–12 six-digit hex colors. Names use lowercase letters, digits, and hyphens,
+start with a letter, and are at most 64 characters. Unknown names throw an
+error. Each card or step also accepts an optional six-digit hex `color`, even
+without a scheme.
+
+```json
+{
+  "layout": "process",
+  "title": "Delivery",
+  "colorScheme": ["#4cc3ff", "#63c9b8"],
+  "steps": [
+    { "title": "Plan" },
+    { "title": "Build", "color": "#d6b77c" },
+    { "title": "Verify" }
+  ]
+}
+```
+
+This draws cyan, gold, cyan: the sequence repeats by original index, while
+individual colors override it. Omit both fields to preserve the existing
+appearance. Selected fills replace card gradients; cards and process steps
+retain `fillOpacity`, without fading text. Text and badges automatically
+contrast with opaque selected fills (at least 4.5:1); check transparent fills
+on the actual background. Ring segments use the selected solid colors, while
+outside descriptions and the center retain the page palette. Ring artwork
+remains a picture in PowerPoint; its labels remain editable.
 
 ### Panel dividers
 

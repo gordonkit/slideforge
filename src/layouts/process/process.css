@@ -18,3 +18,4 @@
 .sf-variant-vertical .sf-process-arrow { align-self: flex-start; padding-left: 48px; font-size: 40px; line-height: 1; }
 /* fillOpacity: each step card's fill at that opacity. */
 .sf-process-filled .sf-step { background: rgb(var(--sf-surface-rgb) / var(--sf-fill-opacity)); }
+.sf-step-colored .sf-step-number { background: var(--sf-on-accent); color: var(--sf-accent); }

@@ -4,6 +4,7 @@ import { studioRenderUrl } from "../schemas/background.js";
 import { layoutFamily, slideVariant } from "../layouts/registry.js";
 import { type DisplayText, textValue } from "../schemas/fields.js";
 import { DisplayTextContent } from "./text.js";
+import { itemColorStyle } from "../themes/item-colors.js";
 
 export function SlideSubtitle({ children }: { children: ReactNode }) {
   return <p className="sf-subtitle"><span className="sf-subtitle-mark" aria-hidden="true" /><span className="sf-subtitle-text">{children}</span></p>;
@@ -24,12 +25,14 @@ export const cardShapes = {
 } as const;
 export type CardShape = keyof typeof cardShapes | "circle";
 
-export function SlideCard({ title, badge, shape, children }: { title: DisplayText; badge?: number | undefined; shape?: CardShape | undefined; children: ReactNode }) {
+export function SlideCard({ title, badge, shape, children, color }: { title: DisplayText; badge?: number | undefined; shape?: CardShape | undefined; children: ReactNode; color?: string | undefined }) {
   const content = <>{badge !== undefined && <span className="sf-card-badge" aria-hidden="true">{badge}</span>}<h2><DisplayTextContent value={title} size="card-title" /></h2>{children}</>;
-  if (shape === undefined) return <article className="sf-card">{content}</article>;
-  if (shape === "circle") return <article className="sf-card"><div className="sf-card-inner">{content}</div></article>;
+  const className = color === undefined ? "sf-card" : "sf-card sf-card-colored";
+  const style = itemColorStyle(color);
+  if (shape === undefined) return <article className={className} style={style}>{content}</article>;
+  if (shape === "circle") return <article className={className} style={style}><div className="sf-card-inner">{content}</div></article>;
   const { viewBox, points } = cardShapes[shape];
-  return <article className="sf-card"><div className="sf-card-inner"><svg className="sf-card-shape" viewBox={viewBox} aria-hidden="true"><polygon points={points} /></svg>{content}</div></article>;
+  return <article className={className} style={style}><div className="sf-card-inner"><svg className="sf-card-shape" viewBox={viewBox} aria-hidden="true"><polygon points={points} /></svg>{content}</div></article>;
 }
 
 export function SlideColumns({ children }: { children: ReactNode }) {

@@ -31,6 +31,12 @@ its shape in `circle`, `hexagon`, `pentagon`, and `honeycomb`, translucent, so t
 the text stays opaque. The fill is the flat surface color, replacing a template's card gradient.
 PowerPoint keeps the transparency.
 
+For coordinated multi-color cards, set `colorScheme` to a template scheme name
+or an inline array of 1–12 hex colors; optionally override a card with `color`.
+All variants support this. Selected fills replace gradients, preserve
+`fillOpacity`, and get contrasting text and badges. Unselected cards keep their
+existing appearance. See [coordinated item colors](schema.md#coordinated-item-colors).
+
 | `cards/rounded` | `cards/badge` |
 | --- | --- |
 | ![Rounded cards with accent outlines](../site/public/screenshots/layout-cards-rounded.png) | ![A numbered circle above each card](../site/public/screenshots/layout-cards-badge.png) |

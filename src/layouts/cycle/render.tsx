@@ -3,6 +3,7 @@ import type { LayoutProps } from "../types.js";
 import { DisplayTextContent } from "../../components/text.js";
 import { textValue } from "../../schemas/fields.js";
 import { CycleRing } from "./ring.js";
+import { itemColor, itemColorStyle } from "../../themes/item-colors.js";
 
 // The ring is laid out in the default content box; positions are percentages, so a template's
 // slightly different box stretches the drawing instead of breaking it.
@@ -110,8 +111,8 @@ function arrowPath(ring: Geometry, angles: number[], index: number): string | un
 const percent = (value: number, total: number) => `${(value / total * 100).toFixed(3)}%`;
 
 /** Steps around a ring, each leading to the next by an arrow, with an optional idea in the middle. */
-export function CycleLayout({ slide, variant }: LayoutProps<"cycle">) {
-  if (variant === "ring") return <CycleRing slide={slide} variant={variant} />;
+export function CycleLayout({ slide, variant, itemColors }: LayoutProps<"cycle">) {
+  if (variant === "ring") return <CycleRing slide={slide} variant={variant} itemColors={itemColors} />;
   const count = slide.steps.length;
   const ring = GEOMETRY[count]!;
   const angles = stepAngles(ring, count);
@@ -125,7 +126,8 @@ export function CycleLayout({ slide, variant }: LayoutProps<"cycle">) {
     {slide.center !== undefined && <div className="sf-cycle-center"><span><DisplayTextContent value={slide.center} size="card-title" /></span></div>}
     {slide.steps.map((step, index) => {
       const [x, y] = ringPoint(ring, angles[index]!);
-      return <div className="sf-cycle-step" role="listitem" key={index} style={{ left: percent(x, WIDTH), top: percent(y, HEIGHT) }}>
+      const color = itemColor(itemColors, index, step.color);
+      return <div className={color === undefined ? "sf-cycle-step" : "sf-cycle-step sf-cycle-step-colored"} role="listitem" key={index} style={{ left: percent(x, WIDTH), top: percent(y, HEIGHT), ...itemColorStyle(color) }}>
         <span className="sf-cycle-heading">
           <span className="sf-cycle-number" aria-hidden="true">{index + 1}</span>
           <span className="sf-cycle-title"><DisplayTextContent value={step.title} size="card-title" scale={ring.scale} /></span>

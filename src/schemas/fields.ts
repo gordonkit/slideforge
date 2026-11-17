@@ -30,6 +30,10 @@ export function textValue(value: DisplayText | undefined): string {
 }
 /** A six-digit hex color such as "#2563eb". */
 export const hexColor = z.string().regex(/^#[0-9a-f]{6}$/i, 'Use a six-digit hex color such as "#2563eb"');
+export const colorSchemeName = z.string().regex(/^[a-z][a-z0-9-]{0,63}$/, "Use a color scheme name with lowercase letters, digits, and hyphens, starting with a letter");
+export const colorList = z.array(hexColor).min(1).max(12);
+export const colorScheme = z.union([colorSchemeName, colorList]);
+export type ColorScheme = z.infer<typeof colorScheme>;
 
 export const imageSourceSchema = xmlText.trim().min(1).max(2_000_000).refine((source) => {
   if (/[\u0000-\u0020\u007f\\]/u.test(source)) return false;

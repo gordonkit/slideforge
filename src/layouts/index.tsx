@@ -60,11 +60,11 @@ export const layoutStylesheet = layoutFamilies
   .map((family) => readFileSync(new URL(`./${family}/${family}.css`, import.meta.url), "utf8"))
   .join("");
 
-export function SlideLayout({ slide, variant = slideVariant(slide), number, total, background, sectionNumber, panelGradient, panelDivider }: {
-  slide: Slide; variant?: string; number: number; total: number; background?: string | undefined; sectionNumber?: number | undefined; panelGradient?: number | undefined; panelDivider?: { color: string; width: number } | undefined;
+export function SlideLayout({ slide, variant = slideVariant(slide), number, total, background, sectionNumber, panelGradient, panelDivider, itemColors }: {
+  slide: Slide; variant?: string; number: number; total: number; background?: string | undefined; sectionNumber?: number | undefined; panelGradient?: number | undefined; panelDivider?: { color: string; width: number } | undefined; itemColors?: readonly string[] | undefined;
 }) {
-  const Layout = renderers[layoutFamily(slide.layout)] as (props: { slide: Slide; variant: string; sectionNumber?: number | undefined; panelGradient?: number | undefined; panelDivider?: { color: string; width: number } | undefined }) => ReactNode;
+  const Layout = renderers[layoutFamily(slide.layout)] as (props: { slide: Slide; variant: string; sectionNumber?: number | undefined; panelGradient?: number | undefined; panelDivider?: { color: string; width: number } | undefined; itemColors?: readonly string[] | undefined }) => ReactNode;
   return <SlideComponent slide={slide} variant={variant} number={number} total={total} background={background}>
-    <Layout slide={slide} variant={variant} sectionNumber={sectionNumber} panelGradient={panelGradient} panelDivider={panelDivider} />
+    <Layout slide={slide} variant={variant} sectionNumber={sectionNumber} panelGradient={panelGradient} panelDivider={panelDivider} itemColors={itemColors} />
   </SlideComponent>;
 }

@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { layouts } from "../layouts/registry.js";
-import { hexColor, optionalText } from "../schemas/fields.js";
+import { colorList, colorSchemeName, hexColor, optionalText } from "../schemas/fields.js";
 import { backgroundsSchema, fontFamilySchema } from "../schemas/presentation.js";
 import { designTokens, SLIDE_SIZE, themeTokens, type DesignTokens } from "../themes/tokens.js";
 
@@ -43,6 +43,7 @@ export const templateSchema = z.object({
   name: z.string().regex(/^[a-z][a-z0-9-]{0,63}$/, "Use a lowercase name such as \"corporate\""),
   description: optionalText,
   palette: z.object({ light: paletteSchema.optional(), dark: paletteSchema.optional() }).strict().optional(),
+  colorSchemes: z.record(colorSchemeName, colorList).optional(),
   fontFamily: fontFamilySchema.optional(),
   tokens: tokensSchema.optional(),
   backgrounds: backgroundsSchema.optional(),

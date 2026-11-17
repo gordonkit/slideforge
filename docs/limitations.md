@@ -15,6 +15,11 @@
   prove that content fits or that a palette has readable contrast.
 - Schema bounds do not ensure content fits. Fixed-height areas may clip long
   text, large tables, captions, or many cards. Split slides and review layout.
+- Card, process, and cycle `colorScheme` sequences are explicitly authored,
+  not automatically sampled from a background image. Automatic item text
+  contrast is at least 4.5:1 against the opaque selected fill only; transparency
+  can reduce actual contrast, so review the composed slide. Schemes do not
+  change the export model: `cycle/ring` artwork stays a picture with editable labels.
 - Editability is a design goal for text and simple CSS shapes, not a guarantee
   that every browser feature becomes a native Office object. Charts are
   HTML/CSS bars, not Office chart objects. Images remain images; table conversion

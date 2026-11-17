@@ -1418,6 +1418,38 @@ node dist/cli/index.js validate draft.pptx`,
         },
       },
       {
+        id: "color-schemes",
+        title: { en: "Coordinated item colors", "zh-TW": "協調的多色色票", "zh-CN": "协调的多色色板", ja: "調和する複数色の配色" },
+        body: {
+          en: "Define colorSchemes in a template as named sequences of 1–12 six-digit hex colors. Names follow the template name rules. Set colorScheme on a cards, process, or cycle slide (all variants) to a scheme name or an inline color array. Colors repeat by item index; an individual card or step color overrides its entry without shifting later colors. Missing names are errors. Defining schemes alone does not change existing slides, and individual colors work without a scheme.",
+          "zh-TW": "在範本的 colorSchemes 定義具名色票，每組含 1–12 個六位十六進位色碼，名稱規則與範本相同。於 cards、process 或 cycle 投影片設定 colorScheme，可指定色票名稱或直接提供色碼陣列，所有變化皆適用。顏色依項目索引循環；個別卡片或步驟的 color 優先，且不影響後續順序。找不到名稱時會明確報錯。僅定義色票不會改變現有投影片，個別填色也不必搭配色票。",
+          "zh-CN": "在模板的 colorSchemes 定义具名色板，每组含 1–12 个六位十六进制色码，名称规则与模板相同。在 cards、process 或 cycle 幻灯片设置 colorScheme，可指定色板名称或直接提供色码数组，所有变体均适用。颜色按项目索引循环；单个卡片或步骤的 color 优先，且不影响后续顺序。找不到名称时会明确报错。仅定义色板不会改变现有幻灯片，单项填色也不必搭配色板。",
+          ja: "テンプレートの colorSchemes に、6 桁の 16 進カラーを 1～12 色並べた名前付き配色を定義します。名前の規則はテンプレート名と同じです。cards、process、cycle の全バリアントで、スライドの colorScheme に配色名か色配列を指定できます。色は項目の位置順に繰り返され、個別の color がその位置の色に優先します。後続の順序は変わりません。存在しない名前はエラーです。定義だけでは既存のスライドは変わらず、個別の色は配色なしでも使えます。",
+        },
+        code: `// template.json
+"colorSchemes": {
+  "ocean-harmony": ["#4cc3ff", "#63c9b8", "#a99ad7", "#d6b77c"]
+}
+
+// slide
+{
+  "layout": "process",
+  "title": "Delivery",
+  "colorScheme": "ocean-harmony",
+  "steps": [
+    { "title": "Plan" },
+    { "title": "Build", "color": "#d6b77c" },
+    { "title": "Verify" }
+  ]
+}`,
+        note: {
+          en: "Selected fills are solid and replace card gradients; cards and process steps still honor fillOpacity without fading text. Text and badges get at least 4.5:1 contrast on opaque selected fills. Check transparent fills against the real background: colors are author-selected, not automatically sampled. Page titles, arrows, and outside ring descriptions keep the page palette. Ring artwork remains a picture in PowerPoint, with editable labels.",
+          "zh-TW": "選用的填色為實色，會取代卡片漸層；卡片與流程步驟仍支援 fillOpacity，且文字不隨之淡化。不透明填色上的文字與編號對比至少為 4.5:1。透明填色請對照實際背景檢查；色票由作者選定，不會自動擷取背景色。頁面標題、箭頭及圓環外描述維持頁面配色。圓環圖形在 PowerPoint 仍為圖片，標籤文字可編輯。",
+          "zh-CN": "选用的填色为实色，会取代卡片渐变；卡片与流程步骤仍支持 fillOpacity，且文字不会随之淡化。不透明填色上的文字与编号对比至少为 4.5:1。透明填色请对照实际背景检查；色板由作者选定，不会自动提取背景色。页面标题、箭头及圆环外描述保持页面配色。圆环图形在 PowerPoint 仍为图片，标签文字可编辑。",
+          ja: "選んだ色は単色の塗りで、カードのグラデーションに優先します。カードとプロセスは fillOpacity に対応し、文字は薄くなりません。不透明な塗りでは文字と番号のコントラスト比は 4.5:1 以上です。透明な塗りは実際の背景で確認してください。背景からの自動抽出は行いません。ページ見出し、矢印、リング外の説明は元の配色を保ちます。PowerPoint のリング図形は画像のままですが、ラベルは編集できます。",
+        },
+      },
+      {
         id: "header-content-spacing",
         title: { en: "Header-to-content gap", "zh-TW": "標題與內容間距", "zh-CN": "标题与内容间距", ja: "見出しと内容の間隔" },
         body: {

@@ -16,6 +16,7 @@ add CSS, HTML, scripts, layout families, or variants.
 | `name` | Yes | Lowercase letters, digits, and hyphens, starting with a letter; max 64 |
 | `description` | No | String, max 10,000 |
 | `palette` | No | `{ light?, dark? }`; each a partial palette (below) |
+| `colorSchemes` | No | Named sequences of 1–12 six-digit hex colors; names use the same rules as `name` |
 | `fontFamily` | No | Same rules as the presentation's `fontFamily` |
 | `tokens` | No | Numeric design token overrides by group (below) |
 | `backgrounds` | No | Same keys and sources as the presentation's [`backgrounds`](schema.md#backgrounds) |
@@ -49,6 +50,32 @@ add CSS, HTML, scripts, layout families, or variants.
 any of `background`, `foreground`, `muted`, `accent`, `onAccent`, `surface`,
 `border`, `canvas`, and `outline`. The presentation's `theme` still chooses which palette is
 used; a template does not choose the theme.
+
+### Coordinated item colors
+
+Define reusable sequences separately from the page palette:
+
+```json
+{
+  "name": "brand",
+  "colorSchemes": {
+    "ocean-harmony": ["#4cc3ff", "#63c9b8", "#a99ad7", "#d6b77c"]
+  }
+}
+```
+
+Opt a `cards`, `process`, or `cycle` slide (any variant) into the sequence with
+`"colorScheme": "ocean-harmony"`. Alternatively, put an inline color array in
+`colorScheme`. A card's or step's `color` overrides its sequence entry. Colors
+repeat by item index; an override does not shift later entries. A missing named
+scheme is an error. Merely defining schemes does not change any slides.
+
+Selected fills are solid, replacing any card gradient; cards and process steps
+still honor `fillOpacity`. Text and numbered badges receive contrasting colors
+(at least 4.5:1 on the opaque fill). Page titles, connecting arrows, and outside
+ring descriptions retain the page palette. Check transparent fills against the
+actual background: schemes are author-selected, not extracted from background images.
+See [slide examples](schema.md#coordinated-item-colors).
 
 ### Tokens
 

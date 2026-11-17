@@ -2,6 +2,7 @@ import type { CSSProperties } from "react";
 import type { LayoutProps } from "../types.js";
 import { DisplayTextContent } from "../../components/text.js";
 import { textValue } from "../../schemas/fields.js";
+import { itemColor, itemColorStyle } from "../../themes/item-colors.js";
 
 // Laid out in the default content box, like the default variant; positions are percentages.
 const WIDTH = 1728;
@@ -104,7 +105,7 @@ function labelBox(angle: number): CSSProperties & { "data-side": string } {
 }
 
 /** ring: the steps as segments of one ring, each nesting into the next with a triangular tip. */
-export function CycleRing({ slide }: LayoutProps<"cycle">) {
+export function CycleRing({ slide, itemColors }: LayoutProps<"cycle">) {
   const count = slide.steps.length;
   const span = 2 * Math.PI / count;
   // Step 1 is centered at the top; each segment spans its step's share of the ring.
@@ -113,14 +114,18 @@ export function CycleRing({ slide }: LayoutProps<"cycle">) {
   return <div className="sf-cycle sf-cycle-ring" data-count={count} style={style} role="list" aria-label={slide.steps.map((step) => textValue(step.title)).join(" → ")}>
     {/* The segments sit under the step titles on purpose. */}
     <svg className="sf-cycle-arrows" viewBox={`0 0 ${WIDTH} ${HEIGHT}`} preserveAspectRatio="none" aria-hidden="true" data-pptx-allow-overlap="true">
-      {slide.steps.map((_, index) => <path key={index} d={segmentPath(angle(index) - span / 2, angle(index) + span / 2)} style={{ fill: "var(--sf-accent)", fillOpacity: index % 2 ? 0.82 : 1 }} />)}
+      {slide.steps.map((step, index) => {
+        const color = itemColor(itemColors, index, step.color);
+        return <path key={index} d={segmentPath(angle(index) - span / 2, angle(index) + span / 2)} style={{ fill: color ?? "var(--sf-accent)", fillOpacity: color === undefined && index % 2 ? 0.82 : 1 }} />;
+      })}
     </svg>
     {slide.center !== undefined && <div className="sf-cycle-ring-center"><span><DisplayTextContent value={slide.center} size="card-title" /></span></div>}
     {slide.steps.map((step, index) => {
       const [x, y] = polar(MIDDLE, angle(index) + TIP / 2);
       const { "data-side": side, ...box } = labelBox(angle(index));
+      const color = itemColor(itemColors, index, step.color);
       return <div className="sf-cycle-ring-step" role="listitem" key={index}>
-        <span className="sf-cycle-ring-title" style={{ left: percent(x, WIDTH), top: percent(y, HEIGHT) }}>
+        <span className={`sf-cycle-ring-title${color === undefined ? "" : " sf-cycle-ring-title-colored"}`} style={{ left: percent(x, WIDTH), top: percent(y, HEIGHT), ...itemColorStyle(color) }}>
           <span className="sf-cycle-ring-number" aria-hidden="true">{index + 1}</span>
           <DisplayTextContent value={step.title} size="card-body" />
         </span>

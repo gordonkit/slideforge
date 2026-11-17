@@ -10,6 +10,7 @@ import { gradientFill, rgbChannels } from "../themes/color.js";
 import { cssVariables, defaultFontFamily, SLIDE_SIZE, themeTokens } from "../themes/tokens.js";
 import { injectBeforeBodyEnd, notesScript, presentationScript } from "./present.js";
 import { TextTokens } from "../components/text.js";
+import { resolveColorScheme } from "../themes/item-colors.js";
 
 const stylesheet = readFileSync(new URL("../themes/slides.css", import.meta.url), "utf8") + layoutStylesheet;
 
@@ -94,6 +95,7 @@ export function renderPresentation(input: unknown, options: RenderOptions = {}):
       <body style={style} data-theme={presentation.theme} data-card-shadow={tokens.shadow.card > 0 ? "" : undefined} data-text-shadow={tokens.shadow.text > 0 ? "" : undefined}>
         <TextTokens value={tokens}><main className="sf-presentation">
           {slides.map((slide, index) => <SlideLayout key={index} slide={slide} sectionNumber={sections.get(index)} panelGradient={tokens.gradient.panel} panelDivider={{ color: palette.border, width: tokens.border.width }}
+            itemColors={resolveColorScheme("colorScheme" in slide ? slide.colorScheme : undefined, template?.colorSchemes)}
             variant={slideVariant(slide, template?.variants)} number={index + 1} total={presentation.slides.length}
             background={slideBackground(presentation, slide, template)} />)}
         </main></TextTokens>

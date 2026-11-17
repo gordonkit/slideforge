@@ -19,3 +19,5 @@
 .sf-cycle-ring-label[data-side="top"], .sf-cycle-ring-label[data-side="bottom"] { height: var(--sf-ring-label-line); justify-content: center; text-align: center; white-space: nowrap; }
 .sf-cycle-ring-label[data-side="top"] { align-items: flex-end; }
 .sf-cycle-ring-label[data-side="bottom"] { align-items: flex-start; }
+.sf-cycle-step-colored .sf-cycle-number { background: var(--sf-on-accent); color: var(--sf-accent); }
+.sf-cycle-ring-title-colored .sf-cycle-ring-number { opacity: 1; }
