@@ -46,6 +46,9 @@ border token is above 0.
 The shared `border.radius` remains the default for gantt bars and tracks. A
 gantt slide's optional `barRadius` (0–120 CSS px) locally overrides those corners
 without changing template tokens or other components; see [schema](schema.md).
+Panel dividers likewise inherit `border` and `border.width` by default; their
+optional slide-level or per-panel `divider` overrides color, thickness, opacity,
+and solid/dashed/dotted style locally; see [panel dividers](schema.md#panel-dividers).
 
 The HTML body has `data-theme="light"` or `"dark"`. The preview page surround is
 `#d8dee8`, outside the slide. Table header text is white in light mode and

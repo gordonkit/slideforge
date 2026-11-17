@@ -9,4 +9,6 @@ export interface LayoutProps<F extends LayoutFamily> {
   sectionNumber?: number | undefined;
   /** The `gradient.panel` token: how far a colored panel's gradient moves toward black, in percent. */
   panelGradient?: number | undefined;
+  /** Resolved shared border defaults for panel divider SVG export. */
+  panelDivider?: { color: string; width: number } | undefined;
 }

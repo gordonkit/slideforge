@@ -73,6 +73,7 @@ export function renderPresentation(input: unknown, options: RenderOptions = {}):
     "--sf-accent-rgb": rgbChannels(palette.accent),
     "--sf-surface-rgb": rgbChannels(palette.surface),
     "--sf-background-rgb": rgbChannels(palette.background),
+    "--sf-border-rgb": rgbChannels(palette.border),
     "--sf-outline": palette.outline,
     fontFamily: presentation.fontFamily ?? template?.fontFamily ?? defaultFontFamily,
   } as CSSProperties;
@@ -92,7 +93,7 @@ export function renderPresentation(input: unknown, options: RenderOptions = {}):
       </head>
       <body style={style} data-theme={presentation.theme} data-card-shadow={tokens.shadow.card > 0 ? "" : undefined} data-text-shadow={tokens.shadow.text > 0 ? "" : undefined}>
         <TextTokens value={tokens}><main className="sf-presentation">
-          {slides.map((slide, index) => <SlideLayout key={index} slide={slide} sectionNumber={sections.get(index)} panelGradient={tokens.gradient.panel}
+          {slides.map((slide, index) => <SlideLayout key={index} slide={slide} sectionNumber={sections.get(index)} panelGradient={tokens.gradient.panel} panelDivider={{ color: palette.border, width: tokens.border.width }}
             variant={slideVariant(slide, template?.variants)} number={index + 1} total={presentation.slides.length}
             background={slideBackground(presentation, slide, template)} />)}
         </main></TextTokens>

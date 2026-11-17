@@ -10,6 +10,125 @@ let browser: Browser;
 beforeAll(async () => { browser = await chromium.launch(); });
 afterAll(async () => { await browser?.close(); });
 
+describe('panel divider styles', () => {
+  it('exports solid divider fills and preserves patterned divider pixels', async () => {
+    const directory = await mkdtemp(join(tmpdir(), 'slideforge-panel-dividers-'));
+    const page = await browser.newPage();
+    try {
+      const input = join(directory, 'panels.json');
+      const output = join(directory, 'panels.pptx');
+      await writeFile(input, JSON.stringify({
+        metadata: { title: 'Divider export' },
+        slides: ['panels', 'panels/rows'].map(layout => ({
+          layout, title: 'Dividers', numbered: false,
+          divider: { color: '#123456', width: 6, opacity: 0.5 },
+          panels: ['A', 'B', 'C', 'D'].map((title, index) => ({
+            title, blocks: [{ type: 'paragraph', text: 'Summary' }],
+            ...(index >= 2 ? { divider: { style: index === 2 ? 'dashed' : 'dotted' } } : {}),
+          })),
+        })),
+      }));
+      await exportPresentation(input, { output });
+      const files = unzipSync(await readFile(output));
+      for (const index of [1, 2]) {
+        const xml = strFromU8(files[`ppt/slides/slide${index}.xml`]!);
+        const fills = (xml.match(/<p:sp\b[\s\S]*?<\/p:sp>/g) ?? []).filter(shape => shape.includes('123456'));
+        expect(fills).toHaveLength(1);
+        expect(fills[0]).toContain('<a:alpha val="50000"/>');
+        expect(fills[0]).toContain(index === 1 ? 'cx="38100"' : 'cy="38100"');
+      }
+      const patterns = [];
+      for (const [name, bytes] of Object.entries(files)) {
+        if (!name.startsWith('ppt/media/') || !name.endsWith('.png')) continue;
+        const pattern = await page.evaluate(async source => {
+          const image = new Image();
+          image.src = source;
+          await image.decode();
+          if (Math.min(image.width, image.height) !== 6) return null;
+          const canvas = document.createElement('canvas');
+          canvas.width = image.width;
+          canvas.height = image.height;
+          const context = canvas.getContext('2d')!;
+          context.drawImage(image, 0, 0);
+          const pixels = context.getImageData(0, 0, canvas.width, canvas.height).data;
+          const vertical = image.width === 6;
+          const alphas = Array.from({ length: vertical ? image.height : image.width }, (_, index) =>
+            pixels[((vertical ? index * image.width + 3 : 3 * image.width + index) * 4) + 3]!);
+          const color = Array.from({ length: pixels.length / 4 }, (_, index) => index * 4).find(index => pixels[index + 3] === 128);
+          return {
+            vertical,
+            gaps: alphas.filter(alpha => alpha === 0).length,
+            filled: alphas.filter(alpha => alpha === 128).length,
+            color: color === undefined ? [] : Array.from(pixels.slice(color, color + 4)),
+          };
+        }, `data:image/png;base64,${Buffer.from(bytes).toString('base64')}`);
+        if (pattern !== null) patterns.push(pattern);
+      }
+      expect(patterns).toHaveLength(4);
+      for (const pattern of patterns) {
+        expect(pattern.color).toEqual([18, 52, 86, 128]);
+        expect(pattern.gaps).toBeGreaterThan(0);
+        expect(pattern.filled).toBeGreaterThan(0);
+      }
+      for (const vertical of [true, false]) {
+        const pair = patterns.filter(pattern => pattern.vertical === vertical);
+        expect(pair).toHaveLength(2);
+        expect(pair[0]!.filled).not.toBe(pair[1]!.filled);
+      }
+    } finally {
+      await page.close();
+      await rm(directory, { recursive: true, force: true });
+    }
+  }, 60_000);
+
+  for (const layout of ['panels', 'panels/rows']) {
+    it(`inherits template defaults and applies slide and individual overrides in ${layout}`, async () => {
+      const page = await browser.newPage();
+      try {
+        const panels = ['A', 'B', 'C'].map(title => ({
+          title, blocks: [{ type: 'paragraph', text: 'Summary' }],
+        }));
+        await page.setContent(renderPresentation({
+          metadata: { title: 'Dividers' },
+          slides: [
+            { layout, title: 'Inherited', panels },
+            {
+              layout, title: 'Overrides',
+              divider: { color: '#123456', width: 6, opacity: 0.5, style: 'dashed' },
+              panels: [panels[0], panels[1], { ...panels[2], divider: { style: 'dotted', opacity: 0 } }],
+            },
+            { layout, title: 'Hidden', divider: { width: 0 }, panels },
+            { layout, title: 'Unchanged', panels },
+            { layout, title: 'Template pattern', panels: [panels[0], { ...panels[1], divider: { style: 'dotted' } }, panels[2]] },
+          ],
+        }, { template: { name: 'dividers', palette: { light: { border: '#abcdef' } }, tokens: { border: { width: 4 } } } }));
+        const lines = await page.locator('.sf-panel-line').evaluateAll(elements => elements.map(element => {
+          const style = getComputedStyle(element);
+          const rows = element.closest('.sf-variant-rows') !== null;
+          const line = element.querySelector('line');
+          const rect = element.getBoundingClientRect();
+          return {
+            color: line === null ? style.backgroundColor : getComputedStyle(line).stroke,
+            opacity: line === null ? undefined : getComputedStyle(line).strokeOpacity,
+            width: rows ? rect.height : rect.width,
+            style: element.getAttribute('data-style') ?? 'solid',
+          };
+        }));
+        const inherited = { color: 'rgb(171, 205, 239)', width: 4, style: 'solid' };
+        expect(lines.slice(0, 2)).toEqual([inherited, inherited]);
+        expect(lines[2]).toEqual({ color: 'rgb(18, 52, 86)', width: 6, style: 'dashed', opacity: '0.5' });
+        expect(lines[3]).toEqual({ color: 'rgb(18, 52, 86)', width: 6, style: 'dotted', opacity: '0' });
+        expect(lines.slice(4, 6).map(line => line.width)).toEqual([0, 0]);
+        expect(lines.slice(6, 8)).toEqual([inherited, inherited]);
+        expect(lines[8]).toEqual({ color: 'rgb(171, 205, 239)', width: 4, style: 'dotted', opacity: '1' });
+        expect(lines[9]).toEqual(inherited);
+      } finally {
+        await page.close();
+      }
+    });
+  }
+});
+
 describe('panels/rows alignment', () => {
   for (const count of [2, 5, 6, 7]) {
     for (const filled of [false, true]) {

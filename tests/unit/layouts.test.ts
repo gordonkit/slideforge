@@ -211,6 +211,27 @@ describe("family/variant layout names", () => {
     expect(issues({ layout: "panels/rows", panels: [panel("A"), panel("B")] })).toBeUndefined();
   });
 
+  it("validates partial panel divider overrides without changing inherited defaults", () => {
+    const panel = (title: string) => ({ title, blocks: [{ type: "paragraph", text: "Summary" }] });
+    const slide = { title: "P", layout: "panels", panels: [panel("A"), panel("B"), panel("C")] };
+    const draw = (options: object) => renderPresentation({ metadata: { title: "Deck" }, slides: [{ ...slide, ...options }] });
+    expect(draw({ divider: {} })).toBe(draw({}));
+    const html = draw({
+      divider: { color: "#123456", width: 4, opacity: 0.5, style: "dashed" },
+      panels: [panel("A"), { ...panel("B"), divider: { opacity: 0, width: 0 } }, panel("C")],
+    });
+    expect(html).toContain('--sf-panel-divider-rgb:18 52 86;--sf-panel-divider-width:4px;--sf-panel-divider-opacity:0.5');
+    expect(html).toContain('data-style="dashed"');
+    expect(html).toContain('<div class="sf-panel-line" style="--sf-panel-divider-width:0px;--sf-panel-divider-opacity:0" data-style="dashed" aria-hidden="true">');
+    expect(html).toContain('<div class="sf-panel-line" data-style="dashed" aria-hidden="true">');
+    for (const divider of [{ color: "red" }, { width: -1 }, { width: 121 }, { width: Infinity }, { width: "2" }, { opacity: -0.1 }, { opacity: 1.1 }, { style: "double" }, { extra: 1 }]) {
+      for (const options of [{ divider }, { panels: [panel("A"), { ...panel("B"), divider }] }]) {
+        expect(() => draw(options)).toThrow();
+      }
+    }
+    expect(() => draw({ panels: [{ ...panel("A"), divider: {} }, panel("B")] })).toThrow("The first panel has no preceding divider");
+  });
+
   it("makes panel numbering optional without changing existing numbered rendering", () => {
     const panels = ["Background", "Scope"].map(title => ({ title, blocks: [{ type: "paragraph", text: "Summary" }] }));
     for (const layout of ["panels", "panels/default", "panels/rows"]) {

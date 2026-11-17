@@ -167,7 +167,7 @@ is reported with that family's valid names, such as
 | `"content"` | Required `blocks`: 1–12 content blocks |
 | `"two-columns"` | Required `left` and `right`: each 1–12 content blocks |
 | `"cards"` | Required `cards`: 1–6 objects, each with trimmed nonempty `title` (max 200) and optional `blocks` (1–12; a card without them shows only its title); optional `fillOpacity` (0–1): the opacity of each card's fill, or of the shape in `cards/circle`, `cards/hexagon`, `cards/pentagon`, and `cards/honeycomb` |
-| `"panels"` | Required `panels`: 2–7 objects, each with trimmed nonempty `title` (max 200), `blocks` (1–12), and an optional `color`, a six-digit hex color such as `"#2563eb"` that fills the panel. Optional slide-level `numbered`: boolean; omitted/`true` shows numbers, `false` starts each panel with its title and removes the number column in `panels/rows` |
+| `"panels"` | Required `panels`: 2–7 objects, each with trimmed nonempty `title` (max 200), `blocks` (1–12), and an optional `color`, a six-digit hex color such as `"#2563eb"` that fills the panel. Optional slide-level `numbered`: boolean; omitted/`true` shows numbers, `false` starts each panel with its title and removes the number column in `panels/rows`. Optional `divider` on the slide or individual panels; see [Panel dividers](#panel-dividers) |
 | `"media"` | Required `image` (an image source) and `alt` (max 1,000, may be empty); optional `caption` and `blocks` (up to 6 content blocks, default none) |
 | `"stats"` | Required `stats`: 2–6 objects, each with trimmed nonempty `value` (max 30), `label` (max 100), optional trimmed nonempty `labelDetail` (max 100), optional `text`, and optional boolean `highlight` |
 | `"matrix"` | Required `quadrants`: exactly 4 objects (top left, top right, bottom left, bottom right), each with `title` (max 200) and `blocks` (1–12); optional `xAxis` and `yAxis` names (max 80) |
@@ -236,6 +236,41 @@ Its required `title` names the slide (its accessible label) but is not drawn, an
 `notes` still become speaker notes. Without a background it is an
 empty slide in the theme's color. See [Backgrounds](#backgrounds) and the
 [Math Background Studio guide](backgrounds.md).
+
+### Panel dividers
+
+`panels`, `panels/default`, and `panels/rows` accept an optional strict `divider`
+object. Set it on the slide to style all its dividers, or on a panel to override
+only the line immediately before that panel. The first panel has no preceding
+line, so specifying its `divider` is a validation error.
+
+| Property | Constraint | Default |
+| --- | --- | --- |
+| `color` | Six-digit hex color | Template/theme `border` palette color |
+| `width` | Finite number, 0–120 CSS px | Template `border.width` token |
+| `opacity` | Finite number, 0–1 | 1 |
+| `style` | `"solid"`, `"dashed"`, or `"dotted"` | `"solid"` |
+
+Each omitted property inherits independently: panel → slide → shared defaults.
+Overrides do not change other slides or other components. `width: 0` removes the
+line's space; `opacity: 0` makes it invisible while retaining its thickness.
+`width` is thickness for both vertical and horizontal dividers.
+
+```json
+{
+  "layout": "panels",
+  "title": "Topics",
+  "divider": { "color": "#60a5fa", "width": 4, "opacity": 0.6, "style": "dashed" },
+  "panels": [
+    { "title": "Background", "blocks": [{ "type": "paragraph", "text": "Context." }] },
+    { "title": "Scope", "blocks": [{ "type": "paragraph", "text": "Boundaries." }] },
+    { "title": "Next", "divider": { "style": "dotted" }, "blocks": [{ "type": "paragraph", "text": "Actions." }] }
+  ]
+}
+```
+
+Solid dividers retain filled-shape export. Dashed and dotted SVG dividers are
+exported as pictures by the converter, not editable native PowerPoint lines.
 
 ## Content blocks
 
